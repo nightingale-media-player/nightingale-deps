@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -24,7 +24,7 @@
 
 
 static GstElement *
-setup_pipeline (gchar * pipe_descr)
+setup_pipeline (const gchar * pipe_descr)
 {
   GstElement *pipeline;
 
@@ -37,7 +37,7 @@ setup_pipeline (gchar * pipe_descr)
    the poll call will time out after half a second.
  */
 static void
-run_pipeline (GstElement * pipeline, gchar * descr,
+run_pipeline (GstElement * pipeline, const gchar * descr,
     GstMessageType events, GstMessageType tevent)
 {
   GstBus *bus;
@@ -78,7 +78,7 @@ run_pipeline (GstElement * pipeline, gchar * descr,
 
 GST_START_TEST (test_pipeline_unref)
 {
-  gchar *s;
+  const gchar *s;
   GstElement *pipeline, *src, *sink;
 
   s = "fakesrc name=src num-buffers=20 ! fakesink name=sink";
@@ -91,7 +91,8 @@ GST_START_TEST (test_pipeline_unref)
 
   run_pipeline (pipeline, s,
       GST_MESSAGE_NEW_CLOCK | GST_MESSAGE_STATE_CHANGED |
-      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE, GST_MESSAGE_EOS);
+      GST_MESSAGE_STREAM_STATUS | GST_MESSAGE_ASYNC_DONE |
+      GST_MESSAGE_STREAM_START, GST_MESSAGE_EOS);
   while (GST_OBJECT_REFCOUNT_VALUE (src) > 1)
     THREAD_SWITCH ();
   ASSERT_OBJECT_REFCOUNT (src, "src", 1);

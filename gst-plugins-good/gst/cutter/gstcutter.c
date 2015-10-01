@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /**
  * SECTION:element-cutter
@@ -45,7 +45,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -m filesrc location=foo.ogg ! decodebin ! audioconvert ! cutter ! autoaudiosink
+ * gst-launch-1.0 -m filesrc location=foo.ogg ! decodebin ! audioconvert ! cutter ! autoaudiosink
  * ]| Show cut messages.
  * </refsect2>
  */
@@ -65,33 +65,23 @@ GST_DEBUG_CATEGORY_STATIC (cutter_debug);
 #define CUTTER_DEFAULT_THRESHOLD_LENGTH  (500 * GST_MSECOND)
 #define CUTTER_DEFAULT_PRE_LENGTH        (200 * GST_MSECOND)
 
-static const GstElementDetails cutter_details =
-GST_ELEMENT_DETAILS ("Audio cutter",
-    "Filter/Editor/Audio",
-    "Audio Cutter to split audio into non-silent bits",
-    "Thomas Vander Stichele <thomas at apestaart dot org>");
-
 static GstStaticPadTemplate cutter_src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) { 8, 16 }, "
-        "depth = (int) { 8, 16 }, " "signed = (boolean) true")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) { S8," GST_AUDIO_NE (S16) " }, "
+        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ], "
+        "layout = (string) interleaved")
     );
 
 static GstStaticPadTemplate cutter_sink_factory =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) { 8, 16 }, "
-        "depth = (int) { 8, 16 }, " "signed = (boolean) true")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) { S8," GST_AUDIO_NE (S16) " }, "
+        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ], "
+        "layout = (string) interleaved")
     );
 
 enum
@@ -104,35 +94,27 @@ enum
   PROP_LEAKY
 };
 
-GST_BOILERPLATE (GstCutter, gst_cutter, GstElement, GST_TYPE_ELEMENT);
+#define gst_cutter_parent_class parent_class
+G_DEFINE_TYPE (GstCutter, gst_cutter, GST_TYPE_ELEMENT);
 
 static void gst_cutter_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_cutter_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static GstFlowReturn gst_cutter_chain (GstPad * pad, GstBuffer * buffer);
-
-static gboolean gst_cutter_get_caps (GstPad * pad, GstCutter * filter);
-
-static void
-gst_cutter_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&cutter_src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&cutter_sink_factory));
-  gst_element_class_set_details (element_class, &cutter_details);
-}
+static gboolean gst_cutter_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_cutter_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 
 static void
 gst_cutter_class_init (GstCutterClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *element_class;
 
   gobject_class = (GObjectClass *) klass;
+  element_class = (GstElementClass *) klass;
 
   gobject_class->set_property = gst_cutter_set_property;
   gobject_class->get_property = gst_cutter_get_property;
@@ -140,34 +122,52 @@ gst_cutter_class_init (GstCutterClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_THRESHOLD,
       g_param_spec_double ("threshold", "Threshold",
           "Volume threshold before trigger",
-          -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE));
+          -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_THRESHOLD_DB,
       g_param_spec_double ("threshold-dB", "Threshold (dB)",
           "Volume threshold before trigger (in dB)",
-          -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE));
+          -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_RUN_LENGTH,
       g_param_spec_uint64 ("run-length", "Run length",
           "Length of drop below threshold before cut_stop (in nanoseconds)",
-          0, G_MAXUINT64, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PRE_LENGTH,
       g_param_spec_uint64 ("pre-length", "Pre-recording buffer length",
           "Length of pre-recording buffer (in nanoseconds)",
-          0, G_MAXUINT64, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_LEAKY,
       g_param_spec_boolean ("leaky", "Leaky",
           "do we leak buffers when below threshold ?",
-          FALSE, G_PARAM_READWRITE));
+          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   GST_DEBUG_CATEGORY_INIT (cutter_debug, "cutter", 0, "Audio cutting");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&cutter_src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&cutter_sink_factory));
+  gst_element_class_set_static_metadata (element_class, "Audio cutter",
+      "Filter/Editor/Audio",
+      "Audio Cutter to split audio into non-silent bits",
+      "Thomas Vander Stichele <thomas at apestaart dot org>");
 }
 
 static void
-gst_cutter_init (GstCutter * filter, GstCutterClass * g_class)
+gst_cutter_init (GstCutter * filter)
 {
   filter->sinkpad =
       gst_pad_new_from_static_template (&cutter_sink_factory, "sink");
+  gst_pad_set_chain_function (filter->sinkpad, gst_cutter_chain);
+  gst_pad_set_event_function (filter->sinkpad, gst_cutter_event);
+  gst_pad_use_fixed_caps (filter->sinkpad);
+  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
+
   filter->srcpad =
       gst_pad_new_from_static_template (&cutter_src_factory, "src");
+  gst_pad_use_fixed_caps (filter->srcpad);
+  gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
 
   filter->threshold_level = CUTTER_DEFAULT_THRESHOLD_LEVEL;
   filter->threshold_length = CUTTER_DEFAULT_THRESHOLD_LENGTH;
@@ -179,22 +179,12 @@ gst_cutter_init (GstCutter * filter, GstCutterClass * g_class)
   filter->pre_run_length = 0 * GST_SECOND;
   filter->pre_buffer = NULL;
   filter->leaky = FALSE;
-
-  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
-  gst_pad_set_chain_function (filter->sinkpad, gst_cutter_chain);
-  gst_pad_use_fixed_caps (filter->sinkpad);
-
-  gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
-  gst_pad_use_fixed_caps (filter->srcpad);
 }
 
 static GstMessage *
 gst_cutter_message_new (GstCutter * c, gboolean above, GstClockTime timestamp)
 {
   GstStructure *s;
-  GValue v = { 0, };
-
-  g_value_init (&v, GST_TYPE_LIST);
 
   s = gst_structure_new ("cutter",
       "above", G_TYPE_BOOLEAN, above,
@@ -233,67 +223,108 @@ gst_cutter_calculate_##TYPE (TYPE * in, guint num,                            \
 DEFINE_CUTTER_CALCULATOR (gint16, 15);
 DEFINE_CUTTER_CALCULATOR (gint8, 7);
 
+static gboolean
+gst_cutter_setcaps (GstCutter * filter, GstCaps * caps)
+{
+  GstAudioInfo info;
+
+  if (!gst_audio_info_from_caps (&info, caps))
+    return FALSE;
+
+  filter->info = info;
+
+  return gst_pad_set_caps (filter->srcpad, caps);
+}
+
+static gboolean
+gst_cutter_event (GstPad * pad, GstObject * parent, GstEvent * event)
+{
+  gboolean ret;
+  GstCutter *filter;
+
+  filter = GST_CUTTER (parent);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      ret = gst_cutter_setcaps (filter, caps);
+      gst_event_unref (event);
+      break;
+    }
+    default:
+      ret = gst_pad_event_default (pad, parent, event);
+      break;
+  }
+  return ret;
+}
 
 static GstFlowReturn
-gst_cutter_chain (GstPad * pad, GstBuffer * buf)
+gst_cutter_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
+  GstFlowReturn ret = GST_FLOW_OK;
   GstCutter *filter;
+  GstMapInfo map;
   gint16 *in_data;
+  gint bpf, rate;
+  gsize in_size;
   guint num_samples;
   gdouble NCS = 0.0;            /* Normalized Cumulative Square of buffer */
   gdouble RMS = 0.0;            /* RMS of signal in buffer */
   gdouble NMS = 0.0;            /* Normalized Mean Square of buffer */
   GstBuffer *prebuf;            /* pointer to a prebuffer element */
+  GstClockTime duration;
 
-  g_return_val_if_fail (pad != NULL, GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_IS_PAD (pad), GST_FLOW_ERROR);
-  g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
+  filter = GST_CUTTER (parent);
 
-  filter = GST_CUTTER (GST_OBJECT_PARENT (pad));
-  g_return_val_if_fail (filter != NULL, GST_FLOW_ERROR);
-  g_return_val_if_fail (GST_IS_CUTTER (filter), GST_FLOW_ERROR);
+  if (GST_AUDIO_INFO_FORMAT (&filter->info) == GST_AUDIO_FORMAT_UNKNOWN)
+    goto not_negotiated;
 
-  if (!filter->have_caps) {
-    if (!(gst_cutter_get_caps (pad, filter)))
-      return GST_FLOW_NOT_NEGOTIATED;
-  }
+  bpf = GST_AUDIO_INFO_BPF (&filter->info);
+  rate = GST_AUDIO_INFO_RATE (&filter->info);
 
-  in_data = (gint16 *) GST_BUFFER_DATA (buf);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  in_data = (gint16 *) map.data;
+  in_size = map.size;
+
   GST_LOG_OBJECT (filter, "length of prerec buffer: %" GST_TIME_FORMAT,
       GST_TIME_ARGS (filter->pre_run_length));
 
   /* calculate mean square value on buffer */
-  switch (filter->width) {
-    case 16:
-      num_samples = GST_BUFFER_SIZE (buf) / 2;
+  switch (GST_AUDIO_INFO_FORMAT (&filter->info)) {
+    case GST_AUDIO_FORMAT_S16:
+      num_samples = in_size / 2;
       gst_cutter_calculate_gint16 (in_data, num_samples, &NCS);
       NMS = NCS / num_samples;
       break;
-    case 8:
-      num_samples = GST_BUFFER_SIZE (buf);
+    case GST_AUDIO_FORMAT_S8:
+      num_samples = in_size;
       gst_cutter_calculate_gint8 ((gint8 *) in_data, num_samples, &NCS);
       NMS = NCS / num_samples;
       break;
     default:
       /* this shouldn't happen */
-      g_warning ("no mean square function for width %d\n", filter->width);
+      g_warning ("no mean square function for format");
       break;
   }
 
+  gst_buffer_unmap (buf, &map);
+
   filter->silent_prev = filter->silent;
+
+  duration = gst_util_uint64_scale (in_size / bpf, GST_SECOND, rate);
 
   RMS = sqrt (NMS);
   /* if RMS below threshold, add buffer length to silent run length count
    * if not, reset
    */
   GST_LOG_OBJECT (filter, "buffer stats: NMS %f, RMS %f, audio length %f", NMS,
-      RMS,
-      gst_guint64_to_gdouble (gst_audio_duration_from_pad_buffer
-          (filter->sinkpad, buf)));
+      RMS, gst_guint64_to_gdouble (duration));
+
   if (RMS < filter->threshold_level)
-    filter->silent_run_length +=
-        gst_guint64_to_gdouble (gst_audio_duration_from_pad_buffer
-        (filter->sinkpad, buf));
+    filter->silent_run_length += gst_guint64_to_gdouble (duration);
   else {
     filter->silent_run_length = 0 * GST_SECOND;
     filter->silent = FALSE;
@@ -322,6 +353,7 @@ gst_cutter_chain (GstPad * pad, GstBuffer * buf)
       /* first of all, flush current buffer */
       GST_DEBUG_OBJECT (filter, "flushing buffer of length %" GST_TIME_FORMAT,
           GST_TIME_ARGS (filter->pre_run_length));
+
       while (filter->pre_buffer) {
         prebuf = (g_list_first (filter->pre_buffer))->data;
         filter->pre_buffer = g_list_remove (filter->pre_buffer, prebuf);
@@ -336,49 +368,38 @@ gst_cutter_chain (GstPad * pad, GstBuffer * buf)
    * or to the srcpad */
   if (filter->silent) {
     filter->pre_buffer = g_list_append (filter->pre_buffer, buf);
-    filter->pre_run_length +=
-        gst_guint64_to_gdouble (gst_audio_duration_from_pad_buffer
-        (filter->sinkpad, buf));
+    filter->pre_run_length += gst_guint64_to_gdouble (duration);
+
     while (filter->pre_run_length > filter->pre_length) {
+      GstClockTime pduration;
+      gsize psize;
+
       prebuf = (g_list_first (filter->pre_buffer))->data;
       g_assert (GST_IS_BUFFER (prebuf));
+
+      psize = gst_buffer_get_size (prebuf);
+      pduration = gst_util_uint64_scale (psize / bpf, GST_SECOND, rate);
+
       filter->pre_buffer = g_list_remove (filter->pre_buffer, prebuf);
-      filter->pre_run_length -=
-          gst_guint64_to_gdouble (gst_audio_duration_from_pad_buffer
-          (filter->sinkpad, prebuf));
+      filter->pre_run_length -= gst_guint64_to_gdouble (pduration);
+
       /* only pass buffers if we don't leak */
       if (!filter->leaky)
-        gst_pad_push (filter->srcpad, prebuf);
+        ret = gst_pad_push (filter->srcpad, prebuf);
       else
         gst_buffer_unref (prebuf);
     }
   } else
-    gst_pad_push (filter->srcpad, buf);
+    ret = gst_pad_push (filter->srcpad, buf);
 
-  return GST_FLOW_OK;
-}
+  return ret;
 
-
-static gboolean
-gst_cutter_get_caps (GstPad * pad, GstCutter * filter)
-{
-  GstCaps *caps;
-  GstStructure *structure;
-
-  caps = gst_pad_get_caps (pad);
-  if (!caps) {
-    GST_INFO ("no caps on pad %s:%s", GST_DEBUG_PAD_NAME (pad));
-    return FALSE;
+  /* ERRORS */
+not_negotiated:
+  {
+    return GST_FLOW_NOT_NEGOTIATED;
   }
-  structure = gst_caps_get_structure (caps, 0);
-  gst_structure_get_int (structure, "width", &filter->width);
-  filter->max_sample = 1 << (filter->width - 1);        /* signed */
-  filter->have_caps = TRUE;
-
-  gst_caps_unref (caps);
-  return TRUE;
 }
-
 
 static void
 gst_cutter_set_property (GObject * object, guint prop_id,
@@ -464,6 +485,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "cutter",
+    cutter,
     "Audio Cutter to split audio into non-silent bits",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

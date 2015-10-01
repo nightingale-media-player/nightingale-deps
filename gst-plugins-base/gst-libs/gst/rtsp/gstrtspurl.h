@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -84,7 +84,7 @@ struct _GstRTSPUrl {
   guint16            port;
   gchar             *abspath;
   gchar             *query;
-}; 
+};
 
 GType gst_rtsp_url_get_type (void);
 
@@ -92,6 +92,8 @@ GstRTSPResult      gst_rtsp_url_parse           (const gchar *urlstr, GstRTSPUrl
 GstRTSPUrl*        gst_rtsp_url_copy            (const GstRTSPUrl *url);
 void               gst_rtsp_url_free            (GstRTSPUrl *url);
 gchar*             gst_rtsp_url_get_request_uri (const GstRTSPUrl *url);
+gchar**            gst_rtsp_url_decode_path_components
+                                                (const GstRTSPUrl *url);
 
 GstRTSPResult      gst_rtsp_url_set_port        (GstRTSPUrl *url, guint16 port);
 GstRTSPResult      gst_rtsp_url_get_port        (const GstRTSPUrl *url, guint16 *port);

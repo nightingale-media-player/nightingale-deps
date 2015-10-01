@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -93,6 +93,10 @@ struct PsMux {
   guint8 audio_bound;
   guint8 video_bound;
   guint32 rate_bound;
+
+  /* stream headers */
+  GstBuffer *sys_header;
+  GstBuffer *psm;
 };
 
 /* create/free new muxer session */
@@ -108,6 +112,8 @@ PsMuxStream *	psmux_create_stream 		(PsMux *mux, PsMuxStreamType stream_type);
 /* writing stuff */
 gboolean 	psmux_write_stream_packet 	(PsMux *mux, PsMuxStream *stream); 
 gboolean	psmux_write_end_code		(PsMux *mux);
+
+GList *		psmux_get_stream_headers	(PsMux *mux);
 
 G_END_DECLS
 

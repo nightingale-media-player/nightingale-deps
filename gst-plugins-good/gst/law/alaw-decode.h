@@ -13,14 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_ALAW_DECODE_H__
 #define __GST_ALAW_DECODE_H__
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -39,15 +40,11 @@ typedef struct _GstALawDec GstALawDec;
 typedef struct _GstALawDecClass GstALawDecClass;
 
 struct _GstALawDec {
-  GstElement element;
-
-  GstPad *sinkpad,*srcpad;
-  gint rate;
-  gint channels;
+  GstAudioDecoder element;
 };
 
 struct _GstALawDecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_alaw_dec_get_type(void);

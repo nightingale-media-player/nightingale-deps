@@ -16,11 +16,25 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
+
+GST_START_TEST (test_pads)
+{
+  GstElement *element;
+  GstPad *pad;
+
+  element = gst_element_factory_make ("rtpsession", NULL);
+
+  pad = gst_element_get_request_pad (element, "recv_rtcp_sink");
+  gst_object_unref (pad);
+  gst_object_unref (element);
+}
+
+GST_END_TEST;
 
 GST_START_TEST (test_cleanup_send)
 {
@@ -29,19 +43,13 @@ GST_START_TEST (test_cleanup_send)
   GObject *session;
   gint count = 2;
 
-  rtpbin = gst_element_factory_make ("gstrtpbin", "rtpbin");
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
 
   while (count--) {
     /* request session 0 */
     rtp_sink = gst_element_get_request_pad (rtpbin, "send_rtp_sink_0");
     fail_unless (rtp_sink != NULL);
     ASSERT_OBJECT_REFCOUNT (rtp_sink, "rtp_sink", 2);
-
-    /* request again */
-    rtp_sink = gst_element_get_request_pad (rtpbin, "send_rtp_sink_0");
-    fail_unless (rtp_sink != NULL);
-    ASSERT_OBJECT_REFCOUNT (rtp_sink, "rtp_sink", 3);
-    gst_object_unref (rtp_sink);
 
     /* this static pad should be created automatically now */
     rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_0");
@@ -57,12 +65,6 @@ GST_START_TEST (test_cleanup_send)
     rtcp_src = gst_element_get_request_pad (rtpbin, "send_rtcp_src_0");
     fail_unless (rtcp_src != NULL);
     ASSERT_OBJECT_REFCOUNT (rtcp_src, "rtcp_src", 2);
-
-    /* second time */
-    rtcp_src = gst_element_get_request_pad (rtpbin, "send_rtcp_src_0");
-    fail_unless (rtcp_src != NULL);
-    ASSERT_OBJECT_REFCOUNT (rtcp_src, "rtcp_src", 3);
-    gst_object_unref (rtcp_src);
 
     gst_element_release_request_pad (rtpbin, rtp_sink);
     /* we should only have our refs to the pads now */
@@ -105,8 +107,8 @@ typedef struct
   guint16 seqnum;
   gboolean pad_added;
   GstPad *pad;
-  GMutex *lock;
-  GCond *cond;
+  GMutex lock;
+  GCond cond;
   GstPad *sinkpad;
   GList *pads;
 } CleanupData;
@@ -116,8 +118,8 @@ init_data (CleanupData * data)
 {
   data->seqnum = 10;
   data->pad_added = FALSE;
-  data->lock = g_mutex_new ();
-  data->cond = g_cond_new ();
+  g_mutex_init (&data->lock);
+  g_cond_init (&data->cond);
   data->pads = NULL;
 }
 
@@ -126,8 +128,8 @@ clean_data (CleanupData * data)
 {
   g_list_foreach (data->pads, (GFunc) gst_object_unref, NULL);
   g_list_free (data->pads);
-  g_mutex_free (data->lock);
-  g_cond_free (data->cond);
+  g_mutex_clear (&data->lock);
+  g_cond_clear (&data->cond);
 }
 
 static guint8 rtp_packet[] = { 0x80, 0x60, 0x94, 0xbc, 0x8f, 0x37, 0x4e, 0xb8,
@@ -136,12 +138,14 @@ static guint8 rtp_packet[] = { 0x80, 0x60, 0x94, 0xbc, 0x8f, 0x37, 0x4e, 0xb8,
   0x2b, 0x82, 0x31, 0x3b, 0x36, 0xc1, 0x3c, 0x13
 };
 
-static GstBuffer *
-make_rtp_packet (CleanupData * data)
+static GstFlowReturn
+chain_rtp_packet (GstPad * pad, CleanupData * data)
 {
+  GstFlowReturn res;
   static GstCaps *caps = NULL;
-  GstBuffer *result;
-  guint8 *datap;
+  GstSegment segment;
+  GstBuffer *buffer;
+  GstMapInfo map;
 
   if (caps == NULL) {
     caps = gst_caps_from_string ("application/x-rtp,"
@@ -150,22 +154,28 @@ make_rtp_packet (CleanupData * data)
     data->seqnum = 0;
   }
 
-  result = gst_buffer_new_and_alloc (sizeof (rtp_packet));
-  datap = GST_BUFFER_DATA (result);
-  memcpy (datap, rtp_packet, sizeof (rtp_packet));
+  gst_pad_send_event (pad, gst_event_new_stream_start (GST_OBJECT_NAME (pad)));
+  gst_pad_send_event (pad, gst_event_new_caps (caps));
+  gst_segment_init (&segment, GST_FORMAT_TIME);
+  gst_pad_send_event (pad, gst_event_new_segment (&segment));
 
-  datap[2] = (data->seqnum >> 8) & 0xff;
-  datap[3] = data->seqnum & 0xff;
+  buffer = gst_buffer_new_and_alloc (sizeof (rtp_packet));
+  gst_buffer_map (buffer, &map, GST_MAP_WRITE);
+  memcpy (map.data, rtp_packet, sizeof (rtp_packet));
+
+  map.data[2] = (data->seqnum >> 8) & 0xff;
+  map.data[3] = data->seqnum & 0xff;
 
   data->seqnum++;
+  gst_buffer_unmap (buffer, &map);
 
-  gst_buffer_set_caps (result, caps);
+  res = gst_pad_chain (pad, buffer);
 
-  return result;
+  return res;
 }
 
 static GstFlowReturn
-dummy_chain (GstPad * pad, GstBuffer * buffer)
+dummy_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   gst_buffer_unref (buffer);
 
@@ -208,11 +218,11 @@ pad_added_cb (GstElement * rtpbin, GstPad * pad, CleanupData * data)
   sinkpad = make_sinkpad (data);
   fail_unless (gst_pad_link (pad, sinkpad) == GST_PAD_LINK_OK);
 
-  g_mutex_lock (data->lock);
+  g_mutex_lock (&data->lock);
   data->pad_added = TRUE;
   data->pad = pad;
-  g_cond_signal (data->cond);
-  g_mutex_unlock (data->lock);
+  g_cond_signal (&data->cond);
+  g_mutex_unlock (&data->lock);
 }
 
 static void
@@ -225,10 +235,10 @@ pad_removed_cb (GstElement * rtpbin, GstPad * pad, CleanupData * data)
 
   fail_unless (data->pad_added == TRUE);
 
-  g_mutex_lock (data->lock);
+  g_mutex_lock (&data->lock);
   data->pad_added = FALSE;
-  g_cond_signal (data->cond);
-  g_mutex_unlock (data->lock);
+  g_cond_signal (&data->cond);
+  g_mutex_unlock (&data->lock);
 }
 
 GST_START_TEST (test_cleanup_recv)
@@ -238,12 +248,11 @@ GST_START_TEST (test_cleanup_recv)
   CleanupData data;
   GstStateChangeReturn ret;
   GstFlowReturn res;
-  GstBuffer *buffer;
   gint count = 2;
 
   init_data (&data);
 
-  rtpbin = gst_element_factory_make ("gstrtpbin", "rtpbin");
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
 
   g_signal_connect (rtpbin, "pad-added", (GCallback) pad_added_cb, &data);
   g_signal_connect (rtpbin, "pad-removed", (GCallback) pad_removed_cb, &data);
@@ -261,21 +270,19 @@ GST_START_TEST (test_cleanup_recv)
     fail_unless (rtpbin->numsinkpads == 1);
     fail_unless (rtpbin->numsrcpads == 0);
 
-    buffer = make_rtp_packet (&data);
-    res = gst_pad_chain (rtp_sink, buffer);
+    res = chain_rtp_packet (rtp_sink, &data);
     GST_DEBUG ("res %d, %s\n", res, gst_flow_get_name (res));
     fail_unless (res == GST_FLOW_OK);
 
-    buffer = make_rtp_packet (&data);
-    res = gst_pad_chain (rtp_sink, buffer);
+    res = chain_rtp_packet (rtp_sink, &data);
     GST_DEBUG ("res %d, %s\n", res, gst_flow_get_name (res));
     fail_unless (res == GST_FLOW_OK);
 
     /* we wait for the new pad to appear now */
-    g_mutex_lock (data.lock);
+    g_mutex_lock (&data.lock);
     while (!data.pad_added)
-      g_cond_wait (data.cond, data.lock);
-    g_mutex_unlock (data.lock);
+      g_cond_wait (&data.cond, &data.lock);
+    g_mutex_unlock (&data.lock);
 
     /* sourcepad created now */
     fail_unless (rtpbin->numsinkpads == 1);
@@ -286,10 +293,10 @@ GST_START_TEST (test_cleanup_recv)
     gst_object_unref (rtp_sink);
 
     /* pad should be gone now */
-    g_mutex_lock (data.lock);
+    g_mutex_lock (&data.lock);
     while (data.pad_added)
-      g_cond_wait (data.cond, data.lock);
-    g_mutex_unlock (data.lock);
+      g_cond_wait (&data.cond, &data.lock);
+    g_mutex_unlock (&data.lock);
 
     /* nothing left anymore now */
     fail_unless (rtpbin->numsinkpads == 0);
@@ -313,12 +320,11 @@ GST_START_TEST (test_cleanup_recv2)
   CleanupData data;
   GstStateChangeReturn ret;
   GstFlowReturn res;
-  GstBuffer *buffer;
   gint count = 2;
 
   init_data (&data);
 
-  rtpbin = gst_element_factory_make ("gstrtpbin", "rtpbin");
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
 
   g_signal_connect (rtpbin, "pad-added", (GCallback) pad_added_cb, &data);
   g_signal_connect (rtpbin, "pad-removed", (GCallback) pad_removed_cb, &data);
@@ -336,21 +342,19 @@ GST_START_TEST (test_cleanup_recv2)
     fail_unless (rtpbin->numsinkpads == 1);
     fail_unless (rtpbin->numsrcpads == 0);
 
-    buffer = make_rtp_packet (&data);
-    res = gst_pad_chain (rtp_sink, buffer);
+    res = chain_rtp_packet (rtp_sink, &data);
     GST_DEBUG ("res %d, %s\n", res, gst_flow_get_name (res));
     fail_unless (res == GST_FLOW_OK);
 
-    buffer = make_rtp_packet (&data);
-    res = gst_pad_chain (rtp_sink, buffer);
+    res = chain_rtp_packet (rtp_sink, &data);
     GST_DEBUG ("res %d, %s\n", res, gst_flow_get_name (res));
     fail_unless (res == GST_FLOW_OK);
 
     /* we wait for the new pad to appear now */
-    g_mutex_lock (data.lock);
+    g_mutex_lock (&data.lock);
     while (!data.pad_added)
-      g_cond_wait (data.cond, data.lock);
-    g_mutex_unlock (data.lock);
+      g_cond_wait (&data.cond, &data.lock);
+    g_mutex_unlock (&data.lock);
 
     /* sourcepad created now */
     fail_unless (rtpbin->numsinkpads == 1);
@@ -361,10 +365,10 @@ GST_START_TEST (test_cleanup_recv2)
     fail_unless (ret == GST_STATE_CHANGE_SUCCESS);
 
     /* pad should be gone now */
-    g_mutex_lock (data.lock);
+    g_mutex_lock (&data.lock);
     while (data.pad_added)
-      g_cond_wait (data.cond, data.lock);
-    g_mutex_unlock (data.lock);
+      g_cond_wait (&data.cond, &data.lock);
+    g_mutex_unlock (&data.lock);
 
     /* back to playing for the next round */
     ret = gst_element_set_state (rtpbin, GST_STATE_PLAYING);
@@ -394,18 +398,18 @@ GST_START_TEST (test_request_pad_by_template_name)
   GstElement *rtpbin;
   GstPad *rtp_sink1, *rtp_sink2, *rtp_sink3;
 
-  rtpbin = gst_element_factory_make ("gstrtpbin", "rtpbin");
-  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%d");
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%u");
   fail_unless (rtp_sink1 != NULL);
   fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "recv_rtp_sink_0");
   ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
 
-  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%d");
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%u");
   fail_unless (rtp_sink2 != NULL);
   fail_unless_equals_string (GST_PAD_NAME (rtp_sink2), "recv_rtp_sink_1");
   ASSERT_OBJECT_REFCOUNT (rtp_sink2, "rtp_sink2", 2);
 
-  rtp_sink3 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%d");
+  rtp_sink3 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_%u");
   fail_unless (rtp_sink3 != NULL);
   fail_unless_equals_string (GST_PAD_NAME (rtp_sink3), "recv_rtp_sink_2");
   ASSERT_OBJECT_REFCOUNT (rtp_sink3, "rtp_sink3", 2);
@@ -426,34 +430,280 @@ GST_START_TEST (test_request_pad_by_template_name)
 
 GST_END_TEST;
 
-static Suite *
-gstrtpbin_suite (void)
+static GstElement *
+encoder_cb (GstElement * rtpbin, guint sessid, GstElement * bin)
 {
-  Suite *s = suite_create ("gstrtpbin");
+  GstPad *srcpad, *sinkpad;
+
+  fail_unless (sessid == 2);
+
+  GST_DEBUG ("making encoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink_2", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src_2", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return gst_object_ref (bin);
+}
+
+static GstElement *
+encoder_cb2 (GstElement * rtpbin, guint sessid, GstElement * bin)
+{
+  GstPad *srcpad, *sinkpad;
+
+  fail_unless (sessid == 3);
+
+  GST_DEBUG ("making encoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink_3", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src_3", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return gst_object_ref (bin);
+}
+
+GST_START_TEST (test_encoder)
+{
+  GstElement *rtpbin, *bin;
+  GstPad *rtp_sink1, *rtp_sink2;
+  gulong id;
+
+  bin = gst_bin_new ("rtpenc");
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-rtp-encoder", (GCallback) encoder_cb,
+      bin);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "send_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  id = g_signal_connect (rtpbin, "request-rtp-encoder", (GCallback) encoder_cb2,
+      bin);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_3");
+  fail_unless (rtp_sink2 != NULL);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  /* nothing left anymore now */
+  fail_unless (rtpbin->numsinkpads == 0);
+  fail_unless (rtpbin->numsrcpads == 0);
+
+  gst_object_unref (rtpbin);
+  gst_object_unref (bin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+decoder_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making decoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_decoder)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_sink2;
+  gulong id;
+
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-rtp-decoder", (GCallback) decoder_cb,
+      NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "recv_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_3");
+  fail_unless (rtp_sink2 != NULL);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  /* nothing left anymore now */
+  fail_unless (rtpbin->numsinkpads == 0);
+  fail_unless (rtpbin->numsrcpads == 0);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+aux_sender_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making AUX sender");
+  sinkpad = gst_ghost_pad_new_no_target ("sink_2", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+
+  srcpad = gst_ghost_pad_new_no_target ("src_2", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+  srcpad = gst_ghost_pad_new_no_target ("src_1", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+  srcpad = gst_ghost_pad_new_no_target ("src_3", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_aux_sender)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_src, *rtcp_src;
+  gulong id;
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-aux-sender",
+      (GCallback) aux_sender_cb, NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "send_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_2");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_1");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  rtcp_src = gst_element_get_request_pad (rtpbin, "send_rtcp_src_1");
+  fail_unless (rtcp_src != NULL);
+  gst_element_release_request_pad (rtpbin, rtcp_src);
+  gst_object_unref (rtcp_src);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_3");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+aux_receiver_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making AUX receiver");
+  srcpad = gst_ghost_pad_new_no_target ("src_2", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+
+  sinkpad = gst_ghost_pad_new_no_target ("sink_2", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+  sinkpad = gst_ghost_pad_new_no_target ("sink_1", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+  sinkpad = gst_ghost_pad_new_no_target ("sink_3", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_aux_receiver)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_sink2, *rtcp_sink;
+  gulong id;
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-aux-receiver",
+      (GCallback) aux_receiver_cb, NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_1");
+  fail_unless (rtp_sink2 != NULL);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  rtcp_sink = gst_element_get_request_pad (rtpbin, "recv_rtcp_sink_1");
+  fail_unless (rtcp_sink != NULL);
+  gst_element_release_request_pad (rtpbin, rtcp_sink);
+  gst_object_unref (rtcp_sink);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
+static Suite *
+rtpbin_suite (void)
+{
+  Suite *s = suite_create ("rtpbin");
   TCase *tc_chain = tcase_create ("general");
 
   suite_add_tcase (s, tc_chain);
+  tcase_add_test (tc_chain, test_pads);
   tcase_add_test (tc_chain, test_cleanup_send);
   tcase_add_test (tc_chain, test_cleanup_recv);
   tcase_add_test (tc_chain, test_cleanup_recv2);
   tcase_add_test (tc_chain, test_request_pad_by_template_name);
+  tcase_add_test (tc_chain, test_encoder);
+  tcase_add_test (tc_chain, test_decoder);
+  tcase_add_test (tc_chain, test_aux_sender);
+  tcase_add_test (tc_chain, test_aux_receiver);
 
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = gstrtpbin_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (rtpbin);

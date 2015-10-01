@@ -16,7 +16,7 @@
 #define __GST_RTP_PCMU_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -36,13 +36,15 @@ typedef struct _GstRtpPcmuDepayClass GstRtpPcmuDepayClass;
 
 struct _GstRtpPcmuDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 };
 
 struct _GstRtpPcmuDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_pcmu_depay_get_type (void);
 
 gboolean gst_rtp_pcmu_depay_plugin_init (GstPlugin * plugin);
 

@@ -15,23 +15,26 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
+#include <stdlib.h>
+
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <libsoup/soup-address.h>
-#include <libsoup/soup-message.h>
-#include <libsoup/soup-server.h>
-#include <libsoup/soup-auth-domain.h>
-#include <libsoup/soup-auth-domain-basic.h>
-#include <libsoup/soup-auth-domain-digest.h>
+
+#define SOUP_VERSION_MIN_REQUIRED (SOUP_VERSION_2_40)
+#include <libsoup/soup.h>
 #include <gst/check/gstcheck.h>
+
+#if !defined(SOUP_MINOR_VERSION) || SOUP_MINOR_VERSION < 44
+#define SoupStatus SoupKnownStatusCode
+#endif
 
 static guint http_port = 0, https_port = 0;
 
@@ -50,8 +53,8 @@ static const char *realm = "SOUPHTTPSRC_REALM";
 static const char *basic_auth_path = "/basic_auth";
 static const char *digest_auth_path = "/digest_auth";
 
-static int run_server (guint * http_port, guint * https_port);
-
+static gboolean run_server (guint * http_port, guint * https_port);
+static void stop_server (void);
 
 static void
 handoff_cb (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
@@ -82,7 +85,7 @@ digest_auth_cb (SoupAuthDomain * domain, SoupMessage * msg,
   return NULL;
 }
 
-int
+static int
 run_test (const char *format, ...)
 {
   GstStateChangeReturn ret;
@@ -123,6 +126,7 @@ run_test (const char *format, ...)
   g_free (url);
 
   g_object_set (src, "automatic-redirect", redirect, NULL);
+  g_object_set (src, "ssl-ca-file", GST_TEST_FILES_PATH "/test-cert.pem", NULL);
   if (cookies != NULL)
     g_object_set (src, "cookies", cookies, NULL);
   g_object_set (sink, "signal-handoffs", TRUE, NULL);
@@ -158,6 +162,11 @@ run_test (const char *format, ...)
     else if (g_str_has_suffix (err->message, "Found"))
       rc = 302;
     GST_INFO ("debug: %s", debug);
+    /* should not've gotten any output in case of a 40x error. Wait a bit
+     * to give streaming thread a chance to push out a buffer and triggering
+     * our callback before shutting down the pipeline */
+    g_usleep (G_USEC_PER_SEC / 2);
+    fail_unless (buf == NULL);
     g_error_free (err);
     g_free (debug);
     gst_message_unref (msg);
@@ -201,6 +210,8 @@ GST_END_TEST;
 GST_START_TEST (test_not_found)
 {
   fail_unless (run_test ("http://127.0.0.1:%u/404", http_port) == 404);
+  fail_unless (run_test ("http://127.0.0.1:%u/404-with-data",
+          http_port) == 404);
 }
 
 GST_END_TEST;
@@ -342,15 +353,18 @@ got_buffer (GstElement * fakesink, GstBuffer * buf, GstPad * pad,
     gpointer user_data)
 {
   GstStructure *s;
+  GstCaps *caps;
 
   /* Caps can be anything if we don't except icy caps */
   if (!icy_caps)
     return;
 
   /* Otherwise they _must_ be "application/x-icy" */
-  fail_unless (GST_BUFFER_CAPS (buf) != NULL);
-  s = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
+  caps = gst_pad_get_current_caps (pad);
+  fail_unless (caps != NULL);
+  s = gst_caps_get_structure (caps, 0);
   fail_unless_equals_string (gst_structure_get_name (s), "application/x-icy");
+  gst_caps_unref (caps);
 }
 
 GST_START_TEST (test_icy_stream)
@@ -363,7 +377,6 @@ GST_START_TEST (test_icy_stream)
 
   src = gst_element_factory_make ("souphttpsrc", NULL);
   fail_unless (src != NULL);
-  g_object_set (src, "iradio-mode", TRUE, NULL);
 
   sink = gst_element_factory_make ("fakesink", NULL);
   fail_unless (sink != NULL);
@@ -374,33 +387,8 @@ GST_START_TEST (test_icy_stream)
   gst_bin_add (GST_BIN (pipe), sink);
   fail_unless (gst_element_link (src, sink));
 
-  /* First try Virgin Radio Ogg stream, to see if there's connectivity and all
-   * (which is an attempt to work around the completely horrid error reporting
-   * and that we can't distinguish different types of failures here). */
-
-  g_object_set (src, "location", "http://ogg2.smgradio.com/vr32.ogg", NULL);
-  g_object_set (src, "num-buffers", 1, NULL);
-  icy_caps = FALSE;
-  gst_element_set_state (pipe, GST_STATE_PLAYING);
-
-  msg = gst_bus_poll (GST_ELEMENT_BUS (pipe),
-      GST_MESSAGE_EOS | GST_MESSAGE_ERROR, -1);
-  if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR) {
-    GST_INFO ("looks like there's no net connectivity or sgmradio.com is "
-        "down. In any case, let's just skip this test");
-    gst_message_unref (msg);
-    goto done;
-  }
-  gst_message_unref (msg);
-  msg = NULL;
-  gst_element_set_state (pipe, GST_STATE_NULL);
-
-  /* Now, if the ogg stream works, the mp3 shoutcast stream should work as
-   * well (time will tell if that's true) */
-
   /* Virgin Radio 32kbps mp3 shoutcast stream */
   g_object_set (src, "location", "http://mp3-vr-32.smgradio.com:80/", NULL);
-
 
   /* EOS after the first buffer */
   g_object_set (src, "num-buffers", 1, NULL);
@@ -409,22 +397,24 @@ GST_START_TEST (test_icy_stream)
   msg = gst_bus_poll (GST_ELEMENT_BUS (pipe),
       GST_MESSAGE_EOS | GST_MESSAGE_ERROR, -1);
 
-  if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_EOS) {
-    GST_DEBUG ("success, we're done here");
-    gst_message_unref (msg);
-    goto done;
+  switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_EOS:
+      GST_DEBUG ("success, we're done here");
+      gst_message_unref (msg);
+      break;
+    case GST_MESSAGE_ERROR:{
+      GError *err = NULL;
+
+      gst_message_parse_error (msg, &err, NULL);
+      GST_INFO ("Error with ICY mp3 shoutcast stream: %s", err->message);
+      gst_message_unref (msg);
+      g_clear_error (&err);
+      break;
+    }
+    default:
+      break;
   }
 
-  {
-    GError *err = NULL;
-
-    gst_message_parse_error (msg, &err, NULL);
-    gst_message_unref (msg);
-    g_error ("Error with ICY mp3 shoutcast stream: %s", err->message);
-    g_error_free (err);
-  }
-
-done:
   icy_caps = FALSE;
 
   gst_element_set_state (pipe, GST_STATE_NULL);
@@ -433,36 +423,46 @@ done:
 
 GST_END_TEST;
 
+static SoupServer *server;      /* NULL */
+static SoupServer *ssl_server;  /* NULL */
+
 static Suite *
 souphttpsrc_suite (void)
 {
+  TCase *tc_chain, *tc_internet;
   Suite *s;
 
-  TCase *tc_chain, *tc_internet;
-
-  g_type_init ();
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
+  /* we don't support exceptions from the proxy, so just unset the environment
+   * variable - in case it's set in the test environment it would otherwise
+   * prevent us from connecting to localhost (like jenkins.qa.ubuntu.com) */
+  g_unsetenv ("http_proxy");
 
   s = suite_create ("souphttpsrc");
   tc_chain = tcase_create ("general");
   tc_internet = tcase_create ("internet");
 
   suite_add_tcase (s, tc_chain);
-  run_server (&http_port, &https_port);
-  tcase_add_test (tc_chain, test_first_buffer_has_offset);
-  tcase_add_test (tc_chain, test_https);
-  tcase_add_test (tc_chain, test_redirect_yes);
-  tcase_add_test (tc_chain, test_redirect_no);
-  tcase_add_test (tc_chain, test_not_found);
-  tcase_add_test (tc_chain, test_forbidden);
-  tcase_add_test (tc_chain, test_cookies);
-  tcase_add_test (tc_chain, test_good_user_basic_auth);
-  tcase_add_test (tc_chain, test_bad_user_basic_auth);
-  tcase_add_test (tc_chain, test_bad_password_basic_auth);
-  tcase_add_test (tc_chain, test_good_user_digest_auth);
-  tcase_add_test (tc_chain, test_bad_user_digest_auth);
-  tcase_add_test (tc_chain, test_bad_password_digest_auth);
+  if (run_server (&http_port, &https_port)) {
+    atexit (stop_server);
+    tcase_add_test (tc_chain, test_first_buffer_has_offset);
+    tcase_add_test (tc_chain, test_redirect_yes);
+    tcase_add_test (tc_chain, test_redirect_no);
+    tcase_add_test (tc_chain, test_not_found);
+    tcase_add_test (tc_chain, test_forbidden);
+    tcase_add_test (tc_chain, test_cookies);
+    tcase_add_test (tc_chain, test_good_user_basic_auth);
+    tcase_add_test (tc_chain, test_bad_user_basic_auth);
+    tcase_add_test (tc_chain, test_bad_password_basic_auth);
+    tcase_add_test (tc_chain, test_good_user_digest_auth);
+    tcase_add_test (tc_chain, test_bad_user_digest_auth);
+    tcase_add_test (tc_chain, test_bad_password_digest_auth);
+
+    if (ssl_server != NULL)
+      tcase_add_test (tc_chain, test_https);
+  } else {
+    g_print ("Skipping 12 souphttpsrc tests, couldn't start or connect to "
+        "local http server\n");
+  }
 
   suite_add_tcase (s, tc_internet);
   tcase_set_timeout (tc_internet, 250);
@@ -476,11 +476,12 @@ GST_CHECK_MAIN (souphttpsrc);
 static void
 do_get (SoupMessage * msg, const char *path)
 {
+  gboolean send_error_doc = FALSE;
   char *uri;
 
   int buflen = 4096;
 
-  SoupKnownStatusCode status = SOUP_STATUS_OK;
+  SoupStatus status = SOUP_STATUS_OK;
 
   uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
   GST_DEBUG ("request: \"%s\"", uri);
@@ -495,6 +496,10 @@ do_get (SoupMessage * msg, const char *path)
     status = SOUP_STATUS_FORBIDDEN;
   else if (!strcmp (path, "/404"))
     status = SOUP_STATUS_NOT_FOUND;
+  else if (!strcmp (path, "/404-with-data")) {
+    status = SOUP_STATUS_NOT_FOUND;
+    send_error_doc = TRUE;
+  }
 
   if (SOUP_STATUS_IS_REDIRECTION (status)) {
     char *redir_uri;
@@ -503,7 +508,7 @@ do_get (SoupMessage * msg, const char *path)
     soup_message_headers_append (msg->response_headers, "Location", redir_uri);
     g_free (redir_uri);
   }
-  if (status != SOUP_STATUS_OK)
+  if (status != (SoupStatus) SOUP_STATUS_OK && !send_error_doc)
     goto leave;
 
   if (msg->method == SOUP_METHOD_GET) {
@@ -557,10 +562,9 @@ server_callback (SoupServer * server, SoupMessage * msg,
   GST_DEBUG ("  -> %d %s", msg->status_code, msg->reason_phrase);
 }
 
-int
+static gboolean
 run_server (guint * http_port, guint * https_port)
 {
-  SoupServer *server, *ssl_server;
   guint port = SOUP_ADDRESS_ANY_PORT;
   guint ssl_port = SOUP_ADDRESS_ANY_PORT;
   const char *ssl_cert_file = GST_TEST_FILES_PATH "/test-cert.pem";
@@ -570,15 +574,21 @@ run_server (guint * http_port, guint * https_port)
   SoupAuthDomain *domain = NULL;
 
   if (server_running)
-    return 0;
+    return TRUE;
+
   server_running = 1;
 
   *http_port = *https_port = 0;
 
+  /* The G_ENABLE_DIAGNOSTIC is temporarily overriden to avoid
+   * property deprecation warnings (for the SOUP_SERVER_PORT
+   * property) */
+  g_setenv ("G_ENABLE_DIAGNOSTIC", "0", TRUE);
   server = soup_server_new (SOUP_SERVER_PORT, port, NULL);
+  g_setenv ("G_ENABLE_DIAGNOSTIC", "1", TRUE);
   if (!server) {
     GST_DEBUG ("Unable to bind to server port %u", port);
-    return 1;
+    return FALSE;
   }
   *http_port = soup_server_get_port (server);
   GST_INFO ("HTTP server listening on port %u", *http_port);
@@ -596,19 +606,73 @@ run_server (guint * http_port, guint * https_port)
   soup_server_run_async (server);
 
   if (ssl_cert_file && ssl_key_file) {
-    ssl_server = soup_server_new (SOUP_SERVER_PORT, ssl_port,
-        SOUP_SERVER_SSL_CERT_FILE, ssl_cert_file,
-        SOUP_SERVER_SSL_KEY_FILE, ssl_key_file, NULL);
+    GTlsBackend *backend = g_tls_backend_get_default ();
 
-    if (!ssl_server) {
-      GST_DEBUG ("Unable to bind to SSL server port %u", ssl_port);
-      return 1;
+    if (backend != NULL && g_tls_backend_supports_tls (backend)) {
+      ssl_server = soup_server_new (SOUP_SERVER_PORT, ssl_port,
+          SOUP_SERVER_SSL_CERT_FILE, ssl_cert_file,
+          SOUP_SERVER_SSL_KEY_FILE, ssl_key_file, NULL);
+    } else {
+      GST_INFO ("No TLS support");
     }
-    *https_port = soup_server_get_port (ssl_server);
-    GST_INFO ("HTTPS server listening on port %u", *https_port);
-    soup_server_add_handler (ssl_server, NULL, server_callback, NULL, NULL);
-    soup_server_run_async (ssl_server);
+
+    if (ssl_server) {
+      *https_port = soup_server_get_port (ssl_server);
+      GST_INFO ("HTTPS server listening on port %u", *https_port);
+      soup_server_add_handler (ssl_server, NULL, server_callback, NULL, NULL);
+      soup_server_run_async (ssl_server);
+    }
   }
 
-  return 0;
+  /* check if we can connect to our local http server */
+  {
+    GSocketConnection *conn;
+    GSocketClient *client;
+
+    client = g_socket_client_new ();
+    g_socket_client_set_timeout (client, 2);
+    conn = g_socket_client_connect_to_host (client, "127.0.0.1", *http_port,
+        NULL, NULL);
+    if (conn == NULL) {
+      GST_INFO ("Couldn't connect to http server 127.0.0.1:%u", *http_port);
+      g_object_unref (client);
+      stop_server ();
+      return FALSE;
+    }
+    g_object_unref (conn);
+
+    if (ssl_server == NULL)
+      goto skip_https_check;
+
+    conn = g_socket_client_connect_to_host (client, "127.0.0.1", *https_port,
+        NULL, NULL);
+    if (conn == NULL) {
+      GST_INFO ("Couldn't connect to https server 127.0.0.1:%u", *https_port);
+      g_object_unref (client);
+      stop_server ();
+      return FALSE;
+    }
+    g_object_unref (conn);
+
+  skip_https_check:
+
+    g_object_unref (client);
+  }
+
+  return TRUE;
+}
+
+static void
+stop_server (void)
+{
+  GST_INFO ("cleaning up");
+
+  if (server) {
+    g_object_unref (server);
+    server = NULL;
+  }
+  if (ssl_server) {
+    g_object_unref (ssl_server);
+    ssl_server = NULL;
+  }
 }

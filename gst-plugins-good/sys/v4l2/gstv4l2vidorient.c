@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,21 +29,12 @@
 #include "gstv4l2vidorient.h"
 #include "gstv4l2object.h"
 #include "v4l2_calls.h"
-#include "v4l2src_calls.h"
 
 GST_DEBUG_CATEGORY_STATIC (v4l2vo_debug);
 #define GST_CAT_DEFAULT v4l2vo_debug
 
-/* Those are deprecated calls that have been replaced */
-#ifndef V4L2_CID_HCENTER
-#define V4L2_CID_HCENTER V4L2_CID_PAN_RESET
-#endif
-#ifndef V4L2_CID_VCENTER
-#define V4L2_CID_VCENTER V4L2_CID_TILT_RESET
-#endif
-
 void
-gst_v4l2_video_orientation_interface_init (GstVideoOrientationInterface * klass)
+gst_v4l2_video_orientation_interface_init (GstVideoOrientationInterface * iface)
 {
   GST_DEBUG_CATEGORY_INIT (v4l2vo_debug, "v4l2vo", 0,
       "V4L2 VideoOrientation interface debugging");
@@ -65,18 +56,20 @@ gst_v4l2_video_orientation_get_vflip (GstV4l2Object * v4l2object,
   return gst_v4l2_get_attribute (v4l2object, V4L2_CID_VFLIP, flip);
 }
 
+/* named hcenter because of historical v4l2 naming */
 gboolean
 gst_v4l2_video_orientation_get_hcenter (GstV4l2Object * v4l2object,
     gint * center)
 {
-  return gst_v4l2_get_attribute (v4l2object, V4L2_CID_HCENTER, center);
+  return gst_v4l2_get_attribute (v4l2object, V4L2_CID_PAN_RESET, center);
 }
 
+/* named vcenter because of historical v4l2 naming */
 gboolean
 gst_v4l2_video_orientation_get_vcenter (GstV4l2Object * v4l2object,
     gint * center)
 {
-  return gst_v4l2_get_attribute (v4l2object, V4L2_CID_VCENTER, center);
+  return gst_v4l2_get_attribute (v4l2object, V4L2_CID_TILT_RESET, center);
 }
 
 gboolean
@@ -94,11 +87,11 @@ gst_v4l2_video_orientation_set_vflip (GstV4l2Object * v4l2object, gboolean flip)
 gboolean
 gst_v4l2_video_orientation_set_hcenter (GstV4l2Object * v4l2object, gint center)
 {
-  return gst_v4l2_set_attribute (v4l2object, V4L2_CID_HCENTER, center);
+  return gst_v4l2_set_attribute (v4l2object, V4L2_CID_PAN_RESET, center);
 }
 
 gboolean
 gst_v4l2_video_orientation_set_vcenter (GstV4l2Object * v4l2object, gint center)
 {
-  return gst_v4l2_set_attribute (v4l2object, V4L2_CID_VCENTER, center);
+  return gst_v4l2_set_attribute (v4l2object, V4L2_CID_TILT_RESET, center);
 }

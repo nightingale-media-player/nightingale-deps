@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) 2005 Wim Taymans <wim@fluendo.com>
+ * Copyright (C) 2012 Wim Taymans <wim.taymans@gmail.com>
  *
  * libsabi.c: Unit test for ABI compatibility
  *
@@ -15,21 +15,30 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <config.h>
 #include <gst/check/gstcheck.h>
 
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstbaseparse.h>
 #include <gst/base/gstbasesink.h>
 #include <gst/base/gstbasesrc.h>
 #include <gst/base/gstbasetransform.h>
+#include <gst/base/gstbitreader.h>
+#include <gst/base/gstbytereader.h>
+#include <gst/base/gstbytewriter.h>
 #include <gst/base/gstcollectpads.h>
 #include <gst/base/gstpushsrc.h>
 #include <gst/base/gsttypefindhelper.h>
-#include <gst/controller/gstcontroller.h>
+#include <gst/controller/gstinterpolationcontrolsource.h>
+#include <gst/controller/gstlfocontrolsource.h>
+#include <gst/controller/gsttriggercontrolsource.h>
+#include <gst/controller/gstargbcontrolbinding.h>
+#include <gst/controller/gstdirectcontrolbinding.h>
+#include <gst/controller/gsttimedvaluecontrolsource.h>
 #include <gst/net/gstnet.h>
 #include <gst/net/gstnetclientclock.h>
 #include <gst/net/gstnettimepacket.h>
@@ -41,7 +50,7 @@
 #else
 #ifdef __powerpc64__
 #include "struct_ppc64.h"
-#define HAVE_ABI_SIZES TRUE
+#define HAVE_ABI_SIZES FALSE
 #else
 #ifdef __powerpc__
 #include "struct_ppc32.h"
@@ -53,15 +62,20 @@
 #else
 #ifdef HAVE_CPU_HPPA
 #include "struct_hppa.h"
-#define HAVE_ABI_SIZES TRUE
+#define HAVE_ABI_SIZES FALSE
 #else
 #ifdef HAVE_CPU_SPARC
 #include "struct_sparc.h"
+#define HAVE_ABI_SIZES FALSE
+#else
+#ifdef HAVE_CPU_ARM
+#include "struct_arm.h"
 #define HAVE_ABI_SIZES TRUE
 #else
 /* in case someone wants to generate a new arch */
 #include "struct_i386.h"
 #define HAVE_ABI_SIZES FALSE
+#endif
 #endif
 #endif
 #endif

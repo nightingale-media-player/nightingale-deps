@@ -14,54 +14,66 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#include "config.h"
+#include "libcompat.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <setjmp.h>
 
 #include "check_error.h"
 
+/**
+ * Storage for setjmp/longjmp context information used in NOFORK mode
+ */
+jmp_buf error_jmp_buffer;
+
 
 /* FIXME: including a colon at the end is a bad way to indicate an error */
-void eprintf (const char *fmt, const char *file, int line, ...)
+void
+eprintf (const char *fmt, const char *file, int line, ...)
 {
   va_list args;
-  fflush(stderr);
 
-  fprintf(stderr,"%s:%d: ",file,line);
-  va_start(args, line);
-  vfprintf(stderr, fmt, args);
-  va_end(args);
+  fflush (stderr);
+
+  fprintf (stderr, "%s:%d: ", file, line);
+  va_start (args, line);
+  vfprintf (stderr, fmt, args);
+  va_end (args);
 
   /*include system error information if format ends in colon */
-  if (fmt[0] != '\0' && fmt[strlen(fmt)-1] == ':')
-    fprintf(stderr, " %s", strerror(errno));
-  fprintf(stderr, "\n");
+  if (fmt[0] != '\0' && fmt[strlen (fmt) - 1] == ':')
+    fprintf (stderr, " %s", strerror (errno));
+  fprintf (stderr, "\n");
 
-  exit(2);
+  exit (2);
 }
 
-void *emalloc (size_t n)
+void *
+emalloc (size_t n)
 {
   void *p;
-  p = malloc(n);
+
+  p = malloc (n);
   if (p == NULL)
-    eprintf("malloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
+    eprintf ("malloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
   return p;
 }
 
-void *erealloc (void * ptr, size_t n)
+void *
+erealloc (void *ptr, size_t n)
 {
   void *p;
+
   p = realloc (ptr, n);
   if (p == NULL)
-    eprintf("realloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
+    eprintf ("realloc of %u bytes failed:", __FILE__, __LINE__ - 2, n);
   return p;
 }

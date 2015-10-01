@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_ASPECT_RATIO_CROP_H__
@@ -51,7 +51,7 @@ struct _GstAspectRatioCrop
   gint ar_num; /* if < 1 then don't change ar */
   gint ar_denom;
 
-  GMutex *crop_lock;
+  GMutex crop_lock;
 };
 
 struct _GstAspectRatioCropClass

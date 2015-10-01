@@ -2,19 +2,21 @@
 # Copyright (c) 2006 Canonical Ltd, and Rosetta Contributors
 # This file is distributed under the same license as the gstreamer package.
 #
-# Gabor Kelemen <kelemeng@gnome.hu>, 2006, 2007, 2008, 2009.
+# Gabor Kelemen <kelemeng@gnome.hu>, 2006, 2007, 2008, 2009, 2010, 2012.
+# Balázs Úr <urbalazs@gmail.com>, 2014, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.24.2\n"
+"Project-Id-Version: gstreamer 1.5.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2009-09-17 23:54+0200\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
+"POT-Creation-Date: 2015-09-25 22:32+0200\n"
+"PO-Revision-Date: 2015-06-14 08:31+0200\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.2\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 msgid "Print the GStreamer version"
@@ -27,10 +29,10 @@ msgid "Print available debug categories and exit"
 msgstr "Az elérhető hibakeresési kategóriák kiírása és kilépés"
 
 msgid ""
-"Default debug level from 1 (only error) to 5 (anything) or 0 for no output"
+"Default debug level from 1 (only error) to 9 (anything) or 0 for no output"
 msgstr ""
-"Alapértelmezett hibakeresési szint 1 (csak hibák) és 5 (bármi) között, vagy "
-"0 = nincs kimenet"
+"Alapértelmezett hibakeresési szint 1 (csak hibák) és 9 (bármi) között, vagy "
+"0 esetén nincs kimenet"
 
 msgid "LEVEL"
 msgstr "SZINT"
@@ -48,11 +50,18 @@ msgstr "LISTA"
 msgid "Disable colored debugging output"
 msgstr "Színes hibakeresési kimenet letiltása"
 
+msgid ""
+"Changes coloring mode of the debug log. Possible modes: off, on, disable, "
+"auto, unix"
+msgstr ""
+"Megváltoztatja a hibakeresési napló színezési módját. Lehetséges módok: off, "
+"on, disable, auto, unix"
+
 msgid "Disable debugging"
 msgstr "Hibakeresés letiltása"
 
 msgid "Enable verbose plugin loading diagnostics"
-msgstr "Bőbeszédű bővítménybetöltési diagnosztika engedélyezése"
+msgstr "Részletes bővítménybetöltési diagnosztika engedélyezése"
 
 msgid "Colon-separated paths containing plugins"
 msgstr "Bővítményeket tartalmazó útvonalak vesszőkkel elválasztott listája"
@@ -76,8 +85,8 @@ msgstr "Szegmentálási hibák elfogásának letiltása a bővítménybetöltés
 msgid "Disable updating the registry"
 msgstr "A nyilvántartás frissítésének letiltása"
 
-msgid "Disable the use of fork() while scanning the registry"
-msgstr "A fork() hívás használatának letiltása a nyilvántartás elemzése közben"
+msgid "Disable spawning a helper process while scanning the registry"
+msgstr "Segédfolyamat indításának letiltása a nyilvántartás elemzése közben"
 
 msgid "GStreamer Options"
 msgstr "GStreamer beállításai"
@@ -85,32 +94,8 @@ msgstr "GStreamer beállításai"
 msgid "Show GStreamer Options"
 msgstr "A GStreamer beállításainak megjelenítése"
 
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr "Hiba a nyilvántartás gyorsítótárának kiírása közben %s helyre: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr "Hiba a(z) %s nyilvántartás újraolvasása közben: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr "Hiba a(z) %s nyilvántartás újraolvasása közben"
-
 msgid "Unknown option"
 msgstr "Ismeretlen beállítás"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "HIBA: a következő elemtől: %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"További hibakeresési információk:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "A GStreamer általános magkönyvtárhibát tapasztalt."
@@ -136,8 +121,8 @@ msgstr "Belső GStreamer hiba: kitöltési probléma."
 msgid "Internal GStreamer error: thread problem."
 msgstr "Belső GStreamer hiba: szálprobléma."
 
-msgid "Internal GStreamer error: negotiation problem."
-msgstr "Belső GStreamer hiba: megállapodási probléma."
+msgid "GStreamer error: negotiation problem."
+msgstr "GStreamer hiba: megállapodási probléma."
 
 msgid "Internal GStreamer error: event problem."
 msgstr "Belső GStreamer hiba: eseményprobléma."
@@ -154,8 +139,8 @@ msgstr "Belső GStreamer hiba: címkeprobléma."
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "A GStreamer telepítésből hiányzik egy bővítmény."
 
-msgid "Internal GStreamer error: clock problem."
-msgstr "Belső GStreamer hiba: óraprobléma."
+msgid "GStreamer error: clock problem."
+msgstr "GStreamer hiba: óraprobléma."
 
 msgid ""
 "This application is trying to use GStreamer functionality that has been "
@@ -173,6 +158,9 @@ msgstr "Nem zárható be a támogató programkönyvtár."
 
 msgid "Could not configure supporting library."
 msgstr "Nem állítható be a támogató programkönyvtár."
+
+msgid "Encoding error."
+msgstr "Kódolási hiba."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "A GStreamer általános erőforráshibát észlelt."
@@ -212,6 +200,9 @@ msgstr "Nem lehet lekérni/beállítani az erőforrás beállításait."
 
 msgid "No space left on the resource."
 msgstr "Nincs több hely az erőforráson."
+
+msgid "Not authorized to access resource."
+msgstr "Nincs jogosultsága az erőforrás eléréséhez."
 
 msgid "GStreamer encountered a general stream error."
 msgstr "A GStreamer általános adatfolyamhibát észlelt."
@@ -267,6 +258,10 @@ msgstr ""
 msgid "Selected clock cannot be used in pipeline."
 msgstr "A kijelölt óra nem használható adatcsatornában."
 
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr "Hiba a regisztrációs gyorsítótár írásakor ebbe: %s: %s"
+
 msgid "title"
 msgstr "cím"
 
@@ -321,6 +316,12 @@ msgstr "dátum"
 msgid "date the data was created (as a GDate structure)"
 msgstr "az adatok létrehozási dátuma (GDate struktúraként)"
 
+msgid "datetime"
+msgstr "dátumidő"
+
+msgid "date and time the data was created (as a GstDateTime structure)"
+msgstr "az adatok létrehozási dátuma és ideje (GstDateTime struktúraként)"
+
 msgid "genre"
 msgstr "műfaj"
 
@@ -338,8 +339,8 @@ msgstr "kiterjesztett megjegyzés"
 
 msgid "free text commenting the data in key=value or key[en]=comment form"
 msgstr ""
-"az adatokhoz fűzött szabad szöveges megjegyzés kulcs=érték vagy kulcs[hu]"
-"=megjegyzés formában"
+"az adatokhoz fűzött szabad szöveges megjegyzés kulcs=érték vagy "
+"kulcs[hu]=megjegyzés formában"
 
 msgid "track number"
 msgstr "dalsorszám"
@@ -415,6 +416,12 @@ msgstr "védjegy uri"
 
 msgid "URI to the copyright notice of the data"
 msgstr "Az adatok védjegymegjegyzésének URI címe"
+
+msgid "encoded by"
+msgstr "kódolta"
+
+msgid "name of the encoding person or organization"
+msgstr "a kódoló személy vagy szervezet"
 
 msgid "contact"
 msgstr "névjegy"
@@ -557,8 +564,15 @@ msgstr "szám és album hangosításának referenciaszintje"
 msgid "language code"
 msgstr "nyelvi kód"
 
-msgid "language code for this stream, conforming to ISO-639-1"
-msgstr "az adatfolyam ISO-639-1 szabványnak megfelelő nyelvi kódja"
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgstr ""
+"az adatfolyam ISO-639-1 vagy ISO-639-2 szabványnak megfelelő nyelvi kódja"
+
+msgid "language name"
+msgstr "nyelvi kód"
+
+msgid "freeform name of the language this stream is in"
+msgstr "az adatfolyam nyelvének szabad formátumú neve"
 
 msgid "image"
 msgstr "kép"
@@ -566,6 +580,7 @@ msgstr "kép"
 msgid "image related to this stream"
 msgstr "az adatfolyamhoz kapcsolódó kép"
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "előnézeti kép"
 
@@ -634,16 +649,202 @@ msgstr ""
 "azon hely földrajzi magassága, ahol a média felvételre vagy előállításra "
 "került méterben, a WGS84-nek megfelelően (nulla az átlagos tengerszinten)"
 
+msgid "geo location country"
+msgstr "földrajzi hely országa"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr "ország (angol név), ahol a média felvételre vagy előállításra került"
+
+msgid "geo location city"
+msgstr "földrajzi hely városa"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr "város (angol név), ahol a média felvételre vagy előállításra került"
+
+msgid "geo location sublocation"
+msgstr "földrajzi hely részhelye"
+
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+"a városon belüli hely, ahol a média előállításra vagy létrehozásra került "
+"(például környék)"
+
+msgid "geo location horizontal error"
+msgstr "földrajzi hely vízszintes hibája"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr "a vízszintes pozícionálási értékek várt hibája (méterben)"
+
+msgid "geo location movement speed"
+msgstr "földrajzi hely mozgási sebessége"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr "a felvevőeszköz mozgási sebessége a felvétel készítésekor, m/s-ban"
+
+msgid "geo location movement direction"
+msgstr "földrajzi hely mozgási iránya"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"a média felvételét végző eszköz mozgási irányát jelzi. lebegőpontosan "
+"ábrázolt fokok képviselik, a 0 a földrajzi északot jelzi és az óra járásának "
+"irányába nő."
+
+msgid "geo location capture direction"
+msgstr "földrajzi hely felvételi iránya"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"a média felvételét végző eszköz irányát jelzi. lebegőpontosan ábrázolt fokok "
+"képviselik, a 0 a földrajzi északot jelzi és az óra járásának irányába nő."
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "műsornév"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr "A tv/podcast/sorozat műsor neve, amelyből a média származik"
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr "műsor rendezési neve"
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr ""
+"A tv/podcast/sorozat műsor neve, amelyből a média származik, rendezési célra"
+
+msgid "episode number"
+msgstr "epizódszám"
+
+msgid "The episode number in the season the media is part of"
+msgstr "Azon évadon belüli epizód száma, amelynek ez a média része"
+
+msgid "season number"
+msgstr "évadszám"
+
+msgid "The season number of the show the media is part of"
+msgstr "Azon műsor évadszáma, amelynek ez a média része"
+
+msgid "lyrics"
+msgstr "dalszöveg"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr "A média dalszövege"
+
+msgid "composer sortname"
+msgstr "szerző rendezési neve"
+
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr "a felvételt szerző személyek, rendezési céllal"
+
+msgid "grouping"
+msgstr "csoportosítás"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+"Több számot átfogó média csoportosítása, például egy koncert különböző "
+"darabjai. Magasabb szintű a számnál, de alacsonyabb az albumnál"
+
+msgid "user rating"
+msgstr "felhasználói értékelés"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+"Felhasználó által társított értékelés. Minél magasabb, annál jobban kedveli "
+"a felhasználó a médiát"
+
+msgid "device manufacturer"
+msgstr "eszköz gyártója"
+
+msgid "Manufacturer of the device used to create this media"
+msgstr "A média előállításához használt eszköz gyártója"
+
+msgid "device model"
+msgstr "eszközmodell"
+
+msgid "Model of the device used to create this media"
+msgstr "A média létrehozására használt eszközmodell"
+
+msgid "application name"
+msgstr "alkalmazás neve"
+
+msgid "Application used to create the media"
+msgstr "A média létrehozására használt alkalmazás"
+
+msgid "application data"
+msgstr "alkalmazásadatok"
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr "Tetszőleges, a médiába mentendő alkalmazásadatok"
+
+msgid "image orientation"
+msgstr "kép tájolása"
+
+msgid "How the image should be rotated or flipped before display"
+msgstr "A kép hogyan forgatandó vagy tükrözendő megjelenítés előtt"
+
+msgid "publisher"
+msgstr "kiadó"
+
+msgid "Name of the label or publisher"
+msgstr "A címke vagy kiadó neve"
+
+msgid "interpreted-by"
+msgstr "feldolgozta"
+
+msgid "Information about the people behind a remix and similar interpretations"
+msgstr "Információ a remix mögött lévő személyekről és hasonló feldolgozások"
+
+msgid "midi-base-note"
+msgstr "midi-alapú-hangjegy"
+
+msgid "Midi note number of the audio track."
+msgstr "A hangsáv midi hangjegy száma."
+
 msgid ", "
 msgstr ", "
 
 #, c-format
-msgid "specified empty bin \"%s\", not allowed"
-msgstr "a megadott üres „%s” tároló nem engedélyezett"
+msgid "No URI handler for the %s protocol found"
+msgstr "Nem található URI-kezelő a(z) %s protokollhoz"
 
 #, c-format
-msgid "no bin \"%s\", skipping"
-msgstr "nincs „%s” tároló, átlépés"
+msgid "URI scheme '%s' not supported"
+msgstr "A(z) „%s” URI-séma nem támogatott"
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "HIBA: a következő elemtől: %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"További hibakeresési információk:\n"
+"%s\n"
+
+#, c-format
+msgid "link has no source [sink=%s@%p]"
+msgstr "a hivatkozásnak nincs forrása [nyelő=%s@%p]"
+
+#, c-format
+msgid "link has no sink [source=%s@%p]"
+msgstr "a hivatkozásnak nincs nyelője [forrás=%s@%p]"
 
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
@@ -662,39 +863,41 @@ msgid "no element \"%s\""
 msgstr "nincs „%s” elem"
 
 #, c-format
+msgid "unexpected reference \"%s\" - ignoring"
+msgstr "nem várt „%s” hivatkozás - mellőzés"
+
+#, c-format
+msgid "unexpected pad-reference \"%s\" - ignoring"
+msgstr "nem várt „%s” kitöltési hivatkozás - mellőzés"
+
+#, c-format
 msgid "could not parse caps \"%s\""
 msgstr "a(z) „%s” képesség nem elemezhető"
-
-msgid "link without source element"
-msgstr "link forráselem nélkül"
-
-msgid "link without sink element"
-msgstr "link nyelőelem nélkül"
-
-#, c-format
-msgid "no source element for URI \"%s\""
-msgstr "nincs forráselem a következő URI címhez: „%s”"
-
-#, c-format
-msgid "no element to link URI \"%s\" to"
-msgstr "nincs elem, amelyhez a(z) „%s” URI linkelhető lenne"
 
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr "nincs nyelőelem a következő URI címhez: „%s”"
 
 #, c-format
-msgid "could not link sink element for URI \"%s\""
-msgstr "nem linkelhető nyelőelem a következő URI címhez: „%s”"
+msgid "no source element for URI \"%s\""
+msgstr "nincs forráselem a következő URI címhez: „%s”"
+
+msgid "syntax error"
+msgstr "szintaktikai hiba"
+
+msgid "bin"
+msgstr "tároló"
+
+#, c-format
+msgid "specified empty bin \"%s\", not allowed"
+msgstr "a megadott üres „%s” tároló nem engedélyezett"
+
+#, c-format
+msgid "no bin \"%s\", unpacking elements"
+msgstr "nincs „%s” tároló, elemek kicsomagolása"
 
 msgid "empty pipeline not allowed"
 msgstr "üres adatcsatorna nem engedélyezett"
-
-msgid "Internal clock error."
-msgstr "Belső órahiba."
-
-msgid "Internal data flow error."
-msgstr "Belső adatfolyam-hiba."
 
 msgid "A lot of buffers are being dropped."
 msgstr "Rengetek puffer kerül eldobásra."
@@ -705,6 +908,15 @@ msgstr "Belső adatfolyam-probléma."
 msgid "Internal data stream error."
 msgstr "Belső adatfolyam-hiba."
 
+msgid "Internal data flow error."
+msgstr "Belső adatfolyam-hiba."
+
+msgid "Internal clock error."
+msgstr "Belső órahiba."
+
+msgid "Failed to map buffer."
+msgstr "Nem sikerült a puffer leképezése."
+
 msgid "Filter caps"
 msgstr "Képességek szűrése"
 
@@ -714,6 +926,26 @@ msgid ""
 msgstr ""
 "Az engedélyezhető képességek korlátozása (a NULL, ANY-t jelent). Ezen "
 "tulajdonság beállítása a biztosított GstCaps objektumra hivatkozik."
+
+msgid "Caps Change Mode"
+msgstr "Képességek változtatása mód"
+
+msgid "Filter caps change behaviour"
+msgstr "Képességek változtatása viselkedés szűrése"
+
+msgid "No Temp directory specified."
+msgstr "Nincs megadva ideiglenes könyvtár."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Nem hozható létre a következő ideiglenes fájl: „%s”."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Nem nyitható meg a(z) „%s” fájl olvasásra."
+
+msgid "Error while writing to download file."
+msgstr "Hiba a letöltési fájl írása közben."
 
 msgid "No file name specified for writing."
 msgstr "Nincs fájlnév megadva az íráshoz."
@@ -736,10 +968,6 @@ msgstr "Hiba a(z) „%s” fájl írása közben."
 
 msgid "No file name specified for reading."
 msgstr "Nincs megadva fájlnév az olvasáshoz."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "Nem nyitható meg a(z) „%s” fájl olvasásra."
 
 #, c-format
 msgid "Could not get info on \"%s\"."
@@ -765,14 +993,14 @@ msgstr "az adatfolyamban észlelt képességek"
 msgid "minimum"
 msgstr "minimum"
 
-msgid "maximum"
-msgstr "maximum"
-
 msgid "force caps"
 msgstr "nagybetűk kényszerítése"
 
 msgid "force caps without doing a typefind"
 msgstr "nagybetűk kényszerítése betűkeresés nélkül"
+
+msgid "Stream contains not enough data."
+msgstr "Az adatfolyam nem tartalmaz elég adatot."
 
 msgid "Stream contains no data."
 msgstr "Az adatfolyam nem tartalmaz adatokat."
@@ -786,17 +1014,44 @@ msgstr "olvasható"
 msgid "writable"
 msgstr "írható"
 
+msgid "deprecated"
+msgstr "elavult"
+
 msgid "controllable"
 msgstr "vezérelhető"
 
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr "módosítható a NULL, KÉSZ, SZÜNETEL vagy LEJÁTSZÁS állapotban"
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr "csak a NULL, KÉSZ vagy SZÜNETEL állapotban módosítható"
+
+msgid "changeable only in NULL or READY state"
+msgstr "csak a NULL vagy KÉSZ állapotban módosítható"
+
+msgid "Blacklisted files:"
+msgstr "Feketelistás fájlok:"
+
 msgid "Total count: "
 msgstr "Teljes szám: "
+
+#, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d feketelistás fájl"
+msgstr[1] "%d feketelistás fájl"
 
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
 msgstr[0] "%d bővítmény"
 msgstr[1] "%d bővítmény"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d feketelista-bejegyzés"
+msgstr[1] "%d feketelista-bejegyzés"
 
 #, c-format
 msgid "%d feature"
@@ -807,17 +1062,31 @@ msgstr[1] "%d szolgáltatás"
 msgid "Print all elements"
 msgstr "Az összes elem kiírása"
 
+msgid "Print list of blacklisted files"
+msgstr "Feketelistás fájlok listájának kiírása"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 "A megadott bővítmény által biztosított szolgáltatások gépileg feldolgozható "
-"listájának nyomtatása.\n"
+"listájának kiírása.\n"
 "Külső bővítménytelepítési módszerekkel együtt hasznos."
 
 msgid "List the plugin contents"
 msgstr "A bővítmény tartalmának felsorolása"
+
+msgid "Check if the specified element or plugin exists"
+msgstr "Ellenőrizze, hogy a megadott elem vagy bővítmény létezik-e"
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
+"Elem vagy bővítmény létezésének ellenőrzésekor azt is ellenőrizze, hogy a "
+"verziója legalább a megadott-e"
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Támogatott URI sémák kiírása, az azokat megvalósító elemmel"
@@ -830,28 +1099,8 @@ msgstr "Nem tölthető be a bővítményfájl: %s\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Nincs ilyen elem vagy bővítmény: „%s”\n"
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr "Használat: gst-xmllaunch <fájl.xml> [ elem.tulajdonság=érték … ]\n"
-
-#, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr "HIBA: a(z) „%s” xml fájl feldolgozása meghiúsult.\n"
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr ""
-"HIBA: nincs felső szintű adatcsatorna elem a következő fájlban: „%s”.\n"
-
-msgid "WARNING: only one toplevel element is supported at this time.\n"
-msgstr "FIGYELMEZTETÉS: egyszerre csak egy felső szintű elem támogatott.\n"
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr "HIBA: nem elemezhető a(z) %d. parancssori argumentum: %s.\n"
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
-msgstr "FIGYELMEZTETÉS: a(z) „%s” nevű elem nem található.\n"
+msgid "Index statistics"
+msgstr "Indexstatisztika"
 
 #, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
@@ -889,6 +1138,17 @@ msgid "FOUND TAG\n"
 msgstr "CÍMKE MEGTALÁLVA\n"
 
 #, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr "TARTALOMJEGYZÉK MEGTALÁLVA: a(z) „%s” elem által.\n"
+
+#, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr "TARTALOMJEGYZÉK MEGTALÁLVA: a(z) „%s” objektum által.\n"
+
+msgid "FOUND TOC\n"
+msgstr "TARTALOMJEGYZÉK MEGTALÁLVA\n"
+
+#, c-format
 msgid ""
 "INFO:\n"
 "%s\n"
@@ -902,6 +1162,9 @@ msgstr "FIGYELMEZTETÉS: a következő elemtől: %s: %s\n"
 
 msgid "Prerolled, waiting for buffering to finish...\n"
 msgstr "Előzetesen betöltve, várakozás a pufferelés befejeződésére…\n"
+
+msgid "Prerolled, waiting for progress to finish...\n"
+msgstr "Előzetesen betöltve, várakozás a folyamat befejeződésére…\n"
 
 msgid "buffering..."
 msgstr "pufferelés…"
@@ -922,8 +1185,23 @@ msgstr "Állapot beállítása erre: %s, %s kérésének megfelelően…\n"
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr "Megszakítás: Adatcsatorna leállítása…\n"
 
+#, c-format
+msgid "Progress: (%s) %s\n"
+msgstr "Folyamat: (%s) %s\n"
+
+#, c-format
+msgid "Missing element: %s\n"
+msgstr "Hiányzó elem: „%s”\n"
+
+#, c-format
+msgid "Got context from element '%s': %s=%s\n"
+msgstr "Környezet lekérése a(z) „%s” elemtől: %s=%s\n"
+
 msgid "Output tags (also known as metadata)"
 msgstr "Kimeneti címkék (metaadatok)"
+
+msgid "Output TOC (chapters and editions)"
+msgstr "TARTALOMJEGYZÉK (fejezetek és változatok) kiírása"
 
 msgid "Output status information and property notifications"
 msgstr "Kimeneti állapotinformációk és tulajdonság-értesítések"
@@ -934,26 +1212,22 @@ msgstr "Ne írjon ki előrehaladás-információkat"
 msgid "Output messages"
 msgstr "Kimeneti üzenetek"
 
-msgid "Do not output status information of TYPE"
-msgstr "Ne írjon ki a TÍPUS típus állapotinformációit"
+msgid ""
+"Do not output status information for the specified property if verbose "
+"output is enabled (can be used multiple times)"
+msgstr ""
 
-msgid "TYPE1,TYPE2,..."
-msgstr "TÍPUS1,TÍPUS2,…"
-
-msgid "Save xml representation of pipeline to FILE and exit"
-msgstr "Az adatcsatorna xml ábrázolásának mentése a FÁJLBA és kilépés"
-
-msgid "FILE"
-msgstr "FÁJL"
+msgid "PROPERTY-NAME"
+msgstr ""
 
 msgid "Do not install a fault handler"
 msgstr "Ne telepítsen hibakezelőt"
 
-msgid "Print alloc trace (if enabled at compile time)"
-msgstr "Foglalási nyomkövetés nyomtatása (ha fordításkor engedélyezték)"
-
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr "EOS kényszerítése a forrásokra az adatcsatorna leállítása előtt"
+
+msgid "Gather and print index statistics"
+msgstr "Indexstatisztikák gyűjtése és kiírása"
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -996,11 +1270,17 @@ msgstr "HIBA: az adatcsatorna nem akar lejátszani.\n"
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr "Leállításkor EOS engedélyezve – EOS kényszerítése az adatcsatornára\n"
 
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr "Leállításkor EOS engedélyezve – várakozás EOS-ra hiba után\n"
+
 msgid "Waiting for EOS...\n"
 msgstr "Várakozás EOS-ra…\n"
 
 msgid "EOS received - stopping pipeline...\n"
 msgstr "EOS érkezett – adatcsatorna leállítása…\n"
+
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
+msgstr "Megszakítás az EOS-ra várakozás közben – adatcsatorna leállítása…\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Hiba történt az EOS-ra várakozáskor\n"
@@ -1017,11 +1297,54 @@ msgstr "Az adatcsatorna beállítása NULL értékre…\n"
 msgid "Freeing pipeline ...\n"
 msgstr "Adatcsatorna felszabadítása…\n"
 
-#~ msgid "Internal GStreamer error: state change failed."
-#~ msgstr "Belső GStreamer hiba: az állapotváltás meghiúsult."
+#~ msgid "Do not output status information of TYPE"
+#~ msgstr "Ne írjon ki a TÍPUS típus állapotinformációit"
 
-#~ msgid "Error while writing to file descriptor \"%d\"."
-#~ msgstr "Hiba a következő fájlleíróba íráskor: „%d”."
+#~ msgid "TYPE1,TYPE2,..."
+#~ msgstr "TÍPUS1,TÍPUS2,…"
 
-#~ msgid "File descriptor \"%d\" is not valid."
-#~ msgstr "A következő fájlleíró érvénytelen: „%d”."
+#~ msgid "link without source element"
+#~ msgstr "link forráselem nélkül"
+
+#~ msgid "link without sink element"
+#~ msgstr "link nyelőelem nélkül"
+
+#~ msgid "no element to link URI \"%s\" to"
+#~ msgstr "nincs elem, amelyhez a(z) „%s” URI linkelhető lenne"
+
+#~ msgid "could not link sink element for URI \"%s\""
+#~ msgstr "nem linkelhető nyelőelem a következő URI címhez: „%s”"
+
+#~ msgid "maximum"
+#~ msgstr "maximum"
+
+#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+#~ msgstr "Használat: gst-xmllaunch <fájl.xml> [ elem.tulajdonság=érték … ]\n"
+
+#~ msgid "ERROR: parse of xml file '%s' failed.\n"
+#~ msgstr "HIBA: a(z) „%s” xml fájl feldolgozása meghiúsult.\n"
+
+#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+#~ msgstr ""
+#~ "HIBA: nincs felső szintű adatcsatorna elem a következő fájlban: „%s”.\n"
+
+#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
+#~ msgstr "FIGYELMEZTETÉS: egyszerre csak egy felső szintű elem támogatott.\n"
+
+#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
+#~ msgstr "HIBA: nem elemezhető a(z) %d. parancssori argumentum: %s.\n"
+
+#~ msgid "WARNING: element named '%s' not found.\n"
+#~ msgstr "FIGYELMEZTETÉS: a(z) „%s” nevű elem nem található.\n"
+
+#~ msgid "Save xml representation of pipeline to FILE and exit"
+#~ msgstr "Az adatcsatorna xml ábrázolásának mentése a FÁJLBA és kilépés"
+
+#~ msgid "FILE"
+#~ msgstr "FÁJL"
+
+#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
+#~ msgstr "Ne telepítsen szignálkezelőket a SIGUSR1 és SIGUSR2 szignálokhoz"
+
+#~ msgid "Print alloc trace (if enabled at compile time)"
+#~ msgstr "Foglalási nyomkövetés kiírása (ha fordításkor engedélyezték)"

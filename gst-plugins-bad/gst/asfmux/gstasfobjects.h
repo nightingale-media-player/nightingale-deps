@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifndef __GST_ASF_OBJECTS_H__
 #define __GST_ASF_OBJECTS_H__
@@ -83,21 +83,21 @@ typedef struct _AsfPayload
   guint16 packet_count;
 } AsfPayload;
 
-Guid gst_asf_generate_file_id ();
+void gst_asf_generate_file_id (Guid *guid);
 
 gboolean gst_byte_reader_get_asf_var_size_field (GstByteReader * reader,
     guint8 field_type, guint32 * var);
 guint32 gst_asf_read_var_size_field (guint8 * data, guint8 field_type);
 guint gst_asf_get_var_size_field_len (guint8 field_type);
 
-GstAsfFileInfo *gst_asf_file_info_new ();
+GstAsfFileInfo *gst_asf_file_info_new (void);
 void gst_asf_file_info_reset (GstAsfFileInfo * info);
 void gst_asf_file_info_free (GstAsfFileInfo * info);
 
 guint32 gst_asf_payload_get_size (AsfPayload * payload);
 void gst_asf_payload_free (AsfPayload * payload);
 
-guint64 gst_asf_get_current_time ();
+guint64 gst_asf_get_current_time (void);
 
 gboolean gst_asf_match_guid (const guint8 * data, const Guid * g);
 
@@ -109,10 +109,15 @@ guint16 gst_asf_put_subpayload (guint8 * buf, AsfPayload * payload,
     guint16 size);
 
 gboolean gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
-    gboolean trust_delta_flag);
+    gboolean trust_delta_flag, guint packet_size);
+gboolean gst_asf_parse_packet_from_data (guint8 * data, gsize size, GstBuffer * buffer, GstAsfPacketInfo * packet,
+    gboolean trust_delta_flag, guint packet_size);
 guint64 gst_asf_match_and_peek_obj_size (const guint8 * data,
     const Guid * guid);
+guint64 gst_asf_match_and_peek_obj_size_buf (GstBuffer * buf,
+    const Guid * guid);
 gboolean gst_asf_parse_headers (GstBuffer * buffer, GstAsfFileInfo * file_info);
+gboolean gst_asf_parse_headers_from_data (guint8 * data, guint size, GstAsfFileInfo * file_info);
 
 /* ASF tags
  * found at http://msdn.microsoft.com/en-us/library/dd562330(VS.85).aspx
@@ -147,7 +152,6 @@ gboolean gst_asf_tag_present_in_content_description (const gchar * tag);
 #define ASF_AUDIO_SPECIFIC_DATA_SIZE 18
 #define ASF_VIDEO_SPECIFIC_DATA_SIZE 51
 #define ASF_DATA_OBJECT_SIZE 50
-#define ASF_PAYLOAD_PARSING_INFO_SIZE 16
 #define ASF_SINGLE_PAYLOAD_HEADER_SIZE 15
 #define ASF_MULTIPLE_PAYLOAD_HEADER_SIZE 17
 #define ASF_EXTENDED_STREAM_PROPERTIES_OBJECT_SIZE 88
@@ -163,6 +167,7 @@ gboolean gst_asf_tag_present_in_content_description (const gchar * tag);
 #define ASF_FIELD_TYPE_BYTE 1
 #define ASF_FIELD_TYPE_WORD 2
 #define ASF_FIELD_TYPE_DWORD 3
+#define ASF_FIELD_TYPE_MASK 3
 
 /* tag types */
 #define ASF_TAG_TYPE_UNICODE_STR 0

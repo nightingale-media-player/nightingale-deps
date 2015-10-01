@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CAM_RESOURCE_MANAGER_H
@@ -35,7 +35,7 @@ struct _CamResourceManager
   CamALApplication application;
 };
 
-CamResourceManager *cam_resource_manager_new ();
+CamResourceManager *cam_resource_manager_new (void);
 void cam_resource_manager_destroy (CamResourceManager *manager);
 
 #endif /* CAM_RESOURCE_MANAGER_H */

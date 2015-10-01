@@ -14,16 +14,18 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CHECK_PRINT_H
 #define CHECK_PRINT_H
 
-void tr_fprint (FILE *file, TestResult *tr, enum print_output print_mode);
-void tr_xmlprint (FILE *file, TestResult *tr, enum print_output print_mode);
-void srunner_fprint (FILE *file, SRunner *sr, enum print_output print_mode);
+/* escape XML special characters (" ' < > &) in str and print to file */
+void fprint_xml_esc (FILE * file, const char *str);
+void tr_fprint (FILE * file, TestResult * tr, enum print_output print_mode);
+void tr_xmlprint (FILE * file, TestResult * tr, enum print_output print_mode);
+void srunner_fprint (FILE * file, SRunner * sr, enum print_output print_mode);
 enum print_output get_env_printmode (void);
 
 

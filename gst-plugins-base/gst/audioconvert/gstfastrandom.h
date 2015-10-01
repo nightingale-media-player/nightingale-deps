@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <glib.h>
@@ -31,37 +31,17 @@
  * and returning a pseudo random number between 0 and 2^32 - 1.
  */
 static inline guint32
-gst_fast_random_uint32 ()
+gst_fast_random_uint32 (void)
 {
   static guint32 state = 0xdeadbeef;
 
   return (state = state * 1103515245 + 12345);
 }
 
-static inline guint32
-gst_fast_random_uint32_range (gint32 start, gint32 end)
-{
-  guint64 tmp = gst_fast_random_uint32 ();
-
-  tmp = (tmp * (end - start)) / G_MAXUINT32 + start;
-
-  return (guint32) tmp;
-}
-
 static inline gint32
 gst_fast_random_int32 (void)
 {
   return (gint32) gst_fast_random_uint32 ();
-}
-
-static inline gint32
-gst_fast_random_int32_range (gint32 start, gint32 end)
-{
-  gint64 tmp = gst_fast_random_uint32 ();
-
-  tmp = (tmp * (end - start)) / G_MAXUINT32 + start;
-
-  return (gint32) tmp;
 }
 
 static inline gdouble

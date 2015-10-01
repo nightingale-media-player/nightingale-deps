@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -147,6 +147,7 @@ psmux_stream_new (PsMux * mux, PsMuxStreamType stream_type)
   if (stream->stream_id == 0) {
     g_critical ("Number of elementary streams of type %04x exceeds maximum",
         stream->stream_type);
+    g_slice_free (PsMuxStream, stream);
     return NULL;
   }
 
@@ -174,8 +175,6 @@ psmux_stream_new (PsMux * mux, PsMuxStreamType stream_type)
 
   stream->cur_pes_payload_size = 0;
 
-  stream->buffer_release = NULL;
-
   stream->pts = -1;
   stream->dts = -1;
   stream->last_pts = -1;
@@ -191,8 +190,8 @@ psmux_stream_new (PsMux * mux, PsMuxStreamType stream_type)
       stream->max_buffer_size = 400 * 1024;
     else if (stream->is_audio_stream)
       stream->max_buffer_size = 4 * 1024;
-    else                        /* Unknown */
-      stream->max_buffer_size = 4 * 1024;
+    else
+      g_assert_not_reached ();
   }
 
   return stream;
@@ -215,31 +214,13 @@ psmux_stream_free (PsMuxStream * stream)
   g_slice_free (PsMuxStream, stream);
 }
 
-/**
- * psmux_stream_set_buffer_release_func:
- * @stream: a #PsMuxStream
- * @func: the new #PsMuxStreamBufferReleaseFunc
- *
- * Set the function that will be called when a a piece of data fed to @stream
- * with psmux_stream_add_data() can be freed. @func will be called with user
- * data as provided with the call to psmux_stream_add_data().
- */
-void
-psmux_stream_set_buffer_release_func (PsMuxStream * stream,
-    PsMuxStreamBufferReleaseFunc func)
-{
-  g_return_if_fail (stream != NULL);
-
-  stream->buffer_release = func;
-}
-
 /* Advance the current packet stream position by len bytes.
  * Mustn't consume more than available in the current packet */
 static void
 psmux_stream_consume (PsMuxStream * stream, guint len)
 {
   g_assert (stream->cur_buffer != NULL);
-  g_assert (len <= stream->cur_buffer->size - stream->cur_buffer_consumed);
+  g_assert (len <= stream->cur_buffer->map.size - stream->cur_buffer_consumed);
 
   stream->cur_buffer_consumed += len;
   stream->bytes_avail -= len;
@@ -250,15 +231,12 @@ psmux_stream_consume (PsMuxStream * stream, guint len)
   if (stream->cur_buffer->pts != -1)
     stream->last_pts = stream->cur_buffer->pts;
 
-  if (stream->cur_buffer_consumed == stream->cur_buffer->size) {
+  if (stream->cur_buffer_consumed == stream->cur_buffer->map.size) {
     /* Current packet is completed, move along */
     stream->buffers = g_list_delete_link (stream->buffers, stream->buffers);
 
-    if (stream->buffer_release) {
-      stream->buffer_release (stream->cur_buffer->data,
-          stream->cur_buffer->user_data);
-    }
-
+    gst_buffer_unmap (stream->cur_buffer->buf, &stream->cur_buffer->map);
+    gst_buffer_unref (stream->cur_buffer->buf);
     g_slice_free (PsMuxStreamBuffer, stream->cur_buffer);
     stream->cur_buffer = NULL;
   }
@@ -326,7 +304,7 @@ psmux_stream_get_data (PsMuxStream * stream, guint8 * buf, guint len)
   pes_hdr_length = psmux_stream_pes_header_length (stream);
 
   /* write pes header */
-  PS_DEBUG ("Writing PES header of length %u and payload %d",
+  GST_LOG ("Writing PES header of length %u and payload %d",
       pes_hdr_length, stream->cur_pes_payload_size);
   psmux_stream_write_pes_header (stream, buf);
 
@@ -346,8 +324,8 @@ psmux_stream_get_data (PsMuxStream * stream, guint8 * buf, guint len)
     }
 
     /* Take as much as we can from the current buffer */
-    avail = stream->cur_buffer->size - stream->cur_buffer_consumed;
-    cur = stream->cur_buffer->data + stream->cur_buffer_consumed;
+    avail = stream->cur_buffer->map.size - stream->cur_buffer_consumed;
+    cur = stream->cur_buffer->map.data + stream->cur_buffer_consumed;
     if (avail < w) {
       memcpy (buf, cur, avail);
       psmux_stream_consume (stream, avail);
@@ -417,7 +395,7 @@ psmux_stream_find_pts_dts_within (PsMuxStream * stream, guint bound,
     /* FIXME: This isn't quite correct - if the 'bound' is within this
      * buffer, we don't know if the timestamp is before or after the split
      * so we shouldn't return it */
-    if (bound <= curbuf->size) {
+    if (bound <= curbuf->map.size) {
       *pts = curbuf->pts;
       *dts = curbuf->dts;
       return;
@@ -430,7 +408,7 @@ psmux_stream_find_pts_dts_within (PsMuxStream * stream, guint bound,
       return;
     }
 
-    bound -= curbuf->size;
+    bound -= curbuf->map.size;
   }
 }
 
@@ -498,9 +476,7 @@ psmux_stream_write_pes_header (PsMuxStream * stream, guint8 * data)
 /**
  * psmux_stream_add_data:
  * @stream: a #PsMuxStream
- * @data: data to add
- * @len: length of @data
- * @user_data: user data to pass to release func
+ * @buffer: (transfer full): buffer with data to add
  * @pts: PTS of access unit in @data
  * @dts: DTS of access unit in @data
  *
@@ -508,29 +484,35 @@ psmux_stream_write_pes_header (PsMuxStream * stream, guint8 * data)
  * timestamp (against a 90Hz clock) of the first access unit in @data. A
  * timestamp of -1 for @pts or @dts means unknown.
  *
- * @user_data will be passed to the release function as set with
- * psmux_stream_set_buffer_release_func() when @data can be freed.
+ * This function takes ownership of @buffer.
  */
 void
-psmux_stream_add_data (PsMuxStream * stream, guint8 * data, guint len,
-    void *user_data, gint64 pts, gint64 dts)
+psmux_stream_add_data (PsMuxStream * stream, GstBuffer * buffer,
+    gint64 pts, gint64 dts, gboolean keyunit)
 {
   PsMuxStreamBuffer *packet;
 
   g_return_if_fail (stream != NULL);
 
   packet = g_slice_new (PsMuxStreamBuffer);
-  packet->data = data;
-  packet->size = len;
-  packet->user_data = user_data;
+  packet->buf = buffer;
 
+  if (!gst_buffer_map (packet->buf, &packet->map, GST_MAP_READ)) {
+    GST_ERROR ("Failed to map buffer for reading");
+    gst_buffer_unref (packet->buf);
+    g_slice_free (PsMuxStreamBuffer, packet);
+    return;
+  }
+
+  packet->keyunit = keyunit;
   packet->pts = pts;
   packet->dts = dts;
 
   if (stream->bytes_avail == 0)
     stream->last_pts = pts;
 
-  stream->bytes_avail += len;
+  stream->bytes_avail += packet->map.size;
+  /* FIXME: perhaps use GstQueueArray instead? */
   stream->buffers = g_list_append (stream->buffers, packet);
 
 }

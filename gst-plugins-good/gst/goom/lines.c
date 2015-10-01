@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "lines.h"
@@ -70,7 +70,7 @@ genline (int id, float param, GMUnitPointer * l, int rx, int ry)
       for (i = 0; i < 512; i++) {
         l[i].x = ((float) i * rx) / 512.0f;
         l[i].y = param;
-        l[i].angle = M_PI / 2.0f;
+        l[i].angle = G_PI / 2.0f;
       }
       return;
     case GML_VLINE:
@@ -84,7 +84,7 @@ genline (int id, float param, GMUnitPointer * l, int rx, int ry)
       for (i = 0; i < 512; i++) {
         float cosa, sina;
 
-        l[i].angle = 2.0f * M_PI * (float) i / 512.0f;
+        l[i].angle = 2.0f * G_PI * (float) i / 512.0f;
         cosa = param * cos (l[i].angle);
         sina = param * sin (l[i].angle);
         l[i].x = ((float) rx / 2.0f) + cosa;

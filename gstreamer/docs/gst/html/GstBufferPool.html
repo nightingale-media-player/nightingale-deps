@@ -1,0 +1,1290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstBufferPool: GStreamer 1.0 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstBufferList.html" title="GstBufferList">
+<link rel="next" href="GstBus.html" title="GstBus">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GstBufferPool.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GstBufferPool.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GstBufferList.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GstBus.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstBufferPool"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstBufferPool.top_of_page"></a>GstBufferPool</span></h2>
+<p>GstBufferPool — Pool for buffers</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstBufferPool.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#GST-BUFFER-POOL-IS-FLUSHING:CAPS" title="GST_BUFFER_POOL_IS_FLUSHING()">GST_BUFFER_POOL_IS_FLUSHING</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="returnvalue">GstBufferPool</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-new" title="gst_buffer_pool_new ()">gst_buffer_pool_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-get-params" title="gst_buffer_pool_config_get_params ()">gst_buffer_pool_config_get_params</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-params" title="gst_buffer_pool_config_set_params ()">gst_buffer_pool_config_set_params</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-validate-params" title="gst_buffer_pool_config_validate_params ()">gst_buffer_pool_config_validate_params</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-get-allocator" title="gst_buffer_pool_config_get_allocator ()">gst_buffer_pool_config_get_allocator</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-allocator" title="gst_buffer_pool_config_set_allocator ()">gst_buffer_pool_config_set_allocator</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-n-options" title="gst_buffer_pool_config_n_options ()">gst_buffer_pool_config_n_options</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-add-option" title="gst_buffer_pool_config_add_option ()">gst_buffer_pool_config_add_option</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-get-option" title="gst_buffer_pool_config_get_option ()">gst_buffer_pool_config_get_option</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-has-option" title="gst_buffer_pool_config_has_option ()">gst_buffer_pool_config_has_option</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-get-options" title="gst_buffer_pool_get_options ()">gst_buffer_pool_get_options</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-has-option" title="gst_buffer_pool_has_option ()">gst_buffer_pool_has_option</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstStructure.html" title="GstStructure"><span class="returnvalue">GstStructure</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-get-config" title="gst_buffer_pool_get_config ()">gst_buffer_pool_get_config</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()">gst_buffer_pool_set_config</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-active" title="gst_buffer_pool_set_active ()">gst_buffer_pool_set_active</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-is-active" title="gst_buffer_pool_is_active ()">gst_buffer_pool_is_active</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-flushing" title="gst_buffer_pool_set_flushing ()">gst_buffer_pool_set_flushing</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()">gst_buffer_pool_acquire_buffer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-release-buffer" title="gst_buffer_pool_release_buffer ()">gst_buffer_pool_release_buffer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstBufferPool.html#GstBufferPool-struct" title="GstBufferPool">GstBufferPool</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GstBufferPool.html#GstBufferPoolClass" title="struct GstBufferPoolClass">GstBufferPoolClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstBufferPool.html#GstBufferPoolAcquireFlags" title="enum GstBufferPoolAcquireFlags">GstBufferPoolAcquireFlags</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GstBufferPool.html#GstBufferPoolAcquireParams" title="struct GstBufferPoolAcquireParams">GstBufferPoolAcquireParams</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a class="link" href="GstObject.html" title="GstObject">GstObject</a>
+            <span class="lineart">╰──</span> GstBufferPool
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.description"></a><h2>Description</h2>
+<p>A <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> is an object that can be used to pre-allocate and recycle
+buffers of the same size and with the same properties.</p>
+<p>A <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> is created with <a class="link" href="GstBufferPool.html#gst-buffer-pool-new" title="gst_buffer_pool_new ()"><code class="function">gst_buffer_pool_new()</code></a>.</p>
+<p>Once a pool is created, it needs to be configured. A call to
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-get-config" title="gst_buffer_pool_get_config ()"><code class="function">gst_buffer_pool_get_config()</code></a> returns the current configuration structure from
+the pool. With <a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-params" title="gst_buffer_pool_config_set_params ()"><code class="function">gst_buffer_pool_config_set_params()</code></a> and
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-allocator" title="gst_buffer_pool_config_set_allocator ()"><code class="function">gst_buffer_pool_config_set_allocator()</code></a> the bufferpool parameters and
+allocator can be configured. Other properties can be configured in the pool
+depending on the pool implementation.</p>
+<p>A bufferpool can have extra options that can be enabled with
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-add-option" title="gst_buffer_pool_config_add_option ()"><code class="function">gst_buffer_pool_config_add_option()</code></a>. The available options can be retrieved
+with <a class="link" href="GstBufferPool.html#gst-buffer-pool-get-options" title="gst_buffer_pool_get_options ()"><code class="function">gst_buffer_pool_get_options()</code></a>. Some options allow for additional
+configuration properties to be set.</p>
+<p>After the configuration structure has been configured,
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()"><code class="function">gst_buffer_pool_set_config()</code></a> updates the configuration in the pool. This can
+fail when the configuration structure is not accepted.</p>
+<p>After the a pool has been configured, it can be activated with
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-active" title="gst_buffer_pool_set_active ()"><code class="function">gst_buffer_pool_set_active()</code></a>. This will preallocate the configured resources
+in the pool.</p>
+<p>When the pool is active, <a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()"><code class="function">gst_buffer_pool_acquire_buffer()</code></a> can be used to
+retrieve a buffer from the pool.</p>
+<p>Buffers allocated from a bufferpool will automatically be returned to the
+pool with <a class="link" href="GstBufferPool.html#gst-buffer-pool-release-buffer" title="gst_buffer_pool_release_buffer ()"><code class="function">gst_buffer_pool_release_buffer()</code></a> when their refcount drops to 0.</p>
+<p>The bufferpool can be deactivated again with <a class="link" href="GstBufferPool.html#gst-buffer-pool-set-active" title="gst_buffer_pool_set_active ()"><code class="function">gst_buffer_pool_set_active()</code></a>.
+All further <a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()"><code class="function">gst_buffer_pool_acquire_buffer()</code></a> calls will return an error. When
+all buffers are returned to the pool they will be freed.</p>
+<p>Use <a class="link" href="GstObject.html#gst-object-unref" title="gst_object_unref ()"><code class="function">gst_object_unref()</code></a> to release the reference to a bufferpool. If the
+refcount of the pool reaches 0, the pool will be freed.</p>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GST-BUFFER-POOL-IS-FLUSHING:CAPS"></a><h3>GST_BUFFER_POOL_IS_FLUSHING()</h3>
+<pre class="programlisting">#define GST_BUFFER_POOL_IS_FLUSHING(pool)  (g_atomic_int_get (&amp;pool-&gt;flushing))
+</pre>
+<p>Check if the bufferpool is flushing. Subclasses might want to check the
+state of the pool in the acquire function.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a GstBufferPool</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-new"></a><h3>gst_buffer_pool_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="returnvalue">GstBufferPool</span></a> *
+gst_buffer_pool_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Creates a new <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> instance.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.3.5"></a><h4>Returns</h4>
+<p> a new <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> instance. </p>
+<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-get-params"></a><h3>gst_buffer_pool_config_get_params ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_config_get_params (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                   <em class="parameter"><code><a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> **caps</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *size</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *min_buffers</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *max_buffers</code></em>);</pre>
+<p>Get the configuration values from <em class="parameter"><code>config</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p> the caps of buffers. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p> the size of each buffer, not including prefix and padding. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min_buffers</p></td>
+<td class="parameter_description"><p> the minimum amount of buffers to allocate. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max_buffers</p></td>
+<td class="parameter_description"><p> the maximum amount of buffers to allocate or 0 for unlimited. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.4.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if all parameters could be fetched.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-set-params"></a><h3>gst_buffer_pool_config_set_params ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_buffer_pool_config_set_params (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                   <em class="parameter"><code><a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_buffers</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> max_buffers</code></em>);</pre>
+<p>Configure <em class="parameter"><code>config</code></em>
+ with the given parameters.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p>caps for the buffers</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of each buffer, not including prefix and padding</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min_buffers</p></td>
+<td class="parameter_description"><p>the minimum amount of buffers to allocate.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max_buffers</p></td>
+<td class="parameter_description"><p>the maximum amount of buffers to allocate or 0 for unlimited.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-validate-params"></a><h3>gst_buffer_pool_config_validate_params ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_config_validate_params
+                               (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                <em class="parameter"><code><a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_buffers</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> max_buffers</code></em>);</pre>
+<p>Validate that changes made to <em class="parameter"><code>config</code></em>
+ are still valid in the context of the
+expected parameters. This function is a helper that can be used to validate
+changes made by a pool to a config when <a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()"><code class="function">gst_buffer_pool_set_config()</code></a>
+returns <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>. This expects that <em class="parameter"><code>caps</code></em>
+ haven't changed and that
+<em class="parameter"><code>min_buffers</code></em>
+ aren't lower then what we initially expected.
+This does not check if options or allocator parameters are still valid,
+won't check if size have changed, since changing the size is valid to adapt
+padding.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p> the excepted caps of buffers. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the expected size of each buffer, not including prefix and padding</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min_buffers</p></td>
+<td class="parameter_description"><p>the expected minimum amount of buffers to allocate.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max_buffers</p></td>
+<td class="parameter_description"><p>the expect maximum amount of buffers to allocate or 0 for unlimited.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.6.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, if the parameters are valid in this context.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-get-allocator"></a><h3>gst_buffer_pool_config_get_allocator ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_config_get_allocator (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                      <em class="parameter"><code><a class="link" href="GstAllocator.html" title="GstAllocator"><span class="type">GstAllocator</span></a> **allocator</code></em>,
+                                      <em class="parameter"><code><a class="link" href="GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a> *params</code></em>);</pre>
+<p>Get the <em class="parameter"><code>allocator</code></em>
+ and <em class="parameter"><code>params</code></em>
+ from <em class="parameter"><code>config</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>allocator</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstAllocator.html" title="GstAllocator"><span class="type">GstAllocator</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>params</p></td>
+<td class="parameter_description"><p> <a class="link" href="GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.7.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, if the values are set. </p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-set-allocator"></a><h3>gst_buffer_pool_config_set_allocator ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_buffer_pool_config_set_allocator (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                      <em class="parameter"><code><a class="link" href="GstAllocator.html" title="GstAllocator"><span class="type">GstAllocator</span></a> *allocator</code></em>,
+                                      <em class="parameter"><code>const <a class="link" href="GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a> *params</code></em>);</pre>
+<p>Set the <em class="parameter"><code>allocator</code></em>
+ and <em class="parameter"><code>params</code></em>
+ on <em class="parameter"><code>config</code></em>
+.</p>
+<p>One of <em class="parameter"><code>allocator</code></em>
+ and <em class="parameter"><code>params</code></em>
+ can be <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, but not both. When <em class="parameter"><code>allocator</code></em>
+
+is <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the default allocator of the pool will use the values in <em class="parameter"><code>param</code></em>
+
+to perform its allocation. When <em class="parameter"><code>param</code></em>
+ is <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, the pool will use the
+provided <em class="parameter"><code>allocator</code></em>
+ with its default <a class="link" href="GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a>.</p>
+<p>A call to <a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()"><code class="function">gst_buffer_pool_set_config()</code></a> can update the allocator and params
+with the values that it is able to do. Some pools are, for example, not able
+to operate with different allocators or cannot allocate with the values
+specified in <em class="parameter"><code>params</code></em>
+. Use <a class="link" href="GstBufferPool.html#gst-buffer-pool-get-config" title="gst_buffer_pool_get_config ()"><code class="function">gst_buffer_pool_get_config()</code></a> to get the currently
+used values.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.8.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>allocator</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstAllocator.html" title="GstAllocator"><span class="type">GstAllocator</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>params</p></td>
+<td class="parameter_description"><p> <a class="link" href="GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-n-options"></a><h3>gst_buffer_pool_config_n_options ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_buffer_pool_config_n_options (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>);</pre>
+<p>Retrieve the number of values currently stored in the options array of the
+<em class="parameter"><code>config</code></em>
+ structure.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.9.6"></a><h4>Returns</h4>
+<p> the options array size as a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-add-option"></a><h3>gst_buffer_pool_config_add_option ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_buffer_pool_config_add_option (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                   <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *option</code></em>);</pre>
+<p>Enabled the option in <em class="parameter"><code>config</code></em>
+. This will instruct the <em class="parameter"><code>bufferpool</code></em>
+ to enable
+the specified option on the buffers that it allocates.</p>
+<p>The supported options by <em class="parameter"><code>pool</code></em>
+ can be retrieved with <a class="link" href="GstBufferPool.html#gst-buffer-pool-get-options" title="gst_buffer_pool_get_options ()"><code class="function">gst_buffer_pool_get_options()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.10.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>option</p></td>
+<td class="parameter_description"><p>an option to add</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-get-option"></a><h3>gst_buffer_pool_config_get_option ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_buffer_pool_config_get_option (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> index</code></em>);</pre>
+<p>Parse an available <em class="parameter"><code>config</code></em>
+ and get the option at <em class="parameter"><code>index</code></em>
+ of the options API
+array.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>index</p></td>
+<td class="parameter_description"><p>position in the option array to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.11.6"></a><h4>Returns</h4>
+<p> a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> of the option at <em class="parameter"><code>index</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-config-has-option"></a><h3>gst_buffer_pool_config_has_option ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_config_has_option (<em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>,
+                                   <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *option</code></em>);</pre>
+<p>Check if <em class="parameter"><code>config</code></em>
+ contains <em class="parameter"><code>option</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> configuration</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>option</p></td>
+<td class="parameter_description"><p>an option</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.12.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the options array contains <em class="parameter"><code>option</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-get-options"></a><h3>gst_buffer_pool_get_options ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+gst_buffer_pool_get_options (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>);</pre>
+<p>Get a <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated array of string with supported bufferpool options for
+<em class="parameter"><code>pool</code></em>
+. An option would typically be enabled with
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-add-option" title="gst_buffer_pool_config_add_option ()"><code class="function">gst_buffer_pool_config_add_option()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.13.6"></a><h4>Returns</h4>
+<p> a <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated array
+of strings. </p>
+<p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-has-option"></a><h3>gst_buffer_pool_has_option ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_has_option (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                            <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *option</code></em>);</pre>
+<p>Check if the bufferpool supports <em class="parameter"><code>option</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>option</p></td>
+<td class="parameter_description"><p>an option</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.14.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the buffer pool contains <em class="parameter"><code>option</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-get-config"></a><h3>gst_buffer_pool_get_config ()</h3>
+<pre class="programlisting"><a class="link" href="GstStructure.html" title="GstStructure"><span class="returnvalue">GstStructure</span></a> *
+gst_buffer_pool_get_config (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>);</pre>
+<p>Get a copy of the current configuration of the pool. This configuration
+can either be modified and used for the <a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()"><code class="function">gst_buffer_pool_set_config()</code></a> call
+or it must be freed after usage.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.15.6"></a><h4>Returns</h4>
+<p> a copy of the current configuration of <em class="parameter"><code>pool</code></em>
+. use
+<a class="link" href="GstStructure.html#gst-structure-free" title="gst_structure_free ()"><code class="function">gst_structure_free()</code></a> after usage or <a class="link" href="GstBufferPool.html#gst-buffer-pool-set-config" title="gst_buffer_pool_set_config ()"><code class="function">gst_buffer_pool_set_config()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-set-config"></a><h3>gst_buffer_pool_set_config ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_set_config (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                            <em class="parameter"><code><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> *config</code></em>);</pre>
+<p>Set the configuration of the pool. If the pool is already configured, and
+the configuration haven't change, this function will return <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>. If the
+pool is active, this method will return <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> and active configuration
+will remain. Buffers allocated form this pool must be returned or else this
+function will do nothing and return <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
+<p><em class="parameter"><code>config</code></em>
+ is a <a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> that contains the configuration parameters for
+the pool. A default and mandatory set of parameters can be configured with
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-params" title="gst_buffer_pool_config_set_params ()"><code class="function">gst_buffer_pool_config_set_params()</code></a>, <a class="link" href="GstBufferPool.html#gst-buffer-pool-config-set-allocator" title="gst_buffer_pool_config_set_allocator ()"><code class="function">gst_buffer_pool_config_set_allocator()</code></a>
+and <a class="link" href="GstBufferPool.html#gst-buffer-pool-config-add-option" title="gst_buffer_pool_config_add_option ()"><code class="function">gst_buffer_pool_config_add_option()</code></a>.</p>
+<p>If the parameters in <em class="parameter"><code>config</code></em>
+ can not be set exactly, this function returns
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> and will try to update as much state as possible. The new state can
+then be retrieved and refined with <a class="link" href="GstBufferPool.html#gst-buffer-pool-get-config" title="gst_buffer_pool_get_config ()"><code class="function">gst_buffer_pool_get_config()</code></a>.</p>
+<p>This function takes ownership of <em class="parameter"><code>config</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.16.8"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>config</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.16.9"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the configuration could be set.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-set-active"></a><h3>gst_buffer_pool_set_active ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_set_active (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                            <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);</pre>
+<p>Control the active state of <em class="parameter"><code>pool</code></em>
+. When the pool is inactive, new calls to
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()"><code class="function">gst_buffer_pool_acquire_buffer()</code></a> will return with <a class="link" href="GstPad.html#GST-FLOW-FLUSHING:CAPS"><code class="literal">GST_FLOW_FLUSHING</code></a>.</p>
+<p>Activating the bufferpool will preallocate all resources in the pool based on
+the configuration of the pool.</p>
+<p>Deactivating will free the resources again when there are no outstanding
+buffers. When there are outstanding buffers, they will be freed as soon as
+they are all returned to the pool.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.17.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>active</p></td>
+<td class="parameter_description"><p>the new active state</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.17.8"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> when the pool was not configured or when preallocation of the
+buffers failed.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-is-active"></a><h3>gst_buffer_pool_is_active ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_buffer_pool_is_active (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>);</pre>
+<p>Check if <em class="parameter"><code>pool</code></em>
+ is active. A pool can be activated with the
+<a class="link" href="GstBufferPool.html#gst-buffer-pool-set-active" title="gst_buffer_pool_set_active ()"><code class="function">gst_buffer_pool_set_active()</code></a> call.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.18.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the pool is active.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-set-flushing"></a><h3>gst_buffer_pool_set_flushing ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_buffer_pool_set_flushing (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> flushing</code></em>);</pre>
+<p>Enable or disable the flushing state of a <em class="parameter"><code>pool</code></em>
+ without freeing or
+allocating buffers.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flushing</p></td>
+<td class="parameter_description"><p>whether to start or stop flushing</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-acquire-buffer"></a><h3>gst_buffer_pool_acquire_buffer ()</h3>
+<pre class="programlisting"><a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_buffer_pool_acquire_buffer (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                                <em class="parameter"><code><a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a> **buffer</code></em>,
+                                <em class="parameter"><code><a class="link" href="GstBufferPool.html#GstBufferPoolAcquireParams" title="struct GstBufferPoolAcquireParams"><span class="type">GstBufferPoolAcquireParams</span></a> *params</code></em>);</pre>
+<p>Acquire a buffer from <em class="parameter"><code>pool</code></em>
+. <em class="parameter"><code>buffer</code></em>
+ should point to a memory location that
+can hold a pointer to the new buffer.</p>
+<p><em class="parameter"><code>params</code></em>
+ can be <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> or contain optional parameters to influence the
+allocation.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.20.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p> a location for a <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>params</p></td>
+<td class="parameter_description"><p> parameters. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.9.8.20.7"></a><h4>Returns</h4>
+<p> a <a class="link" href="GstPad.html#GstFlowReturn" title="enum GstFlowReturn"><span class="type">GstFlowReturn</span></a> such as <a class="link" href="GstPad.html#GST-FLOW-FLUSHING:CAPS"><code class="literal">GST_FLOW_FLUSHING</code></a> when the pool is
+inactive.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-pool-release-buffer"></a><h3>gst_buffer_pool_release_buffer ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_buffer_pool_release_buffer (<em class="parameter"><code><a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a> *pool</code></em>,
+                                <em class="parameter"><code><a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a> *buffer</code></em>);</pre>
+<p>Release <em class="parameter"><code>buffer</code></em>
+ to <em class="parameter"><code>pool</code></em>
+. <em class="parameter"><code>buffer</code></em>
+ should have previously been allocated from
+<em class="parameter"><code>pool</code></em>
+ with <a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()"><code class="function">gst_buffer_pool_acquire_buffer()</code></a>.</p>
+<p>This function is usually called automatically when the last ref on <em class="parameter"><code>buffer</code></em>
+
+disappears.</p>
+<div class="refsect3">
+<a name="id-1.3.9.8.21.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>pool</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstBufferPool-struct"></a><h3>GstBufferPool</h3>
+<pre class="programlisting">typedef struct _GstBufferPool GstBufferPool;</pre>
+<p>The structure of a <a class="link" href="GstBufferPool.html" title="GstBufferPool"><span class="type">GstBufferPool</span></a>. Use the associated macros to access the public
+variables.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstBufferPoolClass"></a><h3>struct GstBufferPoolClass</h3>
+<pre class="programlisting">struct GstBufferPoolClass {
+  GstObjectClass    object_class;
+
+  const gchar ** (*get_options)    (GstBufferPool *pool);
+  gboolean       (*set_config)     (GstBufferPool *pool, GstStructure *config);
+
+  gboolean       (*start)          (GstBufferPool *pool);
+  gboolean       (*stop)           (GstBufferPool *pool);
+
+  GstFlowReturn  (*acquire_buffer) (GstBufferPool *pool, GstBuffer **buffer,
+                                    GstBufferPoolAcquireParams *params);
+  GstFlowReturn  (*alloc_buffer)   (GstBufferPool *pool, GstBuffer **buffer,
+                                    GstBufferPoolAcquireParams *params);
+  void           (*reset_buffer)   (GstBufferPool *pool, GstBuffer *buffer);
+  void           (*release_buffer) (GstBufferPool *pool, GstBuffer *buffer);
+  void           (*free_buffer)    (GstBufferPool *pool, GstBuffer *buffer);
+  void           (*flush_start)    (GstBufferPool *pool);
+  void           (*flush_stop)     (GstBufferPool *pool);
+};
+</pre>
+<p>The GstBufferPool class.</p>
+<div class="refsect3">
+<a name="id-1.3.9.9.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstObject.html#GstObjectClass" title="struct GstObjectClass"><span class="type">GstObjectClass</span></a> <em class="structfield"><code><a name="GstBufferPoolClass.object-class"></a>object_class</code></em>;</p></td>
+<td class="struct_member_description"><p>Object parent class</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.get-options"></a>get_options</code></em> ()</p></td>
+<td class="struct_member_description"><p>get a list of options supported by this pool</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.set-config"></a>set_config</code></em> ()</p></td>
+<td class="struct_member_description"><p>apply the bufferpool configuration. The default configuration
+will parse the default config parameters</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.start"></a>start</code></em> ()</p></td>
+<td class="struct_member_description"><p>start the bufferpool. The default implementation will preallocate
+min-buffers buffers and put them in the queue</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.stop"></a>stop</code></em> ()</p></td>
+<td class="struct_member_description"><p>stop the bufferpool. the default implementation will free the
+preallocated buffers. This function is called when all the buffers are
+returned to the pool.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.acquire-buffer"></a>acquire_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>get a new buffer from the pool. The default implementation
+will take a buffer from the queue and optionally wait for a buffer to
+be released when there are no buffers available.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.alloc-buffer"></a>alloc_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>allocate a buffer. the default implementation allocates
+buffers from the configured memory allocator and with the configured
+parameters. All metadata that is present on the allocated buffer will
+be marked as <a class="link" href="gstreamer-GstMeta.html#GST-META-FLAG-POOLED:CAPS"><span class="type">GST_META_FLAG_POOLED</span></a> and <a class="link" href="gstreamer-GstMeta.html#GST-META-FLAG-LOCKED:CAPS"><span class="type">GST_META_FLAG_LOCKED</span></a> and will
+not be removed from the buffer in <em class="parameter"><code>reset_buffer</code></em>
+. The buffer should
+have the GST_BUFFER_FLAG_TAG_MEMORY cleared.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.reset-buffer"></a>reset_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>reset the buffer to its state when it was freshly allocated.
+The default implementation will clear the flags, timestamps and
+will remove the metadata without the <a class="link" href="gstreamer-GstMeta.html#GST-META-FLAG-POOLED:CAPS"><span class="type">GST_META_FLAG_POOLED</span></a> flag (even
+the metadata with <a class="link" href="gstreamer-GstMeta.html#GST-META-FLAG-LOCKED:CAPS"><span class="type">GST_META_FLAG_LOCKED</span></a>). If the
+<a class="link" href="GstBuffer.html#GST-BUFFER-FLAG-TAG-MEMORY:CAPS"><span class="type">GST_BUFFER_FLAG_TAG_MEMORY</span></a> was set, this function can also try to
+restore the memory and clear the <a class="link" href="GstBuffer.html#GST-BUFFER-FLAG-TAG-MEMORY:CAPS"><span class="type">GST_BUFFER_FLAG_TAG_MEMORY</span></a> again.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.release-buffer"></a>release_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>release a buffer back in the pool. The default
+implementation will put the buffer back in the queue and notify any
+blocking acquire_buffer calls when the <a class="link" href="GstBuffer.html#GST-BUFFER-FLAG-TAG-MEMORY:CAPS"><span class="type">GST_BUFFER_FLAG_TAG_MEMORY</span></a>
+is not set on the buffer. If <a class="link" href="GstBuffer.html#GST-BUFFER-FLAG-TAG-MEMORY:CAPS"><span class="type">GST_BUFFER_FLAG_TAG_MEMORY</span></a> is set, the
+buffer will be freed with <em class="parameter"><code>free_buffer</code></em>
+.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.free-buffer"></a>free_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>free a buffer. The default implementation unrefs the buffer.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.flush-start"></a>flush_start</code></em> ()</p></td>
+<td class="struct_member_description"><p>enter the flushing state. (Since 1.4)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstBufferPoolClass.flush-stop"></a>flush_stop</code></em> ()</p></td>
+<td class="struct_member_description"><p>leave the flushign state. (Since 1.4)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstBufferPoolAcquireFlags"></a><h3>enum GstBufferPoolAcquireFlags</h3>
+<p>Additional flags to control the allocation of a buffer</p>
+<div class="refsect3">
+<a name="id-1.3.9.9.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-BUFFER-POOL-ACQUIRE-FLAG-NONE:CAPS"></a>GST_BUFFER_POOL_ACQUIRE_FLAG_NONE</p></td>
+<td class="enum_member_description">
+<p>no flags</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-BUFFER-POOL-ACQUIRE-FLAG-KEY-UNIT:CAPS"></a>GST_BUFFER_POOL_ACQUIRE_FLAG_KEY_UNIT</p></td>
+<td class="enum_member_description">
+<p>buffer is keyframe</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-BUFFER-POOL-ACQUIRE-FLAG-DONTWAIT:CAPS"></a>GST_BUFFER_POOL_ACQUIRE_FLAG_DONTWAIT</p></td>
+<td class="enum_member_description">
+<p>when the bufferpool is empty, acquire_buffer
+will by default block until a buffer is released into the pool again. Setting
+this flag makes acquire_buffer return <a class="link" href="GstPad.html#GST-FLOW-EOS:CAPS"><span class="type">GST_FLOW_EOS</span></a> instead of blocking.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-BUFFER-POOL-ACQUIRE-FLAG-DISCONT:CAPS"></a>GST_BUFFER_POOL_ACQUIRE_FLAG_DISCONT</p></td>
+<td class="enum_member_description">
+<p>buffer is discont</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-BUFFER-POOL-ACQUIRE-FLAG-LAST:CAPS"></a>GST_BUFFER_POOL_ACQUIRE_FLAG_LAST</p></td>
+<td class="enum_member_description">
+<p>last flag, subclasses can use private flags
+   starting from this value.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstBufferPoolAcquireParams"></a><h3>struct GstBufferPoolAcquireParams</h3>
+<pre class="programlisting">struct GstBufferPoolAcquireParams {
+  GstFormat                 format;
+  gint64                    start;
+  gint64                    stop;
+  GstBufferPoolAcquireFlags flags;
+};
+</pre>
+<p>Parameters passed to the <a class="link" href="GstBufferPool.html#gst-buffer-pool-acquire-buffer" title="gst_buffer_pool_acquire_buffer ()"><code class="function">gst_buffer_pool_acquire_buffer()</code></a> function to control the
+allocation of the buffer.</p>
+<p>The default implementation ignores the <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ members but other
+implementations can use this extra information to decide what buffer to
+return.</p>
+<div class="refsect3">
+<a name="id-1.3.9.9.5.6"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> <em class="structfield"><code><a name="GstBufferPoolAcquireParams.format"></a>format</code></em>;</p></td>
+<td class="struct_member_description"><p>the format of <em class="parameter"><code>start</code></em>
+and <em class="parameter"><code>stop</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gint64</span> <em class="structfield"><code><a name="GstBufferPoolAcquireParams.start"></a>start</code></em>;</p></td>
+<td class="struct_member_description"><p>the start position</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gint64</span> <em class="structfield"><code><a name="GstBufferPoolAcquireParams.stop"></a>stop</code></em>;</p></td>
+<td class="struct_member_description"><p>the stop position</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstBufferPool.html#GstBufferPoolAcquireFlags" title="enum GstBufferPoolAcquireFlags"><span class="type">GstBufferPoolAcquireFlags</span></a> <em class="structfield"><code><a name="GstBufferPoolAcquireParams.flags"></a>flags</code></em>;</p></td>
+<td class="struct_member_description"><p>additional flags</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstBufferPool.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

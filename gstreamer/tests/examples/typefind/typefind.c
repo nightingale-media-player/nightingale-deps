@@ -14,11 +14,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/gst.h>
+
+#include <stdlib.h>
 
 static void
 type_found (GstElement * typefind, guint probability, const GstCaps * caps,
@@ -40,35 +42,46 @@ event_loop (GstElement * pipe)
 {
   GstBus *bus;
   GstMessage *message = NULL;
+  gboolean running = TRUE;
 
   bus = gst_element_get_bus (GST_ELEMENT (pipe));
 
-  while (TRUE) {
+  while (running) {
     message = gst_bus_poll (bus, GST_MESSAGE_ANY, -1);
 
     g_assert (message != NULL);
 
     switch (message->type) {
       case GST_MESSAGE_EOS:
-        gst_message_unref (message);
-        return;
-      case GST_MESSAGE_WARNING:
+        running = FALSE;
+        break;
+      case GST_MESSAGE_WARNING:{
+        GError *gerror;
+        gchar *debug;
+
+        gst_message_parse_warning (message, &gerror, &debug);
+        gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
+        g_error_free (gerror);
+        g_free (debug);
+        break;
+      }
       case GST_MESSAGE_ERROR:{
         GError *gerror;
         gchar *debug;
 
         gst_message_parse_error (message, &gerror, &debug);
         gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
-        gst_message_unref (message);
         g_error_free (gerror);
         g_free (debug);
-        return;
+        running = FALSE;
+        break;
       }
       default:
-        gst_message_unref (message);
         break;
     }
+    gst_message_unref (message);
   }
+  gst_object_unref (bus);
 }
 
 int

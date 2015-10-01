@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -22,6 +22,8 @@
 #define __GST_SPEEX_DEC_H__
 
 #include <gst/gst.h>
+#include <gst/audio/gstaudiodecoder.h>
+
 #include <speex/speex.h>
 #include <speex/speex_callbacks.h>
 #include <speex/speex_header.h>
@@ -43,22 +45,12 @@ G_BEGIN_DECLS
 typedef struct _GstSpeexDec GstSpeexDec;
 typedef struct _GstSpeexDecClass GstSpeexDecClass;
 
-#define DEC_MAX_FRAME_SIZE 2000
-
 struct _GstSpeexDec {
-  GstElement            element;
-
-  /* pads */
-  GstPad                *sinkpad;
-  GstPad                *srcpad;
+  GstAudioDecoder   element;
 
   void                  *state;
-  SpeexStereoState      stereo;
-#ifdef SPEEX_1_0
-  SpeexMode             *mode;
-#else
+  SpeexStereoState      *stereo;
   const SpeexMode       *mode;
-#endif
   SpeexHeader           *header;
   SpeexCallback         callback;
   SpeexBits             bits;
@@ -69,12 +61,12 @@ struct _GstSpeexDec {
   GstClockTime          frame_duration;
   guint64               packetno;
 
-  GstSegment            segment;    /* STREAM LOCK */
-  gint64                granulepos; /* -1 = needs to be set from current time */
+  GstBuffer             *streamheader;
+  GstBuffer             *vorbiscomment;
 };
 
 struct _GstSpeexDecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_speex_dec_get_type (void);

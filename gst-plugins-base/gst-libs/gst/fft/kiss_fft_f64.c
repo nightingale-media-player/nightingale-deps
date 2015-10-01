@@ -11,7 +11,9 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "_kiss_fft_guts_f64.h"
 /* The guts header contains all the multiplication and addition macros that are defined for
@@ -265,6 +267,40 @@ kf_work (kiss_fft_f64_cpx * Fout,
   const int m = *factors++;     /* stage's fft length/p */
   const kiss_fft_f64_cpx *Fout_end = Fout + p * m;
 
+#ifdef _OPENMP
+  // use openmp extensions at the 
+  // top-level (not recursive)
+  if (fstride == 1) {
+    int k;
+
+    // execute the p different work units in different threads
+#       pragma omp parallel for
+    for (k = 0; k < p; ++k)
+      kf_work (Fout + k * m, f + fstride * in_stride * k, fstride * p,
+          in_stride, factors, st);
+    // all threads have joined by this point
+
+    switch (p) {
+      case 2:
+        kf_bfly2 (Fout, fstride, st, m);
+        break;
+      case 3:
+        kf_bfly3 (Fout, fstride, st, m);
+        break;
+      case 4:
+        kf_bfly4 (Fout, fstride, st, m);
+        break;
+      case 5:
+        kf_bfly5 (Fout, fstride, st, m);
+        break;
+      default:
+        kf_bfly_generic (Fout, fstride, st, m, p);
+        break;
+    }
+    return;
+  }
+#endif
+
   if (m == 1) {
     do {
       *Fout = *f;
@@ -272,6 +308,10 @@ kf_work (kiss_fft_f64_cpx * Fout,
     } while (++Fout != Fout_end);
   } else {
     do {
+      // recursive call:
+      // DFT of size m*p performed by doing
+      // p instances of smaller DFTs of size m, 
+      // each one takes a decimated version of the input
       kf_work (Fout, f, fstride * p, in_stride, factors, st);
       f += fstride * in_stride;
     } while ((Fout += m) != Fout_end);
@@ -279,6 +319,7 @@ kf_work (kiss_fft_f64_cpx * Fout,
 
   Fout = Fout_beg;
 
+  // recombine the p smaller DFTs 
   switch (p) {
     case 2:
       kf_bfly2 (Fout, fstride, st, m);

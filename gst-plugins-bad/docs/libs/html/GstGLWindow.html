@@ -1,0 +1,1230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstGLWindow: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gl.html" title="OpenGL Helper Library">
+<link rel="prev" href="gst-plugins-bad-libs-Utilities.html" title="Utilities">
+<link rel="next" href="gst-plugins-bad-libs-GstGLWindowAndroid.html" title="GstGLWindowAndroid">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GstGLWindow.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GstGLWindow.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#GstGLWindow.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gl.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-Utilities.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-GstGLWindowAndroid.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstGLWindow"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstGLWindow.top_of_page"></a>GstGLWindow</span></h2>
+<p>GstGLWindow — window/surface abstraction</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstGLWindow.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-error-quark" title="gst_gl_window_error_quark ()">gst_gl_window_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="GstGLWindow.html#GST-GL-WINDOW-ERROR:CAPS" title="GST_GL_WINDOW_ERROR">GST_GL_WINDOW_ERROR</a></td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<span class="c_punctuation">(</span><a class="link" href="GstGLWindow.html#GstGLWindowResizeCB" title="GstGLWindowResizeCB ()">*GstGLWindowResizeCB</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#GST-GL-WINDOW-RESIZE-CB:CAPS" title="GST_GL_WINDOW_RESIZE_CB()">GST_GL_WINDOW_RESIZE_CB</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<span class="c_punctuation">(</span><a class="link" href="GstGLWindow.html#GstGLWindowCB" title="GstGLWindowCB ()">*GstGLWindowCB</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#GST-GL-WINDOW-CB:CAPS" title="GST_GL_WINDOW_CB()">GST_GL_WINDOW_CB</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="returnvalue">GstGLWindow</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-new" title="gst_gl_window_new ()">gst_gl_window_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-draw" title="gst_gl_window_draw ()">gst_gl_window_draw</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-draw-unlocked" title="gst_gl_window_draw_unlocked ()">gst_gl_window_draw_unlocked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-is-running" title="gst_gl_window_is_running ()">gst_gl_window_is_running</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-quit" title="gst_gl_window_quit ()">gst_gl_window_quit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-run" title="gst_gl_window_run ()">gst_gl_window_run</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstGLContext.html" title="GstGLContext"><span class="returnvalue">GstGLContext</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-get-context" title="gst_gl_window_get_context ()">gst_gl_window_get_context</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guintptr</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-get-display" title="gst_gl_window_get_display ()">gst_gl_window_get_display</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-send-message" title="gst_gl_window_send_message ()">gst_gl_window_send_message</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-send-message-async" title="gst_gl_window_send_message_async ()">gst_gl_window_send_message_async</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-set-close-callback" title="gst_gl_window_set_close_callback ()">gst_gl_window_set_close_callback</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-set-draw-callback" title="gst_gl_window_set_draw_callback ()">gst_gl_window_set_draw_callback</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-set-resize-callback" title="gst_gl_window_set_resize_callback ()">gst_gl_window_set_resize_callback</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-set-window-handle" title="gst_gl_window_set_window_handle ()">gst_gl_window_set_window_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guintptr</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-get-window-handle" title="gst_gl_window_get_window_handle ()">gst_gl_window_get_window_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-set-preferred-size" title="gst_gl_window_set_preferred_size ()">gst_gl_window_set_preferred_size</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-show" title="gst_gl_window_show ()">gst_gl_window_show</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-get-surface-dimensions" title="gst_gl_window_get_surface_dimensions ()">gst_gl_window_get_surface_dimensions</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLWindow.html#gst-gl-window-handle-events" title="gst_gl_window_handle_events ()">gst_gl_window_handle_events</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="GstGLWindow.html#GstGLWindow-key-event" title="The “key-event” signal">key-event</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="GstGLWindow.html#GstGLWindow-mouse-event" title="The “mouse-event” signal">mouse-event</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstGLWindow.html#GstGLWindowError" title="enum GstGLWindowError">GstGLWindowError</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstGLWindow.html#GstGLWindow-struct" title="GstGLWindow">GstGLWindow</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstGLWindow.html#GstGLWindowClass" title="GstGLWindowClass">GstGLWindowClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> GstGLWindow
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.description"></a><h2>Description</h2>
+<p>GstGLWindow represents a window that elements can render into.  A window can
+either be a user visible window (onscreen) or hidden (offscreen).</p>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-gl-window-error-quark"></a><h3>gst_gl_window_error_quark ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+gst_gl_window_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-GL-WINDOW-ERROR:CAPS"></a><h3>GST_GL_WINDOW_ERROR</h3>
+<pre class="programlisting">#define GST_GL_WINDOW_ERROR (gst_gl_window_error_quark ())
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLWindowResizeCB"></a><h3>GstGLWindowResizeCB ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+<span class="c_punctuation">(</span>*GstGLWindowResizeCB<span class="c_punctuation">)</span> (<em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> width</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> height</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-GL-WINDOW-RESIZE-CB:CAPS"></a><h3>GST_GL_WINDOW_RESIZE_CB()</h3>
+<pre class="programlisting">#define GST_GL_WINDOW_RESIZE_CB(f)		 ((GstGLWindowResizeCB) (f))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLWindowCB"></a><h3>GstGLWindowCB ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+<span class="c_punctuation">(</span>*GstGLWindowCB<span class="c_punctuation">)</span> (<em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-GL-WINDOW-CB:CAPS"></a><h3>GST_GL_WINDOW_CB()</h3>
+<pre class="programlisting">#define GST_GL_WINDOW_CB(f)			 ((GstGLWindowCB) (f))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-new"></a><h3>gst_gl_window_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="returnvalue">GstGLWindow</span></a> *
+gst_gl_window_new (<em class="parameter"><code><a class="link" href="GstGLDisplay.html" title="GstGLDisplay"><span class="type">GstGLDisplay</span></a> *display</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.8.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLDisplay.html" title="GstGLDisplay"><span class="type">GstGLDisplay</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.8.5"></a><h4>Returns</h4>
+<p> a new <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> using <em class="parameter"><code>display</code></em>
+'s connection. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-draw"></a><h3>gst_gl_window_draw ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_draw (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Redraw the window contents.  Implementations should invoke the draw callback.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-draw-unlocked"></a><h3>gst_gl_window_draw_unlocked ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_draw_unlocked (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Redraw the window contents.  Implementations should invoke the draw callback.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-is-running"></a><h3>gst_gl_window_is_running ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_window_is_running (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Whether the runloop is running</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-quit"></a><h3>gst_gl_window_quit ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_quit (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Quit the runloop's execution.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-run"></a><h3>gst_gl_window_run ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_run (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Start the execution of the runloop.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-get-context"></a><h3>gst_gl_window_get_context ()</h3>
+<pre class="programlisting"><a class="link" href="GstGLContext.html" title="GstGLContext"><span class="returnvalue">GstGLContext</span></a> *
+gst_gl_window_get_context (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.14.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.14.5"></a><h4>Returns</h4>
+<p> the <a class="link" href="GstGLContext.html" title="GstGLContext"><span class="type">GstGLContext</span></a> associated with this <em class="parameter"><code>window</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-get-display"></a><h3>gst_gl_window_get_display ()</h3>
+<pre class="programlisting"><span class="returnvalue">guintptr</span>
+gst_gl_window_get_display (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.15.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.15.5"></a><h4>Returns</h4>
+<p> the windowing system display handle for this <em class="parameter"><code>window</code></em>
+</p>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-send-message"></a><h3>gst_gl_window_send_message ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_send_message (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                            <em class="parameter"><code><a class="link" href="GstGLWindow.html#GstGLWindowCB" title="GstGLWindowCB ()"><span class="type">GstGLWindowCB</span></a> callback</code></em>,
+                            <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<p>Invoke <em class="parameter"><code>callback</code></em>
+ with data on the window thread.  <em class="parameter"><code>callback</code></em>
+ is guarenteed to
+have executed when this function returns.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p> function to invoke. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until first called."><span class="acronym">scope async</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data to invoke <em class="parameter"><code>callback</code></em>
+with. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-send-message-async"></a><h3>gst_gl_window_send_message_async ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_send_message_async (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                  <em class="parameter"><code><a class="link" href="GstGLWindow.html#GstGLWindowCB" title="GstGLWindowCB ()"><span class="type">GstGLWindowCB</span></a> callback</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> destroy</code></em>);</pre>
+<p>Invoke <em class="parameter"><code>callback</code></em>
+ with <em class="parameter"><code>data</code></em>
+ on the window thread.  The callback may not
+have been executed when this function returns.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p> function to invoke. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until first called."><span class="acronym">scope async</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data to invoke <em class="parameter"><code>callback</code></em>
+with. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>destroy</p></td>
+<td class="parameter_description"><p> called when <em class="parameter"><code>data</code></em>
+is not needed anymore. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'destroy_data', for callbacks."><span class="acronym">destroy</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-set-close-callback"></a><h3>gst_gl_window_set_close_callback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_set_close_callback (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                  <em class="parameter"><code><a class="link" href="GstGLWindow.html#GstGLWindowCB" title="GstGLWindowCB ()"><span class="type">GstGLWindowCB</span></a> callback</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> destroy_notify</code></em>);</pre>
+<p>Sets the callback called when the window is about to close.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p> function to invoke. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until the GDestroyNotify argument is called."><span class="acronym">scope notified</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data to invoke <em class="parameter"><code>callback</code></em>
+with. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>destroy_notify</p></td>
+<td class="parameter_description"><p> called when <em class="parameter"><code>data</code></em>
+is not needed any more. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'destroy_data', for callbacks."><span class="acronym">destroy</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-set-draw-callback"></a><h3>gst_gl_window_set_draw_callback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_set_draw_callback (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                 <em class="parameter"><code><a class="link" href="GstGLWindow.html#GstGLWindowCB" title="GstGLWindowCB ()"><span class="type">GstGLWindowCB</span></a> callback</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> destroy_notify</code></em>);</pre>
+<p>Sets the draw callback called everytime <a class="link" href="GstGLWindow.html#gst-gl-window-draw" title="gst_gl_window_draw ()"><code class="function">gst_gl_window_draw()</code></a> is called</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p> function to invoke. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until the GDestroyNotify argument is called."><span class="acronym">scope notified</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data to invoke <em class="parameter"><code>callback</code></em>
+with. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>destroy_notify</p></td>
+<td class="parameter_description"><p> called when <em class="parameter"><code>data</code></em>
+is not needed any more. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'destroy_data', for callbacks."><span class="acronym">destroy</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-set-resize-callback"></a><h3>gst_gl_window_set_resize_callback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_set_resize_callback (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                   <em class="parameter"><code><a class="link" href="GstGLWindow.html#GstGLWindowResizeCB" title="GstGLWindowResizeCB ()"><span class="type">GstGLWindowResizeCB</span></a> callback</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> destroy_notify</code></em>);</pre>
+<p>Sets the resize callback called everytime a resize of the window occurs.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p> function to invoke. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until the GDestroyNotify argument is called."><span class="acronym">scope notified</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data to invoke <em class="parameter"><code>callback</code></em>
+with. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>destroy_notify</p></td>
+<td class="parameter_description"><p> called when <em class="parameter"><code>data</code></em>
+is not needed any more. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'destroy_data', for callbacks."><span class="acronym">destroy</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-set-window-handle"></a><h3>gst_gl_window_set_window_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_set_window_handle (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                 <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);</pre>
+<p>Sets the window that this <em class="parameter"><code>window</code></em>
+ should render into.  Some implementations
+require this to be called with a valid handle before drawing can commence.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>handle</p></td>
+<td class="parameter_description"><p>handle to the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-get-window-handle"></a><h3>gst_gl_window_get_window_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">guintptr</span>
+gst_gl_window_get_window_handle (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.22.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.22.5"></a><h4>Returns</h4>
+<p> the window handle we are currently rendering into</p>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-set-preferred-size"></a><h3>gst_gl_window_set_preferred_size ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_set_preferred_size (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> width</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> height</code></em>);</pre>
+<p>Set the preferred width and height of the window.  Implementations are free
+to ignore this information.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>new preferred width</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>new preferred height</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-show"></a><h3>gst_gl_window_show ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_show (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>);</pre>
+<p>Present the window to the screen.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-get-surface-dimensions"></a><h3>gst_gl_window_get_surface_dimensions ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_get_surface_dimensions (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *width</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *height</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.25.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p> resulting surface width. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p> resulting surface height. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-window-handle-events"></a><h3>gst_gl_window_handle_events ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_window_handle_events (<em class="parameter"><code><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *window</code></em>,
+                             <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> handle_events</code></em>);</pre>
+<p>Tell a <em class="parameter"><code>window</code></em>
+ that it should handle events from the window system. These
+events are forwarded upstream as navigation events. In some window systems
+events are not propagated in the window hierarchy if a client is listening
+for them. This method allows you to disable events handling completely
+from the <em class="parameter"><code>window</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.8.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>window</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>handle_events</p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating if events should be handled or not.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstGLWindowError"></a><h3>enum GstGLWindowError</h3>
+<div class="refsect3">
+<a name="id-1.2.9.23.9.2.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-WINDOW-ERROR-FAILED:CAPS"></a>GST_GL_WINDOW_ERROR_FAILED</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-WINDOW-ERROR-OLD-LIBS:CAPS"></a>GST_GL_WINDOW_ERROR_OLD_LIBS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-WINDOW-ERROR-RESOURCE-UNAVAILABLE:CAPS"></a>GST_GL_WINDOW_ERROR_RESOURCE_UNAVAILABLE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLWindow-struct"></a><h3>GstGLWindow</h3>
+<pre class="programlisting">typedef struct _GstGLWindow GstGLWindow;</pre>
+<p><a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> is an opaque struct and should only be accessed through the
+provided api.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLWindowClass"></a><h3>GstGLWindowClass</h3>
+<pre class="programlisting">typedef struct {
+  GstObjectClass parent_class;
+
+  guintptr (*get_display)        (GstGLWindow *window);
+  void     (*set_window_handle)  (GstGLWindow *window, guintptr id);
+  guintptr (*get_window_handle)  (GstGLWindow *window);
+  void     (*draw_unlocked)      (GstGLWindow *window);
+  void     (*draw)               (GstGLWindow *window);
+  void     (*run)                (GstGLWindow *window);
+  void     (*quit)               (GstGLWindow *window);
+  void     (*send_message)       (GstGLWindow *window, GstGLWindowCB callback, gpointer data);
+  void     (*send_message_async) (GstGLWindow *window, GstGLWindowCB callback, gpointer data, GDestroyNotify destroy);
+
+  gboolean (*open)               (GstGLWindow *window, GError **error);
+  void     (*close)              (GstGLWindow *window);
+  void     (*handle_events)      (GstGLWindow *window, gboolean handle_events);
+  void     (*set_preferred_size) (GstGLWindow *window, gint width, gint height);
+  void     (*show)               (GstGLWindow *window);
+  gboolean (*set_render_rectangle)(GstGLWindow *window, gint x, gint y, gint width, gint height);
+  void     (*queue_resize)       (GstGLWindow *window);
+} GstGLWindowClass;
+</pre>
+<div class="refsect3">
+<a name="id-1.2.9.23.9.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html#GstObjectClass"><span class="type">GstObjectClass</span></a> <em class="structfield"><code><a name="GstGLWindowClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>Parent class</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.get-display"></a>get_display</code></em> ()</p></td>
+<td class="struct_member_description"><p>Gets the current windowing system display connection</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.set-window-handle"></a>set_window_handle</code></em> ()</p></td>
+<td class="struct_member_description"><p>Set a window to render into</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.get-window-handle"></a>get_window_handle</code></em> ()</p></td>
+<td class="struct_member_description"><p>Gets the current window that this <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> is
+rendering into</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.draw-unlocked"></a>draw_unlocked</code></em> ()</p></td>
+<td class="struct_member_description"><p>redraw the window with the specified dimensions</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.draw"></a>draw</code></em> ()</p></td>
+<td class="struct_member_description"><p>redraw the window with the specified dimensions</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.run"></a>run</code></em> ()</p></td>
+<td class="struct_member_description"><p>run the mainloop</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.quit"></a>quit</code></em> ()</p></td>
+<td class="struct_member_description"><p>send a quit to the mainloop</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.send-message"></a>send_message</code></em> ()</p></td>
+<td class="struct_member_description"><p>invoke a function on the window thread.  Required to be reentrant.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.send-message-async"></a>send_message_async</code></em> ()</p></td>
+<td class="struct_member_description"><p>invoke a function on the window thread. <em class="parameter"><code>run</code></em>
+may or may
+not have been called.  Required to be reentrant.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.open"></a>open</code></em> ()</p></td>
+<td class="struct_member_description"><p>open the connection to the display</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.close"></a>close</code></em> ()</p></td>
+<td class="struct_member_description"><p>close the connection to the display</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.handle-events"></a>handle_events</code></em> ()</p></td>
+<td class="struct_member_description"><p>whether to handle 'extra' events from the windowing system.
+Basic events like surface moves and resizes are still valid
+things to listen for.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.set-preferred-size"></a>set_preferred_size</code></em> ()</p></td>
+<td class="struct_member_description"><p>request that the window change surface size.  The
+implementation is free to ignore this information.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.show"></a>show</code></em> ()</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.set-render-rectangle"></a>set_render_rectangle</code></em> ()</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLWindowClass.queue-resize"></a>queue_resize</code></em> ()</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstGLWindow-key-event"></a><h3>The <code class="literal">“key-event”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *object,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>       *id,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>       *key,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)</pre>
+<p>Will be emitted when a key event is received by the GstGLwindow.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.10.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>object</p></td>
+<td class="parameter_description"><p>the <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>id</p></td>
+<td class="parameter_description"><p>the name of the event</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>the id of the key pressed</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLWindow-mouse-event"></a><h3>The <code class="literal">“mouse-event”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a> *object,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>       *id,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>         button,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>      x,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>      y,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)</pre>
+<p>Will be emitted when a mouse event is received by the GstGLwindow.</p>
+<div class="refsect3">
+<a name="id-1.2.9.23.10.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>object</p></td>
+<td class="parameter_description"><p>the <a class="link" href="GstGLWindow.html" title="GstGLWindow"><span class="type">GstGLWindow</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>id</p></td>
+<td class="parameter_description"><p>the name of the event</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>button</p></td>
+<td class="parameter_description"><p>the id of the button</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>the x coordinate of the mouse event</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>the y coordinate of the mouse event</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+<p class="since">Since: 1.6</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstGLWindow.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="GstGLContext.html" title="GstGLContext"><span class="type">GstGLContext</span></a>, <a class="link" href="GstGLDisplay.html" title="GstGLDisplay"><span class="type">GstGLDisplay</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

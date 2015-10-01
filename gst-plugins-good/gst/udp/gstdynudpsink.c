@@ -2,6 +2,8 @@
  * Copyright (C) <2005> Philippe Khalaf <burger@speedy.org>
  * Copyright (C) <2005> Nokia Corporation <kai.vehmanen@nokia.com>
  * Copyright (C) <2006> Joni Valtanen <joni.valtanen@movial.fi>
+ * Copyright (C) <2012> Collabora Ltd.
+ *   Author: Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,28 +17,16 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include "gstudp-marshal.h"
 #include "gstdynudpsink.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <errno.h>
-#include <string.h>
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#include <sys/types.h>
-#include <gst/netbuffer/gstnetbuffer.h>
+#include <gst/net/gstnetaddressmeta.h>
 
 GST_DEBUG_CATEGORY_STATIC (dynudpsink_debug);
 #define GST_CAT_DEFAULT (dynudpsink_debug)
@@ -45,13 +35,6 @@ static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
-
-/* elementfactory information */
-static const GstElementDetails gst_dynudpsink_details =
-GST_ELEMENT_DETAILS ("UDP packet sender",
-    "Sink/Network",
-    "Send data over the network via UDP",
-    "Philippe Khalaf <burger@speedy.org>");
 
 /* DynUDPSink signals and args */
 enum
@@ -65,85 +48,44 @@ enum
   LAST_SIGNAL
 };
 
-#define UDP_DEFAULT_SOCKFD		-1
-#define UDP_DEFAULT_CLOSEFD		TRUE
+#define UDP_DEFAULT_SOCKET		NULL
+#define UDP_DEFAULT_CLOSE_SOCKET	TRUE
+#define UDP_DEFAULT_BIND_ADDRESS	NULL
+#define UDP_DEFAULT_BIND_PORT   	0
 
 enum
 {
   PROP_0,
-  PROP_SOCKFD,
-  PROP_CLOSEFD
+  PROP_SOCKET,
+  PROP_SOCKET_V6,
+  PROP_CLOSE_SOCKET,
+  PROP_BIND_ADDRESS,
+  PROP_BIND_PORT
 };
 
-#define CLOSE_IF_REQUESTED(udpctx)                                        \
-G_STMT_START {                                                            \
-  if ((!udpctx->externalfd) || (udpctx->externalfd && udpctx->closefd)) { \
-    CLOSE_SOCKET(udpctx->sock);                                           \
-    if (udpctx->sock == udpctx->sockfd)                                   \
-      udpctx->sockfd = UDP_DEFAULT_SOCKFD;                                \
-  }                                                                       \
-  udpctx->sock = -1;                                                      \
-} G_STMT_END
-
-static void gst_dynudpsink_base_init (gpointer g_class);
-static void gst_dynudpsink_class_init (GstDynUDPSink * klass);
-static void gst_dynudpsink_init (GstDynUDPSink * udpsink);
 static void gst_dynudpsink_finalize (GObject * object);
 
 static GstFlowReturn gst_dynudpsink_render (GstBaseSink * sink,
     GstBuffer * buffer);
-static void gst_dynudpsink_close (GstDynUDPSink * sink);
-static GstStateChangeReturn gst_dynudpsink_change_state (GstElement * element,
-    GstStateChange transition);
+static gboolean gst_dynudpsink_stop (GstBaseSink * bsink);
+static gboolean gst_dynudpsink_start (GstBaseSink * bsink);
+static gboolean gst_dynudpsink_unlock (GstBaseSink * bsink);
+static gboolean gst_dynudpsink_unlock_stop (GstBaseSink * bsink);
 
 static void gst_dynudpsink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_dynudpsink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-
-static GstElementClass *parent_class = NULL;
+static GstStructure *gst_dynudpsink_get_stats (GstDynUDPSink * sink,
+    const gchar * host, gint port);
 
 static guint gst_dynudpsink_signals[LAST_SIGNAL] = { 0 };
 
-GType
-gst_dynudpsink_get_type (void)
-{
-  static GType dynudpsink_type = 0;
-
-  if (!dynudpsink_type) {
-    static const GTypeInfo dynudpsink_info = {
-      sizeof (GstDynUDPSinkClass),
-      gst_dynudpsink_base_init,
-      NULL,
-      (GClassInitFunc) gst_dynudpsink_class_init,
-      NULL,
-      NULL,
-      sizeof (GstDynUDPSink),
-      0,
-      (GInstanceInitFunc) gst_dynudpsink_init,
-      NULL
-    };
-
-    dynudpsink_type =
-        g_type_register_static (GST_TYPE_BASE_SINK, "GstDynUDPSink",
-        &dynudpsink_info, 0);
-  }
-  return dynudpsink_type;
-}
+#define gst_dynudpsink_parent_class parent_class
+G_DEFINE_TYPE (GstDynUDPSink, gst_dynudpsink, GST_TYPE_BASE_SINK);
 
 static void
-gst_dynudpsink_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-
-  gst_element_class_set_details (element_class, &gst_dynudpsink_details);
-}
-
-static void
-gst_dynudpsink_class_init (GstDynUDPSink * klass)
+gst_dynudpsink_class_init (GstDynUDPSinkClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
@@ -160,23 +102,50 @@ gst_dynudpsink_class_init (GstDynUDPSink * klass)
   gobject_class->finalize = gst_dynudpsink_finalize;
 
   gst_dynudpsink_signals[SIGNAL_GET_STATS] =
-      g_signal_new ("get-stats", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
+      g_signal_new ("get-stats", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
       G_STRUCT_OFFSET (GstDynUDPSinkClass, get_stats),
-      NULL, NULL, gst_udp_marshal_BOXED__STRING_INT, G_TYPE_VALUE_ARRAY, 2,
+      NULL, NULL, g_cclosure_marshal_generic, GST_TYPE_STRUCTURE, 2,
       G_TYPE_STRING, G_TYPE_INT);
 
-  g_object_class_install_property (gobject_class, PROP_SOCKFD,
-      g_param_spec_int ("sockfd", "socket handle",
-          "Socket to use for UDP sending. (-1 == allocate)",
-          -1, G_MAXINT16, UDP_DEFAULT_SOCKFD, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, PROP_CLOSEFD,
-      g_param_spec_boolean ("closefd", "Close sockfd",
-          "Close sockfd if passed as property on state change",
-          UDP_DEFAULT_CLOSEFD, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_SOCKET,
+      g_param_spec_object ("socket", "Socket",
+          "Socket to use for UDP sending. (NULL == allocate)",
+          G_TYPE_SOCKET, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_SOCKET_V6,
+      g_param_spec_object ("socket-v6", "Socket IPv6",
+          "Socket to use for UDPv6 sending. (NULL == allocate)",
+          G_TYPE_SOCKET, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_CLOSE_SOCKET,
+      g_param_spec_boolean ("close-socket", "Close socket",
+          "Close socket if passed as property on state change",
+          UDP_DEFAULT_CLOSE_SOCKET,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_BIND_ADDRESS,
+      g_param_spec_string ("bind-address", "Bind Address",
+          "Address to bind the socket to", UDP_DEFAULT_BIND_ADDRESS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_BIND_PORT,
+      g_param_spec_int ("bind-port", "Bind Port",
+          "Port to bind the socket to", 0, G_MAXUINT16,
+          UDP_DEFAULT_BIND_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gstelement_class->change_state = gst_dynudpsink_change_state;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "UDP packet sender",
+      "Sink/Network",
+      "Send data over the network via UDP with packet destinations picked up "
+      "dynamically from meta on the buffers passed",
+      "Philippe Khalaf <burger@speedy.org>");
 
   gstbasesink_class->render = gst_dynudpsink_render;
+  gstbasesink_class->start = gst_dynudpsink_start;
+  gstbasesink_class->stop = gst_dynudpsink_stop;
+  gstbasesink_class->unlock = gst_dynudpsink_unlock;
+  gstbasesink_class->unlock_stop = gst_dynudpsink_unlock_stop;
+
+  klass->get_stats = gst_dynudpsink_get_stats;
 
   GST_DEBUG_CATEGORY_INIT (dynudpsink_debug, "dynudpsink", 0, "UDP sink");
 }
@@ -184,85 +153,128 @@ gst_dynudpsink_class_init (GstDynUDPSink * klass)
 static void
 gst_dynudpsink_init (GstDynUDPSink * sink)
 {
-  WSA_STARTUP (sink);
+  sink->socket = UDP_DEFAULT_SOCKET;
+  sink->socket_v6 = UDP_DEFAULT_SOCKET;
+  sink->close_socket = UDP_DEFAULT_CLOSE_SOCKET;
+  sink->external_socket = FALSE;
+  sink->bind_address = UDP_DEFAULT_BIND_ADDRESS;
+  sink->bind_port = UDP_DEFAULT_BIND_PORT;
 
-  sink->sockfd = UDP_DEFAULT_SOCKFD;
-  sink->closefd = UDP_DEFAULT_CLOSEFD;
-  sink->externalfd = FALSE;
-
-  sink->sock = -1;
+  sink->used_socket = NULL;
+  sink->used_socket_v6 = NULL;
 }
 
 static void
 gst_dynudpsink_finalize (GObject * object)
 {
-  GstDynUDPSink *udpsink;
+  GstDynUDPSink *sink;
 
-  udpsink = GST_DYNUDPSINK (object);
+  sink = GST_DYNUDPSINK (object);
 
-  if (udpsink->sockfd >= 0 && udpsink->closefd)
-    CLOSE_SOCKET (udpsink->sockfd);
+  if (sink->socket)
+    g_object_unref (sink->socket);
+  sink->socket = NULL;
+
+  if (sink->socket_v6)
+    g_object_unref (sink->socket_v6);
+  sink->socket_v6 = NULL;
+
+  if (sink->used_socket)
+    g_object_unref (sink->used_socket);
+  sink->used_socket = NULL;
+
+  if (sink->used_socket_v6)
+    g_object_unref (sink->used_socket_v6);
+  sink->used_socket_v6 = NULL;
+
+  g_free (sink->bind_address);
+  sink->bind_address = NULL;
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
-
-  WSA_CLEANUP (object);
 }
 
 static GstFlowReturn
 gst_dynudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
 {
   GstDynUDPSink *sink;
-  gint ret, size;
-  guint8 *data;
-  GstNetBuffer *netbuf;
-  struct sockaddr_in theiraddr;
-  guint16 destport;
-  guint32 destaddr;
+  gssize ret;
+  GstMapInfo map;
+  GstNetAddressMeta *meta;
+  GSocketAddress *addr;
+  GError *err = NULL;
+  GSocketFamily family;
+  GSocket *socket;
 
-  memset (&theiraddr, 0, sizeof (theiraddr));
+  meta = gst_buffer_get_net_address_meta (buffer);
 
-  if (GST_IS_NETBUFFER (buffer)) {
-    netbuf = GST_NETBUFFER (buffer);
-  } else {
-    GST_DEBUG ("Received buffer is not a GstNetBuffer, skipping");
+  if (meta == NULL) {
+    GST_DEBUG ("Received buffer without GstNetAddressMeta, skipping");
     return GST_FLOW_OK;
   }
 
   sink = GST_DYNUDPSINK (bsink);
 
-  size = GST_BUFFER_SIZE (netbuf);
-  data = GST_BUFFER_DATA (netbuf);
+  /* let's get the address from the metadata */
+  addr = meta->addr;
 
-  GST_DEBUG ("about to send %d bytes", size);
+  family = g_socket_address_get_family (addr);
+  if (family == G_SOCKET_FAMILY_IPV6 && !sink->used_socket_v6)
+    goto invalid_family;
 
-  // let's get the address from the netbuffer
-  gst_netaddress_get_ip4_address (&netbuf->to, &destaddr, &destport);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
 
-  GST_DEBUG ("sending %d bytes to client %d port %d", size, destaddr, destport);
+  GST_DEBUG ("about to send %" G_GSIZE_FORMAT " bytes", map.size);
 
-  theiraddr.sin_family = AF_INET;
-  theiraddr.sin_addr.s_addr = destaddr;
-  theiraddr.sin_port = destport;
-#ifdef G_OS_WIN32
-  ret = sendto (sink->sock, (char *) data, size, 0,
-#else
-  ret = sendto (sink->sock, data, size, 0,
-#endif
-      (struct sockaddr *) &theiraddr, sizeof (theiraddr));
+#ifndef GST_DISABLE_GST_DEBUG
+  {
+    gchar *host;
 
-  if (ret < 0) {
-    if (errno != EINTR && errno != EAGAIN) {
-      goto send_error;
-    }
+    host =
+        g_inet_address_to_string (g_inet_socket_address_get_address
+        (G_INET_SOCKET_ADDRESS (addr)));
+    GST_DEBUG ("sending %" G_GSIZE_FORMAT " bytes to client %s port %d",
+        map.size, host,
+        g_inet_socket_address_get_port (G_INET_SOCKET_ADDRESS (addr)));
+    g_free (host);
   }
+#endif
 
-  GST_DEBUG ("sent %d bytes", size);
+  /* Select socket to send from for this address */
+  if (family == G_SOCKET_FAMILY_IPV6 || !sink->used_socket)
+    socket = sink->used_socket_v6;
+  else
+    socket = sink->used_socket;
+
+  ret =
+      g_socket_send_to (socket, addr, (gchar *) map.data, map.size,
+      sink->cancellable, &err);
+  gst_buffer_unmap (buffer, &map);
+
+  if (ret < 0)
+    goto send_error;
+
+  GST_DEBUG ("sent %" G_GSSIZE_FORMAT " bytes", ret);
 
   return GST_FLOW_OK;
 
 send_error:
   {
-    GST_DEBUG ("got send error %s (%d)", g_strerror (errno), errno);
+    GstFlowReturn flow_ret;
+
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (sink, "send cancelled");
+      flow_ret = GST_FLOW_FLUSHING;
+    } else {
+      GST_ELEMENT_ERROR (sink, RESOURCE, WRITE, (NULL),
+          ("send error: %s", err->message));
+      flow_ret = GST_FLOW_ERROR;
+    }
+    g_clear_error (&err);
+    return flow_ret;
+  }
+invalid_family:
+  {
+    GST_DEBUG ("invalid address family (got %d)", family);
     return GST_FLOW_ERROR;
   }
 }
@@ -276,17 +288,49 @@ gst_dynudpsink_set_property (GObject * object, guint prop_id,
   udpsink = GST_DYNUDPSINK (object);
 
   switch (prop_id) {
-    case PROP_SOCKFD:
-      if (udpsink->sockfd >= 0 && udpsink->sockfd != udpsink->sock &&
-          udpsink->closefd)
-        CLOSE_SOCKET (udpsink->sockfd);
-      udpsink->sockfd = g_value_get_int (value);
-      GST_DEBUG ("setting SOCKFD to %d", udpsink->sockfd);
-      break;
-    case PROP_CLOSEFD:
-      udpsink->closefd = g_value_get_boolean (value);
-      break;
+    case PROP_SOCKET:
+      if (udpsink->socket != NULL && udpsink->socket != udpsink->used_socket &&
+          udpsink->close_socket) {
+        GError *err = NULL;
 
+        if (!g_socket_close (udpsink->socket, &err)) {
+          GST_ERROR ("failed to close socket %p: %s", udpsink->socket,
+              err->message);
+          g_clear_error (&err);
+        }
+      }
+      if (udpsink->socket)
+        g_object_unref (udpsink->socket);
+      udpsink->socket = g_value_dup_object (value);
+      GST_DEBUG ("setting socket to %p", udpsink->socket);
+      break;
+    case PROP_SOCKET_V6:
+      if (udpsink->socket_v6 != NULL
+          && udpsink->socket_v6 != udpsink->used_socket_v6
+          && udpsink->close_socket) {
+        GError *err = NULL;
+
+        if (!g_socket_close (udpsink->socket_v6, &err)) {
+          GST_ERROR ("failed to close socket %p: %s", udpsink->socket_v6,
+              err->message);
+          g_clear_error (&err);
+        }
+      }
+      if (udpsink->socket_v6)
+        g_object_unref (udpsink->socket_v6);
+      udpsink->socket_v6 = g_value_dup_object (value);
+      GST_DEBUG ("setting socket v6 to %p", udpsink->socket_v6);
+      break;
+    case PROP_CLOSE_SOCKET:
+      udpsink->close_socket = g_value_get_boolean (value);
+      break;
+    case PROP_BIND_ADDRESS:
+      g_free (udpsink->bind_address);
+      udpsink->bind_address = g_value_dup_string (value);
+      break;
+    case PROP_BIND_PORT:
+      udpsink->bind_port = g_value_get_int (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -302,11 +346,20 @@ gst_dynudpsink_get_property (GObject * object, guint prop_id, GValue * value,
   udpsink = GST_DYNUDPSINK (object);
 
   switch (prop_id) {
-    case PROP_SOCKFD:
-      g_value_set_int (value, udpsink->sockfd);
+    case PROP_SOCKET:
+      g_value_set_object (value, udpsink->socket);
       break;
-    case PROP_CLOSEFD:
-      g_value_set_boolean (value, udpsink->closefd);
+    case PROP_SOCKET_V6:
+      g_value_set_object (value, udpsink->socket_v6);
+      break;
+    case PROP_CLOSE_SOCKET:
+      g_value_set_boolean (value, udpsink->close_socket);
+      break;
+    case PROP_BIND_ADDRESS:
+      g_value_set_string (value, udpsink->bind_address);
+      break;
+    case PROP_BIND_PORT:
+      g_value_set_int (value, udpsink->bind_port);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -314,87 +367,234 @@ gst_dynudpsink_get_property (GObject * object, guint prop_id, GValue * value,
   }
 }
 
+static void
+gst_dynudpsink_create_cancellable (GstDynUDPSink * sink)
+{
+  GPollFD pollfd;
+
+  sink->cancellable = g_cancellable_new ();
+  sink->made_cancel_fd = g_cancellable_make_pollfd (sink->cancellable, &pollfd);
+}
+
+static void
+gst_dynudpsink_free_cancellable (GstDynUDPSink * sink)
+{
+  if (sink->made_cancel_fd) {
+    g_cancellable_release_fd (sink->cancellable);
+    sink->made_cancel_fd = FALSE;
+  }
+  g_object_unref (sink->cancellable);
+  sink->cancellable = NULL;
+}
 
 /* create a socket for sending to remote machine */
 static gboolean
-gst_dynudpsink_init_send (GstDynUDPSink * sink)
+gst_dynudpsink_start (GstBaseSink * bsink)
 {
-  guint bc_val;
+  GstDynUDPSink *udpsink;
+  GError *err = NULL;
 
-  if (sink->sockfd == -1) {
-    /* create sender socket if none available */
-    if ((sink->sock = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
-      goto no_socket;
+  udpsink = GST_DYNUDPSINK (bsink);
 
-    bc_val = 1;
-    if (setsockopt (sink->sock, SOL_SOCKET, SO_BROADCAST, &bc_val,
-            sizeof (bc_val)) < 0)
-      goto no_broadcast;
+  gst_dynudpsink_create_cancellable (udpsink);
 
-    sink->externalfd = TRUE;
-  } else {
-    sink->sock = sink->sockfd;
-    sink->externalfd = TRUE;
+  udpsink->external_socket = FALSE;
+
+  if (udpsink->socket) {
+    if (g_socket_get_family (udpsink->socket) == G_SOCKET_FAMILY_IPV6) {
+      udpsink->used_socket_v6 = G_SOCKET (g_object_ref (udpsink->socket));
+      udpsink->external_socket = TRUE;
+    } else {
+      udpsink->used_socket = G_SOCKET (g_object_ref (udpsink->socket));
+      udpsink->external_socket = TRUE;
+    }
   }
+
+  if (udpsink->socket_v6) {
+    g_return_val_if_fail (g_socket_get_family (udpsink->socket) !=
+        G_SOCKET_FAMILY_IPV6, FALSE);
+
+    if (udpsink->used_socket_v6
+        && udpsink->used_socket_v6 != udpsink->socket_v6) {
+      GST_ERROR_OBJECT (udpsink,
+          "Provided different IPv6 sockets in socket and socket-v6 properties");
+      return FALSE;
+    }
+
+    udpsink->used_socket_v6 = G_SOCKET (g_object_ref (udpsink->socket_v6));
+    udpsink->external_socket = TRUE;
+  }
+
+  if (!udpsink->used_socket && !udpsink->used_socket_v6) {
+    GSocketAddress *bind_addr;
+    GInetAddress *bind_iaddr;
+
+    if (udpsink->bind_address) {
+      GSocketFamily family;
+
+      bind_iaddr = g_inet_address_new_from_string (udpsink->bind_address);
+      if (!bind_iaddr) {
+        GList *results;
+        GResolver *resolver;
+
+        resolver = g_resolver_get_default ();
+        results =
+            g_resolver_lookup_by_name (resolver, udpsink->bind_address,
+            udpsink->cancellable, &err);
+        if (!results) {
+          g_object_unref (resolver);
+          goto name_resolve;
+        }
+        bind_iaddr = G_INET_ADDRESS (g_object_ref (results->data));
+        g_resolver_free_addresses (results);
+        g_object_unref (resolver);
+      }
+
+      bind_addr = g_inet_socket_address_new (bind_iaddr, udpsink->bind_port);
+      g_object_unref (bind_iaddr);
+      family = g_socket_address_get_family (G_SOCKET_ADDRESS (bind_addr));
+
+      if ((udpsink->used_socket =
+              g_socket_new (family, G_SOCKET_TYPE_DATAGRAM,
+                  G_SOCKET_PROTOCOL_UDP, &err)) == NULL) {
+        g_object_unref (bind_addr);
+        goto no_socket;
+      }
+
+      g_socket_bind (udpsink->used_socket, bind_addr, TRUE, &err);
+      if (err != NULL)
+        goto bind_error;
+    } else {
+      /* create sender sockets if none available */
+      if ((udpsink->used_socket = g_socket_new (G_SOCKET_FAMILY_IPV4,
+                  G_SOCKET_TYPE_DATAGRAM, G_SOCKET_PROTOCOL_UDP, &err)) == NULL)
+        goto no_socket;
+
+      bind_iaddr = g_inet_address_new_any (G_SOCKET_FAMILY_IPV4);
+      bind_addr = g_inet_socket_address_new (bind_iaddr, 0);
+      g_socket_bind (udpsink->used_socket, bind_addr, TRUE, &err);
+      g_object_unref (bind_addr);
+      g_object_unref (bind_iaddr);
+      if (err != NULL)
+        goto bind_error;
+
+      if ((udpsink->used_socket_v6 = g_socket_new (G_SOCKET_FAMILY_IPV6,
+                  G_SOCKET_TYPE_DATAGRAM, G_SOCKET_PROTOCOL_UDP,
+                  &err)) == NULL) {
+        GST_INFO_OBJECT (udpsink, "Failed to create IPv6 socket: %s",
+            err->message);
+        g_clear_error (&err);
+      } else {
+        bind_iaddr = g_inet_address_new_any (G_SOCKET_FAMILY_IPV6);
+        bind_addr = g_inet_socket_address_new (bind_iaddr, 0);
+        g_socket_bind (udpsink->used_socket_v6, bind_addr, TRUE, &err);
+        g_object_unref (bind_addr);
+        g_object_unref (bind_iaddr);
+        if (err != NULL)
+          goto bind_error;
+      }
+    }
+  }
+
+  if (udpsink->used_socket)
+    g_socket_set_broadcast (udpsink->used_socket, TRUE);
+  if (udpsink->used_socket_v6)
+    g_socket_set_broadcast (udpsink->used_socket_v6, TRUE);
+
   return TRUE;
 
   /* ERRORS */
 no_socket:
   {
-    perror ("socket");
+    GST_ERROR_OBJECT (udpsink, "Failed to create IPv4 socket: %s",
+        err->message);
+    g_clear_error (&err);
     return FALSE;
   }
-no_broadcast:
+bind_error:
   {
-    perror ("setsockopt");
-    CLOSE_IF_REQUESTED (sink);
+    GST_ELEMENT_ERROR (udpsink, RESOURCE, FAILED, (NULL),
+        ("Failed to bind socket: %s", err->message));
+    g_clear_error (&err);
+    return FALSE;
+  }
+name_resolve:
+  {
+    GST_ELEMENT_ERROR (udpsink, RESOURCE, FAILED, (NULL),
+        ("Failed to resolve bind address %s: %s", udpsink->bind_address,
+            err->message));
+    g_clear_error (&err);
     return FALSE;
   }
 }
 
-GValueArray *
+static GstStructure *
 gst_dynudpsink_get_stats (GstDynUDPSink * sink, const gchar * host, gint port)
 {
   return NULL;
 }
 
-static void
-gst_dynudpsink_close (GstDynUDPSink * sink)
+static gboolean
+gst_dynudpsink_stop (GstBaseSink * bsink)
 {
-  CLOSE_IF_REQUESTED (sink);
+  GstDynUDPSink *udpsink;
+
+  udpsink = GST_DYNUDPSINK (bsink);
+
+  if (udpsink->used_socket) {
+    if (udpsink->close_socket || !udpsink->external_socket) {
+      GError *err = NULL;
+
+      if (!g_socket_close (udpsink->used_socket, &err)) {
+        GST_ERROR_OBJECT (udpsink, "Failed to close socket: %s", err->message);
+        g_clear_error (&err);
+      }
+    }
+
+    g_object_unref (udpsink->used_socket);
+    udpsink->used_socket = NULL;
+  }
+
+  if (udpsink->used_socket_v6) {
+    if (udpsink->close_socket || !udpsink->external_socket) {
+      GError *err = NULL;
+
+      if (!g_socket_close (udpsink->used_socket_v6, &err)) {
+        GST_ERROR_OBJECT (udpsink, "Failed to close socket: %s", err->message);
+        g_clear_error (&err);
+      }
+    }
+
+    g_object_unref (udpsink->used_socket_v6);
+    udpsink->used_socket_v6 = NULL;
+  }
+
+  gst_dynudpsink_free_cancellable (udpsink);
+
+  return TRUE;
 }
 
-static GstStateChangeReturn
-gst_dynudpsink_change_state (GstElement * element, GstStateChange transition)
+static gboolean
+gst_dynudpsink_unlock (GstBaseSink * bsink)
 {
-  GstStateChangeReturn ret;
-  GstDynUDPSink *sink;
+  GstDynUDPSink *udpsink;
 
-  sink = GST_DYNUDPSINK (element);
+  udpsink = GST_DYNUDPSINK (bsink);
 
-  switch (transition) {
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-      if (!gst_dynudpsink_init_send (sink))
-        goto no_init;
-      break;
-    default:
-      break;
-  }
+  g_cancellable_cancel (udpsink->cancellable);
 
-  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  return TRUE;
+}
 
-  switch (transition) {
-    case GST_STATE_CHANGE_PAUSED_TO_READY:
-      gst_dynudpsink_close (sink);
-      break;
-    default:
-      break;
-  }
-  return ret;
+static gboolean
+gst_dynudpsink_unlock_stop (GstBaseSink * bsink)
+{
+  GstDynUDPSink *udpsink;
 
-  /* ERRORS */
-no_init:
-  {
-    return GST_STATE_CHANGE_FAILURE;
-  }
+  udpsink = GST_DYNUDPSINK (bsink);
+
+  gst_dynudpsink_free_cancellable (udpsink);
+  gst_dynudpsink_create_cancellable (udpsink);
+
+  return TRUE;
 }

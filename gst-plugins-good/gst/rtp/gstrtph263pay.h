@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Dejan Sakelsak sahel@kiberpipa.org
  */
@@ -23,8 +23,7 @@
 #define __GST_RTP_H263_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
-#include <gst/base/gstadapter.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 #define GST_TYPE_RTP_H263_PAY \
@@ -61,9 +60,11 @@ typedef struct _GstRtpH263PayPackage GstRtpH263PayPackage;
 
 struct _GstRtpH263Pay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
-  GstAdapter *adapter;
+  GstBuffer *current_buffer;
+  GstMapInfo map;
+
   GstClockTime first_ts;
   gboolean prop_payload_mode;
   guint8 *data;
@@ -80,13 +81,14 @@ struct _GstRtpH263PayContext
   guint8 *win_end;
   guint8 cpm;
 
+  guint no_gobs;
   GstRtpH263PayGob **gobs;
 
 };
 
 struct _GstRtpH263PayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
 
 typedef struct _GstRtpH263PayAHeader
@@ -404,6 +406,8 @@ struct _GstRtpH263PayPackage
 
 #define GST_RTP_H263_PAY_END(start, len) (((guint8 *)start) + ((guint)len))
 #define GST_RTP_H263_PAY_GOBN(gob) (((((guint8 *) gob)[2] >> 2) & 0x1f)
+
+GType gst_rtp_h263_pay_get_type (void);
 
 gboolean gst_rtp_h263_pay_plugin_init (GstPlugin * plugin);
 

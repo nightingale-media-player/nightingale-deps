@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "dshowvideofakesrc.h"
@@ -102,10 +102,6 @@ HRESULT VideoFakeSrcPin::DecideBufferSize (IMemAllocator *pAlloc, ALLOCATOR_PROP
   GST_DEBUG ("Actual Allocator properties: %d, %d, %d, %d", 
         properties.cbAlign, properties.cbBuffer, 
         properties.cbPrefix, properties.cBuffers);
-
-  /* Then actually allocate the buffers */
-  hres = pAlloc->Commit();
-  GST_DEBUG ("Allocator commit returned %x", hres);
 
   return S_OK;
 }
@@ -254,12 +250,16 @@ STDMETHODIMP VideoFakeSrcPin::Block(DWORD dwBlockFlags, HANDLE hEvent)
 GstFlowReturn VideoFakeSrcPin::PushBuffer(GstBuffer *buffer)
 {
   IMediaSample *pSample = NULL;
-  byte *data = GST_BUFFER_DATA (buffer);
+  byte *data;
+  GstMapInfo map;
   int attempts = 0;
   HRESULT hres;
   BYTE *sample_buffer;
   AM_MEDIA_TYPE *mediatype;
 
+  /* FIXME: check return value. */
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  data = map.data;
   StartUsingOutputPin();
 
   while (attempts < MAX_ATTEMPTS)
@@ -291,6 +291,7 @@ GstFlowReturn VideoFakeSrcPin::PushBuffer(GstBuffer *buffer)
      */
     CopyToDestinationBuffer (data, sample_buffer);
   }
+  gst_buffer_unmap (buffer, &map);
 
   pSample->SetDiscontinuity(FALSE); /* Decoded frame; unimportant */
   pSample->SetSyncPoint(TRUE); /* Decoded frame; always a valid syncpoint */

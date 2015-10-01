@@ -1,5 +1,6 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) <2011> Tim-Philipp Müller <tim centricular net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,17 +14,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_FLAC_DEC_H__
 #define __GST_FLAC_DEC_H__
 
-
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/audio.h>
+#include <gst/audio/gstaudiodecoder.h>
 
 #include <FLAC/all.h>
 
@@ -39,60 +40,30 @@ typedef struct _GstFlacDec GstFlacDec;
 typedef struct _GstFlacDecClass GstFlacDecClass;
 
 struct _GstFlacDec {
-  GstElement     element;
+  GstAudioDecoder  audiodecoder;
 
-  /* < private > */
-
-#if !defined(FLAC_API_VERSION_CURRENT) || FLAC_API_VERSION_CURRENT < 8
-  FLAC__SeekableStreamDecoder *seekable_decoder; /* for pull-based operation  */
-#else
-  FLAC__StreamDecoder         *seekable_decoder; /* for pull-based operation  */
-#endif
-
-  FLAC__StreamDecoder         *stream_decoder;   /* for chain-based operation */
+  /*< private >*/
+  FLAC__StreamDecoder         *decoder;
   GstAdapter                  *adapter;
-  gboolean                     framed;
 
-  GstPad        *sinkpad;
-  GstPad        *srcpad;
+  gboolean       got_headers; /* have we received all the header buffers yet? */
 
-  gboolean       init;
+  GstFlowReturn  last_flow;   /* to marshal flow return from finis_frame to
+                               * handle_frame via flac callbacks */
 
-  guint64        offset;      /* current byte offset of input */
-
-  gboolean       seeking;     /* set to TRUE while seeking to make sure we
-                               * don't push any buffers in the write callback
-                               * until we are actually at the new position */
-
-  GstSegment     segment;     /* the currently configured segment, in
-                               * samples/audio frames (DEFAULT format) */
-  gboolean       running;
-  gboolean       discont;
-  GstBuffer     *pending;     /* pending buffer, produced in seek */
-  guint          pending_samples;
-  GstEvent      *close_segment;
-  GstEvent      *start_segment;
-  GstTagList    *tags;
-
-  GstFlowReturn  pull_flow;   /* last flow from pull_range */ /* STREAM_LOCK */
-
-  GstFlowReturn  last_flow;   /* the last flow return received from either
-                               * gst_pad_push or gst_pad_buffer_alloc */
-
-  gint           channels;
+  GstAudioInfo   info;
+  gint           channel_reorder_map[8];
   gint           depth;
-  gint           width;
-  gint           sample_rate;
 
   /* from the stream info, needed for scanning */
   guint16        min_blocksize;
   guint16        max_blocksize;
 
-  gint64         cur_granulepos; /* only used in framed mode (flac-in-ogg) */
+  gint           error_count;
 };
 
 struct _GstFlacDecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass  audiodecoder;
 };
 
 GType gst_flac_dec_get_type (void);

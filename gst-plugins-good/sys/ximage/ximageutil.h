@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_XIMAGEUTIL_H__
@@ -43,14 +43,13 @@ G_BEGIN_DECLS
 typedef struct _GstXContext GstXContext;
 typedef struct _GstXWindow GstXWindow;
 typedef struct _GstXImage GstXImage;
-typedef struct _GstXImageSrcBuffer GstXImageSrcBuffer;
+typedef struct _GstMetaXImage GstMetaXImage;
 
 /* Global X Context stuff */
 /**
  * GstXContext:
  * @disp: the X11 Display of this context
  * @screen: the default Screen of Display @disp
- * @screen_num: the Screen number of @screen
  * @visual: the default Visual of Screen @screen
  * @root: the root Window of Display @disp
  * @white: the value of a white pixel on Screen @screen
@@ -62,7 +61,10 @@ typedef struct _GstXImageSrcBuffer GstXImageSrcBuffer;
  * @height: the height in pixels of Display @disp
  * @widthmm: the width in millimeters of Display @disp
  * @heightmm: the height in millimeters of Display @disp
- * @par: the pixel aspect ratio calculated from @width, @widthmm and @height,
+ * @par_n: the pixel aspect ratio numerator calculated from @width, @widthmm
+ * and @height,
+ * @par_d: the pixel aspect ratio denumerator calculated from @width, @widthmm
+ * and @height,
  * @heightmm ratio
  * @use_xshm: used to known wether of not XShm extension is usable or not even
  * if the Extension is present
@@ -75,7 +77,6 @@ struct _GstXContext {
   Display *disp;
 
   Screen *screen;
-  gint screen_num;
 
   Visual *visual;
 
@@ -90,12 +91,13 @@ struct _GstXContext {
   gint width, height;
   gint widthmm, heightmm;
 
-  /* these are the output masks 
+  /* these are the output masks
    * for buffers from ximagesrc
    * and are in big endian */
   guint32 r_mask_output, g_mask_output, b_mask_output;
-  
-  GValue *par;                  /* calculated pixel aspect ratio */
+
+  guint par_n;                  /* calculated pixel aspect ratio numerator */
+  guint par_d;                  /* calculated pixel aspect ratio denumerator */
 
   gboolean use_xshm;
 
@@ -130,20 +132,20 @@ void ximageutil_calculate_pixel_aspect_ratio (GstXContext * xcontext);
 /* custom ximagesrc buffer, copied from ximagesink */
 
 /* BufferReturnFunc is called when a buffer is finalised */
-typedef void (*BufferReturnFunc) (GstElement *parent, GstXImageSrcBuffer *buf);
+typedef gboolean (*BufferReturnFunc) (GstElement *parent, GstBuffer *buf);
 
 /**
- * GstXImageSrcBuffer:
+ * GstMetaXImage:
  * @parent: a reference to the element we belong to
  * @ximage: the XImage of this buffer
  * @width: the width in pixels of XImage @ximage
  * @height: the height in pixels of XImage @ximage
  * @size: the size in bytes of XImage @ximage
  *
- * Subclass of #GstBuffer containing additional information about an XImage.
+ * Extra data attached to buffers containing additional information about an XImage.
  */
-struct _GstXImageSrcBuffer {
-  GstBuffer buffer;
+struct _GstMetaXImage {
+  GstMeta meta;
 
   /* Reference to the ximagesrc we belong to */
   GstElement *parent;
@@ -156,26 +158,23 @@ struct _GstXImageSrcBuffer {
 
   gint width, height;
   size_t size;
-  
+
   BufferReturnFunc return_func;
 };
 
+GType gst_meta_ximage_api_get_type (void);
+const GstMetaInfo * gst_meta_ximage_get_info (void);
+#define GST_META_XIMAGE_GET(buf) ((GstMetaXImage *)gst_buffer_get_meta(buf,gst_meta_ximage_api_get_type()))
+#define GST_META_XIMAGE_ADD(buf) ((GstMetaXImage *)gst_buffer_add_meta(buf,gst_meta_ximage_get_info(),NULL))
 
-GstXImageSrcBuffer *gst_ximageutil_ximage_new (GstXContext *xcontext,
+GstBuffer *gst_ximageutil_ximage_new (GstXContext *xcontext,
   GstElement *parent, int width, int height, BufferReturnFunc return_func);
 
 void gst_ximageutil_ximage_destroy (GstXContext *xcontext, 
-  GstXImageSrcBuffer * ximage);
+  GstBuffer * ximage);
   
 /* Call to manually release a buffer */
-void gst_ximage_buffer_free (GstXImageSrcBuffer *ximage);
-
-#define GST_TYPE_XIMAGESRC_BUFFER            (gst_ximagesrc_buffer_get_type())
-#define GST_IS_XIMAGESRC_BUFFER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_XIMAGESRC_BUFFER))
-#define GST_IS_XIMAGESRC_BUFFER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_XIMAGESRC_BUFFER))
-#define GST_XIMAGESRC_BUFFER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_XIMAGESRC_BUFFER, GstXImageSrcBuffer))
-#define GST_XIMAGESRC_BUFFER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_XIMAGESRC_BUFFER, GstXImageSrcBufferClass))
-#define GST_XIMAGESRC_BUFFER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_XIMAGESRC_BUFFER, GstXImageSrcBufferClass))
+void gst_ximage_buffer_free (GstBuffer *ximage);
 
 G_END_DECLS 
 

@@ -13,13 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_VIDEO_FLIP_H__
 #define __GST_VIDEO_FLIP_H__
 
+#include <gst/gst.h>
+#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -34,6 +36,7 @@ G_BEGIN_DECLS
  * @GST_VIDEO_FLIP_METHOD_VERT: Flip vertically
  * @GST_VIDEO_FLIP_METHOD_TRANS: Flip across upper left/lower right diagonal
  * @GST_VIDEO_FLIP_METHOD_OTHER: Flip across upper right/lower left diagonal
+ * @GST_VIDEO_FLIP_METHOD_AUTO: Select flip method based on image-orientation tag
  *
  * The different flip methods.
  */
@@ -45,7 +48,8 @@ typedef enum {
   GST_VIDEO_FLIP_METHOD_HORIZ,
   GST_VIDEO_FLIP_METHOD_VERT,
   GST_VIDEO_FLIP_METHOD_TRANS,
-  GST_VIDEO_FLIP_METHOD_OTHER
+  GST_VIDEO_FLIP_METHOD_OTHER,
+  GST_VIDEO_FLIP_METHOD_AUTO
 } GstVideoFlipMethod;
 
 #define GST_TYPE_VIDEO_FLIP \
@@ -69,11 +73,12 @@ typedef struct _GstVideoFlipClass GstVideoFlipClass;
  */
 struct _GstVideoFlip {
   GstVideoFilter videofilter;
-  
-  gint from_width, from_height;
-  gint to_width, to_height;
-  
+
+  /* < private > */
   GstVideoFlipMethod method;
+  GstVideoFlipMethod tag_method;
+  GstVideoFlipMethod active_method;
+  void (*process) (GstVideoFlip *videoflip, GstVideoFrame *dest, const GstVideoFrame *src);
 };
 
 struct _GstVideoFlipClass {

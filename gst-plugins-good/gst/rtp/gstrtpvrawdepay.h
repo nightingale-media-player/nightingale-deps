@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_VRAW_DEPAY_H__
@@ -22,7 +22,9 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/video/gstvideometa.h>
+#include <gst/video/gstvideopool.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,26 +44,25 @@ typedef struct _GstRtpVRawDepayClass GstRtpVRawDepayClass;
 
 struct _GstRtpVRawDepay
 {
-  GstBaseRTPDepayload payload;
+  GstRTPBaseDepayload payload;
 
-  gint width, height;
-  GstVideoFormat format;
+  GstBufferPool *pool;
+  GstVideoInfo vinfo;
 
+  GstVideoFrame frame;
   GstBuffer *outbuf;
   guint32 timestamp;
-  guint outsize;
 
   gint pgroup;
   gint xinc, yinc;
-  guint yp, up, vp;
-  gint ystride;
-  gint uvstride;
 };
 
 struct _GstRtpVRawDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_vraw_depay_get_type (void);
 
 gboolean gst_rtp_vraw_depay_plugin_init (GstPlugin * plugin);
 

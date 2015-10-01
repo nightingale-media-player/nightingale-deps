@@ -5,7 +5,7 @@ AC_DEFUN([AG_GST_DOCBOOK_CHECK],
   then
     AC_MSG_ERROR([Internal error - PACKAGE_TARNAME not set])
   fi
-  docdir="\$(datadir)/doc/$PACKAGE_TARNAME-$GST_MAJORMINOR"
+  docdir="\$(datadir)/doc/$PACKAGE_TARNAME-$GST_API_VERSION"
 
   dnl enable/disable docbook documentation building
   AC_ARG_ENABLE(docbook,
@@ -20,33 +20,9 @@ AC_DEFUN([AG_GST_DOCBOOK_CHECK],
 
     dnl check for docbook tools
     AC_CHECK_PROG(HAVE_DOCBOOK2PS, docbook2ps, yes, no)
-    AC_CHECK_PROG(HAVE_DOCBOOK2HTML, docbook2html, yes, no)
+    AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
     AC_CHECK_PROG(HAVE_JADETEX, jadetex, yes, no)
     AC_CHECK_PROG(HAVE_PS2PDF, ps2pdf, yes, no)
-
-    # -V option appeared in 0.6.10
-    docbook2html_min_version=0.6.10
-    if test "x$HAVE_DOCBOOK2HTML" != "xno"; then
-      docbook2html_version=`docbook2html --version`
-      AC_MSG_CHECKING([docbook2html version ($docbook2html_version) >= $docbook2html_min_version])
-      if perl -w <<EOF
-        (\$min_version_major, \$min_version_minor, \$min_version_micro ) = "$docbook2html_min_version" =~ /(\d+)\.(\d+)\.(\d+)/;
-        (\$docbook2html_version_major, \$docbook2html_version_minor, \$docbook2html_version_micro ) = "$docbook2html_version" =~ /(\d+)\.(\d+)\.(\d+)/;
-        exit (((\$docbook2html_version_major > \$min_version_major) ||
-  	     ((\$docbook2html_version_major == \$min_version_major) &&
-  	      (\$docbook2html_version_minor >= \$min_version_minor)) ||
-  	     ((\$docbook2html_version_major == \$min_version_major) &&
-  	      (\$docbook2html_version_minor >= \$min_version_minor) &&
-  	      (\$docbook2html_version_micro >= \$min_version_micro)))
-  	     ? 0 : 1);
-EOF
-      then
-        AC_MSG_RESULT(yes)
-      else
-        AC_MSG_RESULT(no)
-        HAVE_DOCBOOK2HTML=no
-      fi
-    fi
 
     dnl check if we can process docbook stuff
     AS_DOCBOOK(have_docbook=yes, have_docbook=no)
@@ -55,45 +31,14 @@ EOF
     AC_CHECK_PROG(HAVE_DVIPS, dvips, yes, no)
     AC_CHECK_PROG(HAVE_XMLLINT, xmllint, yes, no)
 
-    dnl check for image conversion tools
-    AC_CHECK_PROG(HAVE_FIG2DEV, fig2dev, yes, no)
-    if test "x$HAVE_FIG2DEV" = "xno" ; then
-      AC_MSG_WARN([Did not find fig2dev (from xfig), images will not be generated.])
-    fi
-
-    dnl The following is a hack: if fig2dev doesn't display an error message
-    dnl for the desired type, we assume it supports it.
-    HAVE_FIG2DEV_EPS=no
-    if test "x$HAVE_FIG2DEV" = "xyes" ; then
-      fig2dev_quiet=`fig2dev -L eps </dev/null 2>&1 >/dev/null`
-      if test "x$fig2dev_quiet" = "x" ; then
-        HAVE_FIG2DEV_EPS=yes
-      fi
-    fi
-    HAVE_FIG2DEV_PNG=no
-    if test "x$HAVE_FIG2DEV" = "xyes" ; then
-      fig2dev_quiet=`fig2dev -L png </dev/null 2>&1 >/dev/null`
-      if test "x$fig2dev_quiet" = "x" ; then
-        HAVE_FIG2DEV_PNG=yes
-      fi
-    fi
-    HAVE_FIG2DEV_PDF=no
-    if test "x$HAVE_FIG2DEV" = "xyes" ; then
-      fig2dev_quiet=`fig2dev -L pdf </dev/null 2>&1 >/dev/null`
-      if test "x$fig2dev_quiet" = "x" ; then
-        HAVE_FIG2DEV_PDF=yes
-      fi
-    fi
-
     AC_CHECK_PROG(HAVE_PNGTOPNM, pngtopnm, yes, no)
     AC_CHECK_PROG(HAVE_PNMTOPS,  pnmtops,  yes, no)
     AC_CHECK_PROG(HAVE_EPSTOPDF, epstopdf, yes, no)
 
     dnl check if we can generate HTML
-    if test "x$HAVE_DOCBOOK2HTML" = "xyes" && \
+    if test "x$HAVE_XSLTPROC" = "xyes" && \
        test "x$enable_docbook" = "xyes" && \
-       test "x$HAVE_XMLLINT" = "xyes" && \
-       test "x$HAVE_FIG2DEV_PNG" = "xyes"; then
+       test "x$HAVE_XMLLINT" = "xyes"; then
       DOC_HTML=yes
       AC_MSG_NOTICE(Will output HTML documentation)
      else
@@ -106,7 +51,6 @@ EOF
        test "x$enable_docbook" = "xyes" && \
        test "x$HAVE_XMLLINT" = "xyes" && \
        test "x$HAVE_JADETEX" = "xyes" && \
-       test "x$HAVE_FIG2DEV_EPS" = "xyes" && \
        test "x$HAVE_DVIPS" = "xyes" && \
        test "x$HAVE_PNGTOPNM" = "xyes" && \
        test "x$HAVE_PNMTOPS" = "xyes"; then

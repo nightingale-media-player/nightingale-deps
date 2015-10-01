@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -26,7 +26,6 @@
 
 G_BEGIN_DECLS
 
-#include "gstudp.h"
 #include "gstudpnetutils.h"
 
 #define GST_TYPE_UDPSINK                (gst_udpsink_get_type())
@@ -41,9 +40,10 @@ typedef struct _GstUDPSinkClass GstUDPSinkClass;
 struct _GstUDPSink {
   GstMultiUDPSink parent;
 
-  gchar *uri;
-  gint port;
   gchar *host;
+  guint16 port;
+
+  gchar *uri;
 };
 
 struct _GstUDPSinkClass {

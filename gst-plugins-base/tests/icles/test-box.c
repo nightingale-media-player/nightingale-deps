@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,7 +25,7 @@
 
 #include <gst/gst.h>
 
-#define CAPS " capsfilter caps=\"video/x-raw-yuv, format=(fourcc)I420, width=(int)640, height=(int)480\" "
+#define CAPS " capsfilter caps=\"video/x-raw, format=(string)I420, width=(int)640, height=(int)480\" "
 
 static GstElement *
 make_pipeline (gint type)
@@ -38,7 +38,7 @@ make_pipeline (gint type)
       pstr =
           g_strdup_printf ("videotestsrc ! " CAPS
           " ! videobox name=box ! videoscale ! " CAPS
-          " ! ffmpegcolorspace ! ximagesink");
+          " ! videoconvert ! ximagesink");
       break;
     default:
       return NULL;

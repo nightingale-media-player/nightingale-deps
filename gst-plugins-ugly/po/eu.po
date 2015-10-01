@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the gst-plugins-ugly package.
 #
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2009.
-# Mikel Olasagasti Uranga <hey_neken@mundurat.net>, 2009.
+# Mikel Olasagasti Uranga <hey_neken@mundurat.net>, 2009, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-ugly-0.10.11.2\n"
+"Project-Id-Version: gst-plugins-ugly-0.10.13.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-21 17:02+0100\n"
-"PO-Revision-Date: 2009-08-29 13:12+0200\n"
+"POT-Creation-Date: 2015-09-25 23:03+0200\n"
+"PO-Revision-Date: 2010-03-07 13:12+0200\n"
 "Last-Translator: Mikel Olasagasti Uranga <hey_neken@mundurat.net>\n"
 "Language-Team: Basque <translation-team-eu@lists.sourceforge.net>\n"
+"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -47,10 +48,21 @@ msgstr ""
 "Ezin izan da DVDko %d. titulua ireki. Elementu honek ez ditu onartzen titulu "
 "interaktiboak"
 
-msgid "Failed to configure LAME encoder. Check your encoding parameters."
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
 msgstr ""
-"Huts egin du LAME kodetzailea konfiguratzean. Begiratu kodetze-parametroak "
-"ondo dauden."
+
+#, fuzzy
+msgid "Could not read DVD."
+msgstr "Ezin izan da DVDa ireki"
+
+#, fuzzy
+msgid ""
+"Failed to configure LAME mp3 audio encoder. Check your encoding parameters."
+msgstr ""
+"Huts egin du TwoLAME kodetzailea konfiguratzean. Begiratu kodetze-"
+"parametroak ondo dauden."
 
 #, c-format
 msgid ""
@@ -70,6 +82,13 @@ msgstr "Korronte honek ez du daturik."
 
 msgid "Internal data stream error."
 msgstr "Datu-korrontearen barne-errorea."
+
+#, fuzzy
+#~ msgid ""
+#~ "Failed to configure LAMEMP3ENC encoder. Check your encoding parameters."
+#~ msgstr ""
+#~ "Huts egin du LAME kodetzailea konfiguratzean. Begiratu kodetze-"
+#~ "parametroak ondo dauden."
 
 #, fuzzy
 #~ msgid "Could not read title information for DVD."

@@ -2,92 +2,97 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>rademux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<title>rademux: GStreamer Ugly Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="gst-plugins-ugly-plugins-mad.html" title="mad">
-<link rel="next" href="gst-plugins-ugly-plugins-rdtmanager.html" title="rdtmanager">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-ugly-plugins-rmdemux.html" title="rmdemux">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-ugly-plugins-mad.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-ugly-plugins-rdtmanager.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-ugly-plugins-rademux.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-rademux.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-rademux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-rademux.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-rademux.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-mad.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-rmdemux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-ugly-plugins-rademux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-rademux.top_of_page"></a>rademux</span></h2>
-<p>rademux — Demultiplex a RealAudio file</p>
+<p>rademux</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-ugly-plugins-rademux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstRealAudioDemux"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-ugly-plugins-rademux.html#GstRealAudioDemux-struct" title="GstRealAudioDemux">GstRealAudioDemux</a>;
-</pre>
+<a name="GstRealAudioDemux"></a><div class="refsect1">
+<a name="gst-plugins-ugly-plugins-rademux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-ugly-plugins-rademux.html#GstRealAudioDemux-struct" title="struct GstRealAudioDemux">GstRealAudioDemux</a></td>
+</tr></tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-rademux.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstRealAudioDemux
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstRealAudioDemux
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-rademux.description"></a><h2>Description</h2>
-<p>
-Demuxes/parses a RealAudio (.ra) file or stream into compressed audio.
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2957169"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch filesrc location=interview.ra ! rademux ! ffdec_real_288 ! audioconvert ! audioresample ! alsasink
-</pre></div> Read a RealAudio file and decode it and output it to the soundcard using
-the ALSA element. The .ra file is assumed to contain RealAudio version 2.
-<div class="informalexample"><pre class="programlisting">
-gst-launch gnomevfssrc location=http://www.example.org/interview.ra ! rademux ! a52dec ! audioconvert ! audioresample ! alsasink
-</pre></div> Stream RealAudio data containing AC3 (dnet) compressed audio and decode it
-and output it to the soundcard using the ALSA element.
+<p>Demuxes/parses a RealAudio (.ra) file or stream into compressed audio.</p>
+<div class="refsect2">
+<a name="id-1.2.9.6.3"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> filesrc location<span class="gtkdoc opt">=</span>interview<span class="gtkdoc opt">.</span>ra <span class="gtkdoc opt">!</span> rademux <span class="gtkdoc opt">!</span> avdec_real_288 <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> audioresample <span class="gtkdoc opt">!</span> autoaudiosink</pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2006-10-24 (0.10.5)</p>
+ Read a RealAudio file and decode it and output it to the soundcard using
+the ALSA element. The .ra file is assumed to contain RealAudio version 2.
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> souphttpsrc location<span class="gtkdoc opt">=</span>http<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//www.example.org/interview.ra ! rademux ! ac3parse ! a52dec ! audioconvert ! audioresample ! autoaudiosink</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ Stream RealAudio data containing AC3 (dnet) compressed audio and decode it
+and output it to the soundcard.
+</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2979646"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.9.6.4.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -107,31 +112,13 @@ Last reviewed on 2006-10-24 (0.10.5)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2960802"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.9.6.4.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>sometimes</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -151,23 +138,46 @@ Last reviewed on 2006-10-24 (0.10.5)</p>
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-ugly-plugins-rademux.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstRealAudioDemux-struct"></a><h3>GstRealAudioDemux</h3>
-<pre class="programlisting">typedef struct _GstRealAudioDemux GstRealAudioDemux;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-rademux.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-rademux.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstRealAudioDemux-struct"></a><h3>struct GstRealAudioDemux</h3>
+<pre class="programlisting">struct GstRealAudioDemux;</pre>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

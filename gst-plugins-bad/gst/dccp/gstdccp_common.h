@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_DCCP_NET_H__
@@ -29,11 +29,17 @@
 #else
 /* ws2_32.dll has getaddrinfo and freeaddrinfo on Windows XP and later.
  * minwg32 headers check WINVER before allowing the use of these */
+#ifndef WINVER
 #  define WINVER 0x0501
+#endif
 #  include <winsock2.h>
 #  include <ws2tcpip.h>
+#ifndef socklen_t
+#define socklen_t int
+#endif
 #endif
 #include <sys/types.h>
+#include <_stdint.h>
 #include <unistd.h>
 #include <string.h>
 

@@ -19,8 +19,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __INTERLEAVE_H__
@@ -60,21 +60,23 @@ struct _GstInterleave
   GValueArray *input_channel_positions;
   gboolean channel_positions_from_input;
 
+  gint default_channels_ordering_map[64];
+
   GstCaps *sinkcaps;
+  gint configured_sinkpads_counter;
 
   GstClockTime timestamp;
   guint64 offset;
 
-  gboolean segment_pending;
-  guint64 segment_position;
-  gdouble segment_rate;
-  GstSegment segment;
+  GstEvent *pending_segment;
 
   GstPadEventFunction collect_event;
 
   GstInterleaveFunc func;
 
   GstPad *src;
+
+  gboolean send_stream_start;
 };
 
 struct _GstInterleaveClass

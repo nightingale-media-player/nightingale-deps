@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -25,16 +25,14 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=interview.ra ! rademux ! ffdec_real_288 ! audioconvert ! audioresample ! alsasink
+ * gst-launch-1.0 filesrc location=interview.ra ! rademux ! avdec_real_288 ! audioconvert ! audioresample ! autoaudiosink
  * ]| Read a RealAudio file and decode it and output it to the soundcard using
  * the ALSA element. The .ra file is assumed to contain RealAudio version 2.
  * |[
- * gst-launch gnomevfssrc location=http://www.example.org/interview.ra ! rademux ! a52dec ! audioconvert ! audioresample ! alsasink
+ * gst-launch-1.0 souphttpsrc location=http://www.example.org/interview.ra ! rademux ! ac3parse ! a52dec ! audioconvert ! audioresample ! autoaudiosink
  * ]| Stream RealAudio data containing AC3 (dnet) compressed audio and decode it
- * and output it to the soundcard using the ALSA element.
+ * and output it to the soundcard.
  * </refsect2>
- *
- * Last reviewed on 2006-10-24 (0.10.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -46,13 +44,6 @@
 #include "rmutils.h"
 
 #include <string.h>
-
-static GstElementDetails real_audio_demux_details = {
-  "RealAudio Demuxer",
-  "Codec/Demuxer",
-  "Demultiplex a RealAudio file",
-  "Tim-Philipp Müller <tim centricular net>"
-};
 
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -68,36 +59,24 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
 GST_DEBUG_CATEGORY_STATIC (real_audio_demux_debug);
 #define GST_CAT_DEFAULT real_audio_demux_debug
 
-GST_BOILERPLATE (GstRealAudioDemux, gst_real_audio_demux, GstElement,
-    GST_TYPE_ELEMENT);
+#define gst_real_audio_demux_parent_class parent_class
+G_DEFINE_TYPE (GstRealAudioDemux, gst_real_audio_demux, GST_TYPE_ELEMENT);
 
 static GstStateChangeReturn gst_real_audio_demux_change_state (GstElement * e,
     GstStateChange transition);
-static GstFlowReturn gst_real_audio_demux_chain (GstPad * pad, GstBuffer * buf);
-static gboolean gst_real_audio_demux_sink_event (GstPad * pad, GstEvent * ev);
-static gboolean gst_real_audio_demux_src_event (GstPad * pad, GstEvent * ev);
-static gboolean gst_real_audio_demux_src_query (GstPad * pad, GstQuery * query);
+static GstFlowReturn gst_real_audio_demux_chain (GstPad * pad,
+    GstObject * parent, GstBuffer * buf);
+static gboolean gst_real_audio_demux_sink_event (GstPad * pad,
+    GstObject * parent, GstEvent * ev);
+static gboolean gst_real_audio_demux_src_event (GstPad * pad,
+    GstObject * parent, GstEvent * ev);
+static gboolean gst_real_audio_demux_src_query (GstPad * pad,
+    GstObject * parent, GstQuery * query);
 static void gst_real_audio_demux_loop (GstRealAudioDemux * demux);
-static gboolean gst_real_audio_demux_sink_activate (GstPad * sinkpad);
-static gboolean gst_real_audio_demux_sink_activate_push (GstPad * sinkpad,
-    gboolean active);
-static gboolean gst_real_audio_demux_sink_activate_pull (GstPad * sinkpad,
-    gboolean active);
-
-static void
-gst_real_audio_demux_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_set_details (element_class, &real_audio_demux_details);
-
-  GST_DEBUG_CATEGORY_INIT (real_audio_demux_debug, "rademux",
-      0, "Demuxer for RealAudio streams");
-}
+static gboolean gst_real_audio_demux_sink_activate (GstPad * sinkpad,
+    GstObject * parent);
+static gboolean gst_real_audio_demux_sink_activate_mode (GstPad * sinkpad,
+    GstObject * parent, GstPadMode mode, gboolean active);
 
 static void
 gst_real_audio_demux_finalize (GObject * obj)
@@ -117,8 +96,21 @@ gst_real_audio_demux_class_init (GstRealAudioDemuxClass * klass)
 
   gobject_class->finalize = gst_real_audio_demux_finalize;
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RealAudio Demuxer",
+      "Codec/Demuxer",
+      "Demultiplex a RealAudio file",
+      "Tim-Philipp Müller <tim centricular net>");
+
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_real_audio_demux_change_state);
+
+  GST_DEBUG_CATEGORY_INIT (real_audio_demux_debug, "rademux",
+      0, "Demuxer for RealAudio streams");
 }
 
 static void
@@ -133,7 +125,7 @@ gst_real_audio_demux_reset (GstRealAudioDemux * demux)
   }
 
   if (demux->pending_tags) {
-    gst_tag_list_free (demux->pending_tags);
+    gst_tag_list_unref (demux->pending_tags);
     demux->pending_tags = NULL;
   }
 
@@ -159,12 +151,14 @@ gst_real_audio_demux_reset (GstRealAudioDemux * demux)
 
   demux->offset = 0;
 
+  demux->have_group_id = FALSE;
+  demux->group_id = G_MAXUINT;
+
   gst_adapter_clear (demux->adapter);
 }
 
 static void
-gst_real_audio_demux_init (GstRealAudioDemux * demux,
-    GstRealAudioDemuxClass * klass)
+gst_real_audio_demux_init (GstRealAudioDemux * demux)
 {
   demux->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
 
@@ -174,10 +168,8 @@ gst_real_audio_demux_init (GstRealAudioDemux * demux,
       GST_DEBUG_FUNCPTR (gst_real_audio_demux_sink_event));
   gst_pad_set_activate_function (demux->sinkpad,
       GST_DEBUG_FUNCPTR (gst_real_audio_demux_sink_activate));
-  gst_pad_set_activatepull_function (demux->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_real_audio_demux_sink_activate_pull));
-  gst_pad_set_activatepush_function (demux->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_real_audio_demux_sink_activate_push));
+  gst_pad_set_activatemode_function (demux->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_real_audio_demux_sink_activate_mode));
 
   gst_element_add_pad (GST_ELEMENT (demux), demux->sinkpad);
 
@@ -186,56 +178,78 @@ gst_real_audio_demux_init (GstRealAudioDemux * demux,
 }
 
 static gboolean
-gst_real_audio_demux_sink_activate (GstPad * sinkpad)
+gst_real_audio_demux_sink_activate (GstPad * sinkpad, GstObject * parent)
 {
-  if (gst_pad_check_pull_range (sinkpad)) {
-    return gst_pad_activate_pull (sinkpad, TRUE);
-  } else {
-    return gst_pad_activate_push (sinkpad, TRUE);
+  GstQuery *query;
+  gboolean pull_mode;
+
+  query = gst_query_new_scheduling ();
+
+  if (!gst_pad_peer_query (sinkpad, query)) {
+    gst_query_unref (query);
+    goto activate_push;
+  }
+
+  pull_mode = gst_query_has_scheduling_mode_with_flags (query,
+      GST_PAD_MODE_PULL, GST_SCHEDULING_FLAG_SEEKABLE);
+  gst_query_unref (query);
+
+  if (!pull_mode)
+    goto activate_push;
+
+  GST_DEBUG_OBJECT (sinkpad, "activating pull");
+  return gst_pad_activate_mode (sinkpad, GST_PAD_MODE_PULL, TRUE);
+
+activate_push:
+  {
+    GST_DEBUG_OBJECT (sinkpad, "activating push");
+    return gst_pad_activate_mode (sinkpad, GST_PAD_MODE_PUSH, TRUE);
   }
 }
 
 static gboolean
-gst_real_audio_demux_sink_activate_push (GstPad * sinkpad, gboolean active)
+gst_real_audio_demux_sink_activate_mode (GstPad * sinkpad, GstObject * parent,
+    GstPadMode mode, gboolean active)
 {
+  gboolean res;
   GstRealAudioDemux *demux;
 
-  demux = GST_REAL_AUDIO_DEMUX (GST_OBJECT_PARENT (sinkpad));
+  demux = GST_REAL_AUDIO_DEMUX (parent);
 
-  demux->seekable = FALSE;
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      demux->seekable = FALSE;
+      res = TRUE;
+      break;
+    case GST_PAD_MODE_PULL:
+      if (active) {
+        demux->seekable = TRUE;
 
-  return TRUE;
-}
-
-static gboolean
-gst_real_audio_demux_sink_activate_pull (GstPad * sinkpad, gboolean active)
-{
-  GstRealAudioDemux *demux;
-
-  demux = GST_REAL_AUDIO_DEMUX (GST_OBJECT_PARENT (sinkpad));
-
-  if (active) {
-    demux->seekable = TRUE;
-
-    return gst_pad_start_task (sinkpad,
-        (GstTaskFunction) gst_real_audio_demux_loop, demux);
-  } else {
-    demux->seekable = FALSE;
-    return gst_pad_stop_task (sinkpad);
+        res = gst_pad_start_task (sinkpad,
+            (GstTaskFunction) gst_real_audio_demux_loop, demux, NULL);
+      } else {
+        demux->seekable = FALSE;
+        res = gst_pad_stop_task (sinkpad);
+      }
+      break;
+    default:
+      res = FALSE;
+      break;
   }
+  return res;
 }
 
 static GstFlowReturn
 gst_real_audio_demux_parse_marker (GstRealAudioDemux * demux)
 {
-  const guint8 *data;
+  guint8 data[6];
 
   if (gst_adapter_available (demux->adapter) < 6) {
     GST_LOG_OBJECT (demux, "need at least 6 bytes, waiting for more data");
     return GST_FLOW_OK;
   }
 
-  data = gst_adapter_peek (demux->adapter, 6);
+  gst_adapter_copy (demux->adapter, data, 0, 6);
   if (memcmp (data, ".ra\375", 4) != 0)
     goto wrong_format;
 
@@ -282,10 +296,9 @@ gst_real_demux_get_timestamp_from_offset (GstRealAudioDemux * demux,
 static gboolean
 gst_real_audio_demux_get_data_offset_from_header (GstRealAudioDemux * demux)
 {
-  const guint8 *data;
+  guint8 data[16];
 
-  data = gst_adapter_peek (demux->adapter, 16);
-  g_assert (data != NULL);
+  gst_adapter_copy (demux->adapter, data, 0, 16);
 
   switch (demux->ra_version) {
     case 3:
@@ -305,9 +318,11 @@ gst_real_audio_demux_get_data_offset_from_header (GstRealAudioDemux * demux)
 static GstFlowReturn
 gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
 {
-  const gchar *codec_name = NULL;
   const guint8 *data;
+  gchar *codec_name = NULL;
   GstCaps *caps = NULL;
+  GstEvent *event;
+  gchar *stream_id;
   guint avail;
 
   g_assert (demux->ra_version == 4 || demux->ra_version == 3);
@@ -327,7 +342,7 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
     return GST_FLOW_OK;
   }
 
-  data = gst_adapter_peek (demux->adapter, demux->data_offset - 6);
+  data = gst_adapter_map (demux->adapter, demux->data_offset - 6);
   g_assert (data);
 
   switch (demux->ra_version) {
@@ -353,6 +368,8 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
       demux->fourcc = GST_READ_UINT32_LE (data + 56);
       demux->pending_tags = gst_rm_utils_read_tags (data + 63,
           demux->data_offset - 63, gst_rm_utils_read_string8);
+      if (demux->pending_tags)
+        gst_tag_list_set_scope (demux->pending_tags, GST_TAG_SCOPE_GLOBAL);
       break;
     default:
       g_assert_not_reached ();
@@ -382,7 +399,6 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
     case GST_RM_AUD_14_4:
       caps = gst_caps_new_simple ("audio/x-pn-realaudio", "raversion",
           G_TYPE_INT, 1, NULL);
-      codec_name = "Real Audio 14.4kbps";
       demux->byterate_num = 1000;
       demux->byterate_denom = 1;
       break;
@@ -391,11 +407,9 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
       /* FIXME: needs descrambling */
       caps = gst_caps_new_simple ("audio/x-pn-realaudio", "raversion",
           G_TYPE_INT, 2, NULL);
-      codec_name = "Real Audio 28.8kbps";
       break;
 
     case GST_RM_AUD_DNET:
-      codec_name = "AC-3 audio";
       caps = gst_caps_new_simple ("audio/x-ac3", "rate", G_TYPE_INT,
           demux->sample_rate, NULL);
       if (demux->packet_size == 0 || demux->sample_rate == 0)
@@ -406,8 +420,7 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
 
       /* Sipro/ACELP.NET Voice Codec (MIME unknown) */
     case GST_RM_AUD_SIPR:
-      codec_name = "Sipro Voice";
-      caps = gst_caps_new_simple ("audio/x-sipro", NULL);
+      caps = gst_caps_new_empty_simple ("audio/x-sipro");
       break;
 
     default:
@@ -429,14 +442,39 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
 
   GST_INFO_OBJECT (demux, "Adding source pad, caps %" GST_PTR_FORMAT, caps);
   demux->srcpad = gst_pad_new_from_static_template (&src_template, "src");
-  gst_pad_use_fixed_caps (demux->srcpad);
-  gst_pad_set_caps (demux->srcpad, caps);
-  gst_caps_unref (caps);
   gst_pad_set_event_function (demux->srcpad,
       GST_DEBUG_FUNCPTR (gst_real_audio_demux_src_event));
   gst_pad_set_query_function (demux->srcpad,
       GST_DEBUG_FUNCPTR (gst_real_audio_demux_src_query));
   gst_pad_set_active (demux->srcpad, TRUE);
+  gst_pad_use_fixed_caps (demux->srcpad);
+
+  stream_id =
+      gst_pad_create_stream_id (demux->srcpad, GST_ELEMENT_CAST (demux), NULL);
+
+  event = gst_pad_get_sticky_event (demux->sinkpad, GST_EVENT_STREAM_START, 0);
+  if (event) {
+    if (gst_event_parse_group_id (event, &demux->group_id))
+      demux->have_group_id = TRUE;
+    else
+      demux->have_group_id = FALSE;
+    gst_event_unref (event);
+  } else if (!demux->have_group_id) {
+    demux->have_group_id = TRUE;
+    demux->group_id = gst_util_group_id_next ();
+  }
+
+  event = gst_event_new_stream_start (stream_id);
+  if (demux->have_group_id)
+    gst_event_set_group_id (event, demux->group_id);
+
+  gst_pad_push_event (demux->srcpad, event);
+  g_free (stream_id);
+
+  gst_pad_set_caps (demux->srcpad, caps);
+  codec_name = gst_pb_utils_get_codec_description (caps);
+  gst_caps_unref (caps);
+
   gst_element_add_pad (GST_ELEMENT (demux), demux->srcpad);
 
   if (demux->byterate_num > 0 && demux->byterate_denom > 0) {
@@ -447,7 +485,7 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
         demux->byterate_num, demux->byterate_denom,
         demux->byterate_num / demux->byterate_denom);
 
-    if (gst_pad_query_peer_duration (demux->sinkpad, &bformat, &size_bytes)) {
+    if (gst_pad_peer_query_duration (demux->sinkpad, bformat, &size_bytes)) {
       demux->duration =
           gst_real_demux_get_timestamp_from_offset (demux, size_bytes);
       demux->upstream_size = size_bytes;
@@ -461,13 +499,17 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
   demux->need_newsegment = TRUE;
 
   if (codec_name) {
-    if (demux->pending_tags == NULL)
-      demux->pending_tags = gst_tag_list_new ();
+    if (demux->pending_tags == NULL) {
+      demux->pending_tags = gst_tag_list_new_empty ();
+      gst_tag_list_set_scope (demux->pending_tags, GST_TAG_SCOPE_GLOBAL);
+    }
 
     gst_tag_list_add (demux->pending_tags, GST_TAG_MERGE_REPLACE,
         GST_TAG_AUDIO_CODEC, codec_name, NULL);
+    g_free (codec_name);
   }
 
+  gst_adapter_unmap (demux->adapter);
   gst_adapter_flush (demux->adapter, demux->data_offset - 6);
 
   demux->state = REAL_AUDIO_DEMUX_STATE_DATA;
@@ -479,8 +521,7 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
 unknown_fourcc:
   {
     GST_ELEMENT_ERROR (GST_ELEMENT (demux), STREAM, DECODE, (NULL),
-        ("Unknown fourcc '%" GST_FOURCC_FORMAT "'",
-            GST_FOURCC_ARGS (demux->fourcc)));
+        ("Unknown fourcc '0x%" G_GINT32_MODIFIER "x'", demux->fourcc));
     return GST_FLOW_ERROR;
   }
 broken_file:
@@ -509,33 +550,20 @@ gst_real_audio_demux_parse_data (GstRealAudioDemux * demux)
 
   while (ret == GST_FLOW_OK && unit_size > 0 && avail >= unit_size) {
     GstClockTime ts;
-    const guint8 *data;
-    GstBuffer *buf = NULL;
+    GstBuffer *buf;
 
-    ret = gst_pad_alloc_buffer_and_set_caps (demux->srcpad,
-        GST_BUFFER_OFFSET_NONE, unit_size, GST_PAD_CAPS (demux->srcpad), &buf);
-
-    if (ret != GST_FLOW_OK) {
-      GST_DEBUG_OBJECT (demux, "pad_alloc flow: %s", gst_flow_get_name (ret));
-      break;
-    }
-
-    data = gst_adapter_peek (demux->adapter, unit_size);
-    memcpy (GST_BUFFER_DATA (buf), data, unit_size);
-    gst_adapter_flush (demux->adapter, unit_size);
+    buf = gst_adapter_take_buffer (demux->adapter, unit_size);
     avail -= unit_size;
 
     if (demux->need_newsegment) {
       gst_pad_push_event (demux->srcpad,
-          gst_event_new_new_segment_full (FALSE, demux->segment.rate,
-              demux->segment.applied_rate, GST_FORMAT_TIME,
-              demux->segment.start, demux->segment.stop, demux->segment.time));
+          gst_event_new_segment (&demux->segment));
       demux->need_newsegment = FALSE;
     }
 
     if (demux->pending_tags) {
-      gst_element_found_tags_for_pad (GST_ELEMENT (demux), demux->srcpad,
-          demux->pending_tags);
+      gst_pad_push_event (demux->srcpad,
+          gst_event_new_tag (demux->pending_tags));
       demux->pending_tags = NULL;
     }
 
@@ -546,7 +574,7 @@ gst_real_audio_demux_parse_data (GstRealAudioDemux * demux)
     ts = gst_real_demux_get_timestamp_from_offset (demux, demux->offset);
     GST_BUFFER_TIMESTAMP (buf) = ts;
 
-    gst_segment_set_last_stop (&demux->segment, GST_FORMAT_TIME, ts);
+    demux->segment.position = ts;
 
     ret = gst_pad_push (demux->srcpad, buf);
   }
@@ -580,18 +608,18 @@ gst_real_audio_demux_handle_buffer (GstRealAudioDemux * demux, GstBuffer * buf)
       break;
     }
     default:
-      g_assert_not_reached ();
+      g_return_val_if_reached (GST_FLOW_ERROR);
   }
 
   return ret;
 }
 
 static GstFlowReturn
-gst_real_audio_demux_chain (GstPad * pad, GstBuffer * buf)
+gst_real_audio_demux_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstRealAudioDemux *demux;
 
-  demux = GST_REAL_AUDIO_DEMUX (GST_PAD_PARENT (pad));
+  demux = GST_REAL_AUDIO_DEMUX (parent);
 
   return gst_real_audio_demux_handle_buffer (demux, buf);
 }
@@ -622,7 +650,7 @@ gst_real_audio_demux_loop (GstRealAudioDemux * demux)
       }
       break;
     default:
-      g_assert_not_reached ();
+      g_return_if_reached ();
   }
 
   /* now get the data */
@@ -632,12 +660,13 @@ gst_real_audio_demux_loop (GstRealAudioDemux * demux)
   if (demux->upstream_size > 0 && demux->offset >= demux->upstream_size)
     goto eos;
 
+  buf = NULL;
   ret = gst_pad_pull_range (demux->sinkpad, demux->offset, bytes_needed, &buf);
 
   if (ret != GST_FLOW_OK)
     goto pull_range_error;
 
-  if (GST_BUFFER_SIZE (buf) != bytes_needed)
+  if (gst_buffer_get_size (buf) != bytes_needed)
     goto pull_range_short_read;
 
   ret = gst_real_audio_demux_handle_buffer (demux, buf);
@@ -648,8 +677,8 @@ gst_real_audio_demux_loop (GstRealAudioDemux * demux)
   demux->offset += bytes_needed;
 
   /* check for the end of the segment */
-  if (demux->segment.stop != -1 && demux->segment.last_stop != -1 &&
-      demux->segment.last_stop > demux->segment.stop) {
+  if (demux->segment.stop != -1 && demux->segment.position != -1 &&
+      demux->segment.position > demux->segment.stop) {
     GST_DEBUG_OBJECT (demux, "reached end of segment");
     goto eos;
   }
@@ -675,7 +704,8 @@ pull_range_error:
 pull_range_short_read:
   {
     GST_WARNING_OBJECT (demux, "pull range short read: wanted %u bytes, but "
-        "got only %u bytes", bytes_needed, GST_BUFFER_SIZE (buf));
+        "got only %" G_GSIZE_FORMAT " bytes", bytes_needed,
+        gst_buffer_get_size (buf));
     gst_buffer_unref (buf);
     goto eos;
   }
@@ -698,6 +728,8 @@ eos:
       gst_element_post_message (GST_ELEMENT (demux),
           gst_message_new_segment_done (GST_OBJECT (demux), GST_FORMAT_TIME,
               stop));
+      gst_pad_push_event (demux->srcpad,
+          gst_event_new_segment_done (GST_FORMAT_TIME, stop));
     } else {
       /* normal playback, send EOS event downstream */
       GST_DEBUG_OBJECT (demux, "sending EOS event, at end of stream");
@@ -715,15 +747,16 @@ pause_task:
 }
 
 static gboolean
-gst_real_audio_demux_sink_event (GstPad * pad, GstEvent * event)
+gst_real_audio_demux_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event)
 {
   GstRealAudioDemux *demux;
   gboolean ret;
 
-  demux = GST_REAL_AUDIO_DEMUX (gst_pad_get_parent (pad));
+  demux = GST_REAL_AUDIO_DEMUX (parent);
 
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:{
+    case GST_EVENT_SEGMENT:{
       /* FIXME */
       gst_event_unref (event);
       demux->need_newsegment = TRUE;
@@ -731,11 +764,9 @@ gst_real_audio_demux_sink_event (GstPad * pad, GstEvent * event)
       break;
     }
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
-
-  gst_object_unref (demux);
   return ret;
 }
 
@@ -779,20 +810,7 @@ gst_real_audio_demux_handle_seek (GstRealAudioDemux * demux, GstEvent * event)
 
   GST_PAD_STREAM_LOCK (demux->sinkpad);
 
-  if (demux->segment_running && !flush) {
-    GstEvent *newseg;
-
-    newseg = gst_event_new_new_segment_full (TRUE, demux->segment.rate,
-        demux->segment.applied_rate, GST_FORMAT_TIME, demux->segment.start,
-        demux->segment.last_stop, demux->segment.time);
-
-    GST_DEBUG_OBJECT (demux, "sending NEWSEGMENT event to close the current "
-        "segment: %" GST_PTR_FORMAT, newseg);
-
-    gst_pad_push_event (demux->srcpad, newseg);
-  }
-
-  gst_segment_set_seek (&demux->segment, rate, format, flags,
+  gst_segment_do_seek (&demux->segment, rate, format, flags,
       cur_type, cur, stop_type, stop, &update);
 
   GST_DEBUG_OBJECT (demux, "segment: %" GST_SEGMENT_FORMAT, &demux->segment);
@@ -807,8 +825,8 @@ gst_real_audio_demux_handle_seek (GstRealAudioDemux * demux, GstEvent * event)
   GST_DEBUG_OBJECT (demux, "seek_pos = %" G_GUINT64_FORMAT, seek_pos);
 
   /* stop flushing */
-  gst_pad_push_event (demux->sinkpad, gst_event_new_flush_stop ());
-  gst_pad_push_event (demux->srcpad, gst_event_new_flush_stop ());
+  gst_pad_push_event (demux->sinkpad, gst_event_new_flush_stop (TRUE));
+  gst_pad_push_event (demux->srcpad, gst_event_new_flush_stop (TRUE));
 
   demux->offset = seek_pos;
   demux->need_newsegment = TRUE;
@@ -817,13 +835,13 @@ gst_real_audio_demux_handle_seek (GstRealAudioDemux * demux, GstEvent * event)
   if (demux->segment.flags & GST_SEEK_FLAG_SEGMENT) {
     gst_element_post_message (GST_ELEMENT (demux),
         gst_message_new_segment_start (GST_OBJECT (demux),
-            GST_FORMAT_TIME, demux->segment.last_stop));
+            GST_FORMAT_TIME, demux->segment.position));
   }
 
   demux->segment_running = TRUE;
   /* restart our task since it might have been stopped when we did the flush */
   gst_pad_start_task (demux->sinkpad,
-      (GstTaskFunction) gst_real_audio_demux_loop, demux);
+      (GstTaskFunction) gst_real_audio_demux_loop, demux, NULL);
 
   /* streaming can continue now */
   GST_PAD_STREAM_UNLOCK (demux->sinkpad);
@@ -854,12 +872,13 @@ cannot_do_backwards_playback:
 }
 
 static gboolean
-gst_real_audio_demux_src_event (GstPad * pad, GstEvent * event)
+gst_real_audio_demux_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event)
 {
   GstRealAudioDemux *demux;
   gboolean ret = FALSE;
 
-  demux = GST_REAL_AUDIO_DEMUX (gst_pad_get_parent (pad));
+  demux = GST_REAL_AUDIO_DEMUX (parent);
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_QOS:
@@ -870,21 +889,21 @@ gst_real_audio_demux_src_event (GstPad * pad, GstEvent * event)
       gst_event_unref (event);
       break;
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
-  gst_object_unref (demux);
   return ret;
 }
 
 static gboolean
-gst_real_audio_demux_src_query (GstPad * pad, GstQuery * query)
+gst_real_audio_demux_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query)
 {
   GstRealAudioDemux *demux;
   gboolean ret = FALSE;
 
-  demux = GST_REAL_AUDIO_DEMUX (gst_pad_get_parent (pad));
+  demux = GST_REAL_AUDIO_DEMUX (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_DURATION:{
@@ -912,12 +931,30 @@ gst_real_audio_demux_src_query (GstPad * pad, GstQuery * query)
       ret = TRUE;
       break;
     }
+    case GST_QUERY_SEGMENT:
+    {
+      GstFormat format;
+      gint64 start, stop;
+
+      format = demux->segment.format;
+
+      start =
+          gst_segment_to_stream_time (&demux->segment, format,
+          demux->segment.start);
+      if ((stop = demux->segment.stop) == -1)
+        stop = demux->segment.duration;
+      else
+        stop = gst_segment_to_stream_time (&demux->segment, format, stop);
+
+      gst_query_set_segment (query, demux->segment.rate, format, start, stop);
+      ret = TRUE;
+      break;
+    }
     default:
-      ret = gst_pad_query_default (pad, query);
+      ret = gst_pad_query_default (pad, parent, query);
       break;
   }
 
-  gst_object_unref (demux);
   return ret;
 }
 

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -80,7 +80,7 @@ add_source (gdouble freq, gfloat pos)
   gst_element_add_pad (info->bin, info->bin_srcpad);
 
   /* get new pad from adder, adder will now wait for data on this pad */
-  info->adder_sinkpad = gst_element_get_request_pad (adder, "sink%d");
+  info->adder_sinkpad = gst_element_get_request_pad (adder, "sink_%u");
 
   /* link inside the bin */
   gst_pad_link (info->src_srcpad, info->fx_sinkpad);
@@ -256,12 +256,9 @@ main (int argc, char *argv[])
   convert = gst_element_factory_make ("audioconvert", "convert");
   sink = gst_element_factory_make ("autoaudiosink", "sink");
 
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "endianness", G_TYPE_INT, G_LITTLE_ENDIAN,
-      "channels", G_TYPE_INT, 2,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "rate", G_TYPE_INT, 44100, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw",
+      "format", G_TYPE_STRING, "S16LE",
+      "channels", G_TYPE_INT, 2, "rate", G_TYPE_INT, 44100, NULL);
   g_object_set (filter, "caps", caps, NULL);
   gst_caps_unref (caps);
 

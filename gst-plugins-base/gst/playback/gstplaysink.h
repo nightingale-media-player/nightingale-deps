@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PLAY_SINK_H__
@@ -41,12 +41,11 @@ G_BEGIN_DECLS
 
 /**
  * GstPlaySinkType:
- * @GST_PLAY_SINK_TYPE_AUDIO: A non-raw audio pad
- * @GST_PLAY_SINK_TYPE_AUDIO_RAW: a raw audio pad
- * @GST_PLAY_SINK_TYPE_VIDEO: a non-raw video pad
- * @GST_PLAY_SINK_TYPE_VIDEO_RAW: a raw video pad
- * @GST_PLAY_SINK_TYPE_TEXT: a raw text pad
- * @GST_PLAY_SINK_TYPE_SUBPIC: a subpicture pad
+ * @GST_PLAY_SINK_TYPE_AUDIO: an audio pad
+ * @GST_PLAY_SINK_TYPE_AUDIO_RAW: a raw audio pad. Deprecated.
+ * @GST_PLAY_SINK_TYPE_VIDEO: a video pad
+ * @GST_PLAY_SINK_TYPE_VIDEO_RAW: a raw video pad. Deprecated.
+ * @GST_PLAY_SINK_TYPE_TEXT: a text pad
  * @GST_PLAY_SINK_TYPE_LAST: the last type
  * @GST_PLAY_SINK_TYPE_FLUSHING: a flushing pad, used when shutting down
  *
@@ -58,11 +57,10 @@ typedef enum {
   GST_PLAY_SINK_TYPE_VIDEO     = 2,
   GST_PLAY_SINK_TYPE_VIDEO_RAW = 3,
   GST_PLAY_SINK_TYPE_TEXT      = 4,
-  GST_PLAY_SINK_TYPE_SUBPIC    = 5,
-  GST_PLAY_SINK_TYPE_LAST      = 6,
+  GST_PLAY_SINK_TYPE_LAST      = 5,
 
   /* this is a dummy pad */
-  GST_PLAY_SINK_TYPE_FLUSHING  = 7
+  GST_PLAY_SINK_TYPE_FLUSHING  = 6
 } GstPlaySinkType;
 
 typedef struct _GstPlaySink GstPlaySink;
@@ -72,6 +70,10 @@ GType gst_play_sink_get_type (void);
 
 GstPad *         gst_play_sink_request_pad    (GstPlaySink *playsink, GstPlaySinkType type);
 void             gst_play_sink_release_pad    (GstPlaySink *playsink, GstPad *pad);
+void             gst_play_sink_refresh_pad    (GstPlaySink *playsink, GstPad *pad, GstPlaySinkType type);
+
+void             gst_play_sink_set_filter     (GstPlaySink * playsink, GstPlaySinkType type, GstElement * filter);
+GstElement *     gst_play_sink_get_filter     (GstPlaySink * playsink, GstPlaySinkType type);
 
 void             gst_play_sink_set_sink       (GstPlaySink * playsink, GstPlaySinkType type, GstElement * sink);
 GstElement *     gst_play_sink_get_sink       (GstPlaySink * playsink, GstPlaySinkType type);
@@ -90,8 +92,14 @@ GstPlayFlags     gst_play_sink_get_flags      (GstPlaySink * playsink);
 
 void             gst_play_sink_set_font_desc  (GstPlaySink *playsink, const gchar * desc);
 gchar *          gst_play_sink_get_font_desc  (GstPlaySink *playsink);
+void             gst_play_sink_set_subtitle_encoding  (GstPlaySink *playsink, const gchar * encoding);
+gchar *          gst_play_sink_get_subtitle_encoding  (GstPlaySink *playsink);
 
-GstBuffer *      gst_play_sink_get_last_frame (GstPlaySink * playsink);
+void             gst_play_sink_set_av_offset  (GstPlaySink *playsink, gint64 av_offset);
+gint64           gst_play_sink_get_av_offset  (GstPlaySink *playsink);
+
+GstSample *      gst_play_sink_get_last_sample (GstPlaySink * playsink);
+GstSample *      gst_play_sink_convert_sample  (GstPlaySink * playsink, GstCaps * caps);
 
 gboolean         gst_play_sink_reconfigure    (GstPlaySink * playsink);
 

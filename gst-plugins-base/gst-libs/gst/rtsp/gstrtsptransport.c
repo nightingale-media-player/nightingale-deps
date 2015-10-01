@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -45,19 +45,14 @@
  * SECTION:gstrtsptransport
  * @short_description: dealing with RTSP transports
  *  
- * <refsect2>
- * <para>
  * Provides helper functions to deal with RTSP transport strings.
- * </para>
- * </refsect2>
- *  
- * Last reviewed on 2007-07-25 (0.10.14)
  */
 
 #include <string.h>
 #include <stdlib.h>
 
 #include "gstrtsptransport.h"
+#include "gstrtsp-enumtypes.h"
 
 #define MAX_MANAGERS	2
 
@@ -81,15 +76,33 @@ typedef struct
 {
   const gchar *name;
   const GstRTSPTransMode mode;
-  const gchar *gst_mime;
+  const GstRTSPProfile profile;
+  const GstRTSPLowerTrans ltrans;
+  const gchar *media_type;
   const gchar *manager[MAX_MANAGERS];
 } GstRTSPTransMap;
 
 static const GstRTSPTransMap transports[] = {
-  {"rtp", GST_RTSP_TRANS_RTP, "application/x-rtp", {"gstrtpbin", "rtpdec"}},
-  {"x-real-rdt", GST_RTSP_TRANS_RDT, "application/x-rdt", {"rdtmanager", NULL}},
-  {"x-pn-tng", GST_RTSP_TRANS_RDT, "application/x-rdt", {"rdtmanager", NULL}},
-  {NULL, GST_RTSP_TRANS_UNKNOWN, NULL, {NULL, NULL}}
+  {"rtp", GST_RTSP_TRANS_RTP, GST_RTSP_PROFILE_AVP,
+        GST_RTSP_LOWER_TRANS_UDP_MCAST, "application/x-rtp",
+      {"rtpbin", "rtpdec"}},
+  {"srtp", GST_RTSP_TRANS_RTP, GST_RTSP_PROFILE_SAVP,
+        GST_RTSP_LOWER_TRANS_UDP_MCAST, "application/x-srtp",
+      {"rtpbin", "rtpdec"}},
+  {"rtpf", GST_RTSP_TRANS_RTP, GST_RTSP_PROFILE_AVPF,
+        GST_RTSP_LOWER_TRANS_UDP_MCAST, "application/x-rtp",
+      {"rtpbin", "rtpdec"}},
+  {"srtpf", GST_RTSP_TRANS_RTP, GST_RTSP_PROFILE_SAVPF,
+        GST_RTSP_LOWER_TRANS_UDP_MCAST, "application/x-srtp",
+      {"rtpbin", "rtpdec"}},
+  {"x-real-rdt", GST_RTSP_TRANS_RDT, GST_RTSP_PROFILE_AVP,
+        GST_RTSP_LOWER_TRANS_UNKNOWN, "application/x-rdt",
+      {"rdtmanager", NULL}},
+  {"x-pn-tng", GST_RTSP_TRANS_RDT, GST_RTSP_PROFILE_AVP,
+        GST_RTSP_LOWER_TRANS_UNKNOWN, "application/x-rdt",
+      {"rdtmanager", NULL}},
+  {NULL, GST_RTSP_TRANS_UNKNOWN, GST_RTSP_PROFILE_UNKNOWN,
+      GST_RTSP_LOWER_TRANS_UNKNOWN, NULL, {NULL, NULL}}
 };
 
 typedef struct
@@ -101,6 +114,8 @@ typedef struct
 static const RTSPProfileMap profiles[] = {
   {"avp", GST_RTSP_PROFILE_AVP},
   {"savp", GST_RTSP_PROFILE_SAVP},
+  {"avpf", GST_RTSP_PROFILE_AVPF},
+  {"savpf", GST_RTSP_PROFILE_SAVPF},
   {NULL, GST_RTSP_PROFILE_UNKNOWN}
 };
 
@@ -188,9 +203,13 @@ gst_rtsp_transport_init (GstRTSPTransport * transport)
  * @mime: location to hold the result
  *
  * Get the mime type of the transport mode @trans. This mime type is typically
- * used to generate #GstCaps on buffers.
+ * used to generate #GstCaps events.
  *
- * Returns: #GST_RTSP_OK. 
+ * Deprecated: This functions only deals with the GstRTSPTransMode and only
+ *    returns the mime type for #GST_RTSP_PROFILE_AVP. Use
+ *    gst_rtsp_transport_get_media_type() instead.
+ *
+ * Returns: #GST_RTSP_OK.
  */
 GstRTSPResult
 gst_rtsp_transport_get_mime (GstRTSPTransMode trans, const gchar ** mime)
@@ -200,11 +219,55 @@ gst_rtsp_transport_get_mime (GstRTSPTransMode trans, const gchar ** mime)
   g_return_val_if_fail (mime != NULL, GST_RTSP_EINVAL);
 
   for (i = 0; transports[i].name; i++)
-    if (transports[i].mode == trans)
+    if (transports[i].mode == trans
+        && transports[i].profile == GST_RTSP_PROFILE_AVP)
       break;
-  *mime = transports[i].gst_mime;
+  *mime = transports[i].media_type;
 
   return GST_RTSP_OK;
+}
+
+/**
+ * gst_rtsp_transport_get_media_type:
+ * @transport: a #GstRTSPTransport
+ * @media_type: (out) (transfer none): media type of @transport
+ *
+ * Get the media type of @transport. This media type is typically
+ * used to generate #GstCaps events.
+ *
+ * Since: 1.4
+ *
+ * Returns: #GST_RTSP_OK.
+ */
+GstRTSPResult
+gst_rtsp_transport_get_media_type (GstRTSPTransport * transport,
+    const gchar ** media_type)
+{
+  gint i;
+
+  g_return_val_if_fail (transport != NULL, GST_RTSP_EINVAL);
+  g_return_val_if_fail (media_type != NULL, GST_RTSP_EINVAL);
+
+  for (i = 0; transports[i].name; i++)
+    if (transports[i].mode == transport->trans
+        && transports[i].profile == transport->profile)
+      break;
+  *media_type = transports[i].media_type;
+
+  return GST_RTSP_OK;
+}
+
+static GstRTSPLowerTrans
+get_default_lower_trans (GstRTSPTransport * transport)
+{
+  gint i;
+
+  for (i = 0; transports[i].name; i++)
+    if (transports[i].mode == transport->trans
+        && transports[i].profile == transport->profile)
+      break;
+
+  return transports[i].ltrans;
 }
 
 /**
@@ -213,8 +276,7 @@ gst_rtsp_transport_get_mime (GstRTSPTransMode trans, const gchar ** mime)
  * @manager: location to hold the result
  * @option: option index.
  *
- * Get the #GStreamer element that can handle the buffers transported over
- * @trans.
+ * Get the #GstElement that can handle the buffers transported over @trans.
  *
  * It is possible that there are several managers available, use @option to
  * selected one.
@@ -251,7 +313,21 @@ parse_mode (GstRTSPTransport * transport, const gchar * str)
   transport->mode_record = (strstr (str, "record") != NULL);
 }
 
-static void
+static gboolean
+check_range (const gchar * str, gchar ** tmp, gint * range)
+{
+  glong range_val;
+
+  range_val = strtol (str, tmp, 10);
+  if (range_val >= G_MININT && range_val <= G_MAXINT) {
+    *range = range_val;
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+static gboolean
 parse_range (const gchar * str, GstRTSPRange * range)
 {
   gchar *minus;
@@ -268,28 +344,26 @@ parse_range (const gchar * str, GstRTSPRange * range)
     if (g_ascii_isspace (minus[1]) || minus[1] == '+' || minus[1] == '-')
       goto invalid_range;
 
-    range->min = strtol (str, &tmp, 10);
-    if (str == tmp || tmp != minus)
+    if (!check_range (str, &tmp, &range->min) || str == tmp || tmp != minus)
       goto invalid_range;
 
-    range->max = strtol (minus + 1, &tmp, 10);
-    if (*tmp && *tmp != ';')
+    if (!check_range (minus + 1, &tmp, &range->max) || (*tmp && *tmp != ';'))
       goto invalid_range;
   } else {
-    range->min = strtol (str, &tmp, 10);
-    if (str == tmp || (*tmp && *tmp != ';'))
+    if (!check_range (str, &tmp, &range->min) || str == tmp ||
+        (*tmp && *tmp != ';'))
       goto invalid_range;
 
     range->max = -1;
   }
 
-  return;
+  return TRUE;
 
 invalid_range:
   {
     range->min = -1;
     range->max = -1;
-    return;
+    return FALSE;
   }
 }
 
@@ -343,6 +417,12 @@ rtsp_transport_ltrans_as_text (const GstRTSPTransport * transport)
 
   return NULL;
 }
+
+#define IS_VALID_PORT_RANGE(range) \
+    (range.min >= 0 && range.min < 65536 && range.max < 65536)
+
+#define IS_VALID_INTERLEAVE_RANGE(range) \
+    (range.min >= 0 && range.min < 256 && range.max < 256)
 
 /**
  * gst_rtsp_transport_parse:
@@ -404,11 +484,7 @@ gst_rtsp_transport_parse (const gchar * str, GstRTSPTransport * transport)
     transport->lower_transport = ltrans[i].ltrans;
   } else {
     /* specifying the lower transport is optional */
-    if (transport->trans == GST_RTSP_TRANS_RTP &&
-        transport->profile == GST_RTSP_PROFILE_AVP)
-      transport->lower_transport = GST_RTSP_LOWER_TRANS_UDP_MCAST;
-    else
-      transport->lower_transport = GST_RTSP_LOWER_TRANS_UNKNOWN;
+    transport->lower_transport = get_default_lower_trans (transport);
   }
 
   g_strfreev (transp);
@@ -450,9 +526,7 @@ gst_rtsp_transport_parse (const gchar * str, GstRTSPTransport * transport)
     } else if (g_str_has_prefix (split[i], "interleaved=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_INTERLEAVED);
       parse_range (split[i] + 12, &transport->interleaved);
-      if (transport->interleaved.min < 0 ||
-          transport->interleaved.min >= 256 ||
-          transport->interleaved.max >= 256)
+      if (!IS_VALID_INTERLEAVE_RANGE (transport->interleaved))
         goto invalid_transport;
     } else if (g_str_has_prefix (split[i], "ttl=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_TTL);
@@ -461,30 +535,30 @@ gst_rtsp_transport_parse (const gchar * str, GstRTSPTransport * transport)
         goto invalid_transport;
     } else if (g_str_has_prefix (split[i], "port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_PORT);
-      parse_range (split[i] + 5, &transport->port);
-      if (transport->port.min < 0 ||
-          transport->port.min >= 65536 || transport->port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 5, &transport->port)) {
+        if (!IS_VALID_PORT_RANGE (transport->port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "client_port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_CLIENT_PORT);
-      parse_range (split[i] + 12, &transport->client_port);
-      if (transport->client_port.min < 0 ||
-          transport->client_port.min >= 65536 ||
-          transport->client_port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 12, &transport->client_port)) {
+        if (!IS_VALID_PORT_RANGE (transport->client_port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "server_port=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_SERVER_PORT);
-      parse_range (split[i] + 12, &transport->server_port);
-      if (transport->server_port.min < 0 ||
-          transport->server_port.min >= 65536 ||
-          transport->server_port.max >= 65536)
-        goto invalid_transport;
+      if (parse_range (split[i] + 12, &transport->server_port)) {
+        if (!IS_VALID_PORT_RANGE (transport->server_port))
+          goto invalid_transport;
+      }
     } else if (g_str_has_prefix (split[i], "ssrc=")) {
       RTSP_TRANSPORT_PARAMETER_IS_UNIQUE (RTSP_TRANSPORT_SSRC);
       transport->ssrc = strtoul (split[i] + 5, NULL, 16);
     } else {
       /* unknown field... */
-      g_warning ("unknown transport field \"%s\"", split[i]);
+      if (strlen (split[i]) > 0) {
+        g_warning ("unknown transport field \"%s\"", split[i]);
+      }
     }
     i++;
   }
@@ -538,7 +612,10 @@ gst_rtsp_transport_as_text (GstRTSPTransport * transport)
   g_ptr_array_add (strs, g_ascii_strup (tmp, -1));
 
   if (transport->trans != GST_RTSP_TRANS_RTP ||
-      transport->profile != GST_RTSP_PROFILE_AVP ||
+      (transport->profile != GST_RTSP_PROFILE_AVP &&
+          transport->profile != GST_RTSP_PROFILE_SAVP &&
+          transport->profile != GST_RTSP_PROFILE_AVPF &&
+          transport->profile != GST_RTSP_PROFILE_SAVPF) ||
       transport->lower_transport == GST_RTSP_LOWER_TRANS_TCP) {
     g_ptr_array_add (strs, g_strdup ("/"));
 

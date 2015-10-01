@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -130,8 +130,7 @@ make_pipeline (void)
   g_assert (audiocaps);
 
   caps =
-      gst_caps_from_string
-      ("audio/x-raw-int,signed=true,width=16,depth=16,rate=48000,channels=1");
+      gst_caps_from_string ("audio/x-raw,format=S16LE,rate=48000,channels=1");
   g_object_set (audiocaps, "caps", caps, NULL);
   gst_caps_unref (caps);
 
@@ -161,14 +160,11 @@ make_pipeline (void)
 
   /* make caps */
   capslist[0] =
-      gst_caps_from_string
-      ("audio/x-raw-int,signed=true,width=16,depth=16,rate=48000,channels=1");
+      gst_caps_from_string ("audio/x-raw,format=S16LE,rate=48000,channels=1");
   capslist[1] =
-      gst_caps_from_string
-      ("audio/x-raw-int,signed=true,width=16,depth=16,rate=16000,channels=1");
+      gst_caps_from_string ("audio/x-raw,format=S16LE,rate=16000,channels=1");
   capslist[2] =
-      gst_caps_from_string
-      ("audio/x-raw-int,signed=true,width=16,depth=16,rate=8000,channels=1");
+      gst_caps_from_string ("audio/x-raw,format=S16LE,rate=8000,channels=1");
 
   /* create encoder elements */
   for (i = 0; i < 3; i++) {
@@ -180,14 +176,14 @@ make_pipeline (void)
 
     gst_bin_add (GST_BIN (result), encoder);
 
-    srcpad = gst_element_get_request_pad (outputselect, "src%d");
+    srcpad = gst_element_get_request_pad (outputselect, "src_%u");
     sinkpad = gst_element_get_static_pad (encoder, "sink");
     gst_pad_link (srcpad, sinkpad);
     gst_object_unref (srcpad);
     gst_object_unref (sinkpad);
 
     srcpad = gst_element_get_static_pad (encoder, "src");
-    sinkpad = gst_element_get_request_pad (inputselect, "sink%d");
+    sinkpad = gst_element_get_request_pad (inputselect, "sink_%u");
     gst_pad_link (srcpad, sinkpad);
     gst_object_unref (srcpad);
     gst_object_unref (sinkpad);
@@ -212,12 +208,13 @@ do_switch (GstElement * pipeline)
   select = gst_bin_get_by_name (GST_BIN (pipeline), "select");
 
   /* get the named pad */
-  name = g_strdup_printf ("src%d", rand);
+  name = g_strdup_printf ("src_%u", rand);
   pad = gst_element_get_static_pad (select, name);
   g_free (name);
 
   /* set the active pad */
   g_object_set (select, "active-pad", pad, NULL);
+  gst_object_unref (select);
 
   return TRUE;
 }
@@ -226,10 +223,11 @@ static gboolean
 my_bus_callback (GstBus * bus, GstMessage * message, gpointer data)
 {
   GstElement *sender = (GstElement *) GST_MESSAGE_SRC (message);
-  const gchar *name = gst_element_get_name (sender);
+  gchar *name = gst_element_get_name (sender);
   GMainLoop *loop = (GMainLoop *) data;
 
   g_print ("Got %s message from %s\n", GST_MESSAGE_TYPE_NAME (message), name);
+  g_free (name);
 
   switch (GST_MESSAGE_TYPE (message)) {
 
@@ -283,7 +281,7 @@ main (gint argc, gchar * argv[])
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
   /* add a timeout to cycle between the formats */
-  g_timeout_add (1000, (GSourceFunc) do_switch, pipeline);
+  g_timeout_add_seconds (1, (GSourceFunc) do_switch, pipeline);
 
   /* now run */
   g_main_loop_run (loop);

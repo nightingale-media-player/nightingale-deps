@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>rtph261pay: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-rtph261depay.html" title="rtph261depay">
+<link rel="next" href="gst-plugins-good-plugins-rtpL16depay.html" title="rtpL16depay">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtph261pay.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtph261pay.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-rtph261depay.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpL16depay.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-rtph261pay"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-rtph261pay.top_of_page"></a>rtph261pay</span></h2>
+<p>rtph261pay</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<a name="GstRtpH261Pay"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-rtph261pay.html#GstRtpH261Pay-struct" title="struct GstRtpH261Pay">GstRtpH261Pay</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtpbasepayload.html#GstRTPBasePayload">GstRTPBasePayload</a>
+                    <span class="lineart">╰──</span> GstRtpH261Pay
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.description"></a><h2>Description</h2>
+<p>Payload encoded H.261 video frames into RTP packets according to RFC 4587.
+For detailed information see: https://www.rfc-editor.org/rfc/rfc4587.txt</p>
+<p>The payloader takes a H.261 frame, parses it and splits it into fragments
+on MB boundaries in order to match configured MTU size. For each fragment
+an RTP packet is constructed with an RTP packet header followed by the
+fragment. In addition the payloader will make sure the packetized H.261
+stream appears as a continuous bit-stream after depacketization by shifting
+the encoded bit-stream of a frame to align with the last significant bit of
+the previous frame. This helps interoperability in the case where the
+encoder does not produce a continuous bit-stream but the decoder requires
+it.</p>
+<div class="refsect2">
+<a name="id-1.2.122.6.4"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc <span class="gtkdoc opt">!</span> avenc_h261 <span class="gtkdoc opt">!</span> rtph261pay <span class="gtkdoc opt">!</span> udpsink</pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This will encode a test video and payload it. Refer to the rtph261depay
+example to depayload and play the RTP stream.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.122.6.5.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-rtp.html#plugin-rtp">rtp</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Stian Selnes &lt;stian@pexip.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Payloader/Network/RTP</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.122.6.5.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-h261</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp, media=(string)video, payload=(int)31, clock-rate=(int)90000, encoding-name=(string)H261</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-rtp, media=(string)video, payload=(int)[ 96, 127 ], clock-rate=(int)90000, encoding-name=(string)H261</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstRtpH261Pay-struct"></a><h3>struct GstRtpH261Pay</h3>
+<pre class="programlisting">struct GstRtpH261Pay;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtph261pay.see-also"></a><h2>See Also</h2>
+<p>rtph261depay</p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

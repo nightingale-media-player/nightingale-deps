@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __SPEEX_RESAMPLER_WRAPPER_H__
@@ -25,6 +25,9 @@
 #define SPEEX_RESAMPLER_QUALITY_DEFAULT 4
 #define SPEEX_RESAMPLER_QUALITY_VOIP 3
 #define SPEEX_RESAMPLER_QUALITY_DESKTOP 5
+
+#define SPEEX_RESAMPLER_SINC_FILTER_DEFAULT SPEEX_RESAMPLER_SINC_FILTER_AUTO
+#define SPEEX_RESAMPLER_SINC_FILTER_AUTO_THRESHOLD_DEFAULT (1 * 1048576)
 
 enum
 {
@@ -37,11 +40,19 @@ enum
   RESAMPLER_ERR_MAX_ERROR
 };
 
+typedef enum {
+  SPEEX_RESAMPLER_SINC_FILTER_INTERPOLATED   = 0,
+  SPEEX_RESAMPLER_SINC_FILTER_FULL           = 1,
+  SPEEX_RESAMPLER_SINC_FILTER_AUTO           = 2
+} SpeexResamplerSincFilterMode;
+
 typedef struct SpeexResamplerState_ SpeexResamplerState;
 
 typedef struct {
   SpeexResamplerState *(*init) (guint32 nb_channels,
-    guint32 in_rate, guint32 out_rate, gint quality, gint * err);
+    guint32 in_rate, guint32 out_rate, gint quality,
+    SpeexResamplerSincFilterMode sinc_filter_mode,
+    guint32 sinc_filter_auto_threshold, gint * err);
   void (*destroy) (SpeexResamplerState * st);
   int (*process) (SpeexResamplerState *
     st, const guint8 * in, guint32 * in_len, guint8 * out, guint32 * out_len);
@@ -52,6 +63,8 @@ typedef struct {
   void (*get_ratio) (SpeexResamplerState * st,
     guint32 * ratio_num, guint32 * ratio_den);
   int (*get_input_latency) (SpeexResamplerState * st);
+  int (*get_filt_len) (SpeexResamplerState * st);
+  int (*get_sinc_filter_mode) (SpeexResamplerState * st);
   int (*set_quality) (SpeexResamplerState * st, gint quality);
   int (*reset_mem) (SpeexResamplerState * st);
   int (*skip_zeros) (SpeexResamplerState * st);
@@ -60,7 +73,9 @@ typedef struct {
 } SpeexResampleFuncs;
 
 SpeexResamplerState *resample_float_resampler_init (guint32 nb_channels,
-    guint32 in_rate, guint32 out_rate, gint quality, gint * err);
+    guint32 in_rate, guint32 out_rate, gint quality,
+    SpeexResamplerSincFilterMode sinc_filter_mode,
+    guint32 sinc_filter_auto_threshold, gint * err);
 void resample_float_resampler_destroy (SpeexResamplerState * st);
 int resample_float_resampler_process_interleaved_float (SpeexResamplerState *
     st, const guint8 * in, guint32 * in_len, guint8 * out, guint32 * out_len);
@@ -71,6 +86,8 @@ void resample_float_resampler_get_rate (SpeexResamplerState * st,
 void resample_float_resampler_get_ratio (SpeexResamplerState * st,
     guint32 * ratio_num, guint32 * ratio_den);
 int resample_float_resampler_get_input_latency (SpeexResamplerState * st);
+int resample_float_resampler_get_filt_len (SpeexResamplerState * st);
+int resample_float_resampler_get_sinc_filter_mode (SpeexResamplerState * st);
 int resample_float_resampler_set_quality (SpeexResamplerState * st, gint quality);
 int resample_float_resampler_reset_mem (SpeexResamplerState * st);
 int resample_float_resampler_skip_zeros (SpeexResamplerState * st);
@@ -85,6 +102,8 @@ static const SpeexResampleFuncs float_funcs =
   resample_float_resampler_get_rate,
   resample_float_resampler_get_ratio,
   resample_float_resampler_get_input_latency,
+  resample_float_resampler_get_filt_len,
+  resample_float_resampler_get_sinc_filter_mode,
   resample_float_resampler_set_quality,
   resample_float_resampler_reset_mem,
   resample_float_resampler_skip_zeros,
@@ -93,7 +112,9 @@ static const SpeexResampleFuncs float_funcs =
 };
 
 SpeexResamplerState *resample_double_resampler_init (guint32 nb_channels,
-    guint32 in_rate, guint32 out_rate, gint quality, gint * err);
+    guint32 in_rate, guint32 out_rate, gint quality,
+    SpeexResamplerSincFilterMode sinc_filter_mode,
+    guint32 sinc_filter_auto_threshold, gint * err);
 void resample_double_resampler_destroy (SpeexResamplerState * st);
 int resample_double_resampler_process_interleaved_float (SpeexResamplerState *
     st, const guint8 * in, guint32 * in_len, guint8 * out, guint32 * out_len);
@@ -104,6 +125,8 @@ void resample_double_resampler_get_rate (SpeexResamplerState * st,
 void resample_double_resampler_get_ratio (SpeexResamplerState * st,
     guint32 * ratio_num, guint32 * ratio_den);
 int resample_double_resampler_get_input_latency (SpeexResamplerState * st);
+int resample_double_resampler_get_filt_len (SpeexResamplerState * st);
+int resample_double_resampler_get_sinc_filter_mode (SpeexResamplerState * st);
 int resample_double_resampler_set_quality (SpeexResamplerState * st, gint quality);
 int resample_double_resampler_reset_mem (SpeexResamplerState * st);
 int resample_double_resampler_skip_zeros (SpeexResamplerState * st);
@@ -118,6 +141,8 @@ static const SpeexResampleFuncs double_funcs =
   resample_double_resampler_get_rate,
   resample_double_resampler_get_ratio,
   resample_double_resampler_get_input_latency,
+  resample_double_resampler_get_filt_len,
+  resample_double_resampler_get_sinc_filter_mode,
   resample_double_resampler_set_quality,
   resample_double_resampler_reset_mem,
   resample_double_resampler_skip_zeros,
@@ -126,7 +151,9 @@ static const SpeexResampleFuncs double_funcs =
 };
 
 SpeexResamplerState *resample_int_resampler_init (guint32 nb_channels,
-    guint32 in_rate, guint32 out_rate, gint quality, gint * err);
+    guint32 in_rate, guint32 out_rate, gint quality,
+    SpeexResamplerSincFilterMode sinc_filter_mode,
+    guint32 sinc_filter_auto_threshold, gint * err);
 void resample_int_resampler_destroy (SpeexResamplerState * st);
 int resample_int_resampler_process_interleaved_int (SpeexResamplerState *
     st, const guint8 * in, guint32 * in_len, guint8 * out, guint32 * out_len);
@@ -137,6 +164,8 @@ void resample_int_resampler_get_rate (SpeexResamplerState * st,
 void resample_int_resampler_get_ratio (SpeexResamplerState * st,
     guint32 * ratio_num, guint32 * ratio_den);
 int resample_int_resampler_get_input_latency (SpeexResamplerState * st);
+int resample_int_resampler_get_filt_len (SpeexResamplerState * st);
+int resample_int_resampler_get_sinc_filter_mode (SpeexResamplerState * st);
 int resample_int_resampler_set_quality (SpeexResamplerState * st, gint quality);
 int resample_int_resampler_reset_mem (SpeexResamplerState * st);
 int resample_int_resampler_skip_zeros (SpeexResamplerState * st);
@@ -151,6 +180,8 @@ static const SpeexResampleFuncs int_funcs =
   resample_int_resampler_get_rate,
   resample_int_resampler_get_ratio,
   resample_int_resampler_get_input_latency,
+  resample_int_resampler_get_filt_len,
+  resample_int_resampler_get_sinc_filter_mode,
   resample_int_resampler_set_quality,
   resample_int_resampler_reset_mem,
   resample_int_resampler_skip_zeros,

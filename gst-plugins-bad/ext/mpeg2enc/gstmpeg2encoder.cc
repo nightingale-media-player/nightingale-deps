@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,7 +26,10 @@
 
 #include <mpegconsts.h>
 #include <quantize.hh>
-#if GST_MJPEGTOOLS_API >= 10900
+#if GST_MJPEGTOOLS_API >= 20000
+#include <ontheflyratectlpass1.hh>
+#include <ontheflyratectlpass2.hh>
+#elif GST_MJPEGTOOLS_API >= 10900
 #include <ontheflyratectl.hh>
 #include <pass1ratectl.hh>
 #include <pass2ratectl.hh>

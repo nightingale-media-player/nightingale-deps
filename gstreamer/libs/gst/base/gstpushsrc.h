@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PUSH_SRC_H__
@@ -41,7 +41,6 @@ typedef struct _GstPushSrcClass GstPushSrcClass;
 
 /**
  * GstPushSrc:
- * @parent: the parent base source object.
  *
  * The opaque #GstPushSrc data structure.
  */
@@ -52,11 +51,32 @@ struct _GstPushSrc {
   gpointer _gst_reserved[GST_PADDING];
 };
 
+/**
+ * GstPushSrcClass:
+ * @parent_class: Element parent class
+ * @create: Ask the subclass to create a buffer. The subclass decides which
+ *          size this buffer should be. Other then that, refer to
+ *          #GstBaseSrc<!-- -->.create() for more details. If this method is
+ *          not implemented, @alloc followed by @fill will be called.
+ * @alloc: Ask the subclass to allocated a buffer. The subclass decides which
+ *         size this buffer should be. The default implementation will create
+ *         a new buffer from the negotiate allcoator.
+ * @fill: Ask the subclass to fill the buffer with data.
+ *
+ * Subclasses can override any of the available virtual methods or not, as
+ * needed. At the minimum, the @fill method should be overridden to produce
+ * buffers.
+ */
 struct _GstPushSrcClass {
   GstBaseSrcClass parent_class;
 
-  /* ask the subclass to create a buffer */
+  /* ask the subclass to create a buffer, the default implementation
+   * uses alloc and fill */
   GstFlowReturn (*create) (GstPushSrc *src, GstBuffer **buf);
+  /* allocate memory for a buffer */
+  GstFlowReturn (*alloc)  (GstPushSrc *src, GstBuffer **buf);
+  /* ask the subclass to fill a buffer */
+  GstFlowReturn (*fill)   (GstPushSrc *src, GstBuffer *buf);
 
   /*< private >*/
   gpointer _gst_reserved[GST_PADDING];

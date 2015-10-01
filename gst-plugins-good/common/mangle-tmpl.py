@@ -8,12 +8,14 @@ insert/overwrite Short Description and Long Description
 
 # FIXME: right now it uses pygst and scans on its own;
 # we really should use inspect/*.xml instead since the result of
-# gst-xmlinspect.py is commited by the docs maintainer, who can be
+# gst-xmlinspect.py is committed by the docs maintainer, who can be
 # expected to have pygst, but this step should be done for every docs build,
 # so no pygst allowed
 
 # read in inspect/*.xml
 # for every tmpl/element-(name).xml: mangle with details from element
+
+from __future__ import print_function, unicode_literals
 
 import glob
 import re
@@ -116,7 +118,10 @@ def get_elements(file):
                 if e2.nodeType == e2.ELEMENT_NODE and e2.localName == 'name':
                     name = e2.childNodes[0].nodeValue.encode("UTF-8")
                 elif e2.nodeType == e2.ELEMENT_NODE and e2.localName == 'description':
-                    description = e2.childNodes[0].nodeValue.encode("UTF-8")
+                    if e2.childNodes:
+                      description = e2.childNodes[0].nodeValue.encode("UTF-8")
+                    else:
+                      description = 'No description'
 
             if name != None and description != None:
                 elements[name] = {'description': description}

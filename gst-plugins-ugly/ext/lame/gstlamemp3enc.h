@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -24,6 +24,8 @@
 
 
 #include <gst/gst.h>
+#include <gst/audio/gstaudioencoder.h>
+#include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
 
@@ -49,42 +51,33 @@ typedef struct _GstLameMP3EncClass GstLameMP3EncClass;
  * Opaque data structure.
  */
 struct _GstLameMP3Enc {
-  GstElement element;
+  GstAudioEncoder element;
 
   /*< private >*/
-  GstPad *srcpad, *sinkpad;
-
   gint samplerate;
+  gint out_samplerate;
   gint num_channels;
-  gboolean setup;
 
+  /* properties */
   gint target;
-
   gint bitrate;
   gboolean cbr;
-
   gfloat quality;
-
   gint encoding_engine_quality;
-
   gboolean mono;
-
-  /* track this so we don't send a last buffer in eos handler after error */
-  GstFlowReturn  last_flow;
 
   lame_global_flags *lgf;
 
-  /* time tracker */
-  guint64 last_ts, last_offs, last_duration, eos_ts;
+  GstAdapter *adapter;
 };
 
 struct _GstLameMP3EncClass {
-  GstElementClass parent_class;
+  GstAudioEncoderClass parent_class;
 };
 
 GType gst_lamemp3enc_get_type(void);
+gboolean gst_lamemp3enc_register (GstPlugin * plugin);
 
 G_END_DECLS
-
 
 #endif /* __GST_LAMEMP3ENC_H__ */

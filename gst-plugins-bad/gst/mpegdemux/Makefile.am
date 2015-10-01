@@ -1,33 +1,21 @@
-plugin_LTLIBRARIES = libgstmpegdemux.la
+plugin_LTLIBRARIES = libgstmpegpsdemux.la
 
-libgstmpegdemux_la_SOURCES = \
-	flumpegdemux.c \
-	flutspatinfo.c \
-	flutspmtinfo.c \
-	flutspmtstreaminfo.c \
+libgstmpegpsdemux_la_SOURCES = \
+	plugin.c \
 	gstmpegdemux.c \
-	gstmpegdesc.c \
-	gstmpegtsdemux.c \
-	gstpesfilter.c \
-	gstsectionfilter.c \
-	mpegtsparse.c \
-	mpegtspacketizer.c
+	gstpesfilter.c 
 
-libgstmpegdemux_la_CFLAGS = $(GST_CFLAGS) $(LIBOIL_CFLAGS)
-libgstmpegdemux_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS) $(LIBOIL_LIBS)
-libgstmpegdemux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstmpegdemux_la_LIBTOOLFLAGS = --tag=disable-static
+libgstmpegpsdemux_la_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS)
+libgstmpegpsdemux_la_LIBADD = \
+	$(GST_PLUGINS_BASE_LIBS) -lgsttag-$(GST_API_VERSION) \
+	-lgstpbutils-$(GST_API_VERSION) \
+	$(GST_BASE_LIBS) $(GST_LIBS)
+libgstmpegpsdemux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstmpegpsdemux_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = \
 	gstmpegdefs.h   \
-	gstmpegdesc.h   \
 	gstmpegdemux.h  \
-	gstpesfilter.h  \
-	gstmpegtsdemux.h \
-	flutspatinfo.h \
-	flutspmtinfo.h \
-	flutspmtstreaminfo.h \
-	gstsectionfilter.h \
-	mpegtspacketizer.h \
-	mpegtsparse.h
-
+	gstpesfilter.h

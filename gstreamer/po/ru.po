@@ -1,22 +1,25 @@
 # Translation of gstreamer messages to Russian
 # This file is put in the public domain.
+#
 # Peter Astakhov <astakhovp@mail.ru>, 2005.
 # Артём Попов <artfwo@gmail.com>, 2009.
 # Pavel Maryanov <acid_jack@ukr.net>, 2009.
-#
+# Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011, 2012, 2013, 2014, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 0.10.21.3\n"
+"Project-Id-Version: gstreamer 1.5.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2009-02-12 14:17+0200\n"
-"Last-Translator: Pavel Maryanov <acid_jack@ukr.net>\n"
+"POT-Creation-Date: 2015-09-25 22:32+0200\n"
+"PO-Revision-Date: 2015-06-13 11:32+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 1.5\n"
 
 msgid "Print the GStreamer version"
 msgstr "Вывести версию GStreamer"
@@ -28,9 +31,9 @@ msgid "Print available debug categories and exit"
 msgstr "Вывести доступные категории отладки и выйти"
 
 msgid ""
-"Default debug level from 1 (only error) to 5 (anything) or 0 for no output"
+"Default debug level from 1 (only error) to 9 (anything) or 0 for no output"
 msgstr ""
-"Уровень отладки по умолчанию: от 1 (только ошибки) до 5 (всё), или 0 (ничего "
+"Уровень отладки по умолчанию: от 1 (только ошибки) до 9 (всё), или 0 (ничего "
 "не печатать)"
 
 msgid "LEVEL"
@@ -48,6 +51,13 @@ msgstr "СПИСОК"
 
 msgid "Disable colored debugging output"
 msgstr "Отключить цветовую разметку при выводе отладочных сообщений"
+
+msgid ""
+"Changes coloring mode of the debug log. Possible modes: off, on, disable, "
+"auto, unix"
+msgstr ""
+"Изменить цветовой режим отладочного вывода. Возможные режимы: off, on, "
+"disable, auto, unix"
 
 msgid "Disable debugging"
 msgstr "Отключить отладку"
@@ -77,8 +87,10 @@ msgstr "Отключить перехват ошибок сегментации 
 msgid "Disable updating the registry"
 msgstr "Отключить обновление реестра"
 
-msgid "Disable the use of fork() while scanning the registry"
-msgstr "Запретить использование fork(), пока происходит сканирование реестра"
+msgid "Disable spawning a helper process while scanning the registry"
+msgstr ""
+"Отключить создание вспомогательного процесса, пока происходит сканирование "
+"реестра"
 
 msgid "GStreamer Options"
 msgstr "Параметры GStreamer"
@@ -86,32 +98,8 @@ msgstr "Параметры GStreamer"
 msgid "Show GStreamer Options"
 msgstr "Показать параметры GStreamer"
 
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr "Ошибка записи кэша реестра в %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr "Ошибка повторного сканирования реестра %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr "Ошибка повторного сканирования реестра %s"
-
 msgid "Unknown option"
 msgstr "Неизвестный параметр"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "ОШИБКА: из элемента %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Дополнительная отладочная информация:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "Обнаружена ошибка в библиотеке ядра GStreamer."
@@ -129,15 +117,17 @@ msgid ""
 "GStreamer error: state change failed and some element failed to post a "
 "proper error message with the reason for the failure."
 msgstr ""
+"Ошибка GStreamer: не удалось изменить состояние и некоторым элементам не "
+"удалось поместить правильное сообщение о причиной ошибки."
 
 msgid "Internal GStreamer error: pad problem."
 msgstr "Внутренняя ошибка GStreamer: проблема с контактным гнездом."
 
 msgid "Internal GStreamer error: thread problem."
-msgstr "Внутренняя ошибка GStreamer: проблема с потоками."
+msgstr "Внутренняя ошибка GStreamer: проблема с нитями."
 
-msgid "Internal GStreamer error: negotiation problem."
-msgstr "Внутренняя ошибка GStreamer: проблема связки элементов."
+msgid "GStreamer error: negotiation problem."
+msgstr "Ошибка GStreamer: проблема связки элементов."
 
 msgid "Internal GStreamer error: event problem."
 msgstr "Внутренняя ошибка GStreamer: проблема с событиями."
@@ -154,8 +144,8 @@ msgstr "Внутренняя ошибка GStreamer: проблема с тег�
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "В вашей установке GStreamer отсутствует модуль."
 
-msgid "Internal GStreamer error: clock problem."
-msgstr "Внутренняя ошибка GStreamer: проблема синхронизации."
+msgid "GStreamer error: clock problem."
+msgstr "Ошибка GStreamer: проблема синхронизации."
 
 msgid ""
 "This application is trying to use GStreamer functionality that has been "
@@ -174,6 +164,9 @@ msgstr "Не удалось закрыть дополнительную библ
 
 msgid "Could not configure supporting library."
 msgstr "Не удалось настроить дополнительную библиотеку."
+
+msgid "Encoding error."
+msgstr "Ошибка при кодировании."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "Обнаружена общая ошибка ресурса GStreamer."
@@ -213,6 +206,9 @@ msgstr "Не удалось получить/установить парамет
 
 msgid "No space left on the resource."
 msgstr "В ресурсе нет свободного места."
+
+msgid "Not authorized to access resource."
+msgstr "Неправомочный доступ к ресурсу."
 
 msgid "GStreamer encountered a general stream error."
 msgstr "Обнаружена общая ошибка потока GStreamer."
@@ -267,6 +263,10 @@ msgstr "Нет стандартного сообщения об ошибке д�
 msgid "Selected clock cannot be used in pipeline."
 msgstr "Выбранные часы не могут быть использованы в конвейере."
 
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr "Ошибка записи кэша реестра в %s: %s"
+
 msgid "title"
 msgstr "название"
 
@@ -303,25 +303,29 @@ msgstr "альбом (для сортировки)"
 msgid "album containing this data for sorting purposes"
 msgstr "альбом, содержащий эти данные (для сортировки)"
 
-#, fuzzy
 msgid "album artist"
-msgstr "исполнитель"
+msgstr "исполнитель альбома"
 
 msgid "The artist of the entire album, as it should be displayed"
-msgstr ""
+msgstr "Исполнитель всего альбома, который должен отображаться"
 
-#, fuzzy
 msgid "album artist sortname"
-msgstr "исполнитель (для сортировки)"
+msgstr "исполнитель альбома (для сортировки)"
 
 msgid "The artist of the entire album, as it should be sorted"
-msgstr ""
+msgstr "Исполнитель всего альбома, по которому нужно выполнять сортировку"
 
 msgid "date"
 msgstr "дата"
 
 msgid "date the data was created (as a GDate structure)"
 msgstr "дата создания этих данных (как структура GDate)"
+
+msgid "datetime"
+msgstr "дата-время"
+
+msgid "date and time the data was created (as a GstDateTime structure)"
+msgstr "дата и время создания этих данных (как структура GstDateTime)"
 
 msgid "genre"
 msgstr "жанр"
@@ -340,8 +344,8 @@ msgstr "дополнительный комментарий"
 
 msgid "free text commenting the data in key=value or key[en]=comment form"
 msgstr ""
-"комментарий к этим данным в свободной форме в виде ключ=значение или ключ[en]"
-"=значение"
+"комментарий к этим данным в свободной форме в виде ключ=значение или "
+"ключ[en]=значение"
 
 msgid "track number"
 msgstr "номер дорожки"
@@ -376,12 +380,12 @@ msgid ""
 msgstr ""
 "Источник данных в виде URI (адрес размещения оригинального файла или потока)"
 
-#, fuzzy
 msgid "homepage"
-msgstr "изображение"
+msgstr "домашняя страница"
 
 msgid "Homepage for this media (i.e. artist or movie homepage)"
 msgstr ""
+"Домашняя страница этого носителя (т.е. страница исполнителя или фильма)"
 
 msgid "description"
 msgstr "описание"
@@ -415,6 +419,12 @@ msgstr "URI авторских прав"
 
 msgid "URI to the copyright notice of the data"
 msgstr "URI уведомления об авторских правах"
+
+msgid "encoded by"
+msgstr "Кодирование выполнено"
+
+msgid "name of the encoding person or organization"
+msgstr "Имя человека или название организации, выполнявшей кодировку"
 
 msgid "contact"
 msgstr "контакт"
@@ -470,21 +480,17 @@ msgstr "аудио-кодек"
 msgid "codec the audio data is stored in"
 msgstr "кодек, в котором сохранены аудио-данные"
 
-#, fuzzy
 msgid "subtitle codec"
-msgstr "видео-кодек"
+msgstr "кодек субтитров"
 
-#, fuzzy
 msgid "codec the subtitle data is stored in"
-msgstr "кодек, в котором сохранены видео-данные"
+msgstr "кодек, в котором хранятся субтитры"
 
-#, fuzzy
 msgid "container format"
-msgstr "контактная информация"
+msgstr "формат контейнера"
 
-#, fuzzy
 msgid "container format the data is stored in"
-msgstr "кодек, в котором сохранены данные"
+msgstr "формат контейнера, в котором хранятся данные"
 
 msgid "bitrate"
 msgstr "битрейт"
@@ -561,8 +567,14 @@ msgstr "эталонный уровень для корректировки гр
 msgid "language code"
 msgstr "код языка"
 
-msgid "language code for this stream, conforming to ISO-639-1"
-msgstr "код языка для этого потока согласно ISO-639-1"
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgstr "код языка для этого потока согласно ISO-639-1 или ISO-639-2"
+
+msgid "language name"
+msgstr "название языка"
+
+msgid "freeform name of the language this stream is in"
+msgstr "название языка в произвольном формате этого потока в"
 
 msgid "image"
 msgstr "изображение"
@@ -570,6 +582,7 @@ msgstr "изображение"
 msgid "image related to this stream"
 msgstr "изображение, связанное с этим потоком"
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "изображение для предпросмотра"
 
@@ -597,7 +610,6 @@ msgstr "разделяемые запятыми ключевые слова, о�
 msgid "geo location name"
 msgstr "геогр. местоположение"
 
-#, fuzzy
 msgid ""
 "human readable descriptive location of where the media has been recorded or "
 "produced"
@@ -640,16 +652,203 @@ msgstr ""
 "производство данных, в метрах согласно системе координат WGS84 (0 на среднем "
 "уровне моря)"
 
+msgid "geo location country"
+msgstr "страна"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr ""
+"страна (на английском), в которой производилась запись или производство "
+"данных"
+
+msgid "geo location city"
+msgstr "город"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr ""
+"город (на английском), в котором производилась запись или производство данных"
+
+msgid "geo location sublocation"
+msgstr "доп. к местоположению"
+
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+"место в городе, в котором производилась запись или производство данных "
+"(например, район)"
+
+msgid "geo location horizontal error"
+msgstr "ошибка в геогр. местоположении"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr "ожидаемая ошибка определения геогр. местоположения (в метрах)"
+
+msgid "geo location movement speed"
+msgstr "скорость движения"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr "скорость движения устройства съёмки в при выполнении съёмки в м/c"
+
+msgid "geo location movement direction"
+msgstr "направление движения"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"направление движения устройства съёмки. Задаётся в градусах числом с "
+"плавающей точкой, 0 означает географический север и дальше по часовой стрелке"
+
+msgid "geo location capture direction"
+msgstr "направление съёмки"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"направление, куда указывало устройство съёмки. Задаётся в градусах числом с "
+"плавающей точкой, 0 означает географический север и дальше по часовой стрелке"
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "название передачи"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr "Название тв/подкаста/передачи на носителе"
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr "короткое название передачи"
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr "Название тв/подкаста/передачи на носителе (для сортировки)"
+
+msgid "episode number"
+msgstr "номер эпизода"
+
+msgid "The episode number in the season the media is part of"
+msgstr "Номер эпизода в сезоне на носителе"
+
+msgid "season number"
+msgstr "номер сезона"
+
+msgid "The season number of the show the media is part of"
+msgstr "Номер сезона на носителе"
+
+msgid "lyrics"
+msgstr "стихи"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr "Стихи песен на носителе"
+
+msgid "composer sortname"
+msgstr "автор (для сортировки)"
+
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr "лицо/лица, ответственные за запись (для сортировки)"
+
+msgid "grouping"
+msgstr "группировка"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+"Группы носителей с несколькими дорожками, например, различные части "
+"концерта. Это больше чем дорожка, но меньше чем альбом"
+
+msgid "user rating"
+msgstr "пользовательская оценка"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+"Оценка, данная пользователем. Чем выше оценка, тем большему числу "
+"пользователей понравился носитель"
+
+msgid "device manufacturer"
+msgstr "производитель устройства"
+
+msgid "Manufacturer of the device used to create this media"
+msgstr "Производитель устройства, на котором создан носитель"
+
+msgid "device model"
+msgstr "модель устройства"
+
+msgid "Model of the device used to create this media"
+msgstr "Модель устройства, на котором создан носитель"
+
+msgid "application name"
+msgstr "имя приложения"
+
+msgid "Application used to create the media"
+msgstr "Приложение с помощью которого создан носитель"
+
+msgid "application data"
+msgstr "данные приложения"
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr "Произвольные данные приложения для преобразования в данные носителя"
+
+msgid "image orientation"
+msgstr "ориентация изображения"
+
+msgid "How the image should be rotated or flipped before display"
+msgstr "Влияет на вращение или поворот изображения перед показом"
+
+msgid "publisher"
+msgstr "издатель"
+
+msgid "Name of the label or publisher"
+msgstr "Название студии или издателя"
+
+msgid "interpreted-by"
+msgstr "в обработке"
+
+msgid "Information about the people behind a remix and similar interpretations"
+msgstr "Информация о людях, которые сделали ремикс или подобные обработки"
+
+msgid "midi-base-note"
+msgstr "midi-base-note"
+
+msgid "Midi note number of the audio track."
+msgstr "Номер ноты midi на аудио дорожке."
+
 msgid ", "
 msgstr ", "
 
 #, c-format
-msgid "specified empty bin \"%s\", not allowed"
-msgstr "указанный пустой контейнер «%s» недопустим"
+msgid "No URI handler for the %s protocol found"
+msgstr "Для протокола «%s» не найден URI обработчика"
 
 #, c-format
-msgid "no bin \"%s\", skipping"
-msgstr "не найден контейнер «%s», пропуск"
+msgid "URI scheme '%s' not supported"
+msgstr "Схема URI «%s» не поддерживается"
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "ОШИБКА: из элемента %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Дополнительная отладочная информация:\n"
+"%s\n"
+
+#, c-format
+msgid "link has no source [sink=%s@%p]"
+msgstr "соединение без источника [приёмник=%s@%p]"
+
+#, c-format
+msgid "link has no sink [source=%s@%p]"
+msgstr "соединение без приёмника [источник=%s@%p]"
 
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
@@ -668,48 +867,59 @@ msgid "no element \"%s\""
 msgstr "элемент «%s» не найден"
 
 #, c-format
+msgid "unexpected reference \"%s\" - ignoring"
+msgstr "неожиданная ссылка «%s» — игнорируется"
+
+#, c-format
+msgid "unexpected pad-reference \"%s\" - ignoring"
+msgstr "неожиданная ссылка на контактное гнездо «%s» — игнорируется"
+
+#, c-format
 msgid "could not parse caps \"%s\""
 msgstr "не удалось обработать возможности «%s»"
-
-msgid "link without source element"
-msgstr "попытка соединения без элемента-источника"
-
-msgid "link without sink element"
-msgstr "попытка соединения без элемента-приёмника"
-
-#, c-format
-msgid "no source element for URI \"%s\""
-msgstr "нет элемента-источника для URI «%s»"
-
-#, c-format
-msgid "no element to link URI \"%s\" to"
-msgstr "нет элемента, который можно было бы присоединить к URI «%s»"
 
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr "нет элемента-приёмника для URI «%s»"
 
 #, c-format
-msgid "could not link sink element for URI \"%s\""
-msgstr "не удалось соединить элемент-приёмник для URI «%s»"
+msgid "no source element for URI \"%s\""
+msgstr "нет элемента-источника для URI «%s»"
+
+msgid "syntax error"
+msgstr "синтаксическая ошибка"
+
+msgid "bin"
+msgstr "контейнер"
+
+#, c-format
+msgid "specified empty bin \"%s\", not allowed"
+msgstr "указанный пустой контейнер «%s» недопустим"
+
+#, c-format
+msgid "no bin \"%s\", unpacking elements"
+msgstr "не найден контейнер «%s», распаковка элементов"
 
 msgid "empty pipeline not allowed"
 msgstr "пустой конвейер недопустим"
 
-msgid "Internal clock error."
-msgstr "Внутренняя ошибка синхронизации."
-
-msgid "Internal data flow error."
-msgstr "Внутренняя ошибка передачи данных."
-
 msgid "A lot of buffers are being dropped."
-msgstr ""
+msgstr "Многое из буфера было отброшено."
 
 msgid "Internal data flow problem."
 msgstr "Внутренняя проблема передачи данных."
 
 msgid "Internal data stream error."
 msgstr "Внутренняя ошибка потока данных."
+
+msgid "Internal data flow error."
+msgstr "Внутренняя ошибка передачи данных."
+
+msgid "Internal clock error."
+msgstr "Внутренняя ошибка синхронизации."
+
+msgid "Failed to map buffer."
+msgstr "Ошибка при отображении (map) буфера."
 
 msgid "Filter caps"
 msgstr "Фильтровать возможности"
@@ -720,6 +930,26 @@ msgid ""
 msgstr ""
 "Ограничить разрешённые возможности (NULL равносильно ANY). Установка этого "
 "свойства увеличивает количество ссылок для предоставленного объекта GstCaps."
+
+msgid "Caps Change Mode"
+msgstr "Режим изменения возможностей"
+
+msgid "Filter caps change behaviour"
+msgstr "Фильтровать поведение изменения возможностей"
+
+msgid "No Temp directory specified."
+msgstr "Не задана временный (Temp) каталог."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Не удалось создать временный файл «%s»."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Не удалось открыть файл «%s» для чтения."
+
+msgid "Error while writing to download file."
+msgstr "Ошибка записи загружаемого файла."
 
 msgid "No file name specified for writing."
 msgstr "Не указано имя файла для записи."
@@ -742,10 +972,6 @@ msgstr "Ошибка записи в файл «%s»."
 
 msgid "No file name specified for reading."
 msgstr "Не указано имя файла для чтения."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "Не удалось открыть файл «%s» для чтения."
 
 #, c-format
 msgid "Could not get info on \"%s\"."
@@ -771,14 +997,14 @@ msgstr "обнаруженные возможности потока"
 msgid "minimum"
 msgstr "минимум"
 
-msgid "maximum"
-msgstr "максимум"
-
 msgid "force caps"
 msgstr "форсировать возможности"
 
 msgid "force caps without doing a typefind"
 msgstr "форсировать возможности без выполнения typefind"
+
+msgid "Stream contains not enough data."
+msgstr "Поток содержит недостаточно данных."
 
 msgid "Stream contains no data."
 msgstr "Поток не содержит данных."
@@ -792,18 +1018,47 @@ msgstr "считываемый"
 msgid "writable"
 msgstr "записываемый"
 
+msgid "deprecated"
+msgstr "устаревший"
+
 msgid "controllable"
-msgstr "котролируемый"
+msgstr "контролируемый"
+
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr "может быть равно состоянию NULL, READY, PAUSED или PLAYING"
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr "может быть равно только состоянию NULL, READY или PAUSED"
+
+msgid "changeable only in NULL or READY state"
+msgstr "может быть равно только состоянию NULL или READY"
+
+msgid "Blacklisted files:"
+msgstr "Файлы из чёрного списка:"
 
 msgid "Total count: "
 msgstr "Общее количество: "
 
 #, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d файл в чёрном списке"
+msgstr[1] "%d файла в чёрном списке"
+msgstr[2] "%d файлов в чёрном списке"
+
+#, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
-msgstr[0] "%d plugin"
+msgstr[0] "%d модуль"
 msgstr[1] "%d модуля"
 msgstr[2] "%d модулей"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d элемент в чёрном списке"
+msgstr[1] "%d элемента в чёрном списке"
+msgstr[2] "%d элементов в чёрном списке"
 
 #, c-format
 msgid "%d feature"
@@ -815,17 +1070,32 @@ msgstr[2] "%d функций"
 msgid "Print all elements"
 msgstr "Вывести все элементы"
 
+msgid "Print list of blacklisted files"
+msgstr "Вывести файлы из чёрного списка"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
-"Вывести машинно-читаемый список функций, предоставляемых указанным модулем.\n"
-"                                       (Полезно для подключения внешних "
-"механизмов автоматической установки модулей)"
+"Вывести машинно-читаемый список функций, предоставляемых указанным модулем "
+"или модулями.\n"
+"                                       Полезно для подключения внешних "
+"механизмов автоматической установки модулей"
 
 msgid "List the plugin contents"
 msgstr "Вывести содержимое модуля"
+
+msgid "Check if the specified element or plugin exists"
+msgstr "Проверьте, что указанный элемент или модуль существует"
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
+"При проверке существования элемента или модуля также проверьте, чтобы его "
+"версия была не старее указанной"
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Вывести поддерживаемые схемы URI для элементов, которые их используют"
@@ -838,46 +1108,24 @@ msgstr "Не удалось загрузить файл модуля: «%s»\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Модуль или элемент «%s» не найден\n"
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr ""
-"Использование: gst-xmllaunch <файл.xml> [ элемент.свойство=значение...]\n"
+msgid "Index statistics"
+msgstr "Индексная статистика"
 
 #, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr "ОШИБКА: ошибка разбора xml-файла «%s».\n"
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr "ОШИБКА: в файле «%s» отсутствует главный элемент конвейера.\n"
-
-#, fuzzy
-msgid "WARNING: only one toplevel element is supported at this time.\n"
-msgstr ""
-"ПРЕДУПРЕЖДЕНИЕ: в данный момент поддерживается только один главный элемент."
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr "ОШИБКА: ошибка обработки аргумента командной строки %d: %s.\n"
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
-msgstr "ПРЕДУПРЕЖДЕНИЕ: элемент с именем «%s» не найден.\n"
-
-#, fuzzy, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
-msgstr "Получено сообщение от элемента «%s» (%s): "
+msgstr "Получено сообщение #%u от элемента «%s» (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u from pad \"%s:%s\" (%s): "
-msgstr "Получено сообщение от элемента «%s» (%s): "
+msgstr "Получено сообщение #%u от контактного гнезда «%s:%s» (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u from object \"%s\" (%s): "
-msgstr "Получено сообщение от элемента «%s» (%s): "
+msgstr "Получено сообщение #%u от объекта «%s» (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u (%s): "
-msgstr "Получено сообщение #%"
+msgstr "Получено сообщение #%u (%s): "
 
 #, c-format
 msgid "Got EOS from element \"%s\".\n"
@@ -885,18 +1133,29 @@ msgstr "Получен маркер EOS («конец потока») от эл�
 
 #, c-format
 msgid "FOUND TAG      : found by element \"%s\".\n"
-msgstr "НАЙДЕН ТЕГ: найден по элементу «%s».\n"
+msgstr "НАЙДЕН ТЕГ: найден элементом «%s».\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by pad \"%s:%s\".\n"
-msgstr "НАЙДЕН ТЕГ: найден по элементу «%s».\n"
+msgstr "НАЙДЕН ТЕГ: найден контактным гнездом «%s:%s».\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by object \"%s\".\n"
-msgstr "НАЙДЕН ТЕГ: найден по элементу «%s».\n"
+msgstr "НАЙДЕН ТЕГ: найден объектом «%s».\n"
 
 msgid "FOUND TAG\n"
-msgstr ""
+msgstr "НАЙДЕН ТЕГ\n"
+
+#, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr "НАЙДЕН TOC: найден элементом «%s».\n"
+
+#, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr "НАЙДЕН TOC: найден объектом «%s».\n"
+
+msgid "FOUND TOC\n"
+msgstr "НАЙДЕН TOC\n"
 
 #, c-format
 msgid ""
@@ -911,60 +1170,73 @@ msgid "WARNING: from element %s: %s\n"
 msgstr "ПРЕДУПРЕЖДЕНИЕ: от элемента %s: %s\n"
 
 msgid "Prerolled, waiting for buffering to finish...\n"
-msgstr "Конвейер подготовлен, ожидается завершение буферизации...\n"
+msgstr "Конвейер подготовлен, ожидается завершение буферизации…\n"
+
+msgid "Prerolled, waiting for progress to finish...\n"
+msgstr "Время предпуска, ожидается завершение процесса…\n"
 
 msgid "buffering..."
-msgstr "буферизация..."
+msgstr "буферизация…"
 
 msgid "Done buffering, setting pipeline to PLAYING ...\n"
-msgstr "Буферизация завершена, конвейер переведён в состояние PLAYING...\n"
+msgstr "Буферизация завершена, конвейер переведён в состояние PLAYING…\n"
 
 msgid "Buffering, setting pipeline to PAUSED ...\n"
-msgstr "Идёт буферизация, конвейер переведён в состояние PAUSED...\n"
+msgstr "Идёт буферизация, конвейер переведён в состояние PAUSED…\n"
 
 msgid "Redistribute latency...\n"
-msgstr "Перераспределение латентности...\n"
+msgstr "Перераспределение латентности…\n"
 
 #, c-format
 msgid "Setting state to %s as requested by %s...\n"
-msgstr ""
+msgstr "Устанавливается состояние %s, запрошенное %s…\n"
 
 msgid "Interrupt: Stopping pipeline ...\n"
-msgstr "Прерывание: Остановка конвейера...\n"
+msgstr "Прерывание: Остановка конвейера…\n"
+
+#, c-format
+msgid "Progress: (%s) %s\n"
+msgstr "Ход выполнения: (%s) %s\n"
+
+#, c-format
+msgid "Missing element: %s\n"
+msgstr "Элемент отсутствует: %s\n"
+
+#, c-format
+msgid "Got context from element '%s': %s=%s\n"
+msgstr "Получен контекст из элемента «%s»: %s=%s\n"
 
 msgid "Output tags (also known as metadata)"
 msgstr "Выводить теги (метаданные)"
 
+msgid "Output TOC (chapters and editions)"
+msgstr "Выводить TOC (главы и редакции)"
+
 msgid "Output status information and property notifications"
 msgstr "Выводить информацию о состоянии и уведомления о свойствах"
 
-#, fuzzy
 msgid "Do not print any progress information"
-msgstr "Не выводить информацию о состоянии ТИПА"
+msgstr "Не выводить информацию о ходе выполнения"
 
 msgid "Output messages"
 msgstr "Выводить сообщения"
 
-msgid "Do not output status information of TYPE"
-msgstr "Не выводить информацию о состоянии ТИПА"
+msgid ""
+"Do not output status information for the specified property if verbose "
+"output is enabled (can be used multiple times)"
+msgstr ""
 
-msgid "TYPE1,TYPE2,..."
-msgstr "ТИП1, ТИП2,..."
-
-msgid "Save xml representation of pipeline to FILE and exit"
-msgstr "Сохранить конвейер в XML-файл и выйти"
-
-msgid "FILE"
-msgstr "ФАЙЛ"
+msgid "PROPERTY-NAME"
+msgstr ""
 
 msgid "Do not install a fault handler"
 msgstr "Не устанавливать обработчик ошибок"
 
-msgid "Print alloc trace (if enabled at compile time)"
-msgstr "Вывести трассировку выделения памяти (если включено при сборке)"
-
 msgid "Force EOS on sources before shutting the pipeline down"
-msgstr ""
+msgstr "Выдать EOS в источники перед закрытием конвейера"
+
+msgid "Gather and print index statistics"
+msgstr "Собрать и вывести индексную статистику"
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -981,54 +1253,118 @@ msgid "ERROR: the 'pipeline' element wasn't found.\n"
 msgstr "ОШИБКА: не найден элемент «pipeline».\n"
 
 msgid "Setting pipeline to PAUSED ...\n"
-msgstr "Установка конвейера в состояние PAUSED...\n"
+msgstr "Установка конвейера в состояние PAUSED…\n"
 
 msgid "ERROR: Pipeline doesn't want to pause.\n"
 msgstr "ОШИБКА: Конвейер не хочет становиться на паузу.\n"
 
 msgid "Pipeline is live and does not need PREROLL ...\n"
-msgstr "Конвейер работает и не требует состояния PREROLL...\n"
+msgstr "Конвейер работает и не требует состояния PREROLL…\n"
 
 msgid "Pipeline is PREROLLING ...\n"
-msgstr "Подготовка конвейера (PREROLL)...\n"
+msgstr "Подготовка конвейера (PREROLL)…\n"
 
 msgid "ERROR: pipeline doesn't want to preroll.\n"
 msgstr "ОШИБКА: конвейер не хочет подготавливаться (PREROLL).\n"
 
 msgid "Pipeline is PREROLLED ...\n"
-msgstr "Конвейер подготовлен (PREROLLED)...\n"
+msgstr "Конвейер подготовлен (PREROLLED)…\n"
 
 msgid "Setting pipeline to PLAYING ...\n"
-msgstr "Установка конвейера в состояние PLAYING...\n"
+msgstr "Установка конвейера в состояние PLAYING…\n"
 
 msgid "ERROR: pipeline doesn't want to play.\n"
 msgstr "ОШИБКА: конвейер не хочет воспроизводить.\n"
 
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
-msgstr ""
+msgstr "Включён EOS при закрытии — Выдача EOS в конвейер\n"
+
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr "Включён EOS при закрытии — ожидание EOS после ошибки\n"
 
 msgid "Waiting for EOS...\n"
-msgstr ""
+msgstr "Ожидание EOS…\n"
 
-#, fuzzy
 msgid "EOS received - stopping pipeline...\n"
-msgstr "Прерывание: Остановка конвейера...\n"
+msgstr "Получен EOS — остановка конвейера…\n"
+
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
+msgstr "Прерывание во время ожидания EOS — остановка конвейера…\n"
 
 msgid "An error happened while waiting for EOS\n"
-msgstr ""
+msgstr "Во время ожидания EOS произошла ошибка\n"
 
 msgid "Execution ended after %"
 msgstr "Выполнение окончено после %"
 
 msgid "Setting pipeline to READY ...\n"
-msgstr "Установка конвейера в состояние READY...\n"
+msgstr "Установка конвейера в состояние READY…\n"
 
 msgid "Setting pipeline to NULL ...\n"
-msgstr "Установка конвейера в состояние NULL...\n"
+msgstr "Установка конвейера в состояние NULL…\n"
 
-#, fuzzy
 msgid "Freeing pipeline ...\n"
-msgstr "Установка конвейера в состояние NULL...\n"
+msgstr "Освобождение конвейера…\n"
+
+#~ msgid "Do not output status information of TYPE"
+#~ msgstr "Не выводить информацию о состоянии ТИПА"
+
+#~ msgid "TYPE1,TYPE2,..."
+#~ msgstr "ТИП1, ТИП2,…"
+
+#~ msgid "link without source element"
+#~ msgstr "попытка соединения без элемента-источника"
+
+#~ msgid "link without sink element"
+#~ msgstr "попытка соединения без элемента-приёмника"
+
+#~ msgid "no element to link URI \"%s\" to"
+#~ msgstr "нет элемента, который можно было бы присоединить к URI «%s»"
+
+#~ msgid "could not link sink element for URI \"%s\""
+#~ msgstr "не удалось соединить элемент-приёмник для URI «%s»"
+
+#~ msgid "maximum"
+#~ msgstr "максимум"
+
+#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+#~ msgstr ""
+#~ "Использование: gst-xmllaunch <файл.xml> [ элемент.свойство=значение...]\n"
+
+#~ msgid "ERROR: parse of xml file '%s' failed.\n"
+#~ msgstr "ОШИБКА: ошибка разбора xml-файла «%s».\n"
+
+#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+#~ msgstr "ОШИБКА: в файле «%s» отсутствует главный элемент конвейера.\n"
+
+#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
+#~ msgstr ""
+#~ "ПРЕДУПРЕЖДЕНИЕ: в данный момент поддерживается только один главный "
+#~ "элемент.\n"
+
+#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
+#~ msgstr "ОШИБКА: ошибка обработки аргумента командной строки %d: %s.\n"
+
+#~ msgid "WARNING: element named '%s' not found.\n"
+#~ msgstr "ПРЕДУПРЕЖДЕНИЕ: элемент с именем «%s» не найден.\n"
+
+#~ msgid "Save xml representation of pipeline to FILE and exit"
+#~ msgstr "Сохранить конвейер в XML-файл и выйти"
+
+#~ msgid "FILE"
+#~ msgstr "ФАЙЛ"
+
+#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
+#~ msgstr "Не устанавливать обработчики сигналов SIGUSR1 и SIGUSR2"
+
+#~ msgid "Print alloc trace (if enabled at compile time)"
+#~ msgstr "Вывести трассировку выделения памяти (если включено при сборке)"
+
+#~ msgid "Error re-scanning registry %s: %s"
+#~ msgstr "Ошибка повторного сканирования реестра %s: %s"
+
+#~ msgid "Error re-scanning registry %s"
+#~ msgstr "Ошибка повторного сканирования реестра %s"
 
 #~ msgid "Internal GStreamer error: state change failed."
 #~ msgstr "Внутренняя ошибка GStreamer: не удалось сменить состояние."
@@ -1077,9 +1413,6 @@ msgstr "Установка конвейера в состояние NULL...\n"
 
 #~ msgid "Added path   %s to %s \n"
 #~ msgstr "Добавлен путь   %s к %s \n"
-
-#~ msgid "Rebuilding %s (%s) ...\n"
-#~ msgstr "Перестариваю %s (%s) ...\n"
 
 #~ msgid "Trying to load %s ...\n"
 #~ msgstr "Пытаюсь загрузить %s ...\n"

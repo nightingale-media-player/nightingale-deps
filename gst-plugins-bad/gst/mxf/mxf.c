@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -69,10 +69,10 @@ plugin_init (GstPlugin * plugin)
   mxf_up_init ();
   mxf_vc3_init ();
 
+  /* mxfmux is disabled for now - it compiles but is completely untested */
   if (!gst_element_register (plugin, "mxfdemux", GST_RANK_PRIMARY,
-          GST_TYPE_MXF_DEMUX) ||
-      !gst_element_register (plugin, "mxfmux", GST_RANK_PRIMARY,
-          GST_TYPE_MXF_MUX))
+          GST_TYPE_MXF_DEMUX))
+    /* || !gst_element_register (plugin, "mxfmux", GST_RANK_PRIMARY, GST_TYPE_MXF_MUX)) */
     return FALSE;
 
   return TRUE;
@@ -80,6 +80,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "mxf",
+    mxf,
     "MXF plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -7,11 +7,12 @@ libgstreplaygain_la_SOURCES = \
 	replaygain.c          \
 	rganalysis.c
 libgstreplaygain_la_CFLAGS  = \
-	$(GST_CFLAGS) $(GST_BASE_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS)
+	$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
 libgstreplaygain_la_LIBADD  = \
-	$(GST_LIBS) $(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstpbutils-0.10 $(LIBM)
+	$(GST_PLUGINS_BASE_LIBS) -lgstpbutils-$(GST_API_VERSION) -lgstaudio-$(GST_API_VERSION)\
+	$(GST_BASE_LIBS) $(GST_LIBS) $(LIBM)
 libgstreplaygain_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstreplaygain_la_LIBTOOLFLAGS = --tag=disable-static
+libgstreplaygain_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 # headers we need but don't want installed
 noinst_HEADERS =         \

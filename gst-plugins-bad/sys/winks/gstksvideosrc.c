@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
+ *               2009 Andres Colubri <andres.colubri@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -44,6 +45,7 @@
 #include "gstksvideodevice.h"
 #include "kshelpers.h"
 #include "ksvideohelpers.h"
+#include "ksdeviceprovider.h"
 
 #define DEFAULT_DEVICE_PATH     NULL
 #define DEFAULT_DEVICE_NAME     NULL
@@ -65,15 +67,15 @@ enum
 GST_DEBUG_CATEGORY (gst_ks_debug);
 #define GST_CAT_DEFAULT gst_ks_debug
 
-#define KS_WORKER_LOCK(priv) g_mutex_lock (priv->worker_lock)
-#define KS_WORKER_UNLOCK(priv) g_mutex_unlock (priv->worker_lock)
+#define KS_WORKER_LOCK(priv) g_mutex_lock (&priv->worker_lock)
+#define KS_WORKER_UNLOCK(priv) g_mutex_unlock (&priv->worker_lock)
 #define KS_WORKER_WAIT(priv) \
-    g_cond_wait (priv->worker_notify_cond, priv->worker_lock)
-#define KS_WORKER_NOTIFY(priv) g_cond_signal (priv->worker_notify_cond)
+    g_cond_wait (&priv->worker_notify_cond, &priv->worker_lock)
+#define KS_WORKER_NOTIFY(priv) g_cond_signal (&priv->worker_notify_cond)
 #define KS_WORKER_WAIT_FOR_RESULT(priv) \
-    g_cond_wait (priv->worker_result_cond, priv->worker_lock)
+    g_cond_wait (&priv->worker_result_cond, &priv->worker_lock)
 #define KS_WORKER_NOTIFY_RESULT(priv) \
-    g_cond_signal (priv->worker_result_cond)
+    g_cond_signal (&priv->worker_result_cond)
 
 typedef enum
 {
@@ -83,7 +85,7 @@ typedef enum
   KS_WORKER_STATE_ERROR,
 } KsWorkerState;
 
-typedef struct
+struct _GstKsVideoSrcPrivate
 {
   /* Properties */
   gchar *device_path;
@@ -102,9 +104,9 @@ typedef struct
 
   /* Worker thread */
   GThread *worker_thread;
-  GMutex *worker_lock;
-  GCond *worker_notify_cond;
-  GCond *worker_result_cond;
+  GMutex worker_lock;
+  GCond worker_notify_cond;
+  GCond worker_result_cond;
   KsWorkerState worker_state;
 
   GstCaps *worker_pending_caps;
@@ -113,15 +115,15 @@ typedef struct
   gboolean worker_pending_run;
   gboolean worker_run_result;
 
+  gulong worker_error_code;
+
   /* Statistics */
   GstClockTime last_sampling;
   guint count;
   guint fps;
-} GstKsVideoSrcPrivate;
+};
 
-#define GST_KS_VIDEO_SRC_GET_PRIVATE(o) \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((o), GST_TYPE_KS_VIDEO_SRC, \
-    GstKsVideoSrcPrivate))
+#define GST_KS_VIDEO_SRC_GET_PRIVATE(o) ((o)->priv)
 
 static void gst_ks_video_src_finalize (GObject * object);
 static void gst_ks_video_src_get_property (GObject * object, guint prop_id,
@@ -129,6 +131,8 @@ static void gst_ks_video_src_get_property (GObject * object, guint prop_id,
 static void gst_ks_video_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 
+G_GNUC_UNUSED static GArray
+    * gst_ks_video_src_get_device_name_values (GstKsVideoSrc * self);
 static void gst_ks_video_src_reset (GstKsVideoSrc * self);
 
 static GstStateChangeReturn gst_ks_video_src_change_state (GstElement * element,
@@ -136,38 +140,23 @@ static GstStateChangeReturn gst_ks_video_src_change_state (GstElement * element,
 static gboolean gst_ks_video_src_set_clock (GstElement * element,
     GstClock * clock);
 
-static GstCaps *gst_ks_video_src_get_caps (GstBaseSrc * basesrc);
+static GstCaps *gst_ks_video_src_get_caps (GstBaseSrc * basesrc,
+    GstCaps * filter);
 static gboolean gst_ks_video_src_set_caps (GstBaseSrc * basesrc,
     GstCaps * caps);
-static void gst_ks_video_src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
+static GstCaps *gst_ks_video_src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
 static gboolean gst_ks_video_src_query (GstBaseSrc * basesrc, GstQuery * query);
 static gboolean gst_ks_video_src_unlock (GstBaseSrc * basesrc);
 static gboolean gst_ks_video_src_unlock_stop (GstBaseSrc * basesrc);
 
 static GstFlowReturn gst_ks_video_src_create (GstPushSrc * pushsrc,
     GstBuffer ** buffer);
+static GstBuffer *gst_ks_video_src_alloc_buffer (guint size, guint alignment,
+    gpointer user_data);
 
-GST_BOILERPLATE (GstKsVideoSrc, gst_ks_video_src, GstPushSrc,
-    GST_TYPE_PUSH_SRC);
+G_DEFINE_TYPE (GstKsVideoSrc, gst_ks_video_src, GST_TYPE_PUSH_SRC);
 
-static void
-gst_ks_video_src_base_init (gpointer gclass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
-  static GstElementDetails element_details = {
-    "KsVideoSrc",
-    "Source/Video",
-    "Stream data from a video capture device through Windows kernel streaming",
-    "Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>\n"
-        "Haakon Sporsheim <hakon.sporsheim@tandberg.com>"
-  };
-
-  gst_element_class_set_details (element_class, &element_details);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-          ks_video_get_all_caps ()));
-}
+static GstKsVideoSrcClass *parent_class = NULL;
 
 static void
 gst_ks_video_src_class_init (GstKsVideoSrcClass * klass)
@@ -178,6 +167,19 @@ gst_ks_video_src_class_init (GstKsVideoSrcClass * klass)
   GstPushSrcClass *gstpushsrc_class = GST_PUSH_SRC_CLASS (klass);
 
   g_type_class_add_private (klass, sizeof (GstKsVideoSrcPrivate));
+
+  parent_class = g_type_class_peek_parent (klass);
+
+  gst_element_class_set_static_metadata (gstelement_class, "KsVideoSrc",
+      "Source/Video",
+      "Stream data from a video capture device through Windows kernel streaming",
+      "Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>\n"
+      "Haakon Sporsheim <hakon.sporsheim@tandberg.com>\n"
+      "Andres Colubri <andres.colubri@gmail.com>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
+          ks_video_get_all_caps ()));
 
   gobject_class->finalize = gst_ks_video_src_finalize;
   gobject_class->get_property = gst_ks_video_src_get_property;
@@ -221,16 +223,17 @@ gst_ks_video_src_class_init (GstKsVideoSrcClass * klass)
       g_param_spec_boolean ("enable-quirks", "Enable quirks",
           "Enable driver-specific quirks", DEFAULT_ENABLE_QUIRKS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  GST_DEBUG_CATEGORY_INIT (gst_ks_debug, "ksvideosrc",
-      0, "Kernel streaming video source");
 }
 
 static void
-gst_ks_video_src_init (GstKsVideoSrc * self, GstKsVideoSrcClass * gclass)
+gst_ks_video_src_init (GstKsVideoSrc * self)
 {
-  GstKsVideoSrcPrivate *priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
   GstBaseSrc *basesrc = GST_BASE_SRC (self);
+  GstKsVideoSrcPrivate *priv;
+
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_KS_VIDEO_SRC,
+      GstKsVideoSrcPrivate);
+  priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
 
   gst_base_src_set_live (basesrc, TRUE);
   gst_base_src_set_format (basesrc, GST_FORMAT_TIME);
@@ -305,8 +308,13 @@ gst_ks_video_src_set_property (GObject * object, guint prop_id,
       priv->device_path = g_value_dup_string (value);
       break;
     case PROP_DEVICE_NAME:
+    {
+      const gchar *device_name = g_value_get_string (value);
       g_free (priv->device_name);
-      priv->device_name = g_value_dup_string (value);
+      priv->device_name = NULL;
+      if (device_name && strlen (device_name) != 0)
+        priv->device_name = g_strdup (device_name);
+    }
       break;
     case PROP_DEVICE_INDEX:
       priv->device_index = g_value_get_int (value);
@@ -345,7 +353,6 @@ gst_ks_video_src_reset (GstKsVideoSrc * self)
 static void
 gst_ks_video_src_apply_driver_quirks (GstKsVideoSrc * self)
 {
-  GstKsVideoSrcPrivate *priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
   HMODULE mod;
 
   /*
@@ -378,6 +385,35 @@ gst_ks_video_src_apply_driver_quirks (GstKsVideoSrc * self)
   }
 }
 
+/*FIXME: when we have a devices API replacement */
+G_GNUC_UNUSED static GArray *
+gst_ks_video_src_get_device_name_values (GstKsVideoSrc * self)
+{
+  GList *devices, *cur;
+  GArray *array = g_array_new (TRUE, TRUE, sizeof (GValue));
+
+  devices = ks_enumerate_devices (&KSCATEGORY_VIDEO, &KSCATEGORY_CAPTURE);
+  if (devices == NULL)
+    return array;
+
+  devices = ks_video_device_list_sort_cameras_first (devices);
+
+  for (cur = devices; cur != NULL; cur = cur->next) {
+    GValue value = { 0, };
+    KsDeviceEntry *entry = cur->data;
+
+    g_value_init (&value, G_TYPE_STRING);
+    g_value_set_string (&value, entry->name);
+    g_array_append_val (array, value);
+    g_value_unset (&value);
+
+    ks_device_entry_free (entry);
+  }
+
+  g_list_free (devices);
+  return array;
+}
+
 static gboolean
 gst_ks_video_src_open_device (GstKsVideoSrc * self)
 {
@@ -387,9 +423,11 @@ gst_ks_video_src_open_device (GstKsVideoSrc * self)
 
   g_assert (priv->device == NULL);
 
-  devices = ks_enumerate_devices (&KSCATEGORY_VIDEO);
+  devices = ks_enumerate_devices (&KSCATEGORY_VIDEO, &KSCATEGORY_CAPTURE);
   if (devices == NULL)
     goto error_no_devices;
+
+  devices = ks_video_device_list_sort_cameras_first (devices);
 
   for (cur = devices; cur != NULL; cur = cur->next) {
     KsDeviceEntry *entry = cur->data;
@@ -398,14 +436,18 @@ gst_ks_video_src_open_device (GstKsVideoSrc * self)
         entry->index, entry->name, entry->path);
   }
 
-  for (cur = devices; cur != NULL && device == NULL; cur = cur->next) {
+  for (cur = devices; cur != NULL; cur = cur->next) {
     KsDeviceEntry *entry = cur->data;
     gboolean match;
 
+    if (device != NULL) {
+      ks_device_entry_free (entry);
+      continue;
+    }
     if (priv->device_path != NULL) {
-      match = g_strcasecmp (entry->path, priv->device_path) == 0;
+      match = g_ascii_strcasecmp (entry->path, priv->device_path) == 0;
     } else if (priv->device_name != NULL) {
-      match = g_strcasecmp (entry->name, priv->device_name) == 0;
+      match = g_ascii_strcasecmp (entry->name, priv->device_name) == 0;
     } else if (priv->device_index >= 0) {
       match = entry->index == priv->device_index;
     } else {
@@ -424,8 +466,8 @@ gst_ks_video_src_open_device (GstKsVideoSrc * self)
         priv->ksclock = NULL;
       }
 
-      device = g_object_new (GST_TYPE_KS_VIDEO_DEVICE,
-          "clock", priv->ksclock, "device-path", entry->path, NULL);
+      device = gst_ks_video_device_new (entry->path, priv->ksclock,
+          gst_ks_video_src_alloc_buffer, self);
     }
 
     ks_device_entry_free (entry);
@@ -453,15 +495,15 @@ error_no_devices:
 error_no_match:
   {
     if (priv->device_path != NULL) {
-      GST_ELEMENT_ERROR (self, RESOURCE, SETTINGS,
+      GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
           ("Specified video capture device with path '%s' not found",
               priv->device_path), (NULL));
     } else if (priv->device_name != NULL) {
-      GST_ELEMENT_ERROR (self, RESOURCE, SETTINGS,
+      GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
           ("Specified video capture device with name '%s' not found",
               priv->device_name), (NULL));
     } else {
-      GST_ELEMENT_ERROR (self, RESOURCE, SETTINGS,
+      GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
           ("Specified video capture device with index %d not found",
               priv->device_index), (NULL));
     }
@@ -531,8 +573,8 @@ gst_ks_video_src_worker_func (gpointer data)
     } else if (priv->worker_pending_run) {
       if (priv->ksclock != NULL)
         gst_ks_clock_start (priv->ksclock);
-      priv->worker_run_result =
-          gst_ks_video_device_set_state (priv->device, KSSTATE_RUN);
+      priv->worker_run_result = gst_ks_video_device_set_state (priv->device,
+          KSSTATE_RUN, &priv->worker_error_code);
 
       priv->worker_pending_run = FALSE;
       KS_WORKER_NOTIFY_RESULT (priv);
@@ -563,16 +605,16 @@ gst_ks_video_src_start_worker (GstKsVideoSrc * self)
   GstKsVideoSrcPrivate *priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
   gboolean result;
 
-  priv->worker_lock = g_mutex_new ();
-  priv->worker_notify_cond = g_cond_new ();
-  priv->worker_result_cond = g_cond_new ();
+  g_mutex_init (&priv->worker_lock);
+  g_cond_init (&priv->worker_notify_cond);
+  g_cond_init (&priv->worker_result_cond);
 
   priv->worker_pending_caps = NULL;
   priv->worker_pending_run = FALSE;
 
   priv->worker_state = KS_WORKER_STATE_STARTING;
   priv->worker_thread =
-      g_thread_create (gst_ks_video_src_worker_func, self, TRUE, NULL);
+      g_thread_new ("ks-worker", gst_ks_video_src_worker_func, self);
 
   KS_WORKER_LOCK (priv);
   while (priv->worker_state < KS_WORKER_STATE_READY)
@@ -596,12 +638,9 @@ gst_ks_video_src_stop_worker (GstKsVideoSrc * self)
   g_thread_join (priv->worker_thread);
   priv->worker_thread = NULL;
 
-  g_cond_free (priv->worker_result_cond);
-  priv->worker_result_cond = NULL;
-  g_cond_free (priv->worker_notify_cond);
-  priv->worker_notify_cond = NULL;
-  g_mutex_free (priv->worker_lock);
-  priv->worker_lock = NULL;
+  g_cond_clear (&priv->worker_result_cond);
+  g_cond_clear (&priv->worker_notify_cond);
+  g_mutex_clear (&priv->worker_lock);
 }
 
 static GstStateChangeReturn
@@ -618,6 +657,8 @@ gst_ks_video_src_change_state (GstElement * element, GstStateChange transition)
       if (!gst_ks_video_src_start_worker (self))
         goto open_failed;
       break;
+    default:
+      break;
   }
 
   ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
@@ -625,6 +666,8 @@ gst_ks_video_src_change_state (GstElement * element, GstStateChange transition)
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_NULL:
       gst_ks_video_src_stop_worker (self);
+      break;
+    default:
       break;
   }
 
@@ -649,11 +692,11 @@ gst_ks_video_src_set_clock (GstElement * element, GstClock * clock)
     gst_ks_clock_provide_master_clock (priv->ksclock, clock);
   GST_OBJECT_UNLOCK (element);
 
-  return TRUE;
+  return GST_ELEMENT_CLASS (parent_class)->set_clock (element, clock);
 }
 
 static GstCaps *
-gst_ks_video_src_get_caps (GstBaseSrc * basesrc)
+gst_ks_video_src_get_caps (GstBaseSrc * basesrc, GstCaps * filter)
 {
   GstKsVideoSrc *self = GST_KS_VIDEO_SRC (basesrc);
   GstKsVideoSrcPrivate *priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
@@ -680,18 +723,28 @@ gst_ks_video_src_set_caps (GstBaseSrc * basesrc, GstCaps * caps)
     KS_WORKER_WAIT_FOR_RESULT (priv);
   KS_WORKER_UNLOCK (priv);
 
+  GST_DEBUG ("Result is %d", priv->worker_setcaps_result);
   return priv->worker_setcaps_result;
 }
 
-static void
+static GstCaps *
 gst_ks_video_src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
 {
-  GstStructure *structure = gst_caps_get_structure (caps, 0);
+  GstStructure *structure;
+  GstCaps *fixated_caps;
+  gint i;
 
-  gst_structure_fixate_field_nearest_int (structure, "width", G_MAXINT);
-  gst_structure_fixate_field_nearest_int (structure, "height", G_MAXINT);
-  gst_structure_fixate_field_nearest_fraction (structure, "framerate",
-      G_MAXINT, 1);
+  fixated_caps = gst_caps_make_writable (caps);
+
+  for (i = 0; i < gst_caps_get_size (fixated_caps); ++i) {
+    structure = gst_caps_get_structure (fixated_caps, i);
+    gst_structure_fixate_field_nearest_int (structure, "width", G_MAXINT);
+    gst_structure_fixate_field_nearest_int (structure, "height", G_MAXINT);
+    gst_structure_fixate_field_nearest_fraction (structure, "framerate",
+        G_MAXINT, 1);
+  }
+
+  return gst_caps_fixate (fixated_caps);
 }
 
 static gboolean
@@ -762,6 +815,13 @@ gst_ks_video_src_timestamp_buffer (GstKsVideoSrc * self, GstBuffer * buf,
   GstClock *clock;
   GstClockTime timestamp;
 
+  /* Don't timestamp muxed streams */
+  if (gst_ks_video_device_stream_is_muxed (priv->device)) {
+    duration = timestamp = GST_CLOCK_TIME_NONE;
+    priv->offset++;
+    goto timestamp;
+  }
+
   duration = gst_ks_video_device_get_duration (priv->device);
 
   GST_OBJECT_LOCK (self);
@@ -812,7 +872,7 @@ gst_ks_video_src_timestamp_buffer (GstKsVideoSrc * self, GstBuffer * buf,
       /* REVISIT: I've seen this happen with the GstSystemClock on Windows,
        *          scary... */
       if (timestamp < priv->prev_ts) {
-        GST_WARNING_OBJECT (self, "clock is ticking backwards");
+        GST_INFO_OBJECT (self, "clock is ticking backwards");
         return FALSE;
       }
 
@@ -847,9 +907,11 @@ gst_ks_video_src_timestamp_buffer (GstKsVideoSrc * self, GstBuffer * buf,
     priv->prev_ts = timestamp;
   }
 
+timestamp:
   GST_BUFFER_OFFSET (buf) = priv->offset;
   GST_BUFFER_OFFSET_END (buf) = GST_BUFFER_OFFSET (buf) + 1;
-  GST_BUFFER_TIMESTAMP (buf) = timestamp;
+  GST_BUFFER_PTS (buf) = timestamp;
+  GST_BUFFER_DTS (buf) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_DURATION (buf) = duration;
 
   return TRUE;
@@ -891,13 +953,10 @@ gst_ks_video_src_update_statistics (GstKsVideoSrc * self)
 }
 
 static GstFlowReturn
-gst_ks_video_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
+gst_ks_video_src_create (GstPushSrc * pushsrc, GstBuffer ** buf)
 {
   GstKsVideoSrc *self = GST_KS_VIDEO_SRC (pushsrc);
   GstKsVideoSrcPrivate *priv = GST_KS_VIDEO_SRC_GET_PRIVATE (self);
-  guint buf_size;
-  GstCaps *caps;
-  GstBuffer *buf = NULL;
   GstFlowReturn result;
   GstClockTime presentation_time;
   gulong error_code;
@@ -908,18 +967,6 @@ gst_ks_video_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
   if (!gst_ks_video_device_has_caps (priv->device))
     goto error_no_caps;
 
-  buf_size = gst_ks_video_device_get_frame_size (priv->device);
-  g_assert (buf_size);
-
-  caps = gst_pad_get_negotiated_caps (GST_BASE_SRC_PAD (self));
-  if (caps == NULL)
-    goto error_no_caps;
-  result = gst_pad_alloc_buffer (GST_BASE_SRC_PAD (self), priv->offset,
-      buf_size, caps, &buf);
-  gst_caps_unref (caps);
-  if (G_UNLIKELY (result != GST_FLOW_OK))
-    goto error_alloc_buffer;
-
   if (G_UNLIKELY (!priv->running)) {
     KS_WORKER_LOCK (priv);
     priv->worker_pending_run = TRUE;
@@ -927,6 +974,7 @@ gst_ks_video_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
     while (priv->worker_pending_run)
       KS_WORKER_WAIT_FOR_RESULT (priv);
     priv->running = priv->worker_run_result;
+    error_code = priv->worker_error_code;
     KS_WORKER_UNLOCK (priv);
 
     if (!priv->running)
@@ -934,25 +982,27 @@ gst_ks_video_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
   }
 
   do {
-    gulong bytes_read;
+    if (*buf != NULL) {
+      gst_buffer_unref (*buf);
+      *buf = NULL;
+    }
 
-    result = gst_ks_video_device_read_frame (priv->device,
-        GST_BUFFER_DATA (buf), buf_size, &bytes_read, &presentation_time,
-        &error_code, &error_str);
+    result = gst_ks_video_device_read_frame (priv->device, buf,
+        &presentation_time, &error_code, &error_str);
     if (G_UNLIKELY (result != GST_FLOW_OK))
       goto error_read_frame;
-
-    GST_BUFFER_SIZE (buf) = bytes_read;
   }
-  while (!gst_ks_video_src_timestamp_buffer (self, buf, presentation_time));
+  while (!gst_ks_video_src_timestamp_buffer (self, *buf, presentation_time));
 
   if (G_UNLIKELY (priv->do_stats))
     gst_ks_video_src_update_statistics (self);
 
-  gst_ks_video_device_postprocess_frame (priv->device,
-      GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+  if (!gst_ks_video_device_postprocess_frame (priv->device, *buf)) {
+    GST_ELEMENT_ERROR (self, RESOURCE, FAILED, ("Postprocessing failed"),
+        ("Postprocessing failed"));
+    return GST_FLOW_ERROR;
+  }
 
-  *buffer = buf;
   return GST_FLOW_OK;
 
   /* ERRORS */
@@ -965,42 +1015,86 @@ error_no_caps:
   }
 error_start_capture:
   {
-    GST_ELEMENT_ERROR (self, RESOURCE, OPEN_READ,
-        ("could not start capture"),
-        ("failed to change pin state to KSSTATE_RUN"));
+    const gchar *debug_str = "failed to change pin state to KSSTATE_RUN";
+
+    switch (error_code) {
+      case ERROR_FILE_NOT_FOUND:
+        GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
+            ("failed to start capture (device unplugged)"), ("%s", debug_str));
+        break;
+      case ERROR_NO_SYSTEM_RESOURCES:
+        GST_ELEMENT_ERROR (self, RESOURCE, BUSY,
+            ("failed to start capture (device already in use)"), ("%s",
+                debug_str));
+        break;
+      default:
+        GST_ELEMENT_ERROR (self, RESOURCE, FAILED,
+            ("failed to start capture (0x%08x)", (guint) error_code), ("%s",
+                debug_str));
+        break;
+    }
 
     return GST_FLOW_ERROR;
   }
+error_read_frame:
+  {
+    if (result == GST_FLOW_ERROR) {
+      if (error_str != NULL) {
+        GST_ELEMENT_ERROR (self, RESOURCE, READ,
+            ("read failed: %s [0x%08x]", error_str, (guint) error_code),
+            ("gst_ks_video_device_read_frame failed"));
+      }
+    } else if (result == GST_FLOW_CUSTOM_ERROR) {
+      GST_ELEMENT_ERROR (self, RESOURCE, READ,
+          ("read failed"), ("gst_ks_video_device_read_frame failed"));
+    }
+
+    g_free (error_str);
+
+    return result;
+  }
+}
+
+static GstBuffer *
+gst_ks_video_src_alloc_buffer (guint size, guint alignment, gpointer user_data)
+{
+  GstKsVideoSrc *self = GST_KS_VIDEO_SRC (user_data);
+  GstBuffer *buf;
+  GstAllocationParams params = { 0, alignment - 1, 0, 0, };
+
+  buf = gst_buffer_new_allocate (NULL, size, &params);
+  if (buf == NULL)
+    goto error_alloc_buffer;
+
+  return buf;
+
 error_alloc_buffer:
   {
     GST_ELEMENT_ERROR (self, CORE, PAD, ("alloc_buffer failed"), (NULL));
 
-    return result;
-  }
-error_read_frame:
-  {
-    if (result != GST_FLOW_WRONG_STATE && result != GST_FLOW_UNEXPECTED) {
-      GST_ELEMENT_ERROR (self, RESOURCE, READ,
-          ("read failed: %s [0x%08x]", error_str, error_code),
-          ("gst_ks_video_device_read_frame failed"));
-    }
-
-    g_free (error_str);
-    gst_buffer_unref (buf);
-
-    return result;
+    return NULL;
   }
 }
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  return gst_element_register (plugin, "ksvideosrc",
-      GST_RANK_NONE, GST_TYPE_KS_VIDEO_SRC);
+  GST_DEBUG_CATEGORY_INIT (gst_ks_debug, "ksvideosrc",
+      0, "Kernel streaming video source");
+
+  if (!gst_element_register (plugin, "ksvideosrc",
+          GST_RANK_NONE, GST_TYPE_KS_VIDEO_SRC))
+    return FALSE;
+
+  if (!gst_device_provider_register (plugin, "ksdeviceprovider",
+          GST_RANK_PRIMARY, GST_TYPE_KS_DEVICE_PROVIDER))
+    return FALSE;
+
+  return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "winks",
+    winks,
     "Windows kernel streaming plugin",
     plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")

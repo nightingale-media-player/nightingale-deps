@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _GST_SCHRO_UTILS_H_
@@ -24,9 +24,20 @@
 #include <gst/video/video.h>
 #include <schroedinger/schro.h>
 
+#if SCHRO_CHECK_VERSION(1,0,12)
+#define GST_SCHRO_YUV_LIST "{ I420, YV12, YUY2, UYVY, AYUV, Y42B, Y444, v216, v210, AY64, ARGB }"
+#else
+#if SCHRO_CHECK_VERSION(1,0,11)
+#define GST_SCHRO_YUV_LIST "{ I420, YV12, YUY2, UYVY, AYUV, Y42B, Y444, v216, v210, AY64 }"
+#else
+#define GST_SCHRO_YUV_LIST "{ I420, YV12, YUY2, UYVY, AYUV }"
+#endif
+#endif
+
 SchroFrame *
-gst_schro_buffer_wrap (GstBuffer *buf, GstVideoFormat format, int width,
-    int height);
+gst_schro_buffer_wrap (GstBuffer *buf, gboolean write, GstVideoInfo * vinfo);
+GstBuffer * gst_schro_frame_get_buffer (SchroFrame * frame);
+
 GstBuffer * gst_schro_wrap_schro_buffer (SchroBuffer *buffer);
 SchroBuffer * gst_schro_wrap_gst_buffer (GstBuffer *buffer);
 

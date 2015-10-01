@@ -13,14 +13,14 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifndef _LIBGETTEXT_H
 #define _LIBGETTEXT_H 1
 
 /* NLS can be disabled through the configure --disable-nls option.  */
-#if ENABLE_NLS
+#if defined (ENABLE_NLS) && ENABLE_NLS
 
 /* Get declarations of GNU message catalog functions.  */
 # include <libintl.h>

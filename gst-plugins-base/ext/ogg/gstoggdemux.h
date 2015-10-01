@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_OGG_DEMUX_H__
@@ -25,6 +25,9 @@
 #include <ogg/ogg.h>
 
 #include <gst/gst.h>
+#include <gst/base/gstflowcombiner.h>
+
+#include "gstoggstream.h"
 
 G_BEGIN_DECLS
 
@@ -43,7 +46,7 @@ typedef struct _GstOggPadClass GstOggPadClass;
 #define GST_IS_OGG_DEMUX(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_OGG_DEMUX))
 #define GST_IS_OGG_DEMUX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_OGG_DEMUX))
 
-static GType gst_ogg_demux_get_type (void);
+GType gst_ogg_demux_get_type (void);
 
 typedef struct _GstOggDemux GstOggDemux;
 typedef struct _GstOggDemuxClass GstOggDemuxClass;
@@ -72,58 +75,42 @@ struct _GstOggChain
                                    streams. */
 };
 
-/* different modes for the pad */
-typedef enum
-{
-  GST_OGG_PAD_MODE_INIT,        /* we are feeding our internal decoder to get info */
-  GST_OGG_PAD_MODE_STREAMING,   /* we are streaming buffers to the outside */
-} GstOggPadMode;
-
 /* all information needed for one ogg stream */
 struct _GstOggPad
 {
   GstPad pad;                   /* subclass GstPad */
 
   gboolean have_type;
-  GstOggPadMode mode;
-
-  GstPad *elem_pad;             /* sinkpad of internal element */
-  GstElement *element;          /* internal element */
-  GstPad *elem_out;             /* our sinkpad to receive buffers form the internal element */
 
   GstOggChain *chain;           /* the chain we are part of */
   GstOggDemux *ogg;             /* the ogg demuxer we are part of */
 
-  GList *headers;
+  GstOggStream map;
 
-  gboolean is_skeleton;
-  gboolean have_fisbone;
-  gint64 granulerate_n;
-  gint64 granulerate_d;
-  guint32 preroll;
-  guint granuleshift;
-
-  gint serialno;
   gint64 packetno;
   gint64 current_granule;
+  gint64 prev_granule;
+  gint64 keyframe_granule;
 
   GstClockTime start_time;      /* the timestamp of the first sample */
 
   gint64 first_granule;         /* the granulepos of first page == first sample in next page */
   GstClockTime first_time;      /* the timestamp of the second page or granuletime of first page */
 
-  gboolean     is_sparse;       /* TRUE if this is a subtitle pad or some other sparse stream */
-  GstClockTime last_stop;       /* last_stop when last push occured; used to detect when we
+  GstClockTime position;        /* position when last push occured; used to detect when we
                                  * need to send a newsegment update event for sparse streams */
 
-  ogg_stream_state stream;
   GList *continued;
 
   gboolean discont;
   GstFlowReturn last_ret;       /* last return of _pad_push() */
+  gboolean is_eos;
 
-  gboolean dynamic;             /* True if the internal element had dynamic pads */
-  guint padaddedid;             /* The signal id for element::pad-added */
+  gboolean added;
+
+  /* push mode seeking */
+  GstClockTime push_kf_time;
+  GstClockTime push_sync_time;
 };
 
 struct _GstOggPadClass
@@ -142,46 +129,95 @@ struct _GstOggDemux
 
   GstPad *sinkpad;
 
+  GstFlowCombiner *flowcombiner;
+
   gint64 length;
   gint64 read_offset;
   gint64 offset;
 
-  gboolean seekable;
+  gboolean pullmode;
   gboolean running;
 
+  gboolean have_group_id;
+  guint group_id;
+
   gboolean need_chains;
+  gboolean resync;
+
+  /* keep track of how large pages and packets are,
+     useful for skewing when seeking */
+  guint64 max_packet_size, max_page_size;
+
+  gboolean check_index_overflow;
 
   /* state */
-  GMutex *chain_lock;           /* we need the lock to protect the chains */
+  GMutex chain_lock;           /* we need the lock to protect the chains */
   GArray *chains;               /* list of chains we know */
   GstClockTime total_time;
+  gint bitrate;                 /* bitrate of the current chain */
 
   GstOggChain *current_chain;
   GstOggChain *building_chain;
 
   /* playback start/stop positions */
   GstSegment segment;
-  gboolean segment_running;
   guint32  seqnum;
 
-  GstEvent *event;
   GstEvent *newsegment;         /* pending newsegment to be sent from _loop */
 
-  gint64 current_granule;
-
   /* annodex stuff */
-  gboolean have_fishead;
   gint64 basetime;
   gint64 prestime;
 
+  /* push mode seeking support */
+  GMutex push_lock; /* we need the lock to protect the push mode variables */
+  gint64 push_byte_offset; /* where were are at in the stream, in bytes */
+  gint64 push_byte_length; /* length in bytes of the stream, -1 if unknown */
+  GstClockTime push_time_length; /* length in time of the stream */
+  GstClockTime push_start_time; /* start time of the stream */
+  GstClockTime push_time_offset; /* where were are at in the stream, in time */
+  enum { PUSH_PLAYING, PUSH_DURATION, PUSH_BISECT1, PUSH_LINEAR1, PUSH_BISECT2, PUSH_LINEAR2 } push_state;
+
+  GstClockTime push_seek_time_original_target;
+  GstClockTime push_seek_time_original_stop;
+  GstClockTime push_seek_time_target;
+  gint64 push_last_seek_offset;
+  GstClockTime push_last_seek_time;
+  gint64 push_offset0, push_offset1; /* bisection search offset bounds */
+  GstClockTime push_time0, push_time1; /* bisection search time bounds */
+
+  double push_seek_rate;
+  GstSeekFlags push_seek_flags;
+  GstEvent *push_mode_seek_delayed_event;
+  gboolean push_disable_seeking;
+  gboolean seek_secant;
+  gboolean seek_undershot;
+  GstClockTime push_prev_seek_time;
+
+  gint push_bisection_steps[2];
+  gint stats_bisection_steps[2];
+  gint stats_bisection_max_steps[2];
+  gint stats_nbisections;
+
   /* ogg stuff */
   ogg_sync_state sync;
+  long chunk_size;
+
+  /* Seek events set up by the streaming thread in push mode */
+  GstEvent *seek_event;
+  GThread *seek_event_thread;
+  GMutex seek_event_mutex;
+  GCond seek_event_cond;
+  gboolean seek_event_thread_stop;
+  guint32 seek_event_drop_till;
 };
 
 struct _GstOggDemuxClass
 {
   GstElementClass parent_class;
 };
+
+gboolean gst_ogg_demux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

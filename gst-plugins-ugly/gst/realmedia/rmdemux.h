@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,6 +23,8 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
+#include <gst/pbutils/descriptions.h>
 
 G_BEGIN_DECLS
 
@@ -81,11 +83,16 @@ struct _GstRMDemux {
   /* pads */
   GstPad *sinkpad;
 
+  gboolean have_group_id;
+  guint group_id;
+
   GSList *streams;
-  int n_video_streams;
-  int n_audio_streams;
+  guint n_video_streams;
+  guint n_audio_streams;
   GstAdapter *adapter;
   gboolean have_pads;
+
+  GstFlowCombiner *flowcombiner;
 
   guint32 timescale;
   guint64 duration;
@@ -122,6 +129,9 @@ struct _GstRMDemux {
   guint32 object_id;
   guint32 size;
   guint16 object_version;
+
+  /* container tags for all streams */
+  GstTagList *pending_tags;
 };
 
 struct _GstRMDemuxClass {

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -42,19 +42,13 @@ static gboolean __gst_tools_version = FALSE;
       N_("Print version information and exit"), NULL }
 
 static void
-gst_tools_print_version (const gchar * tool)
+gst_tools_print_version (void)
 {
-  gchar *s;
-
-  s = g_strdup_printf ("%s-%u.%u", tool, GST_VERSION_MAJOR, GST_VERSION_MINOR);
-  g_set_prgname (s);
-  g_free (s);
-
   if (__gst_tools_version) {
     gchar *version_str;
 
     version_str = gst_version_string ();
-    g_print ("%s version %u.%u.%u\n", g_get_prgname (),
+    g_print ("%s version %d.%d.%d\n", g_get_prgname (),
         GST_VERSION_MAJOR, GST_VERSION_MINOR, GST_VERSION_MICRO);
     g_print ("%s\n", version_str);
     g_print ("%s\n", GST_PACKAGE_ORIGIN);

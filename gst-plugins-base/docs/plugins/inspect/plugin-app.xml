@@ -3,7 +3,7 @@
   <description>Elements used to communicate with applications</description>
   <filename>../../gst/app/.libs/libgstapp.so</filename>
   <basename>libgstapp.so</basename>
-  <version>0.10.25</version>
+  <version>1.6.0</version>
   <license>LGPL</license>
   <source>gst-plugins-base</source>
   <package>GStreamer Base Plug-ins source release</package>
@@ -27,7 +27,7 @@
     <element>
       <name>appsrc</name>
       <longname>AppSrc</longname>
-      <class>Generic/Src</class>
+      <class>Generic/Source</class>
       <description>Allow the application to feed buffers to a pipeline</description>
       <author>David Schleef &lt;ds@schleef.org&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</author>
       <pads>

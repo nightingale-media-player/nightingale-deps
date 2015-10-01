@@ -2,7 +2,7 @@
   <title>Bus</title>
   <para>
     A bus is a simple system that takes care of forwarding messages from
-    the pipeline threads to an application in its own thread context. The
+    the streaming threads to an application in its own thread context. The
     advantage of a bus is that an application does not need to be
     thread-aware in order to use &GStreamer;, even though &GStreamer;
     itself is heavily threaded.
@@ -38,7 +38,7 @@
             be called whenever the pipeline emits a message to the bus. In this
             handler, check the signal type (see next section) and do something
             accordingly. The return value of the handler should be TRUE to
-            remove the message from the bus.
+            keep the handler attached to the bus, return FALSE to remove it.
           </para>
         </listitem>
         <listitem>
@@ -97,6 +97,7 @@ main (gint   argc,
 {
   GstElement *pipeline;
   GstBus *bus;
+  guint bus_watch_id;
 
   /* init */
   gst_init (&amp;argc, &amp;argv);
@@ -109,7 +110,7 @@ main (gint   argc,
    * GLib main loop is attached to below
    */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  gst_bus_add_watch (bus, my_bus_callback, NULL);
+  bus_watch_id = gst_bus_add_watch (bus, my_bus_callback, NULL);
   gst_object_unref (bus);
 <!-- example-end bus.c a -->
 [..]<!-- example-begin bus.c b -->
@@ -127,6 +128,7 @@ main (gint   argc,
   /* clean up */
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
+  g_source_remove (bus_watch_id);
   g_main_loop_unref (loop);
 
   return 0;
@@ -214,8 +216,8 @@ g_signal_connect (bus, "message::eos", G_CALLBACK (cb_message_eos), NULL);
           error type and message, and optionally a debug string. Both
           can be extracted using <function>gst_message_parse_error
           ()</function>, <function>_parse_warning ()</function> and
-          <function>_parse_info ()</function>. Both error and debug string
-          should be free'ed after use.
+          <function>_parse_info ()</function>. Both error and debug strings
+          should be freed after use.
         </para>
       </listitem>
       <listitem>
@@ -236,7 +238,7 @@ g_signal_connect (bus, "message::eos", G_CALLBACK (cb_message_eos), NULL);
           stream-information, such as samplerate and bitrate). Applications
           should cache metadata internally. <function>gst_message_parse_tag
           ()</function> should be used to parse the taglist, which should
-          be <function>gst_tag_list_free ()</function>'ed when no longer
+          be <function>gst_tag_list_unref ()</function>'ed when no longer
           needed.
         </para>
       </listitem>
@@ -253,7 +255,7 @@ g_signal_connect (bus, "message::eos", G_CALLBACK (cb_message_eos), NULL);
           manually extract the progress (in percent) from the message by
           extracting the <quote>buffer-percent</quote> property from the
           structure returned by <function>gst_message_get_structure
-          ()</function>.
+            ()</function>. See also <xref linkend="chapter-buffering"/>.
         </para>
       </listitem>
       <listitem>

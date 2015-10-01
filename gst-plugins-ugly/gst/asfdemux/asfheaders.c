@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/gst.h>
@@ -30,6 +30,8 @@ const ASFGuidHash asf_payload_ext_guids[] = {
   {ASF_PAYLOAD_EXTENSION_SYSTEM_PIXEL_ASPECT_RATIO,
         "ASF_PAYLOAD_EXTENSION_SYSTEM_PIXEL_ASPECT_RATIO",
       {0x1b1ee554, 0x4bc8f9ea, 0x6b371a82, 0xb8c4e474}},
+  {ASF_PAYLOAD_EXTENSION_TIMING, "ASF_PAYLOAD_EXTENSION_TIMING",
+      {0XFD3CC02A, 0X4CFA06DB, 0X12721C80, 0XE44587D3}},
   {ASF_PAYLOAD_EXTENSION_UNDEFINED, "ASF_PAYLOAD_EXTENSION_UNDEFINED",
         {0, 0, 0, 0}
       }
@@ -58,7 +60,18 @@ const ASFGuidHash asf_stream_guids[] = {
   {ASF_STREAM_AUDIO, "ASF_STREAM_AUDIO",
         {0xF8699E40, 0x11CF5B4D, 0x8000FDA8, 0x2B445C5F}
       },
+  {ASF_STREAM_EXT_EMBED_HEADER, "ASF_STREAM_EXT_EMBED_HEADER",
+      {0X3AFB65E2, 0X40F247EF, 0XA9702CAC, 0X43D3710D}},
   {ASF_STREAM_UNDEFINED, "ASF_STREAM_UNDEFINED",
+        {0, 0, 0, 0}
+      }
+};
+
+const ASFGuidHash asf_ext_stream_guids[] = {
+  {ASF_EXT_STREAM_AUDIO, "ASF_EXT_STREAM_AUDIO",
+        {0X31178C9D, 0X452803E1, 0XF93D82B5, 0X03F522DB}
+      },
+  {ASF_EXT_STREAM_UNDEFINED, "ASF_EXT_STREAM_UNDEFINED",
         {0, 0, 0, 0}
       }
 };
@@ -150,6 +163,16 @@ const ASFGuidHash asf_object_guids[] = {
       },
   {ASF_OBJ_MARKER, "ASF_OBJ_MARKER",
         {0xf487cd01, 0x11cfa951, 0xc000e68e, 0x6553200c}
+      },
+  /* This guid is definitely used for encryption (mentioned in MS smooth
+   * streaming docs) in new PlayReady (c) (tm) (wtf) system, but I haven't
+   * found a proper name for it.
+   * (Edward Jan 11 2011).*/
+  {ASF_OBJ_UNKNOWN_ENCRYPTION_OBJECT, "ASF_OBJ_UNKNOWN_ENCRYPTION_OBJECT",
+        {0x9a04f079, 0x42869840, 0x5be692ab, 0x955f88e0}
+      },
+  {ASF_OBJ_METADATA_LIBRARY_OBJECT, "ASF_OBJ_METADATA_LIBRARY_OBJECT",
+        {0x44231c94, 0x49d19498, 0x131d41a1, 0x5470454e}
       },
   {ASF_OBJ_UNDEFINED, "ASF_OBJ_UNDEFINED",
         {0, 0, 0, 0}

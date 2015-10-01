@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MATROSKA_MUX_H__
@@ -42,22 +42,6 @@ G_BEGIN_DECLS
 #define GST_IS_MATROSKA_MUX_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_MATROSKA_MUX))
 
-typedef struct _BITMAPINFOHEADER {
-  guint32 bi_size;
-  guint32 bi_width;
-  guint32 bi_height;
-  guint16 bi_planes;
-  guint16 bi_bit_count;
-  guint32 bi_compression;
-  guint32 bi_size_image;
-  guint32 bi_x_pels_per_meter;
-  guint32 bi_y_pels_per_meter;
-  guint32 bi_clr_used;
-  guint32 bi_clr_important;
-} BITMAPINFOHEADER;
-
-#define WAVEFORMATEX_SIZE 18
-
 typedef enum {
   GST_MATROSKA_MUX_STATE_START,
   GST_MATROSKA_MUX_STATE_HEADER,
@@ -69,22 +53,29 @@ typedef struct _GstMatroskaMetaSeekIndex {
   guint64  pos;
 } GstMatroskaMetaSeekIndex;
 
+typedef gboolean (*GstMatroskaCapsFunc) (GstPad *pad, GstCaps *caps);
+
+typedef struct _GstMatroskaMux GstMatroskaMux;
+
 /* all information needed for one matroska stream */
 typedef struct
 {
   GstCollectData collect;       /* we extend the CollectData */
+  GstMatroskaCapsFunc capsfunc;
   GstMatroskaTrackContext *track;
 
-  GstBuffer *buffer;            /* the queued buffer for this pad */
+  GstMatroskaMux *mux;
 
-  guint64 duration;
+  GstTagList *tags;
+
   GstClockTime start_ts;
   GstClockTime end_ts;    /* last timestamp + (if available) duration */
+  guint64 default_duration_scaled;
 }
 GstMatroskaPad;
 
 
-typedef struct _GstMatroskaMux {
+struct _GstMatroskaMux {
   GstElement     element;
   
   /* < private > */
@@ -92,7 +83,6 @@ typedef struct _GstMatroskaMux {
   /* pads */
   GstPad        *srcpad;
   GstCollectPads *collect;
-  GstPadEventFunction collect_event;
   GstEbmlWrite *ebml_write;
 
   guint          num_streams,
@@ -101,8 +91,11 @@ typedef struct _GstMatroskaMux {
   /* Application name (for the writing application header element) */
   gchar          *writing_app;
 
-  /* Matroska version. */
-  guint          matroska_version;
+  /* EBML DocType. */
+  const gchar    *doctype;
+
+  /* DocType version. */
+  guint          doctype_version;
 
   /* state */
   GstMatroskaMuxState state;
@@ -110,9 +103,13 @@ typedef struct _GstMatroskaMux {
   /* a cue (index) table */
   GstMatroskaIndex *index;
   guint          num_indexes;
-
+  GstClockTimeDiff min_index_interval;
+  gboolean       streamable;
+ 
   /* timescale in the file */
   guint64        time_scale;
+  /* based on timescale, limit of nanoseconds you can have in a cluster */ 
+  guint64        max_cluster_duration;
 
   /* length, position (time, ns) */
   guint64        duration;
@@ -121,6 +118,7 @@ typedef struct _GstMatroskaMux {
   guint64        segment_pos,
                  seekhead_pos,
                  cues_pos,
+                 chapters_pos,
                  tags_pos,
                  info_pos,
                  tracks_pos,
@@ -131,15 +129,24 @@ typedef struct _GstMatroskaMux {
   /* current cluster */
   guint64        cluster,
                  cluster_time,
-                 cluster_pos;
+                 cluster_pos,
+		 prev_cluster_size;
 
-} GstMatroskaMux;
+  /* GstForceKeyUnit event */
+  GstEvent       *force_key_unit_event;
+
+  /* Flag to ease handling of WebM specifics */
+  gboolean is_webm;
+
+  /* used uids */
+  GArray *used_uids;
+};
 
 typedef struct _GstMatroskaMuxClass {
   GstElementClass parent;
 } GstMatroskaMuxClass;
 
-gboolean gst_matroska_mux_plugin_init (GstPlugin *plugin);
+GType   gst_matroska_mux_get_type (void);
 
 G_END_DECLS
 

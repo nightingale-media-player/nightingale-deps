@@ -1,4 +1,5 @@
 /* GStreamer
+ * Copyright <2006, 2007, 2008, 2009, 2010> Fluendo <support@fluendo.com>
  * Copyright (C) 2007 Sebastien Moutte <sebastien@moutte.net>
  *
  * gstdshowfakesrc.cpp:
@@ -15,11 +16,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "gstdshowfakesrc.h"
+
+GST_DEBUG_CATEGORY_EXTERN (dshowdec_debug);
+#define GST_CAT_DEFAULT dshowdec_debug
 
 const GUID CLSID_DecodeFakeSrc = 
 { 0x039527db, 0x6b48, 0x45a7, { 0xab, 0xcf, 0x21, 0xab, 0xc5, 0x44, 0xbb, 0xb6} };
@@ -125,6 +129,9 @@ STDMETHODIMP FakeOutputPin::PushBuffer(byte *buffer,
 
     hres = Deliver(pSample);
     pSample->Release();
+  }
+  else {
+    GST_WARNING ("unable to obtain a delivery buffer");
   }
 
   return S_OK;

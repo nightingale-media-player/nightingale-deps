@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_FREI0R_MIXER_H__
@@ -47,10 +47,9 @@ struct _GstFrei0rMixer {
   GstPad *sink0, *sink1, *sink2;
 
   GstCaps *caps;
-  GstVideoFormat fmt;
-  gint width, height;
+  GstVideoInfo info;
 
-  GstEvent *newseg_event;
+  GstEvent *segment_event;
 
   GstPadEventFunction collect_event;
 
@@ -68,7 +67,7 @@ struct _GstFrei0rMixerClass {
   gint n_properties;
 };
 
-gboolean gst_frei0r_mixer_register (GstPlugin *plugin, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
+GstFrei0rPluginRegisterReturn gst_frei0r_mixer_register (GstPlugin *plugin, const gchar * vendor, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
 
 G_END_DECLS
 

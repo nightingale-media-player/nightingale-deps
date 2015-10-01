@@ -14,18 +14,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CHECK_PACK_H
 #define CHECK_PACK_H
 
 
-enum ck_msg_type {
+enum ck_msg_type
+{
   CK_MSG_CTX,
   CK_MSG_FAIL,
   CK_MSG_LOC,
+  CK_MSG_DURATION,
   CK_MSG_LAST
 };
 
@@ -34,7 +36,7 @@ typedef struct CtxMsg
   enum ck_result_ctx ctx;
 } CtxMsg;
 
-typedef struct LocMsg 
+typedef struct LocMsg
 {
   int line;
   char *file;
@@ -45,11 +47,17 @@ typedef struct FailMsg
   char *msg;
 } FailMsg;
 
+typedef struct DurationMsg
+{
+  int duration;
+} DurationMsg;
+
 typedef union
 {
-  CtxMsg  ctx_msg;
+  CtxMsg ctx_msg;
   FailMsg fail_msg;
-  LocMsg  loc_msg;
+  LocMsg loc_msg;
+  DurationMsg duration_msg;
 } CheckMsg;
 
 typedef struct RcvMsg
@@ -61,16 +69,16 @@ typedef struct RcvMsg
   char *test_file;
   int test_line;
   char *msg;
+  int duration;
 } RcvMsg;
 
-void rcvmsg_free (RcvMsg *rmsg);
+void rcvmsg_free (RcvMsg * rmsg);
 
-  
-int pack (enum ck_msg_type type, char **buf, CheckMsg *msg);
-int upack (char *buf, CheckMsg *msg, enum ck_msg_type *type);
 
-void ppack (int fdes, enum ck_msg_type type, CheckMsg *msg);
-RcvMsg *punpack (int fdes);
+int pack (enum ck_msg_type type, char **buf, CheckMsg * msg);
+int upack (char *buf, CheckMsg * msg, enum ck_msg_type *type);
 
+void ppack (FILE * fdes, enum ck_msg_type type, CheckMsg * msg);
+RcvMsg *punpack (FILE * fdes);
 
 #endif /*CHECK_PACK_H */

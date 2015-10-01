@@ -16,14 +16,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include <gst/check/gstcheck.h>
 
@@ -37,16 +38,14 @@ static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS_ANY);
 
 static gboolean
-event_func (GstPad * pad, GstEvent * event)
+event_func (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   if (GST_EVENT_TYPE (event) == GST_EVENT_EOS) {
     have_eos = TRUE;
-    gst_event_unref (event);
-    return TRUE;
   }
 
   gst_event_unref (event);
-  return FALSE;
+  return TRUE;
 }
 
 static GstElement *
@@ -56,7 +55,7 @@ setup_fdsrc (void)
 
   GST_DEBUG ("setup_fdsrc");
   fdsrc = gst_check_setup_element ("fdsrc");
-  mysinkpad = gst_check_setup_sink_pad (fdsrc, &sinktemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (fdsrc, &sinktemplate);
   gst_pad_set_event_function (mysinkpad, event_func);
   gst_pad_set_active (mysinkpad, TRUE);
   return fdsrc;
@@ -76,7 +75,11 @@ GST_START_TEST (test_num_buffers)
   gint pipe_fd[2];
   gchar data[4096];
 
+#ifndef G_OS_WIN32
   fail_if (pipe (pipe_fd) < 0);
+#else
+  fail_if (_pipe (pipe_fd, 2048, _O_BINARY) < 0);
+#endif
 
   src = setup_fdsrc ();
   g_object_set (G_OBJECT (src), "num-buffers", 3, NULL);
@@ -85,9 +88,19 @@ GST_START_TEST (test_num_buffers)
           GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
       "could not set to playing");
 
+#if defined (G_OS_UNIX) && defined (O_NONBLOCK)
+  {
+    int flags;
+
+    flags = fcntl (pipe_fd[1], F_GETFL, 0);
+    fcntl (pipe_fd[1], F_SETFL, flags | O_NONBLOCK);
+  }
+#endif
+
   memset (data, 0, 4096);
   while (!have_eos) {
-    fail_if (write (pipe_fd[1], data, 4096) < 0);
+    int ret = write (pipe_fd[1], data, 4096);
+    fail_if (ret < 0 && errno != EAGAIN);
     g_usleep (100);
   }
 
@@ -113,7 +126,11 @@ GST_START_TEST (test_nonseeking)
   gchar data[4096];
   gboolean seekable;
 
+#ifndef G_OS_WIN32
   fail_if (pipe (pipe_fd) < 0);
+#else
+  fail_if (_pipe (pipe_fd, 2048, _O_BINARY) < 0);
+#endif
 
   src = setup_fdsrc ();
   g_object_set (G_OBJECT (src), "num-buffers", 3, NULL);

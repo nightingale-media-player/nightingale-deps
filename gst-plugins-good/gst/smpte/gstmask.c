@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -23,8 +23,6 @@
 
 #include "gstmask.h"
 #include "paint.h"
-
-extern void _gst_barboxwipes_register (void);
 
 static GList *masks = NULL;
 
@@ -71,7 +69,8 @@ gst_mask_find_definition (gint type)
 }
 
 GstMask *
-gst_mask_factory_new (gint type, gint bpp, gint width, gint height)
+gst_mask_factory_new (gint type, gboolean invert, gint bpp, gint width,
+    gint height)
 {
   GstMaskDefinition *definition;
   GstMask *mask = NULL;
@@ -88,8 +87,20 @@ gst_mask_factory_new (gint type, gint bpp, gint width, gint height)
     mask->user_data = definition->user_data;
     mask->data = g_malloc (width * height * sizeof (guint32));
 
-    if (definition->draw_func)
-      definition->draw_func (mask);
+    definition->draw_func (mask);
+
+    if (invert) {
+      gint i, j;
+      guint32 *datap = mask->data;
+      guint32 max = (1 << bpp);
+
+      for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+          *datap = max - *datap;
+          datap++;
+        }
+      }
+    }
   }
 
   return mask;

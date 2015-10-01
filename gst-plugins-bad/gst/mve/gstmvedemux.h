@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MVE_DEMUX_H__
@@ -78,6 +78,8 @@ struct _GstMveDemuxStream {
   GstClockTime last_ts;
   gint64 offset;
 
+  GstFlowReturn last_flow;
+
   /* video properties */
   guint16 width;
   guint16 height;
@@ -98,6 +100,14 @@ struct _GstMveDemuxStream {
 };
 
 GType gst_mve_demux_get_type (void);
+
+int ipvideo_decode_frame8 (const GstMveDemuxStream * s,
+    const unsigned char *data, unsigned short len);
+int ipvideo_decode_frame16 (const GstMveDemuxStream * s,
+    const unsigned char *data, unsigned short len);
+
+void ipaudio_uncompress (short *buffer,
+    unsigned short buf_len, const unsigned char *data, unsigned char channels);
 
 G_END_DECLS
 

@@ -2,105 +2,87 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>clockoverlay</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<title>clockoverlay: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-cdparanoiasrc.html" title="cdparanoiasrc">
 <link rel="next" href="gst-plugins-base-plugins-decodebin.html" title="decodebin">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-cdparanoiasrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-decodebin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-clockoverlay.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-clockoverlay.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-clockoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-clockoverlay.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-clockoverlay.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-clockoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-clockoverlay.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-cdparanoiasrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-decodebin.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-base-plugins-clockoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-clockoverlay.top_of_page"></a>clockoverlay</span></h2>
-<p>clockoverlay — Overlays the current clock time on a video stream</p>
+<p>clockoverlay</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-clockoverlay.synopsis"></a><h2>Synopsis</h2>
-<a name="GstClockOverlay"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay-struct" title="GstClockOverlay">GstClockOverlay</a>;
-</pre>
-</div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-clockoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay">GstTextOverlay</a>
-                     +----GstClockOverlay
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-clockoverlay.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay--time-format" title='The "time-format" property'>time-format</a>"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay--time-format" title="The “time-format” property">time-format</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstClockOverlay"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-clockoverlay.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-clockoverlay.html#GstClockOverlay-struct" title="struct GstClockOverlay">GstClockOverlay</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-clockoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstBaseTextOverlay
+                    <span class="lineart">╰──</span> GstClockOverlay
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-clockoverlay.description"></a><h2>Description</h2>
-<p>
-This element overlays the current clock time on top of a video
-stream. You can position the text and configure the font details
-using the properties of the <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay"><span class="type">GstTextOverlay</span></a> class. By default, the
-time is displayed in the top left corner of the picture, with some
-padding to the left and to the top.
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2589469"></a><h3>Example launch lines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v videotestsrc ! clockoverlay ! xvimagesink
-</pre></div> Display the current time in the top left corner of the video picture
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v videotestsrc ! clockoverlay halign=right valign=bottom text="Edge City" shaded-background=true ! ffmpegcolorspace ! ximagesink
-</pre></div> Another pipeline that displays the current time with some leading
-text in the bottom right corner of the video picture, with the background
-of the text being shaded in order to make it more legible on top of a
-bright video background.
-</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2589438"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.12.7.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -120,10 +102,13 @@ bright video background.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2560753"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.12.7.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -139,24 +124,19 @@ bright video background.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td> video/x-raw(ANY), format=(string){ I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV61, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32, A420_10LE, A420_10BE, A422_10LE, A422_10BE, A444_10LE, A444_10BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -172,151 +152,40 @@ bright video background.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td> video/x-raw(ANY), format=(string){ I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV61, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32, A420_10LE, A420_10BE, A422_10LE, A422_10BE, A444_10LE, A444_10BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2606024"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">plugin</span></p></td>
-<td>
-            <a class="link" href="gst-plugins-base-plugins-plugin-pango.html#plugin-pango">pango</a>
-          </td>
-</tr>
-<tr>
-<td><p><span class="term">author</span></p></td>
-<td>Tim-Philipp Müller &lt;tim@centricular.net&gt;</td>
-</tr>
-<tr>
-<td><p><span class="term">class</span></p></td>
-<td>Filter/Editor/Video</td>
-</tr>
-</tbody>
-</table></div>
 </div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2606086"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>video_sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)65280, green_mask=(int)16711680, blue_mask=(int)-16777216, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-rgb, bpp=(int)32, depth=(int)24, endianness=(int)4321, red_mask=(int)16711680, green_mask=(int)65280, blue_mask=(int)255, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> video/x-raw-yuv, format=(fourcc)UYVY, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-clockoverlay.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-clockoverlay.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstClockOverlay-struct"></a><h3>struct GstClockOverlay</h3>
+<pre class="programlisting">struct GstClockOverlay;</pre>
 </div>
 </div>
-<p>
-</p>
-</div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-clockoverlay.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstClockOverlay-struct"></a><h3>GstClockOverlay</h3>
-<pre class="programlisting">typedef struct _GstClockOverlay GstClockOverlay;</pre>
-<p>
-Opaque clockoverlay data structure.</p>
-<p>
-</p>
-</div>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-clockoverlay.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstClockOverlay--time-format"></a><h3>The <code class="literal">"time-format"</code> property</h3>
-<pre class="programlisting">  "time-format"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write</pre>
+<div class="refsect2">
+<a name="GstClockOverlay--time-format"></a><h3>The <code class="literal">“time-format”</code> property</h3>
+<pre class="programlisting">  “time-format”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Format to use for time and date value, as in strftime.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: "%H:%M:%S"</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-clockoverlay.see-also"></a><h2>See Also</h2>
-#GstTextOverlay, <a class="link" href="gst-plugins-base-plugins-timeoverlay.html#GstTimeOverlay"><span class="type">GstTimeOverlay</span></a>
-</div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

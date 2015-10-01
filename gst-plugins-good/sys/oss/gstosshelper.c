@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -47,10 +47,7 @@
 # endif /* HAVE_OSS_INCLUDE_IN_ROOT */
 #endif /* HAVE_OSS_INCLUDE_IN_SYS */
 
-#include <gst/interfaces/propertyprobe.h>
-
 #include "gstosshelper.h"
-#include "gstossmixer.h"
 
 GST_DEBUG_CATEGORY_EXTERN (oss_debug);
 #define GST_CAT_DEFAULT oss_debug
@@ -84,79 +81,76 @@ static int gst_oss_helper_rate_int_compare (gconstpointer a, gconstpointer b);
 GstCaps *
 gst_oss_helper_probe_caps (gint fd)
 {
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+  const guint probe_formats[] = { AFMT_S16_LE, AFMT_U16_LE, AFMT_U8, AFMT_S8 };
+#else
+  const guint probe_formats[] = { AFMT_S16_BE, AFMT_U16_BE, AFMT_U8, AFMT_S8 };
+#endif
   GstOssProbe *probe;
-  int i;
+  int i, f;
   gboolean ret;
   GstStructure *structure;
-  unsigned int format_bit;
-  unsigned int format_mask;
   GstCaps *caps;
 
   /* FIXME test make sure we're not currently playing */
   /* FIXME test both mono and stereo */
 
-  format_mask = AFMT_U8 | AFMT_S8;
-
-  if (G_BYTE_ORDER == G_LITTLE_ENDIAN)
-    format_mask |= AFMT_S16_LE | AFMT_U16_LE;
-  else
-    format_mask |= AFMT_S16_BE | AFMT_U16_BE;
-
   caps = gst_caps_new_empty ();
 
   /* assume that the most significant bit of format_mask is 0 */
-  for (format_bit = 1 << 31; format_bit > 0; format_bit >>= 1) {
-    if (format_bit & format_mask) {
-      GValue rate_value = { 0 };
+  for (f = 0; f < G_N_ELEMENTS (probe_formats); ++f) {
+    GValue rate_value = { 0 };
 
-      probe = g_new0 (GstOssProbe, 1);
-      probe->fd = fd;
-      probe->format = format_bit;
-      probe->n_channels = 2;
+    probe = g_new0 (GstOssProbe, 1);
+    probe->fd = fd;
+    probe->format = probe_formats[f];
+    /* FIXME: this is not working for all cards, see bug #518474 */
+    probe->n_channels = 2;
 
-      ret = gst_oss_helper_rate_probe_check (probe);
-      if (probe->min == -1 || probe->max == -1) {
-        g_array_free (probe->rates, TRUE);
-        g_free (probe);
-        continue;
-      }
-
-      if (ret) {
-        GValue value = { 0 };
-
-        g_array_sort (probe->rates, gst_oss_helper_rate_int_compare);
-
-        g_value_init (&rate_value, GST_TYPE_LIST);
-        g_value_init (&value, G_TYPE_INT);
-
-        for (i = 0; i < probe->rates->len; i++) {
-          g_value_set_int (&value, g_array_index (probe->rates, int, i));
-
-          gst_value_list_append_value (&rate_value, &value);
-        }
-
-        g_value_unset (&value);
-      } else {
-        /* one big range */
-        g_value_init (&rate_value, GST_TYPE_INT_RANGE);
-        gst_value_set_int_range (&rate_value, probe->min, probe->max);
-      }
-
+    ret = gst_oss_helper_rate_probe_check (probe);
+    if (probe->min == -1 || probe->max == -1) {
       g_array_free (probe->rates, TRUE);
       g_free (probe);
-
-      structure = gst_oss_helper_get_format_structure (format_bit);
-      gst_structure_set (structure, "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
-      gst_structure_set_value (structure, "rate", &rate_value);
-      g_value_unset (&rate_value);
-
-      gst_caps_append_structure (caps, structure);
+      continue;
     }
+
+    if (ret) {
+      GValue value = { 0 };
+
+      g_array_sort (probe->rates, gst_oss_helper_rate_int_compare);
+
+      g_value_init (&rate_value, GST_TYPE_LIST);
+      g_value_init (&value, G_TYPE_INT);
+
+      for (i = 0; i < probe->rates->len; i++) {
+        g_value_set_int (&value, g_array_index (probe->rates, int, i));
+
+        gst_value_list_append_value (&rate_value, &value);
+      }
+
+      g_value_unset (&value);
+    } else {
+      /* one big range */
+      g_value_init (&rate_value, GST_TYPE_INT_RANGE);
+      gst_value_set_int_range (&rate_value, probe->min, probe->max);
+    }
+
+    g_array_free (probe->rates, TRUE);
+    g_free (probe);
+
+    structure = gst_oss_helper_get_format_structure (probe_formats[f]);
+    gst_structure_set (structure, "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
+    gst_structure_set_value (structure, "rate", &rate_value);
+    g_value_unset (&rate_value);
+
+    gst_caps_append_structure (caps, structure);
   }
 
   if (gst_caps_is_empty (caps)) {
     /* fixme: make user-visible */
     GST_WARNING ("Your OSS device could not be probed correctly");
+  } else {
+    caps = gst_caps_simplify (caps);
   }
 
   GST_DEBUG ("probed caps: %" GST_PTR_FORMAT, caps);
@@ -168,53 +162,35 @@ static GstStructure *
 gst_oss_helper_get_format_structure (unsigned int format_bit)
 {
   GstStructure *structure;
-  int endianness;
-  gboolean sign;
-  int width;
+  const gchar *format;
 
   switch (format_bit) {
     case AFMT_U8:
-      endianness = 0;
-      sign = FALSE;
-      width = 8;
+      format = "U8";
       break;
     case AFMT_S16_LE:
-      endianness = G_LITTLE_ENDIAN;
-      sign = TRUE;
-      width = 16;
+      format = "S16LE";
       break;
     case AFMT_S16_BE:
-      endianness = G_BIG_ENDIAN;
-      sign = TRUE;
-      width = 16;
+      format = "S16BE";
       break;
     case AFMT_S8:
-      endianness = 0;
-      sign = TRUE;
-      width = 8;
+      format = "S8";
       break;
     case AFMT_U16_LE:
-      endianness = G_LITTLE_ENDIAN;
-      sign = FALSE;
-      width = 16;
+      format = "U16LE";
       break;
     case AFMT_U16_BE:
-      endianness = G_BIG_ENDIAN;
-      sign = FALSE;
-      width = 16;
+      format = "U16BE";
       break;
     default:
       g_assert_not_reached ();
       return NULL;
   }
 
-  structure = gst_structure_new ("audio/x-raw-int",
-      "width", G_TYPE_INT, width,
-      "depth", G_TYPE_INT, width, "signed", G_TYPE_BOOLEAN, sign, NULL);
-
-  if (endianness) {
-    gst_structure_set (structure, "endianness", G_TYPE_INT, endianness, NULL);
-  }
+  structure = gst_structure_new ("audio/x-raw",
+      "format", G_TYPE_STRING, format,
+      "layout", G_TYPE_STRING, "interleaved", NULL);
 
   return structure;
 }
@@ -403,4 +379,43 @@ gst_oss_helper_rate_int_compare (gconstpointer a, gconstpointer b)
   if (*va > *vb)
     return 1;
   return 0;
+}
+
+gchar *
+gst_oss_helper_get_card_name (const gchar * mixer_name)
+{
+#ifdef SOUND_MIXER_INFO
+  struct mixer_info minfo;
+#endif
+  gint fd;
+  gchar *name = NULL;
+
+  GST_INFO ("Opening mixer for device %s", mixer_name);
+  fd = open (mixer_name, O_RDWR);
+  if (fd == -1)
+    goto open_failed;
+
+  /* get name, not fatal */
+#ifdef SOUND_MIXER_INFO
+  if (ioctl (fd, SOUND_MIXER_INFO, &minfo) == 0) {
+    name = g_strdup (minfo.name);
+    GST_INFO ("Card name = %s", GST_STR_NULL (name));
+  } else
+#endif
+  {
+    name = g_strdup ("Unknown");
+    GST_INFO ("Unknown card name");
+  }
+
+  close (fd);
+  return name;
+
+  /* ERRORS */
+open_failed:
+  {
+    /* this is valid. OSS devices don't need to expose a mixer */
+    GST_DEBUG ("Failed to open mixer device %s, mixing disabled: %s",
+        mixer_name, strerror (errno));
+    return NULL;
+  }
 }

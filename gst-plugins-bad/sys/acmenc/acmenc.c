@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -109,7 +109,7 @@ acmenc_caps_from_format (WAVEFORMATEX * fmt)
       (gst_riff_strf_auds *) fmt, NULL, NULL, NULL);
 }
 
-gboolean
+static gboolean
 acmenc_set_input_format (ACMEnc * enc, WAVEFORMATEX * infmt)
 {
   infmt->wFormatTag = WAVE_FORMAT_PCM;
@@ -122,7 +122,7 @@ acmenc_set_input_format (ACMEnc * enc, WAVEFORMATEX * infmt)
   return TRUE;
 }
 
-BOOL CALLBACK
+static BOOL CALLBACK
 acmenc_format_enum (HACMDRIVERID driverId, LPACMFORMATDETAILS fd,
     DWORD_PTR dwInstance, DWORD fdwSupport)
 {
@@ -160,7 +160,7 @@ acmenc_format_enum (HACMDRIVERID driverId, LPACMFORMATDETAILS fd,
   return TRUE;
 }
 
-gboolean
+static gboolean
 acmenc_set_format (ACMEnc * enc)
 {
   WAVEFORMATEX *in = NULL;
@@ -310,7 +310,7 @@ acmenc_push_output (ACMEnc * enc)
           enc->outfmt->nAvgBytesPerSec);
     }
     enc->bytes_output += enc->header.cbDstLengthUsed;
-    GST_DEBUG_OBJECT (enc, "Pushing %d byte encoded buffer",
+    GST_DEBUG_OBJECT (enc, "Pushing %lu byte encoded buffer",
         enc->header.cbDstLengthUsed);
     ret = gst_pad_push (enc->srcpad, outbuf);
   }
@@ -361,7 +361,7 @@ acmenc_chain (GstPad * pad, GstBuffer * buf)
   return ret;
 }
 
-GstFlowReturn
+static GstFlowReturn
 acmenc_finish_stream (ACMEnc * enc)
 {
   MMRESULT res;
@@ -465,11 +465,11 @@ acmenc_class_init (ACMEncClass * klass)
 acmenc_base_init (ACMEncClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-  GstElementDetails details;
   ACMEncParams *params;
   ACMDRIVERDETAILS driverdetails;
-  gchar *shortname, *longname;
+  gchar *shortname, *longname, *detail, *description;
   MMRESULT res;
+
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&acmenc_sink_template));
   gst_element_class_add_pad_template (element_class,
@@ -490,17 +490,17 @@ acmenc_base_init (ACMEncClass * klass)
   longname =
       g_utf16_to_utf8 ((gunichar2 *) driverdetails.szLongName, -1, NULL, NULL,
       NULL);
-  details.longname = g_strdup_printf ("ACM Encoder: %s", (shortname
+  detail = g_strdup_printf ("ACM Encoder: %s", (shortname
           && *shortname) ? shortname : params->name);
-  details.klass = "Codec/Encoder/Audio";
-  details.description = g_strdup_printf ("ACM Encoder: %s", (longname
+  description = g_strdup_printf ("ACM Encoder: %s", (longname
           && *longname) ? longname : params->name);
-  details.author = "Pioneers of the Inevitable <songbird@songbirdnest.com>";
-  gst_element_class_set_details (element_class, &details);
+  gst_element_class_set_static_metadata (element_class, detail,
+      "Codec/Encoder/Audio", description,
+      "Pioneers of the Inevitable <songbird@songbirdnest.com>");
   g_free (shortname);
   g_free (longname);
-  g_free (details.longname);
-  g_free (details.description);
+  g_free (description);
+  g_free (detail);
   klass->driverId = params->driverId;
 }
 
@@ -568,7 +568,7 @@ acmenc_register_file (GstPlugin * plugin, wchar_t * filename)
 
   /* register type */
   if (!gst_element_register (plugin, type_name, GST_RANK_NONE, type)) {
-    g_warning ("Failed to register %s", type_name);;
+    g_warning ("Failed to register %s", type_name);
     g_type_set_qdata (type, ACMENC_PARAMS_QDATA, NULL);
     g_free (name);
     g_free (type_name);
@@ -594,7 +594,7 @@ acmenc_register (GstPlugin * plugin)
   wcscat (dirname, L"\\*.acm");
   find = FindFirstFileW (dirname, &filedata);
   if (find == INVALID_HANDLE_VALUE) {
-    GST_WARNING ("Failed to find ACM files: %x", GetLastError ());
+    GST_WARNING ("Failed to find ACM files: %lx", GetLastError ());
     return FALSE;
   }
 
@@ -624,6 +624,6 @@ plugin_init (GstPlugin * plugin)
   return res;
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, "acmenc",
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, acmenc,
     "ACM Encoder wrapper", plugin_init, VERSION, "LGPL", "GStreamer",
     "http://gstreamer.net/")

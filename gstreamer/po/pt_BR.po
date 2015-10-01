@@ -1,7 +1,7 @@
 # Brazilian Portuguese translation of GStreamer.
-# Copyright (C) 2008-2009 Free Software Foundation, Inc.
+# Copyright (C) 2008-2013 Free Software Foundation, Inc.
 # This file is distributed under the same license as the GStreamer package.
-# Fabrício Godoy <skarllot@gmail.com>, 2008-2009.
+# Fabrício Godoy <skarllot@gmail.com>, 2008-2013.
 #
 # pipeline -> fila de processamento
 # sink -> consumidor
@@ -15,12 +15,14 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-0.10.22.2\n"
+"Project-Id-Version: gstreamer-1.2.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 12:38+0100\n"
-"PO-Revision-Date: 2009-04-16 21:51-0300\n"
+"POT-Creation-Date: 2015-09-25 22:32+0200\n"
+"PO-Revision-Date: 2013-12-29 18:20-0200\n"
 "Last-Translator: Fabrício Godoy <skarllot@gmail.com>\n"
-"Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
+"Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
+"net>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,9 +38,9 @@ msgid "Print available debug categories and exit"
 msgstr "Exibir as categorias de depuração disponíveis e sair"
 
 msgid ""
-"Default debug level from 1 (only error) to 5 (anything) or 0 for no output"
+"Default debug level from 1 (only error) to 9 (anything) or 0 for no output"
 msgstr ""
-"Níveis de depuração predefinidos de 1 (apenas erros) até 5 (tudo) ou 0 para "
+"Níveis de depuração predefinidos de 1 (apenas erros) até 9 (tudo) ou 0 para "
 "nenhuma saída"
 
 msgid "LEVEL"
@@ -57,6 +59,13 @@ msgstr "LISTA"
 
 msgid "Disable colored debugging output"
 msgstr "Desabilitar saída de depuração colorida"
+
+msgid ""
+"Changes coloring mode of the debug log. Possible modes: off, on, disable, "
+"auto, unix"
+msgstr ""
+"Altera o modo de cor do log de depuração. Modos possíveis: off (desligado), "
+"on (ligado), disable (desabilitado), auto (automático) e unix"
 
 msgid "Disable debugging"
 msgstr "Desabilitar depuração"
@@ -88,8 +97,9 @@ msgstr ""
 msgid "Disable updating the registry"
 msgstr "Desabilitar atualização do registro"
 
-msgid "Disable the use of fork() while scanning the registry"
-msgstr "Desabilitar o uso de fork() durante a análise do registro"
+msgid "Disable spawning a helper process while scanning the registry"
+msgstr ""
+"Desabilitar a criação de um processo auxiliar durante a análise do registro"
 
 msgid "GStreamer Options"
 msgstr "Opções do GStreamer"
@@ -97,32 +107,8 @@ msgstr "Opções do GStreamer"
 msgid "Show GStreamer Options"
 msgstr "Exibir opções do GStreamer"
 
-#, c-format
-msgid "Error writing registry cache to %s: %s"
-msgstr "Erro ao escrever no cache do registro em %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s: %s"
-msgstr "Erro ao re-analisar o registro %s: %s"
-
-#, c-format
-msgid "Error re-scanning registry %s"
-msgstr "Erro ao re-analisar o registro %s"
-
 msgid "Unknown option"
 msgstr "Opção desconhecida"
-
-#, c-format
-msgid "ERROR: from element %s: %s\n"
-msgstr "ERRO: do elemento %s: %s\n"
-
-#, c-format
-msgid ""
-"Additional debug info:\n"
-"%s\n"
-msgstr ""
-"Informação adicional de depuração:\n"
-"%s\n"
 
 msgid "GStreamer encountered a general core library error."
 msgstr "O GStreamer encontrou um erro geral na biblioteca principal."
@@ -140,6 +126,8 @@ msgid ""
 "GStreamer error: state change failed and some element failed to post a "
 "proper error message with the reason for the failure."
 msgstr ""
+"Erro no GStreamer: falha ao alterar estado e algum elemento falhou ao enviar "
+"uma mensagem de erro apropriada com a razão da falha."
 
 msgid "Internal GStreamer error: pad problem."
 msgstr "Erro interno no GStreamer: problema no Pad."
@@ -147,8 +135,8 @@ msgstr "Erro interno no GStreamer: problema no Pad."
 msgid "Internal GStreamer error: thread problem."
 msgstr "Erro interno no GStreamer: problema no segmento (thread)."
 
-msgid "Internal GStreamer error: negotiation problem."
-msgstr "Erro interno no GStreamer: problema de negociação."
+msgid "GStreamer error: negotiation problem."
+msgstr "Erro no GStreamer: problema de negociação."
 
 msgid "Internal GStreamer error: event problem."
 msgstr "Erro interno no GStreamer: problema no evento."
@@ -165,8 +153,8 @@ msgstr "Erro interno no GStreamer: problema na etiqueta."
 msgid "Your GStreamer installation is missing a plug-in."
 msgstr "Sua instalação do GStreamer está com um plug-in faltando."
 
-msgid "Internal GStreamer error: clock problem."
-msgstr "Erro interno no GStreamer: problema no temporizador."
+msgid "GStreamer error: clock problem."
+msgstr "Erro no GStreamer: problema no temporizador."
 
 msgid ""
 "This application is trying to use GStreamer functionality that has been "
@@ -186,6 +174,9 @@ msgstr "Não foi possível fechar a biblioteca de suporte."
 
 msgid "Could not configure supporting library."
 msgstr "Não foi possível configurar a biblioteca de suporte."
+
+msgid "Encoding error."
+msgstr "Erro de codificação."
 
 msgid "GStreamer encountered a general resource error."
 msgstr "O GStreamer encontrou um erro geral nos recursos."
@@ -221,10 +212,13 @@ msgid "Could not synchronize on resource."
 msgstr "Não foi possível sincronizar no recurso."
 
 msgid "Could not get/set settings from/on resource."
-msgstr ""
-"Não foi possível obter, ou definir, configurações para, ou do, recurso."
+msgstr "Não foi possível obter/definir configurações para/do recurso."
 
 msgid "No space left on the resource."
+msgstr "Não foi deixado espaço no recurso."
+
+#, fuzzy
+msgid "Not authorized to access resource."
 msgstr "Não foi deixado espaço no recurso."
 
 msgid "GStreamer encountered a general stream error."
@@ -232,7 +226,7 @@ msgstr "O GStreamer encontrou um erro geral no fluxo."
 
 msgid "Element doesn't implement handling of this stream. Please file a bug."
 msgstr ""
-"O elemento não implementa a manipulação desse fluxo. Por favor, reporte o "
+"O elemento não implementa a manipulação desse fluxo. Por favor, relate o "
 "erro."
 
 msgid "Could not determine type of stream."
@@ -257,10 +251,10 @@ msgid "Could not multiplex stream."
 msgstr "Não foi possível multiplexar o fluxo."
 
 msgid "The stream is in the wrong format."
-msgstr "Esse fluxo está com o formato errado."
+msgstr "Esse fluxo está com um formato errado."
 
 msgid "The stream is encrypted and decryption is not supported."
-msgstr "O fluxo está criptografado e descriptografação não é suportada."
+msgstr "O fluxo está criptografado e não há suporte a descriptografação."
 
 msgid ""
 "The stream is encrypted and can't be decrypted because no suitable key has "
@@ -275,11 +269,15 @@ msgstr "Nenhuma mensagem de erro para o domínio %s."
 
 #, c-format
 msgid "No standard error message for domain %s and code %d."
-msgstr "Nenhuma mensagem de erro padrão para o domínio %s e código %d."
+msgstr "Nenhuma mensagem de erro predefinida para o domínio %s e código %d."
 
 msgid "Selected clock cannot be used in pipeline."
 msgstr ""
 "O temporizador selecionado não pôde ser usado na fila de processamento."
+
+#, c-format
+msgid "Error writing registry cache to %s: %s"
+msgstr "Erro ao escrever o cache de registro em %s: %s"
 
 msgid "title"
 msgstr "título"
@@ -317,31 +315,35 @@ msgstr "álbum para ordenação"
 msgid "album containing this data for sorting purposes"
 msgstr "álbum contendo esses dados, para ordenação"
 
-#, fuzzy
 msgid "album artist"
-msgstr "artista"
+msgstr "artista do álbum"
 
 msgid "The artist of the entire album, as it should be displayed"
-msgstr ""
+msgstr "O artista de todo álbum, como ele deveria ser exibido"
 
-#, fuzzy
 msgid "album artist sortname"
-msgstr "artista para ordenação"
+msgstr "artista do álbum para ordenação"
 
 msgid "The artist of the entire album, as it should be sorted"
-msgstr ""
+msgstr "O artista de todo álbum, como ele deveria ser ordenado"
 
 msgid "date"
 msgstr "data"
 
 msgid "date the data was created (as a GDate structure)"
-msgstr "data que os dados foram criados (como uma estrutura GDate)"
+msgstr "data que os dados foram criados (estrutura GDate)"
+
+msgid "datetime"
+msgstr "data hora"
+
+msgid "date and time the data was created (as a GstDateTime structure)"
+msgstr "data e hora que os dados foram criados (estrutura GstDateTime)"
 
 msgid "genre"
 msgstr "gênero"
 
 msgid "genre this data belongs to"
-msgstr "gênero ao qual este dado pertence"
+msgstr "gênero que este dado pertence"
 
 msgid "comment"
 msgstr "comentário"
@@ -354,8 +356,8 @@ msgstr "comentário prolongado"
 
 msgid "free text commenting the data in key=value or key[en]=comment form"
 msgstr ""
-"texto livre comentando os dados, usando o formato chave=valor ou chave[pt_BR]"
-"=comentário"
+"texto livre comentando os dados, usando o formato chave=valor ou "
+"chave[pt_BR]=comentário"
 
 msgid "track number"
 msgstr "número da faixa"
@@ -367,7 +369,7 @@ msgid "track count"
 msgstr "número de faixas"
 
 msgid "count of tracks inside collection this track belongs to"
-msgstr "número de faixas dentro da coleção a qual esta faixa pertence"
+msgstr "número de faixas dentro da coleção que esta faixa pertence"
 
 msgid "disc number"
 msgstr "número do disco"
@@ -379,7 +381,7 @@ msgid "disc count"
 msgstr "número de discos"
 
 msgid "count of discs inside collection this disc belongs to"
-msgstr "número de discos dentro da coleção o qual este disco pertence"
+msgstr "número de discos dentro da coleção que este disco pertence"
 
 msgid "location"
 msgstr "local"
@@ -432,6 +434,12 @@ msgstr "URI do copyright"
 msgid "URI to the copyright notice of the data"
 msgstr "URI para a informação de copyright dos dados"
 
+msgid "encoded by"
+msgstr "codificado por"
+
+msgid "name of the encoding person or organization"
+msgstr "nome da pessoa ou organização que codificou o arquivo"
+
 msgid "contact"
 msgstr "contato"
 
@@ -454,7 +462,7 @@ msgid "performer"
 msgstr "participação"
 
 msgid "person(s) performing"
-msgstr "pessoa(s) participantes"
+msgstr "pessoa(s) participante(s)"
 
 msgid "composer"
 msgstr "compositor"
@@ -492,13 +500,11 @@ msgstr "CODEC de legenda"
 msgid "codec the subtitle data is stored in"
 msgstr "CODEC de legenda usado nos dados"
 
-#, fuzzy
 msgid "container format"
-msgstr "informação de contato"
+msgstr "formato do contêiner"
 
-#, fuzzy
 msgid "container format the data is stored in"
-msgstr "CODEC usado nos dados"
+msgstr "formato do contêiner usado para os dados"
 
 msgid "bitrate"
 msgstr "taxa de bits"
@@ -575,8 +581,14 @@ msgstr "nível de referência dos valores de ganho da faixa e do álbum"
 msgid "language code"
 msgstr "código da língua"
 
-msgid "language code for this stream, conforming to ISO-639-1"
-msgstr "código da língua deste fluxo, conforme o ISO-639-1"
+msgid "language code for this stream, conforming to ISO-639-1 or ISO-639-2"
+msgstr "código da língua deste fluxo, conforme o ISO-639-1 ou ISO-639-2"
+
+msgid "language name"
+msgstr "nome do idioma"
+
+msgid "freeform name of the language this stream is in"
+msgstr "nome, em formato livre, do idioma do fluxo"
 
 msgid "image"
 msgstr "imagem"
@@ -584,6 +596,7 @@ msgstr "imagem"
 msgid "image related to this stream"
 msgstr "imagem relacionada a este fluxo"
 
+#. TRANSLATORS: 'preview image' = image that shows a preview of the full image
 msgid "preview image"
 msgstr "miniatura"
 
@@ -611,12 +624,11 @@ msgstr "palavras-chave separadas por vírgula descrevendo o conteúdo"
 msgid "geo location name"
 msgstr "nome da localização geográfica"
 
-#, fuzzy
 msgid ""
 "human readable descriptive location of where the media has been recorded or "
 "produced"
 msgstr ""
-"localização ou onde a mídia foi gravada ou produzida descritiva e legível"
+"descrição legível da localização de onde a mídia foi gravada ou produzida"
 
 msgid "geo location latitude"
 msgstr "latitude da localização geográfica"
@@ -652,16 +664,207 @@ msgstr ""
 "elevação geográfica de onde a mídia foi gravada ou produzida em metros de "
 "acordo com WGS84 (zero é a média do nível do mar)"
 
+msgid "geo location country"
+msgstr "localização geográfica do país"
+
+msgid "country (english name) where the media has been recorded or produced"
+msgstr "país, em inglês, onde a mídia foi gravada ou produzida"
+
+msgid "geo location city"
+msgstr "localização geográfica da cidade"
+
+msgid "city (english name) where the media has been recorded or produced"
+msgstr "cidade, em inglês, onde a mídia foi gravada ou produzida"
+
+msgid "geo location sublocation"
+msgstr "sublocalização geográfica"
+
+msgid ""
+"a location within a city where the media has been produced or created (e.g. "
+"the neighborhood)"
+msgstr ""
+"localização numa cidade onde a mídia foi produzida ou criada (ex: bairro)"
+
+msgid "geo location horizontal error"
+msgstr "desvio horizontal da localização geográfica"
+
+msgid "expected error of the horizontal positioning measures (in meters)"
+msgstr "desvio esperado nas medidas de posicionamento horizontal (em metros)"
+
+msgid "geo location movement speed"
+msgstr "velocidade de movimento na localização geográfica"
+
+msgid ""
+"movement speed of the capturing device while performing the capture in m/s"
+msgstr ""
+"velocidade de movimento do  dispositivo de captura ao realizar a captura, em "
+"m/s"
+
+msgid "geo location movement direction"
+msgstr "direção de movimento na localização geográfica"
+
+msgid ""
+"indicates the movement direction of the device performing the capture of a "
+"media. It is represented as degrees in floating point representation, 0 "
+"means the geographic north, and increases clockwise"
+msgstr ""
+"indica a direção de movimento do dispositivo ao realizar a captura de uma "
+"mídia. É representado como graus em representação fracionária, 0 indica "
+"Norte e incrementa-se no sentido do relógio"
+
+msgid "geo location capture direction"
+msgstr "direção de captura na localização geográfica"
+
+msgid ""
+"indicates the direction the device is pointing to when capturing  a media. "
+"It is represented as degrees in floating point  representation, 0 means the "
+"geographic north, and increases clockwise"
+msgstr ""
+"indica a direção que o dispositivo estava apontando quando capturava uma "
+"mídia. É representado como graus em representação fracionária, 0 indica "
+"Norte e incrementa-se no sentido do relógio"
+
+#. TRANSLATORS: 'show name' = 'TV/radio/podcast show name' here
+msgid "show name"
+msgstr "nome do programa"
+
+msgid "Name of the tv/podcast/series show the media is from"
+msgstr ""
+"Nome do programa de TV, do podcast ou da série de onde a mídia tem origem"
+
+#. TRANSLATORS: 'show sortname' = 'TV/radio/podcast show name as used for sorting purposes' here
+msgid "show sortname"
+msgstr "programa para ordenação"
+
+msgid ""
+"Name of the tv/podcast/series show the media is from, for sorting purposes"
+msgstr ""
+"Nome do programa de TV, do podcast ou da série de onde a mídia tem origem, "
+"para ordenação"
+
+msgid "episode number"
+msgstr "número do episódio"
+
+msgid "The episode number in the season the media is part of"
+msgstr "O número do episódio da temporada que a mídia faz parte"
+
+msgid "season number"
+msgstr "número da temporada"
+
+msgid "The season number of the show the media is part of"
+msgstr "O número da temporada da série que a mídia faz parte"
+
+msgid "lyrics"
+msgstr "letras de música"
+
+msgid "The lyrics of the media, commonly used for songs"
+msgstr "As letras de música da mídia"
+
+msgid "composer sortname"
+msgstr "compositor para ordenação"
+
+msgid "person(s) who composed the recording, for sorting purposes"
+msgstr "pessoa(s) que compôs a gravação, para ordenação"
+
+msgid "grouping"
+msgstr "parte"
+
+msgid ""
+"Groups related media that spans multiple tracks, like the different pieces "
+"of a concerto. It is a higher level than a track, but lower than an album"
+msgstr ""
+"Partes da mídia que se extende em várias faixas, como diferentes partes de "
+"um concerto. Tem um nível acima da faixa, mas abaixo do álbum"
+
+msgid "user rating"
+msgstr "avaliação do usuário"
+
+msgid ""
+"Rating attributed by a user. The higher the rank, the more the user likes "
+"this media"
+msgstr ""
+"Avaliação atribuída pelo usuário. Quanto melhor a avaliação, mais o usuário "
+"gosta da mídia"
+
+msgid "device manufacturer"
+msgstr "fabricante do dispositivo"
+
+msgid "Manufacturer of the device used to create this media"
+msgstr "Fabricante do dispositivo usado para criar esta mídia"
+
+msgid "device model"
+msgstr "modelo do dispositivo"
+
+msgid "Model of the device used to create this media"
+msgstr "Modelo do dispositivo usado para criar esta mídia"
+
+msgid "application name"
+msgstr "nome do aplicativo"
+
+msgid "Application used to create the media"
+msgstr "Aplicativo usado para criar a mídia"
+
+msgid "application data"
+msgstr "Dados do aplicativo"
+
+msgid "Arbitrary application data to be serialized into the media"
+msgstr "Dados arbitrários do aplicativo para ser serializado na mídia"
+
+msgid "image orientation"
+msgstr "orientação de imagem"
+
+msgid "How the image should be rotated or flipped before display"
+msgstr "Como a imagem deveria ser rotacionada ou invertida antes da exibição"
+
+msgid "publisher"
+msgstr "editora"
+
+msgid "Name of the label or publisher"
+msgstr "Nome da gravadora ou editora"
+
+msgid "interpreted-by"
+msgstr "interpretado por"
+
+msgid "Information about the people behind a remix and similar interpretations"
+msgstr ""
+"Informações sobre a pessoa detrás de um remix ou interpretações similares"
+
+msgid "midi-base-note"
+msgstr ""
+
+msgid "Midi note number of the audio track."
+msgstr ""
+
 msgid ", "
 msgstr ", "
 
 #, c-format
-msgid "specified empty bin \"%s\", not allowed"
-msgstr "o arquivo \"%s\" está vazio, operação não permitida"
+msgid "No URI handler for the %s protocol found"
+msgstr "Nenhum manipulador URI para o protocolo %s foi encontrado"
 
 #, c-format
-msgid "no bin \"%s\", skipping"
-msgstr "nenhum Bin \"%s\", cancelando"
+msgid "URI scheme '%s' not supported"
+msgstr "Não há suporte para o esquema URI \"%s\""
+
+#, c-format
+msgid "ERROR: from element %s: %s\n"
+msgstr "ERRO: do elemento %s: %s\n"
+
+#, c-format
+msgid ""
+"Additional debug info:\n"
+"%s\n"
+msgstr ""
+"Informação adicional de depuração:\n"
+"%s\n"
+
+#, c-format
+msgid "link has no source [sink=%s@%p]"
+msgstr ""
+
+#, c-format
+msgid "link has no sink [source=%s@%p]"
+msgstr ""
 
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
@@ -682,48 +885,59 @@ msgid "no element \"%s\""
 msgstr "nenhum elemento \"%s\""
 
 #, c-format
+msgid "unexpected reference \"%s\" - ignoring"
+msgstr ""
+
+#, c-format
+msgid "unexpected pad-reference \"%s\" - ignoring"
+msgstr ""
+
+#, c-format
 msgid "could not parse caps \"%s\""
-msgstr "não foi possível validar o Caps \"%s\""
-
-msgid "link without source element"
-msgstr "vínculo sem o elemento fonte"
-
-msgid "link without sink element"
-msgstr "vínculo sem o elemento consumidor"
-
-#, c-format
-msgid "no source element for URI \"%s\""
-msgstr "nenhum elemento fonte para o URI \"%s\""
-
-#, c-format
-msgid "no element to link URI \"%s\" to"
-msgstr "nenhum elemento para vincular o URI \"%s\" para"
+msgstr "não foi possível analisar o Caps \"%s\""
 
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr "nenhum elemento consumidor para o URI \"%s\""
 
 #, c-format
-msgid "could not link sink element for URI \"%s\""
-msgstr "não foi possível vincular o elemento consumidor para o URI \"%s\""
+msgid "no source element for URI \"%s\""
+msgstr "nenhum elemento fonte para o URI \"%s\""
+
+msgid "syntax error"
+msgstr ""
+
+msgid "bin"
+msgstr ""
+
+#, c-format
+msgid "specified empty bin \"%s\", not allowed"
+msgstr "o arquivo \"%s\" está vazio, operação não permitida"
+
+#, fuzzy, c-format
+msgid "no bin \"%s\", unpacking elements"
+msgstr "nenhum arquivo \"%s\", cancelando"
 
 msgid "empty pipeline not allowed"
 msgstr "não é permitido que a fila de processamento seja vazia"
 
-msgid "Internal clock error."
-msgstr "Erro interno no temporizador."
-
-msgid "Internal data flow error."
-msgstr "Erro interno no fluxo de dados."
-
 msgid "A lot of buffers are being dropped."
-msgstr ""
+msgstr "Uma grande quantidade de buffers está sendo descartada."
 
 msgid "Internal data flow problem."
 msgstr "Problema interno no fluxo de dados."
 
 msgid "Internal data stream error."
 msgstr "Erro interno no fluxo de dados."
+
+msgid "Internal data flow error."
+msgstr "Erro interno no fluxo de dados."
+
+msgid "Internal clock error."
+msgstr "Erro interno no temporizador."
+
+msgid "Failed to map buffer."
+msgstr "Falha ao mapear o buffer."
 
 msgid "Filter caps"
 msgstr "Caps do filtro"
@@ -734,6 +948,26 @@ msgid ""
 msgstr ""
 "Restrinja as possíveis capacidades permitidas (NULL = ANY). Definindo essa "
 "propriedade é levada uma referência ao objeto GstCaps fornecido."
+
+msgid "Caps Change Mode"
+msgstr ""
+
+msgid "Filter caps change behaviour"
+msgstr ""
+
+msgid "No Temp directory specified."
+msgstr "Nenhum diretório temporário especificado."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Não foi possível criar o arquivo temporário \"%s\"."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Não foi possível abrir o arquivo \"%s\" para leitura."
+
+msgid "Error while writing to download file."
+msgstr "Erro ao escrever no arquivo baixado."
 
 msgid "No file name specified for writing."
 msgstr "Nenhum nome de arquivo especificado para escrita."
@@ -756,10 +990,6 @@ msgstr "Erro ao escrever no arquivo \"%s\"."
 
 msgid "No file name specified for reading."
 msgstr "Nenhum nome de arquivo especificado para leitura."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "Não foi possível abrir o arquivo \"%s\" para leitura."
 
 #, c-format
 msgid "Could not get info on \"%s\"."
@@ -785,14 +1015,15 @@ msgstr "capacidades detectadas no fluxo"
 msgid "minimum"
 msgstr "mínimo"
 
-msgid "maximum"
-msgstr "máximo"
-
 msgid "force caps"
 msgstr "forçar Caps"
 
 msgid "force caps without doing a typefind"
 msgstr "forçar Caps sem usar o typefind"
+
+#, fuzzy
+msgid "Stream contains not enough data."
+msgstr "O fluxo não contém dados."
 
 msgid "Stream contains no data."
 msgstr "O fluxo não contém dados."
@@ -806,17 +1037,44 @@ msgstr "legível"
 msgid "writable"
 msgstr "gravável"
 
+msgid "deprecated"
+msgstr ""
+
 msgid "controllable"
 msgstr "controlável"
 
+msgid "changeable in NULL, READY, PAUSED or PLAYING state"
+msgstr "estado alterável para NULO, PRONTO, PAUSADO ou REPRODUZINDO"
+
+msgid "changeable only in NULL, READY or PAUSED state"
+msgstr "estado alterável apenas para NULO, PRONTO ou PAUSADO"
+
+msgid "changeable only in NULL or READY state"
+msgstr "estado alterável apenas para NULO ou PRONTO"
+
+msgid "Blacklisted files:"
+msgstr "Arquivos colocados na lista negra:"
+
 msgid "Total count: "
 msgstr "Contagem total: "
+
+#, c-format
+msgid "%d blacklisted file"
+msgid_plural "%d blacklisted files"
+msgstr[0] "%d arquivo na lista negra"
+msgstr[1] "%d arquivos na lista negra"
 
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
 msgstr[0] "%d plug-in"
 msgstr[1] "%d plug-ins"
+
+#, c-format
+msgid "%d blacklist entry"
+msgid_plural "%d blacklist entries"
+msgstr[0] "%d entrada na lista negra"
+msgstr[1] "%d entradas na lista negra"
 
 #, c-format
 msgid "%d feature"
@@ -827,18 +1085,32 @@ msgstr[1] "%d recursos"
 msgid "Print all elements"
 msgstr "Exibir todos elementos"
 
+msgid "Print list of blacklisted files"
+msgstr "Exibir lista dos arquivos na lista negra"
+
 msgid ""
-"Print a machine-parsable list of features the specified plugin provides.\n"
+"Print a machine-parsable list of features the specified plugin or all "
+"plugins provide.\n"
 "                                       Useful in connection with external "
 "automatic plugin installation mechanisms"
 msgstr ""
 "Exibir uma lista, legível para máquina, de recursos que o plug-in "
-"especificado fornece.\n"
+"especificado ou todos os plug-ins fornecem.\n"
 "                                       Útil na conexão com mecanismos "
 "externos de instalação automática de plug-ins"
 
 msgid "List the plugin contents"
 msgstr "Listar o conteúdo do plugin"
+
+msgid "Check if the specified element or plugin exists"
+msgstr "Verificar se o elemento ou plug-in especificado existe"
+
+msgid ""
+"When checking if an element or plugin exists, also check that its version is "
+"at least the version specified"
+msgstr ""
+"Ao verificar se um elemento ou plug-in existe, também verificar se a versão "
+"é no mínimo a especificada"
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Exibir esquemas URI com suporte, com os elementos que os implementam"
@@ -851,46 +1123,24 @@ msgstr "Não foi possível carregar o arquivo do plug-in: %s\n"
 msgid "No such element or plugin '%s'\n"
 msgstr "Nenhum elemento ou plug-in \"%s\"\n"
 
-msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
-msgstr "Uso: gst-xmllaunch <arquivo.xml> [ elemento.propriedade=valor ... ]\n"
+msgid "Index statistics"
+msgstr "Tabela de estatísticas"
 
 #, c-format
-msgid "ERROR: parse of xml file '%s' failed.\n"
-msgstr "ERRO: a validação do arquivo xml \"%s\" falhou.\n"
-
-#, c-format
-msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
-msgstr ""
-"ERRO: nenhum elemento de nível superior na fila de processamento do arquivo "
-"\"%s\".\n"
-
-msgid "WARNING: only one toplevel element is supported at this time.\n"
-msgstr "AVISO: atualmente há suporte apenas a um elemento de nível superior.\n"
-
-#, c-format
-msgid "ERROR: could not parse command line argument %d: %s.\n"
-msgstr ""
-"ERRO: não foi possível validar o argumento %d da linha de comando: %s.\n"
-
-#, c-format
-msgid "WARNING: element named '%s' not found.\n"
-msgstr "AVISO: o elemento com o nome \"%s\" não foi encontrado.\n"
-
-#, fuzzy, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
-msgstr "Obtida mensagem do elemento \"%s\" (%s): "
+msgstr "Obtida a mensagem #%u do elemento \"%s\" (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u from pad \"%s:%s\" (%s): "
-msgstr "Obtida mensagem do elemento \"%s\" (%s): "
+msgstr "Obtida a mensagem #%u do Pad \"%s:%s\" (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u from object \"%s\" (%s): "
-msgstr "Obtida mensagem do elemento \"%s\" (%s): "
+msgstr "Obtida a mensagem #%u do objeto \"%s\" (%s): "
 
-#, fuzzy, c-format
+#, c-format
 msgid "Got message #%u (%s): "
-msgstr "Obtida mensagem #%"
+msgstr "Obtida a mensagem #%u (%s): "
 
 #, c-format
 msgid "Got EOS from element \"%s\".\n"
@@ -900,16 +1150,27 @@ msgstr "Obtido o final do fluxo do elemento \"%s\".\n"
 msgid "FOUND TAG      : found by element \"%s\".\n"
 msgstr "ETIQ. ENCONTR. : encontrada pelo elemento \"%s\".\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by pad \"%s:%s\".\n"
-msgstr "ETIQ. ENCONTR. : encontrada pelo elemento \"%s\".\n"
+msgstr "ETIQ. ENCONTR. : encontrada pelo Pad \"%s:%s\".\n"
 
-#, fuzzy, c-format
+#, c-format
 msgid "FOUND TAG      : found by object \"%s\".\n"
-msgstr "ETIQ. ENCONTR. : encontrada pelo elemento \"%s\".\n"
+msgstr "ETIQ. ENCONTR. : encontrada pelo objeto \"%s\".\n"
 
 msgid "FOUND TAG\n"
-msgstr ""
+msgstr "ETIQUETA ENCONTRADA\n"
+
+#, c-format
+msgid "FOUND TOC      : found by element \"%s\".\n"
+msgstr "TOC ENCONTR.   : encontrada pelo elemento \"%s\".\n"
+
+#, c-format
+msgid "FOUND TOC      : found by object \"%s\".\n"
+msgstr "TOC ENCONTR.   : encontrada pelo objeto \"%s\".\n"
+
+msgid "FOUND TOC\n"
+msgstr "TOC ENCONTRADA\n"
 
 #, c-format
 msgid ""
@@ -925,6 +1186,9 @@ msgstr "AVISO: do elemento %s: %s\n"
 
 msgid "Prerolled, waiting for buffering to finish...\n"
 msgstr "Preparado, esperando o preenchimento do buffer para finalizar...\n"
+
+msgid "Prerolled, waiting for progress to finish...\n"
+msgstr "Preparado, esperando o progresso para finalizar...\n"
 
 msgid "buffering..."
 msgstr "preenchendo buffer..."
@@ -948,11 +1212,26 @@ msgstr "Definindo estado de %s como requerido por %s...\n"
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr "Interrupção: Parando a fila de processamento...\n"
 
+#, c-format
+msgid "Progress: (%s) %s\n"
+msgstr "Progresso: (%s) %s\n"
+
+#, c-format
+msgid "Missing element: %s\n"
+msgstr "Elemento faltando: %s\n"
+
+#, c-format
+msgid "Got context from element '%s': %s=%s\n"
+msgstr "Contexto obtido do elemento \"%s\": %s=%s\n"
+
 msgid "Output tags (also known as metadata)"
 msgstr "Exibir etiquetas (metadados)"
 
+msgid "Output TOC (chapters and editions)"
+msgstr "Exibir TOC (capítulos e edições)"
+
 msgid "Output status information and property notifications"
-msgstr "Exibir informações do estado e notificações de propriedade"
+msgstr "Exibir informações de estado e notificações de propriedade"
 
 msgid "Do not print any progress information"
 msgstr "Não imprimir nenhuma informação de progresso"
@@ -960,29 +1239,24 @@ msgstr "Não imprimir nenhuma informação de progresso"
 msgid "Output messages"
 msgstr "Exibir mensagens"
 
-msgid "Do not output status information of TYPE"
-msgstr "Não é possível obter informações do estado de saída do TIPO"
-
-msgid "TYPE1,TYPE2,..."
-msgstr "TIPO1,TIPO2,..."
-
-msgid "Save xml representation of pipeline to FILE and exit"
+msgid ""
+"Do not output status information for the specified property if verbose "
+"output is enabled (can be used multiple times)"
 msgstr ""
-"Salvar representação como xml da fila de processamento para o ARQUIVO e sair"
 
-msgid "FILE"
-msgstr "ARQUIVO"
+msgid "PROPERTY-NAME"
+msgstr ""
 
 msgid "Do not install a fault handler"
 msgstr "Não instale um manipulador de falhas"
-
-msgid "Print alloc trace (if enabled at compile time)"
-msgstr "Exibir trilha de alocação (se habilitado na compilação)"
 
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr ""
 "Forçar finalização do fluxo nos elementos fonte antes de desligar a fila de "
 "processamento"
+
+msgid "Gather and print index statistics"
+msgstr "Reunir e imprimir a tabela de estatísticas"
 
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
@@ -1025,14 +1299,23 @@ msgstr "ERRO: a fila de processamento não quer reproduzir.\n"
 
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr ""
-"Finalizar fluxo ao desligar habilitado -- Forçando finalização do fluxo na "
-"fila de processamento\n"
+"Finalizar fluxo ao sair habilitado -- Forçando finalização do fluxo na fila "
+"de processamento\n"
+
+msgid "EOS on shutdown enabled -- waiting for EOS after Error\n"
+msgstr ""
+"Finalizar fluxo ao sair habilitado -- esperando o fim do fluxo após erro\n"
 
 msgid "Waiting for EOS...\n"
 msgstr "Esperando pelo final do fluxo...\n"
 
 msgid "EOS received - stopping pipeline...\n"
-msgstr "Final do fluxo recebido - parando a fila de processamento...\n"
+msgstr "Final do fluxo encontrado - parando a fila de processamento...\n"
+
+msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
+msgstr ""
+"Interrupção recebida enquanto a finalização do fluxo estava sendo aguardada "
+"- parando a fila de processamento...\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Um erro ocorreu ao esperar pelo final do fluxo\n"
@@ -1049,17 +1332,60 @@ msgstr "Definindo a fila de processamento para NULO...\n"
 msgid "Freeing pipeline ...\n"
 msgstr "Liberando a fila de processamento...\n"
 
-#~ msgid "Internal GStreamer error: state change failed."
-#~ msgstr "Erro interno no GStreamer: falha ao alterar estado."
+#~ msgid "Do not output status information of TYPE"
+#~ msgstr "Não é possível obter informações do estado de saída do TIPO"
 
-#~ msgid "Error while writing to file descriptor \"%d\"."
-#~ msgstr "Erro ao escrever no descritor \"%d\" do arquivo."
+#~ msgid "TYPE1,TYPE2,..."
+#~ msgstr "TIPO1,TIPO2,..."
 
-#~ msgid "File descriptor \"%d\" is not valid."
-#~ msgstr "O descritor \"%d\" do arquivo não é válido."
+#~ msgid "link without source element"
+#~ msgstr "vínculo sem o elemento fonte"
 
-#~ msgid "FREEING pipeline ...\n"
-#~ msgstr "LIBERANDO a fila de processamento...\n"
+#~ msgid "link without sink element"
+#~ msgstr "vínculo sem o elemento consumidor"
 
-#~ msgid "original location of file as a URI"
-#~ msgstr "local original do arquivo como um URI"
+#~ msgid "no element to link URI \"%s\" to"
+#~ msgstr "nenhum elemento para vincular o URI \"%s\" para"
+
+#~ msgid "could not link sink element for URI \"%s\""
+#~ msgstr "não foi possível vincular o elemento consumidor para o URI \"%s\""
+
+#~ msgid "maximum"
+#~ msgstr "máximo"
+
+#~ msgid "Usage: gst-xmllaunch <file.xml> [ element.property=value ... ]\n"
+#~ msgstr ""
+#~ "Uso: gst-xmllaunch <arquivo.xml> [ elemento.propriedade=valor ... ]\n"
+
+#~ msgid "ERROR: parse of xml file '%s' failed.\n"
+#~ msgstr "ERRO: a validação do arquivo xml \"%s\" falhou.\n"
+
+#~ msgid "ERROR: no toplevel pipeline element in file '%s'.\n"
+#~ msgstr ""
+#~ "ERRO: nenhum elemento de nível superior na fila de processamento do "
+#~ "arquivo \"%s\".\n"
+
+#~ msgid "WARNING: only one toplevel element is supported at this time.\n"
+#~ msgstr ""
+#~ "AVISO: atualmente há suporte apenas a um elemento de nível superior.\n"
+
+#~ msgid "ERROR: could not parse command line argument %d: %s.\n"
+#~ msgstr ""
+#~ "ERRO: não foi possível validar o argumento %d da linha de comando: %s.\n"
+
+#~ msgid "WARNING: element named '%s' not found.\n"
+#~ msgstr "AVISO: o elemento com o nome \"%s\" não foi encontrado.\n"
+
+#~ msgid "Save xml representation of pipeline to FILE and exit"
+#~ msgstr ""
+#~ "Salvar representação da fila de processamento como xml para o ARQUIVO e "
+#~ "sair"
+
+#~ msgid "FILE"
+#~ msgstr "ARQUIVO"
+
+#~ msgid "Do not install signal handlers for SIGUSR1 and SIGUSR2"
+#~ msgstr "Não fixar manipuladores de sinal para SIGUSR1 e SIGUSR2"
+
+#~ msgid "Print alloc trace (if enabled at compile time)"
+#~ msgstr "Exibir trilha de alocação (se habilitado na compilação)"

@@ -1,18 +1,116 @@
 # Indonesian translations for gst-plugins-bad package.
 # This file is put in the public domain.
-# Andhika Padmawan <andhika.padmawan@gmail.com>, 2009.
+# Andika Triwidada <andika@gmail.com>, 2013.
+# Andhika Padmawan <andhika.padmawan@gmail.com>, 2009-2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad 0.10.13.2\n"
+"Project-Id-Version: gst-plugins-bad 1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
-"PO-Revision-Date: 2009-08-24 11:38-0400\n"
+"POT-Creation-Date: 2015-09-25 22:59+0200\n"
+"PO-Revision-Date: 2014-05-31 22:16+0700\n"
 "Last-Translator: Andhika Padmawan <andhika.padmawan@gmail.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
+
+msgid "default GStreamer sound events audiosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play audio using any number of output elements. Some possible "
+"choices are osssink, pulsesink and alsasink. The audiosink can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer sound events audiosink"
+msgstr ""
+
+msgid "Describes the selected audiosink element."
+msgstr ""
+
+msgid "default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid ""
+"description for default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid "default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "description for default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "default GStreamer videosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play video using any number of output elements. Some possible "
+"choices are xvimagesink, ximagesink, sdlvideosink and aasink. The videosink "
+"can be a partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosink"
+msgstr ""
+
+msgid "Describes the selected videosink element."
+msgstr ""
+
+msgid "default GStreamer audiosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record audio using any number of input elements. Some possible "
+"choices are osssrc, pulsesrc and alsasrc. The audio source can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer audiosrc"
+msgstr ""
+
+msgid "Describes the selected audiosrc element."
+msgstr ""
+
+msgid "default GStreamer videosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record video from any number of input elements. Some possible "
+"choices are v4lsrc, v4l2src and videotestsrc. The video source can be a "
+"partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosrc"
+msgstr ""
+
+msgid "Describes the selected videosrc element."
+msgstr ""
+
+msgid "default GStreamer visualization"
+msgstr ""
+
+msgid ""
+"GStreamer can put visualization plugins in a pipeline to transform audio "
+"streams in video frames. Some possible choices are goom, goom2k1 and "
+"synaesthesia. The visualization plugin can be a partial pipeline instead of "
+"just one element."
+msgstr ""
+
+msgid "description for default GStreamer visualization"
+msgstr ""
+
+msgid "Describes the selected visualization element."
+msgstr ""
+
+msgid "OpenCV failed to load template image"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Tak dapat membaca informasi judul untuk DVD."
@@ -24,25 +122,76 @@ msgstr "Gagal membuka divais DVD '%s'."
 msgid "Failed to set PGC based seeking."
 msgstr "Gagal mengatur pencarian berbasis PGC."
 
-msgid "Internal clock error."
-msgstr "Galat jam internal."
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+"Tak dapat membaca DVD. Hal ini kemungkinan karena DVD terenkripsi dan "
+"pustaka dekripsi tidak diinstal."
+
+msgid "Could not read DVD."
+msgstr "Tak dapat membaca DVD."
+
+msgid "This file contains no playable streams."
+msgstr "Berkas ini tidak memuat stream yang dapat dimainkan."
+
+msgid "Could not open sndfile stream for reading."
+msgstr "Tak dapat membuka stream sndfile untuk dibaca."
+
+msgid "Could not establish connection to sndio"
+msgstr "Tak bisa menjalin koneksi ke sndio"
+
+msgid "Failed to query sndio capabilities"
+msgstr "Gagal mengkuiri kapabilitas sndio"
+
+msgid "Could not configure sndio"
+msgstr "Tak dapat menata sndio"
+
+msgid "Could not start sndio"
+msgstr "Tak dapat memulai sndio"
 
 msgid "Internal data flow error."
 msgstr "Galat arus data internal."
+
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+"Berkas yang dihasilkan memiliki waktu preroll lebih besar daripada durasi "
+"streamnya"
+
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr "Kurang elemen '%s' - periksa instalasi GStreamer Anda."
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr "Lokasi berkas diisi NULL, harap isi dengan nama berkas yang valid"
+
+msgid "Digitalzoom element couldn't be created"
+msgstr ""
+
+msgid "Subpicture format was not configured before data flow"
+msgstr "Format subgambar tak ditata sebelum aliran data"
+
+msgid "Failed to get fragment URL."
+msgstr "Gagal mendapat URL fragmen."
+
+msgid "Internal data stream error."
+msgstr "Galat arus data internal."
+
+msgid "Couldn't download fragments"
+msgstr "Tak bisa mengunduh fragmen."
 
 msgid "No file name specified for writing."
 msgstr "Tak ada nama berkas yang ditentukan untuk ditulis."
 
 #, c-format
-msgid "Could not open file \"%s\" for writing."
-msgstr "Tak dapat membuka berkas \"%s\" untuk ditulis."
-
-msgid "Internal data stream error."
-msgstr "Galat arus data internal."
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
+"Nama berkas \"%s\" yang diberikan tak bisa dikonversi ke enkoding nama "
+"berkas lokal."
 
 #, c-format
-msgid "Could not write to file \"%s\"."
-msgstr "Tak dapat menulis ke berkas \"%s\"."
+msgid "Could not open file \"%s\" for writing."
+msgstr "Tak dapat membuka berkas \"%s\" untuk ditulis."
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -57,435 +206,30 @@ msgid "Could not get settings from frontend device \"%s\"."
 msgstr "Tak dapat mendapatkan pengaturan dari divais ujung-depan \"%s\"."
 
 #, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr ""
+"Tak dapat menghitung sistem pengantaran dari divais ujung-depan \"%s\"."
+
+#, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "Tak dapat membuka berkas \"%s\" untuk dibaca."
 
-msgid "Could not open audio device for mixer control handling."
-msgstr "Tak dapat membuka divais audio untuk pengendalian kontrol mixer."
-
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr ""
-"Tak dapat membuka divais audio untuk pengendalian kontrol mixer. Versi Open "
-"Sound System ini tak didukung oleh elemen ini."
-
-msgid "Volume"
-msgstr "Volume"
-
-msgid "Master"
-msgstr "Induk"
-
-msgid "Front"
-msgstr "Depan"
-
-msgid "Rear"
-msgstr "Belakang"
-
-msgid "Headphones"
-msgstr "Headphone"
-
-msgid "Center"
-msgstr "Tengah"
-
-msgid "LFE"
-msgstr "LFE"
-
-msgid "Surround"
-msgstr "Surround"
-
-msgid "Side"
-msgstr "Samping"
-
-msgid "Built-in Speaker"
-msgstr "Pengeras Suara Terbina"
-
-msgid "AUX 1 Out"
-msgstr "AUX 1 Keluar"
-
-msgid "AUX 2 Out"
-msgstr "AUX 2 Keluar"
-
-msgid "AUX Out"
-msgstr "AUX Keluar"
-
-msgid "Bass"
-msgstr "Bass"
-
-msgid "Treble"
-msgstr "Treble"
-
-msgid "3D Depth"
-msgstr "3D Dalam"
-
-msgid "3D Center"
-msgstr "3D Tengah"
-
-msgid "3D Enhance"
-msgstr "3D Tingkatkan"
-
-msgid "Telephone"
-msgstr "Telepon"
-
-msgid "Microphone"
-msgstr "Mikrofon"
-
-msgid "Line Out"
-msgstr "Jalur Masuk"
-
-msgid "Line In"
-msgstr "Jalur Masuk"
-
-msgid "Internal CD"
-msgstr "CD Internal"
-
-msgid "Video In"
-msgstr "Video Masuk"
-
-msgid "AUX 1 In"
-msgstr "AUX 1 Masuk"
-
-msgid "AUX 2 In"
-msgstr "AUX 2 Masuk"
-
-msgid "AUX In"
-msgstr "AUX Masuk"
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Record Gain"
-msgstr "Gain Rekaman"
-
-msgid "Output Gain"
-msgstr "Keluaran Gain"
-
-msgid "Microphone Boost"
-msgstr "Mikrofon Galak"
-
-msgid "Loopback"
-msgstr "Simpul Berulang"
-
-msgid "Diagnostic"
-msgstr "Diagnostik"
-
-msgid "Bass Boost"
-msgstr "Bass Galak"
-
-msgid "Playback Ports"
-msgstr "Pangkalan Putar Kembali"
-
-msgid "Input"
-msgstr "Masukan"
-
-msgid "Record Source"
-msgstr "Sumber Rekaman"
-
-msgid "Monitor Source"
-msgstr "Sumber Monitor"
-
-msgid "Keyboard Beep"
-msgstr "Bip Papan Ketik"
-
-msgid "Monitor"
-msgstr "Monitor"
-
-msgid "Simulate Stereo"
-msgstr "Simulasikan Stereo"
-
-msgid "Stereo"
-msgstr "Stereo"
-
-msgid "Surround Sound"
-msgstr "Suara Surround"
-
-msgid "Microphone Gain"
-msgstr "Mikrofon Galak"
-
-msgid "Speaker Source"
-msgstr "Sumber Pengeras Suara"
-
-msgid "Microphone Source"
-msgstr "Sumber Mikrofon"
-
-msgid "Jack"
-msgstr "Pengungkit"
-
-msgid "Center / LFE"
-msgstr "Tengah / LFE"
-
-msgid "Stereo Mix"
-msgstr "Mix Stereo"
-
-msgid "Mono Mix"
-msgstr "Mix Mono"
-
-msgid "Input Mix"
-msgstr "Mix Masukan"
-
-msgid "SPDIF In"
-msgstr "SPDIF Masukan"
-
-msgid "SPDIF Out"
-msgstr "SPDIF Keluaran"
-
-msgid "Microphone 1"
-msgstr "Mikrofon 1"
-
-msgid "Microphone 2"
-msgstr "Mikrofon 2"
-
-msgid "Digital Out"
-msgstr "Digital Keluar"
-
-msgid "Digital In"
-msgstr "Digital Masuk"
-
-msgid "HDMI"
-msgstr "HDMI"
-
-msgid "Modem"
-msgstr "Modem"
-
-msgid "Handset"
-msgstr "Handset"
-
-msgid "Other"
-msgstr "Lainnya"
-
-msgid "None"
-msgstr "Tak Ada"
-
-msgid "On"
-msgstr "Hidup"
-
-msgid "Off"
-msgstr "Mati"
-
-msgid "Mute"
-msgstr "Diam"
-
-msgid "Fast"
-msgstr "Cepat"
-
-msgid "Very Low"
-msgstr "Sangat Rendah"
-
-msgid "Low"
-msgstr "Rendah"
-
-msgid "Medium"
-msgstr "Sedang"
-
-msgid "High"
-msgstr "Tinggi"
-
-msgid "Very High"
-msgstr "Sangat Tinggi"
-
-msgid "Production"
-msgstr "Produksi"
-
-msgid "Front Panel Microphone"
-msgstr "Mikrofon Panel Depan"
-
-msgid "Front Panel Line In"
-msgstr "Jalur Masuk Panel Depan"
-
-msgid "Front Panel Headphones"
-msgstr "Headphone Panel Depan"
-
-msgid "Front Panel Line Out"
-msgstr "Jalur Keluar Panel Depan"
-
-msgid "Green Connector"
-msgstr "Konektor Hijau"
-
-msgid "Pink Connector"
-msgstr "Konektor Merah Jambu"
-
-msgid "Blue Connector"
-msgstr "Konektor Biru"
-
-msgid "White Connector"
-msgstr "Konektor Putih"
-
-msgid "Black Connector"
-msgstr "Konektor Hitam"
-
-msgid "Gray Connector"
-msgstr "Konektor Abu-abu"
-
-msgid "Orange Connector"
-msgstr "Konektor Jingga"
-
-msgid "Red Connector"
-msgstr "Konektor Merah"
-
-msgid "Yellow Connector"
-msgstr "Konektor Kuning"
-
-msgid "Green Front Panel Connector"
-msgstr "Konektor Panel Depan Hijau"
-
-msgid "Pink Front Panel Connector"
-msgstr "Konektor Panel Depan Merah Jambu"
-
-msgid "Blue Front Panel Connector"
-msgstr "Konektor Panel Depan Biru"
-
-msgid "White Front Panel Connector"
-msgstr "Konektor Panel Depan Putih"
-
-msgid "Black Front Panel Connector"
-msgstr "Konektor Panel Depan Hitam"
-
-msgid "Gray Front Panel Connector"
-msgstr "Konektor Panel Depan Abu-abu"
-
-msgid "Orange Front Panel Connector"
-msgstr "Konektor Panel Depan Jingga"
-
-msgid "Red Front Panel Connector"
-msgstr "Konektor Panel Depan Merah"
-
-msgid "Yellow Front Panel Connector"
-msgstr "Konektor Panel Depan Kuning"
-
-msgid "Spread Output"
-msgstr "Sebar Keluaran"
-
-msgid "Downmix"
-msgstr "Downmix"
-
-msgid "Virtual Mixer Input"
-msgstr "Masukan Mixer Virtual"
-
-msgid "Virtual Mixer Output"
-msgstr "Keluaran Mixer Virtual"
-
-msgid "Virtual Mixer Channels"
-msgstr "Kanal Mixer Virtual"
+msgid "Couldn't find DVB channel configuration file"
+msgstr "Tak bisa temukan berkas konfigurasi kanal DVB"
 
 #, c-format
-msgid "%s Function"
-msgstr "Fungsi %s"
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr "Tak bisa memuat berka konfigurasi kanal DVB: %s"
+
+msgid "DVB channel configuration file doesn't contain any channels"
+msgstr "Berkas konfigurasi kanal DVB tak memuat kanal apapun"
 
 #, c-format
-msgid "%s %d"
-msgstr "%s %d"
+msgid "Couldn't find details for DVB channel %s"
+msgstr "Tak bisa temukan rincian untuk kanal DVB %s"
 
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-"Tak dapat membuka divais audio untuk putar kembali. Divais sedang digunakan "
-"oleh aplikasi lain."
+#~ msgid "Couldn't get the Manifest's URI"
+#~ msgstr "Tak bisa memperoleh URI Manifes"
 
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr ""
-"Tak dapat membuka divais audio untuk putar kembali. Anda tak memiliki hak "
-"akses untuk membuka divais."
-
-msgid "Could not open audio device for playback."
-msgstr "Tak dapat membuka divais audio untuk putar kembali."
-
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-"Tak dapat membuka divais audio untuk putar kembali. Versi Open Sound System "
-"ini tak didukung oleh elemen ini."
-
-msgid "Playback is not supported by this audio device."
-msgstr "Putar kembali tak didukung oleh divais audio ini."
-
-msgid "Audio playback error."
-msgstr "Putar kembali audio galat."
-
-msgid "Recording is not supported by this audio device."
-msgstr "Perekaman tak didukung oleh divais audio ini."
-
-msgid "Error recording from audio device."
-msgstr "Galat ketika merekam dari divais audio."
-
-#~ msgid "PCM 1"
-#~ msgstr "PCM 1"
-
-#~ msgid "PCM 2"
-#~ msgstr "PCM 2"
-
-#~ msgid "PCM 3"
-#~ msgstr "PCM 3"
-
-#~ msgid "PCM 4"
-#~ msgstr "PCM 4"
-
-#~ msgid "Green connector function"
-#~ msgstr "Fungsi penyambung hijau"
-
-#~ msgid "Green front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan hijau"
-
-#~ msgid "Pink connector function"
-#~ msgstr "Fungsi penyambung merah jambu"
-
-#~ msgid "Pink front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan merah jambu"
-
-#~ msgid "Blue connector function"
-#~ msgstr "Fungsi penyambung biru"
-
-#~ msgid "Blue front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan biru"
-
-#~ msgid "Orange connector function"
-#~ msgstr "Fungsi penyambung jingga"
-
-#~ msgid "Orange front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan jingga"
-
-#~ msgid "Black connector function"
-#~ msgstr "Fungsi penyambung hitam"
-
-#~ msgid "Black front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan hitam"
-
-#~ msgid "Gray connector function"
-#~ msgstr "Fungsi penyambung abu-abu"
-
-#~ msgid "Gray front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan abu-abu"
-
-#~ msgid "White connector function"
-#~ msgstr "Fungsi penyambung putih"
-
-#~ msgid "White front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan putih"
-
-#~ msgid "Red connector function"
-#~ msgstr "Fungsi penyambung merah"
-
-#~ msgid "Red front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan merah"
-
-#~ msgid "Yellow connector function"
-#~ msgstr "Fungsi penyambung kuning"
-
-#~ msgid "Yellow front panel connector function"
-#~ msgstr "Fungsi penyambung panel depan kuning"
-
-#~ msgid "Virtual mixer channel configuration"
-#~ msgstr "Konfigurasi kanal mixer virtual"
-
-#~ msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
-#~ msgstr "Gagal mengatur penyandi TwoLAME. Cek parameter penyandian anda."
-
-#~ msgid ""
-#~ "The requested bitrate %d kbit/s for property '%s' is not allowed. The "
-#~ "bitrate was changed to %d kbit/s."
-#~ msgstr ""
-#~ "Bitrasi %d kbit/s yang diminta untuk properti '%s' tak diizinkan. Bitrasi "
-#~ "telah diubah ke %d kbit/s."
+#~ msgid "Could not write to file \"%s\"."
+#~ msgstr "Tak dapat menulis ke berkas \"%s\"."

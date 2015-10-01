@@ -16,13 +16,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_FILE_SINK_H__
 #define __GST_FILE_SINK_H__
+
+#include <stdio.h>
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
@@ -39,9 +41,26 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_FILE_SINK))
 #define GST_IS_FILE_SINK_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FILE_SINK))
+#define GST_FILE_SINK_CAST(obj) ((GstFileSink *)(obj))
 
 typedef struct _GstFileSink GstFileSink;
 typedef struct _GstFileSinkClass GstFileSinkClass;
+
+/**
+ * GstFileSinkBufferMode:
+ * @GST_FILE_SINK_BUFFER_MODE_DEFAULT: Default buffering
+ * @GST_FILE_SINK_BUFFER_MODE_FULL: Fully buffered
+ * @GST_FILE_SINK_BUFFER_MODE_LINE: Line buffered
+ * @GST_FILE_SINK_BUFFER_MODE_UNBUFFERED: Unbuffered
+ *
+ * File read buffering mode.
+ */
+typedef enum {
+  GST_FILE_SINK_BUFFER_MODE_DEFAULT    = -1,
+  GST_FILE_SINK_BUFFER_MODE_FULL       = _IOFBF,
+  GST_FILE_SINK_BUFFER_MODE_LINE       = _IOLBF,
+  GST_FILE_SINK_BUFFER_MODE_UNBUFFERED = _IONBF
+} GstFileSinkBufferMode;
 
 /**
  * GstFileSink:
@@ -70,7 +89,7 @@ struct _GstFileSinkClass {
   GstBaseSinkClass parent_class;
 };
 
-GType gst_file_sink_get_type(void);
+G_GNUC_INTERNAL GType gst_file_sink_get_type (void);
 
 G_END_DECLS
 

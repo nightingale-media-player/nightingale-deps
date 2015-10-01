@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -33,7 +33,7 @@
 #define GST_KATE_STM_TO_GST(stm) ((GST_MSECOND * 1024 * (stm)) / 90)
 #define GST_KATE_GST_TO_STM(gst) ((int)(((gst) * 90000 ) / 1024))
 
-#define GST_KATE_SPU_MIME_TYPE "video/x-dvd-subpicture"
+#define GST_KATE_SPU_MIME_TYPE "subpicture/x-dvd"
 
 G_BEGIN_DECLS
 

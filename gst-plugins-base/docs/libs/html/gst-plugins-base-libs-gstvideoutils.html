@@ -1,0 +1,864 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gstvideoutils: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-video.html" title="Video Library">
+<link rel="prev" href="gst-plugins-base-libs-GstVideoPool.html" title="GstVideoPool">
+<link rel="next" href="gst-plugins-base-libs-gstnavigation.html" title="gstnavigation">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstvideoutils.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-GstVideoPool.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstnavigation.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gstvideoutils"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstvideoutils.top_of_page"></a>gstvideoutils</span></h2>
+<p>gstvideoutils</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideoutils.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-FLAGS:CAPS" title="GST_VIDEO_CODEC_FRAME_FLAGS()">GST_VIDEO_CODEC_FRAME_FLAGS</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-FLAG-IS-SET:CAPS" title="GST_VIDEO_CODEC_FRAME_FLAG_IS_SET()">GST_VIDEO_CODEC_FRAME_FLAG_IS_SET</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-FLAG-SET:CAPS" title="GST_VIDEO_CODEC_FRAME_FLAG_SET()">GST_VIDEO_CODEC_FRAME_FLAG_SET</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-FLAG-UNSET:CAPS" title="GST_VIDEO_CODEC_FRAME_FLAG_UNSET()">GST_VIDEO_CODEC_FRAME_FLAG_UNSET</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-IS-DECODE-ONLY:CAPS" title="GST_VIDEO_CODEC_FRAME_IS_DECODE_ONLY()">GST_VIDEO_CODEC_FRAME_IS_DECODE_ONLY</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-IS-FORCE-KEYFRAME:CAPS" title="GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME()">GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-IS-FORCE-KEYFRAME-HEADERS:CAPS" title="GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME_HEADERS()">GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME_HEADERS</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-IS-SYNC-POINT:CAPS" title="GST_VIDEO_CODEC_FRAME_IS_SYNC_POINT()">GST_VIDEO_CODEC_FRAME_IS_SYNC_POINT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-SET-DECODE-ONLY:CAPS" title="GST_VIDEO_CODEC_FRAME_SET_DECODE_ONLY()">GST_VIDEO_CODEC_FRAME_SET_DECODE_ONLY</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-SET-FORCE-KEYFRAME:CAPS" title="GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME()">GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-SET-FORCE-KEYFRAME-HEADERS:CAPS" title="GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME_HEADERS()">GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME_HEADERS</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-SET-SYNC-POINT:CAPS" title="GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT()">GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-UNSET-FORCE-KEYFRAME:CAPS" title="GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME()">GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-UNSET-FORCE-KEYFRAME-HEADERS:CAPS" title="GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME_HEADERS()">GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME_HEADERS</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GST-VIDEO-CODEC-FRAME-UNSET-SYNC-POINT:CAPS" title="GST_VIDEO_CODEC_FRAME_UNSET_SYNC_POINT()">GST_VIDEO_CODEC_FRAME_UNSET_SYNC_POINT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-frame-ref" title="gst_video_codec_frame_ref ()">gst_video_codec_frame_ref</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-frame-unref" title="gst_video_codec_frame_unref ()">gst_video_codec_frame_unref</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-frame-set-user-data" title="gst_video_codec_frame_set_user_data ()">gst_video_codec_frame_set_user_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-frame-get-user-data" title="gst_video_codec_frame_get_user_data ()">gst_video_codec_frame_get_user_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-state-ref" title="gst_video_codec_state_ref ()">gst_video_codec_state_ref</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-state-unref" title="gst_video_codec_state_unref ()">gst_video_codec_state_unref</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideoutils.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame">GstVideoCodecFrame</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrameFlags" title="enum GstVideoCodecFrameFlags">GstVideoCodecFrameFlags</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState">GstVideoCodecState</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideoutils.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideoutils.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-FLAGS:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_FLAGS()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_FLAGS(frame) ((frame)-&gt;flags)
+</pre>
+<p>The entire set of flags for the <em class="parameter"><code>frame</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-FLAG-IS-SET:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_FLAG_IS_SET()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_FLAG_IS_SET(frame,flag)   !!(GST_VIDEO_CODEC_FRAME_FLAGS(frame) &amp; (flag))
+</pre>
+<p>Checks whether the given <em class="parameter"><code>flag</code></em>
+ is set</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flag</p></td>
+<td class="parameter_description"><p>a flag to check for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-FLAG-SET:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_FLAG_SET()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_FLAG_SET(frame,flag)     (GST_VIDEO_CODEC_FRAME_FLAGS(frame) |= (flag))
+</pre>
+<p>This macro sets the given bits</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flag</p></td>
+<td class="parameter_description"><p>Flag to set, can be any number of bits in guint32.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-FLAG-UNSET:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_FLAG_UNSET()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_FLAG_UNSET(frame,flag)   (GST_VIDEO_CODEC_FRAME_FLAGS(frame) &amp;= ~(flag))
+</pre>
+<p>This macro usets the given bits.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flag</p></td>
+<td class="parameter_description"><p>Flag to unset</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-IS-DECODE-ONLY:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_IS_DECODE_ONLY()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_IS_DECODE_ONLY(frame)     (GST_VIDEO_CODEC_FRAME_FLAG_IS_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_DECODE_ONLY))
+</pre>
+<p>Tests if the buffer should only be decoded but not sent downstream.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-IS-FORCE-KEYFRAME:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME(frame)      (GST_VIDEO_CODEC_FRAME_FLAG_IS_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME))
+</pre>
+<p>Tests if the frame must be encoded as a keyframe. Applies only to
+frames provided to encoders. Decoders can safely ignore this field.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-IS-FORCE-KEYFRAME-HEADERS:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME_HEADERS()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_IS_FORCE_KEYFRAME_HEADERS(frame)      (GST_VIDEO_CODEC_FRAME_FLAG_IS_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME_HEADERS))
+</pre>
+<p>Tests if encoder should output stream headers before outputting the
+resulting encoded buffer for the given frame.</p>
+<p>Applies only to frames provided to encoders. Decoders can safely
+ignore this field.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.8.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-IS-SYNC-POINT:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_IS_SYNC_POINT()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_IS_SYNC_POINT(frame)      (GST_VIDEO_CODEC_FRAME_FLAG_IS_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_SYNC_POINT))
+</pre>
+<p>Tests if the frame is a synchronization point (like a keyframe).</p>
+<p>Decoder implementations can use this to detect keyframes.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.9.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-SET-DECODE-ONLY:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_SET_DECODE_ONLY()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_SET_DECODE_ONLY(frame)    (GST_VIDEO_CODEC_FRAME_FLAG_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_DECODE_ONLY))
+</pre>
+<p>Sets the buffer to not be sent downstream.</p>
+<p>Decoder implementation can use this if they have frames that
+are not meant to be displayed.</p>
+<p>Encoder implementation can safely ignore this field.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.10.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-SET-FORCE-KEYFRAME:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME(frame)     (GST_VIDEO_CODEC_FRAME_FLAG_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-SET-FORCE-KEYFRAME-HEADERS:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME_HEADERS()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_SET_FORCE_KEYFRAME_HEADERS(frame)     (GST_VIDEO_CODEC_FRAME_FLAG_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME_HEADERS))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-SET-SYNC-POINT:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT(frame)     (GST_VIDEO_CODEC_FRAME_FLAG_SET(frame, GST_VIDEO_CODEC_FRAME_FLAG_SYNC_POINT))
+</pre>
+<p>Sets the frame to be a synchronization point (like a keyframe).</p>
+<p>Encoder implementations should set this accordingly.</p>
+<p>Decoder implementing parsing features should set this when they
+detect such a synchronization point.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.13.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-UNSET-FORCE-KEYFRAME:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME(frame)   (GST_VIDEO_CODEC_FRAME_FLAG_UNSET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-UNSET-FORCE-KEYFRAME-HEADERS:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME_HEADERS()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_UNSET_FORCE_KEYFRAME_HEADERS(frame)   (GST_VIDEO_CODEC_FRAME_FLAG_UNSET(frame, GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME_HEADERS))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-CODEC-FRAME-UNSET-SYNC-POINT:CAPS"></a><h3>GST_VIDEO_CODEC_FRAME_UNSET_SYNC_POINT()</h3>
+<pre class="programlisting">#define GST_VIDEO_CODEC_FRAME_UNSET_SYNC_POINT(frame)   (GST_VIDEO_CODEC_FRAME_FLAG_UNSET(frame, GST_VIDEO_CODEC_FRAME_FLAG_SYNC_POINT))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-frame-ref"></a><h3>gst_video_codec_frame_ref ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+gst_video_codec_frame_ref (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Increases the refcount of the given frame by one.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.17.6"></a><h4>Returns</h4>
+<p> <em class="parameter"><code>buf</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-frame-unref"></a><h3>gst_video_codec_frame_unref ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_codec_frame_unref (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Decreases the refcount of the frame. If the refcount reaches 0, the frame
+will be freed.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-frame-set-user-data"></a><h3>gst_video_codec_frame_set_user_data ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_codec_frame_set_user_data (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>,
+                                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>,
+                                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> notify</code></em>);</pre>
+<p>Sets <em class="parameter"><code>user_data</code></em>
+ on the frame and the <a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> that will be called when
+the frame is freed. Allows to attach private data by the subclass to frames.</p>
+<p>If a <em class="parameter"><code>user_data</code></em>
+ was previously set, then the previous set <em class="parameter"><code>notify</code></em>
+ will be called
+before the <em class="parameter"><code>user_data</code></em>
+ is replaced.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.19.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>private data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>notify</p></td>
+<td class="parameter_description"><p> a <a href="https://developer.gnome.org/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="This parameter is a 'user_data', for callbacks; many bindings can pass NULL here."><span class="acronym">closure</span></acronym> user_data]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-frame-get-user-data"></a><h3>gst_video_codec_frame_get_user_data ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+gst_video_codec_frame_get_user_data (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Gets private data set on the frame by the subclass via
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#gst-video-codec-frame-set-user-data" title="gst_video_codec_frame_set_user_data ()"><code class="function">gst_video_codec_frame_set_user_data()</code></a> previously.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.20.6"></a><h4>Returns</h4>
+<p> The previously set user_data. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-state-ref"></a><h3>gst_video_codec_state_ref ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+gst_video_codec_state_ref (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> *state</code></em>);</pre>
+<p>Increases the refcount of the given state by one.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>state</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.21.6"></a><h4>Returns</h4>
+<p> <em class="parameter"><code>buf</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-codec-state-unref"></a><h3>gst_video_codec_state_unref ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_codec_state_unref (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> *state</code></em>);</pre>
+<p>Decreases the refcount of the state. If the refcount reaches 0, the state
+will be freed.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.6.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>state</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideoutils.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstVideoCodecFrame"></a><h3>struct GstVideoCodecFrame</h3>
+<pre class="programlisting">struct GstVideoCodecFrame {
+  guint32 system_frame_number; /* ED */
+  guint32 decode_frame_number; /* ED */
+  guint32 presentation_frame_number; /* ED */
+
+  GstClockTime dts;       /* ED */
+  GstClockTime pts;       /* ED */
+  GstClockTime duration;  /* ED */
+
+  int distance_from_sync; /* ED */
+
+  GstBuffer *input_buffer; /* ED */
+  GstBuffer *output_buffer; /* ED */
+
+  GstClockTime deadline; /* D */
+};
+</pre>
+<p>A <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> represents a video frame both in raw and
+encoded form.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.7.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstVideoCodecFrame.system-frame-number"></a>system_frame_number</code></em>;</p></td>
+<td class="struct_member_description"><p>Unique identifier for the frame. Use this if you need
+to get hold of the frame later (like when data is being decoded).
+Typical usage in decoders is to set this on the opaque value provided
+to the library and get back the frame using <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-frame" title="gst_video_decoder_get_frame ()"><code class="function">gst_video_decoder_get_frame()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstVideoCodecFrame.decode-frame-number"></a>decode_frame_number</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstVideoCodecFrame.presentation-frame-number"></a>presentation_frame_number</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> <em class="structfield"><code><a name="GstVideoCodecFrame.dts"></a>dts</code></em>;</p></td>
+<td class="struct_member_description"><p>Decoding timestamp</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> <em class="structfield"><code><a name="GstVideoCodecFrame.pts"></a>pts</code></em>;</p></td>
+<td class="struct_member_description"><p>Presentation timestamp</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> <em class="structfield"><code><a name="GstVideoCodecFrame.duration"></a>duration</code></em>;</p></td>
+<td class="struct_member_description"><p>Duration of the frame</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">int</span> <em class="structfield"><code><a name="GstVideoCodecFrame.distance-from-sync"></a>distance_from_sync</code></em>;</p></td>
+<td class="struct_member_description"><p>Distance in frames from the last synchronization point.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *<em class="structfield"><code><a name="GstVideoCodecFrame.input-buffer"></a>input_buffer</code></em>;</p></td>
+<td class="struct_member_description"><p>the input <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> that created this frame. The buffer is owned
+by the frame and references to the frame instead of the buffer should
+be kept.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *<em class="structfield"><code><a name="GstVideoCodecFrame.output-buffer"></a>output_buffer</code></em>;</p></td>
+<td class="struct_member_description"><p>the output <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a>. Implementations should set this either
+directly, or by using the
+<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-frame" title="gst_video_decoder_allocate_output_frame ()"><code class="function">gst_video_decoder_allocate_output_frame()</code></a></code></em>
+or
+<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-buffer" title="gst_video_decoder_allocate_output_buffer ()"><code class="function">gst_video_decoder_allocate_output_buffer()</code></a></code></em>
+methods. The buffer is
+owned by the frame and references to the frame instead of the
+buffer should be kept.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> <em class="structfield"><code><a name="GstVideoCodecFrame.deadline"></a>deadline</code></em>;</p></td>
+<td class="struct_member_description"><p>Running time when the frame will be used.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoCodecFrameFlags"></a><h3>enum GstVideoCodecFrameFlags</h3>
+<p>Flags for <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.19.7.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CODEC-FRAME-FLAG-DECODE-ONLY:CAPS"></a>GST_VIDEO_CODEC_FRAME_FLAG_DECODE_ONLY</p></td>
+<td class="enum_member_description">
+<p>is the frame only meant to be decoded</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CODEC-FRAME-FLAG-SYNC-POINT:CAPS"></a>GST_VIDEO_CODEC_FRAME_FLAG_SYNC_POINT</p></td>
+<td class="enum_member_description">
+<p>is the frame a synchronization point (keyframe)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CODEC-FRAME-FLAG-FORCE-KEYFRAME:CAPS"></a>GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME</p></td>
+<td class="enum_member_description">
+<p>should the output frame be made a keyframe</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CODEC-FRAME-FLAG-FORCE-KEYFRAME-HEADERS:CAPS"></a>GST_VIDEO_CODEC_FRAME_FLAG_FORCE_KEYFRAME_HEADERS</p></td>
+<td class="enum_member_description">
+<p>should the encoder output stream headers</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoCodecState"></a><h3>struct GstVideoCodecState</h3>
+<pre class="programlisting">struct GstVideoCodecState {
+  GstVideoInfo info;
+
+  GstCaps *caps;
+
+  GstBuffer *codec_data;
+};
+</pre>
+<p>Structure representing the state of an incoming or outgoing video
+stream for encoders and decoders.</p>
+<p>Decoders and encoders will receive such a state through their
+respective <em class="parameter"><code>set_format</code></em>
+ vmethods.</p>
+<p>Decoders and encoders can set the downstream state, by using the
+<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-output-state" title="gst_video_decoder_set_output_state ()"><code class="function">gst_video_decoder_set_output_state()</code></a></code></em>
+ or
+<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoEncoder.html#gst-video-encoder-set-output-state" title="gst_video_encoder_set_output_state ()"><code class="function">gst_video_encoder_set_output_state()</code></a></code></em>
+ methods.</p>
+<div class="refsect3">
+<a name="id-1.2.15.19.7.4.7"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoInfo" title="struct GstVideoInfo"><span class="type">GstVideoInfo</span></a> <em class="structfield"><code><a name="GstVideoCodecState.info"></a>info</code></em>;</p></td>
+<td class="struct_member_description"><p>The <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoInfo" title="struct GstVideoInfo"><span class="type">GstVideoInfo</span></a> describing the stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> *<em class="structfield"><code><a name="GstVideoCodecState.caps"></a>caps</code></em>;</p></td>
+<td class="struct_member_description"><p>The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *<em class="structfield"><code><a name="GstVideoCodecState.codec-data"></a>codec_data</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> corresponding to the
+'codec_data' field of a stream, or NULL.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

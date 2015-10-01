@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* Implementation of SMPTE 422M - Mapping JPEG2000 codestreams into the MXF
@@ -85,6 +85,44 @@ mxf_jpeg2000_handle_essence_element (const MXFUL * key, GstBuffer * buffer,
   return GST_FLOW_OK;
 }
 
+static MXFEssenceWrapping
+mxf_jpeg2000_get_track_wrapping (const MXFMetadataTimelineTrack * track)
+{
+  guint i;
+
+  g_return_val_if_fail (track != NULL, MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING);
+
+  if (track->parent.descriptor == NULL) {
+    GST_ERROR ("No descriptor found for this track");
+    return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+  }
+
+  for (i = 0; i < track->parent.n_descriptor; i++) {
+    if (!track->parent.descriptor[i])
+      continue;
+
+    if (!MXF_IS_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR (track->
+            parent.descriptor[i])
+        && !(MXF_IS_METADATA_FILE_DESCRIPTOR (track->parent.descriptor[i])
+            && !MXF_IS_METADATA_MULTIPLE_DESCRIPTOR (track->
+                parent.descriptor[i])))
+      continue;
+
+    switch (track->parent.descriptor[i]->essence_container.u[14]) {
+      case 0x01:
+        return MXF_ESSENCE_WRAPPING_FRAME_WRAPPING;
+        break;
+      case 0x02:
+        return MXF_ESSENCE_WRAPPING_CLIP_WRAPPING;
+        break;
+      default:
+        return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+        break;
+    }
+  }
+
+  return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+}
 
 static GstCaps *
 mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
@@ -94,7 +132,7 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
   MXFMetadataGenericPictureEssenceDescriptor *p = NULL;
   guint i;
   GstCaps *caps = NULL;
-  guint32 fourcc;
+  const gchar *colorspace;
 
   g_return_val_if_fail (track != NULL, NULL);
 
@@ -107,10 +145,10 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
     if (!track->parent.descriptor[i])
       continue;
 
-    if (MXF_IS_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR (track->parent.
-            descriptor[i])) {
-      p = (MXFMetadataGenericPictureEssenceDescriptor *) track->
-          parent.descriptor[i];
+    if (MXF_IS_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR (track->
+            parent.descriptor[i])) {
+      p = (MXFMetadataGenericPictureEssenceDescriptor *) track->parent.
+          descriptor[i];
       f = track->parent.descriptor[i];
       break;
     } else if (MXF_IS_METADATA_FILE_DESCRIPTOR (track->parent.descriptor[i]) &&
@@ -124,9 +162,9 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
     return NULL;
   }
 
-  fourcc = GST_MAKE_FOURCC ('s', 'R', 'G', 'B');
+  colorspace = "sRGB";
   if (p && MXF_IS_METADATA_CDCI_PICTURE_ESSENCE_DESCRIPTOR (p)) {
-    fourcc = GST_MAKE_FOURCC ('s', 'Y', 'U', 'V');
+    colorspace = "sYUV";
   } else if (p && MXF_IS_METADATA_RGBA_PICTURE_ESSENCE_DESCRIPTOR (p)) {
     MXFMetadataRGBAPictureEssenceDescriptor *r =
         (MXFMetadataRGBAPictureEssenceDescriptor *) p;
@@ -169,9 +207,9 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
         }
       }
       if (rgb) {
-        fourcc = GST_MAKE_FOURCC ('s', 'R', 'G', 'B');
+        colorspace = "sRGC";
       } else if (yuv) {
-        fourcc = GST_MAKE_FOURCC ('s', 'Y', 'U', 'V');
+        colorspace = "sYUV";
       } else if (xyz) {
         GST_ERROR ("JPEG2000 with XYZ colorspace not supported yet");
         return NULL;
@@ -183,8 +221,8 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
 
   /* TODO: What about other field values? */
   caps =
-      gst_caps_new_simple ("image/x-jpc", "fields", G_TYPE_INT, 1, "fourcc",
-      GST_TYPE_FOURCC, fourcc, NULL);
+      gst_caps_new_simple ("image/x-jpc", "fields", G_TYPE_INT, 1, "colorspace",
+      G_TYPE_STRING, colorspace, NULL);
   if (p) {
     mxf_metadata_generic_picture_essence_descriptor_set_caps (p, caps);
   } else {
@@ -192,7 +230,7 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
   }
 
   if (!*tags)
-    *tags = gst_tag_list_new ();
+    *tags = gst_tag_list_new_empty ();
   gst_tag_list_add (*tags, GST_TAG_MERGE_APPEND, GST_TAG_VIDEO_CODEC,
       "JPEG 2000", NULL);
 
@@ -201,11 +239,12 @@ mxf_jpeg2000_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
 
 static const MXFEssenceElementHandler mxf_jpeg2000_essence_element_handler = {
   mxf_is_jpeg2000_essence_track,
+  mxf_jpeg2000_get_track_wrapping,
   mxf_jpeg2000_create_caps
 };
 
 static GstFlowReturn
-mxf_jpeg2000_write_func (GstBuffer * buffer, GstCaps * caps,
+mxf_jpeg2000_write_func (GstBuffer * buffer,
     gpointer mapping_data, GstAdapter * adapter, GstBuffer ** outbuf,
     gboolean flush)
 {
@@ -229,24 +268,26 @@ mxf_jpeg2000_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 {
   MXFMetadataRGBAPictureEssenceDescriptor *ret;
   GstStructure *s;
-  guint32 fourcc;
+  const gchar *colorspace;
 
   s = gst_caps_get_structure (caps, 0);
   if (strcmp (gst_structure_get_name (s), "image/x-jpc") != 0 ||
-      !gst_structure_get_fourcc (s, "fourcc", &fourcc)) {
+      !gst_structure_get_string (s, "colorspace")) {
     GST_ERROR ("Invalid caps %" GST_PTR_FORMAT, caps);
     return NULL;
   }
 
+  colorspace = gst_structure_get_string (s, "colorspace");
+
   ret = (MXFMetadataRGBAPictureEssenceDescriptor *)
-      gst_mini_object_new (MXF_TYPE_METADATA_RGBA_PICTURE_ESSENCE_DESCRIPTOR);
+      g_object_new (MXF_TYPE_METADATA_RGBA_PICTURE_ESSENCE_DESCRIPTOR, NULL);
 
   memcpy (&ret->parent.parent.essence_container, &jpeg2000_essence_container_ul,
       16);
   memcpy (&ret->parent.picture_essence_coding, &jpeg2000_picture_essence_coding,
       16);
 
-  if (fourcc == GST_MAKE_FOURCC ('s', 'R', 'G', 'B')) {
+  if (g_str_equal (colorspace, "sRGB")) {
     ret->n_pixel_layout = 3;
     ret->pixel_layout = g_new0 (guint8, 6);
     ret->pixel_layout[0] = 'R';
@@ -255,7 +296,7 @@ mxf_jpeg2000_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
     ret->pixel_layout[3] = 8;
     ret->pixel_layout[4] = 'B';
     ret->pixel_layout[5] = 8;
-  } else if (fourcc == GST_MAKE_FOURCC ('s', 'Y', 'U', 'V')) {
+  } else if (g_str_equal (colorspace, "sYUV")) {
     ret->n_pixel_layout = 3;
     ret->pixel_layout = g_new0 (guint8, 6);
     ret->pixel_layout[0] = 'Y';
@@ -270,7 +311,7 @@ mxf_jpeg2000_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
   if (!mxf_metadata_generic_picture_essence_descriptor_from_caps (&ret->parent,
           caps)) {
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
 
@@ -322,7 +363,7 @@ mxf_jpeg2000_init (void)
       gst_caps_from_string ("image/x-jpc, fields = 1, width = "
           GST_VIDEO_SIZE_RANGE ", height = " GST_VIDEO_SIZE_RANGE
           ", framerate = " GST_VIDEO_FPS_RANGE
-          ", fourcc = (GstFourcc) { sRGB, sYUV }"));
+          ", colorspace = (string) { \"sRGB\", \"sYUV\" }"));
   memcpy (&mxf_jpeg2000_essence_element_writer.data_definition,
       mxf_metadata_track_identifier_get (MXF_METADATA_TRACK_PICTURE_ESSENCE),
       16);

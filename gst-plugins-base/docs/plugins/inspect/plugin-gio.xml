@@ -1,9 +1,9 @@
 <plugin>
   <name>gio</name>
   <description>GIO elements</description>
-  <filename>../../ext/gio/.libs/libgstgio.so</filename>
+  <filename>../../gst/gio/.libs/libgstgio.so</filename>
   <basename>libgstgio.so</basename>
-  <version>0.10.25</version>
+  <version>1.6.0</version>
   <license>LGPL</license>
   <source>gst-plugins-base</source>
   <package>GStreamer Base Plug-ins source release</package>

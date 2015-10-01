@@ -1,5 +1,7 @@
 /* gstgoom.c: implementation of goom drawing element
  * Copyright (C) <2001> Richard Boulton <richard@tartarus.org>
+ *           (C) <2006> Wim Taymans <wim at fluendo dot com>
+ * Copyright (C) <2015> Luis de Bethencourt <luis@debethencourt.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,77 +15,51 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_GOOM_H__
 #define __GST_GOOM_H__
 
-G_BEGIN_DECLS
-
-#include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include "gstaudiovisualizer.h"
 #include "goom_core.h"
 
-#define GOOM_SAMPLES 512
+G_BEGIN_DECLS
 
-#define GST_TYPE_GOOM            (gst_goom_get_type())
-#define GST_GOOM(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_GOOM,GstGoom))
-#define GST_GOOM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_GOOM,GstGoomClass))
-#define GST_IS_GOOM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_GOOM))
-#define GST_IS_GOOM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_GOOM))
+#define GOOM2K1_SAMPLES 512
 
-typedef struct _GstGoom GstGoom;
-typedef struct _GstGoomClass GstGoomClass;
+#define GST_TYPE_GOOM2K1            (gst_goom2k1_get_type())
+#define GST_GOOM2K1(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_GOOM2K1,GstGoom2k1))
+#define GST_GOOM2K1_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_GOOM2K1,GstGoom2k1Class))
+#define GST_IS_GOOM2K1(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_GOOM2K1))
+#define GST_IS_GOOM2K1_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_GOOM2K1))
 
-struct _GstGoom
+typedef struct _GstGoom2k1 GstGoom2k1;
+typedef struct _GstGoom2k1Class GstGoom2k1Class;
+
+struct _GstGoom2k1
 {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-  GstAdapter *adapter;
+  GstAudioVisualizer parent;
 
   /* input tracking */
-  gint rate;
   gint channels;
-  guint bps;
 
   /* video state */
-  gint fps_n;
-  gint fps_d;
   gint width;
   gint height;
-  GstClockTime duration;
-  guint outsize;
-
-  /* samples per frame */
-  guint spf;
-  /* bytes per frame */
-  guint bpf;
 
   /* goom stuff */
-  gint16 datain[2][GOOM_SAMPLES];
   GoomData goomdata;
-
-  /* segment state */
-  GstSegment segment;
-
-  /* the timestamp of the next frame */
-  GstClockTime next_ts;
-
-  /* QoS stuff *//* with LOCK */
-  gdouble proportion;
-  GstClockTime earliest_time;
 };
 
-struct _GstGoomClass
+struct _GstGoom2k1Class
 {
-  GstElementClass parent_class;
+  GstAudioVisualizerClass parent_class;
 };
 
-GType gst_goom_get_type (void);
+GType gst_goom2k1_get_type (void);
+gboolean gst_goom2k1_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

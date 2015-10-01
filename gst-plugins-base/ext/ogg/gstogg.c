@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -23,11 +23,9 @@
 
 #include <gst/gst.h>
 
-extern gboolean gst_ogg_demux_plugin_init (GstPlugin * plugin);
-extern gboolean gst_ogg_mux_plugin_init (GstPlugin * plugin);
-extern gboolean gst_ogm_parse_plugin_init (GstPlugin * plugin);
-extern gboolean gst_ogg_parse_plugin_init (GstPlugin * plugin);
-extern gboolean gst_ogg_avi_parse_plugin_init (GstPlugin * plugin);
+#include "gstogg.h"
+#include "gstoggdemux.h"
+#include "gstoggmux.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -43,6 +41,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "ogg",
+    ogg,
     "ogg stream manipulation (info about ogg: http://xiph.org)",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

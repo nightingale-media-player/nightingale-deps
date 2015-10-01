@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _GST_VDP_DEVICE_H_
@@ -25,7 +25,7 @@
 #include <vdpau/vdpau.h>
 #include <vdpau/vdpau_x11.h>
 
-#include <glib-object.h>
+#include <gst/gst.h>
 
 G_BEGIN_DECLS
 
@@ -47,8 +47,6 @@ struct _GstVdpDeviceClass
 struct _GstVdpDevice
 {
   GObject object;
-
-  gboolean constructed;
   
   gchar *display_name;
   Display *display;
@@ -81,18 +79,22 @@ struct _GstVdpDevice
   VdpOutputSurfaceCreate                          *vdp_output_surface_create;
   VdpOutputSurfaceDestroy                         *vdp_output_surface_destroy;
   VdpOutputSurfaceQueryCapabilities               *vdp_output_surface_query_capabilities;
+  VdpOutputSurfaceGetBitsNative                   *vdp_output_surface_get_bits_native;
 
-  VdpPresentationQueueTargetCreateX11             *vdp_presentation_queue_target_create_x11;  
+  VdpPresentationQueueTargetCreateX11             *vdp_presentation_queue_target_create_x11;
+  VdpPresentationQueueTargetDestroy               *vdp_presentation_queue_target_destroy;
+  
   VdpPresentationQueueCreate                      *vdp_presentation_queue_create;
   VdpPresentationQueueDestroy                     *vdp_presentation_queue_destroy;
   VdpPresentationQueueDisplay                     *vdp_presentation_queue_display;
   VdpPresentationQueueBlockUntilSurfaceIdle       *vdp_presentation_queue_block_until_surface_idle;
   VdpPresentationQueueSetBackgroundColor          *vdp_presentation_queue_set_background_color;
+  VdpPresentationQueueQuerySurfaceStatus          *vdp_presentation_queue_query_surface_status;
 };
 
-GType gst_vdp_device_get_type (void) G_GNUC_CONST;
+GType gst_vdp_device_get_type (void);
 
-GstVdpDevice *gst_vdp_get_device (const gchar *display_name);
+GstVdpDevice *gst_vdp_get_device (const gchar *display_name, GError **error);
 
 G_END_DECLS
 

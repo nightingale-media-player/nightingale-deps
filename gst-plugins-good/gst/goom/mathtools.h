@@ -15,20 +15,21 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
  #ifndef MATHTOOLS_H
 #define MATHTOOLS_H
 
+#include <glib.h>
 
 #define _double2fixmagic (68719476736.0*1.5)
 /* 2^36 * 1.5,  (52-_shiftamt=36) uses limited precisicion to floor */
 #define _shiftamt 16
 /* 16.16 fixed point representation */
 
-#if BigEndian_
+#if G_BYTE_ORDER == G_BIG_ENDIAN
 #define iexp_				0
 #define iman_				1
 #else

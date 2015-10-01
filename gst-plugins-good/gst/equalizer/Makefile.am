@@ -7,17 +7,16 @@ libgstequalizer_la_SOURCES = \
         gstiirequalizer10bands.c gstiirequalizer10bands.h
 
 libgstequalizer_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
-	$(GST_CONTROLLER_CFLAGS) $(GST_CFLAGS)
+	$(GST_CFLAGS)
 libgstequalizer_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
-	-lgstaudio-$(GST_MAJORMINOR) $(GST_BASE_LIBS) $(GST_CONTROLLER_LIBS) \
+	-lgstaudio-$(GST_API_VERSION) $(GST_BASE_LIBS) \
 	$(GST_LIBS) $(LIBM)
 libgstequalizer_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstequalizer_la_LIBTOOLFLAGS = --tag=disable-static
+libgstequalizer_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = gstiirequalizer.h
 
-presetdir = $(datadir)/gstreamer-$(GST_MAJORMINOR)/presets
+presetdir = $(datadir)/gstreamer-$(GST_API_VERSION)/presets
 preset_DATA = GstIirEqualizer3Bands.prs GstIirEqualizer10Bands.prs
 
 EXTRA_DIST = $(preset_DATA)
-

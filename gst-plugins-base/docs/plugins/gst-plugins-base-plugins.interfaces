@@ -1,30 +1,28 @@
-GstBin GstChildProxy
-GstPipeline GstChildProxy
-GstPlayBaseBin GstChildProxy
-GstPlayBin GstChildProxy
-GstPlayBin2 GstChildProxy GstStreamVolume
-GstPlaySink GstChildProxy
-GstDecodeBin2 GstChildProxy
-GstURIDecodeBin GstChildProxy
-GstDecodeBin GstChildProxy
-GstGioSink GstURIHandler
-GstGnomeVFSSink GstURIHandler
-GstAlsaSink GstPropertyProbe
-GstXvImageSink GstImplementsInterface GstPropertyProbe GstXOverlay GstColorBalance GstNavigation
-GstXImageSink GstImplementsInterface GstXOverlay GstNavigation
+GSocket GInitable
+GTypeModule GTypePlugin
+GstAdder GstChildProxy
 GstAppSink GstURIHandler
-GstGioSrc GstURIHandler
-GstCddaBaseSrc GstURIHandler
-GstCdParanoiaSrc GstURIHandler
-GstAlsaSrc GstImplementsInterface GstMixer GstPropertyProbe
-GstV4lElement GstImplementsInterface GstPropertyProbe GstTuner GstXOverlay GstColorBalance
-GstV4lSrc GstImplementsInterface GstPropertyProbe GstTuner GstXOverlay GstColorBalance
-GstGnomeVFSSrc GstURIHandler
 GstAppSrc GstURIHandler
-GstVorbisEnc GstTagSetter GstPreset
-GstVorbisTag GstTagSetter
+GstAudioCdSrc GstURIHandler
+GstAudioEncoder GstPreset
+GstBin GstChildProxy
+GstCdParanoiaSrc GstURIHandler
+GstDecodeBin GstChildProxy
+GstEncodeBin GstChildProxy
+GstGioSink GstURIHandler
+GstGioSrc GstURIHandler
 GstOggMux GstPreset
+GstPipeline GstChildProxy
+GstPlayBin GstChildProxy GstStreamVolume GstVideoOverlay GstNavigation GstColorBalance
+GstPlaySink GstChildProxy GstStreamVolume GstVideoOverlay GstNavigation GstColorBalance
+GstSubtitleOverlay GstChildProxy
 GstTheoraEnc GstPreset
-GstAlsaMixerElement GstImplementsInterface GstMixer GstPropertyProbe
-GstVolume GstImplementsInterface GstMixer GstStreamVolume
+GstURIDecodeBin GstChildProxy
+GstVideoEncoder GstPreset
+GstVolume GstStreamVolume
+GstVorbisEnc GstPreset GstTagSetter
+GstVorbisTag GstTagSetter
+GstXImageSink GstNavigation GstVideoOverlay
+GstXvImageSink GstNavigation GstVideoOverlay GstColorBalance
 PangoCairoFcFontMap PangoCairoFontMap
+PangoModule GTypePlugin

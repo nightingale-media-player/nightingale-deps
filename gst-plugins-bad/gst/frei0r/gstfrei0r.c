@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,27 +27,28 @@
 #include "gstfrei0rmixer.h"
 
 #include <string.h>
+#include <gmodule.h>
 
 GST_DEBUG_CATEGORY (frei0r_debug);
 #define GST_CAT_DEFAULT frei0r_debug
+
+static GstStaticCaps bgra8888_caps = GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE
+    ("BGRA"));
+static GstStaticCaps rgba8888_caps = GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE
+    ("RGBA"));
+static GstStaticCaps packed32_caps = GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE
+    ("{ BGRA, RGBA, ABGR, ARGB, BGRx, RGBx, xBGR, xRGB, AYUV }"));
 
 GstCaps *
 gst_frei0r_caps_from_color_model (gint color_model)
 {
   switch (color_model) {
     case F0R_COLOR_MODEL_BGRA8888:
-      return gst_caps_from_string (GST_VIDEO_CAPS_BGRA);
+      return gst_static_caps_get (&bgra8888_caps);
     case F0R_COLOR_MODEL_RGBA8888:
-      return gst_caps_from_string (GST_VIDEO_CAPS_RGBA);
+      return gst_static_caps_get (&rgba8888_caps);
     case F0R_COLOR_MODEL_PACKED32:
-      return gst_caps_from_string (GST_VIDEO_CAPS_BGRA " ; "
-          GST_VIDEO_CAPS_RGBA " ; "
-          GST_VIDEO_CAPS_ABGR " ; "
-          GST_VIDEO_CAPS_ARGB " ; "
-          GST_VIDEO_CAPS_BGRx " ; "
-          GST_VIDEO_CAPS_RGBx " ; "
-          GST_VIDEO_CAPS_xBGR " ; "
-          GST_VIDEO_CAPS_xRGB " ; " GST_VIDEO_CAPS_YUV ("AYUV"));
+      return gst_static_caps_get (&packed32_caps);
     default:
       break;
   }
@@ -71,8 +72,22 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
 
     ftable->get_param_info (param_info, i);
 
+    if (!param_info->name) {
+      GST_ERROR ("Property %d of %s without a valid name", i,
+          g_type_name (G_TYPE_FROM_CLASS (gobject_class)));
+      continue;
+    }
+
     prop_name = g_ascii_strdown (param_info->name, -1);
     g_strcanon (prop_name, G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "-+", '-');
+    /* satisfy glib2 (argname[0] must be [A-Za-z]) */
+    if (!((prop_name[0] >= 'a' && prop_name[0] <= 'z') ||
+            (prop_name[0] >= 'A' && prop_name[0] <= 'Z'))) {
+      gchar *tempstr = prop_name;
+
+      prop_name = g_strconcat ("param-", prop_name, NULL);
+      g_free (tempstr);
+    }
 
     properties[i].prop_id = count;
     properties[i].prop_idx = i;
@@ -86,7 +101,8 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
       case F0R_PARAM_BOOL:
         g_object_class_install_property (gobject_class, count++,
             g_param_spec_boolean (prop_name, param_info->name,
-                param_info->explanation, properties[i].default_value.data.b,
+                param_info->explanation,
+                properties[i].default_value.data.b ? TRUE : FALSE,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         properties[i].n_prop_ids = 1;
         break;
@@ -94,12 +110,12 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         gdouble def = properties[i].default_value.data.d;
 
         /* If the default is NAN, +-INF we use 0.0 */
-        if (!(def <= G_MAXDOUBLE && def >= -G_MAXDOUBLE))
+        if (!(def >= 0.0 && def <= 1.0))
           def = 0.0;
 
         g_object_class_install_property (gobject_class, count++,
             g_param_spec_double (prop_name, param_info->name,
-                param_info->explanation, -G_MAXDOUBLE, G_MAXDOUBLE, def,
+                param_info->explanation, 0.0, 1.0, def,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         properties[i].n_prop_ids = 1;
         break;
@@ -121,7 +137,7 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         if (!(def <= 1.0 && def >= 0.0))
           def = 0.0;
         prop_name_full = g_strconcat (prop_name, "-r", NULL);
-        prop_nick_full = g_strconcat (param_info->name, "-R", NULL);
+        prop_nick_full = g_strconcat (param_info->name, " (R)", NULL);
         g_object_class_install_property (gobject_class, count++,
             g_param_spec_float (prop_name_full, prop_nick_full,
                 param_info->explanation, 0.0, 1.0, def,
@@ -134,9 +150,9 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         if (!(def <= 1.0 && def >= 0.0))
           def = 0.0;
         prop_name_full = g_strconcat (prop_name, "-g", NULL);
-        prop_nick_full = g_strconcat (param_info->name, "-G", NULL);
+        prop_nick_full = g_strconcat (param_info->name, " (G)", NULL);
         g_object_class_install_property (gobject_class, count++,
-            g_param_spec_float (prop_name_full, param_info->name,
+            g_param_spec_float (prop_name_full, prop_nick_full,
                 param_info->explanation, 0.0, 1.0, def,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         g_free (prop_name_full);
@@ -147,9 +163,9 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         if (!(def <= 1.0 && def >= 0.0))
           def = 0.0;
         prop_name_full = g_strconcat (prop_name, "-b", NULL);
-        prop_nick_full = g_strconcat (param_info->name, "-B", NULL);
+        prop_nick_full = g_strconcat (param_info->name, " (B)", NULL);
         g_object_class_install_property (gobject_class, count++,
-            g_param_spec_float (prop_name_full, param_info->name,
+            g_param_spec_float (prop_name_full, prop_nick_full,
                 param_info->explanation, 0.0, 1.0, def,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         g_free (prop_name_full);
@@ -168,9 +184,9 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         if (!(def <= 1.0 && def >= 0.0))
           def = 0.0;
         prop_name_full = g_strconcat (prop_name, "-x", NULL);
-        prop_nick_full = g_strconcat (param_info->name, "-X", NULL);
+        prop_nick_full = g_strconcat (param_info->name, " (X)", NULL);
         g_object_class_install_property (gobject_class, count++,
-            g_param_spec_double (prop_name_full, param_info->name,
+            g_param_spec_double (prop_name_full, prop_nick_full,
                 param_info->explanation, 0.0, 1.0, def,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         g_free (prop_name_full);
@@ -181,9 +197,9 @@ gst_frei0r_klass_install_properties (GObjectClass * gobject_class,
         if (!(def <= 1.0 && def >= 0.0))
           def = 0.0;
         prop_name_full = g_strconcat (prop_name, "-Y", NULL);
-        prop_nick_full = g_strconcat (param_info->name, "-X", NULL);
+        prop_nick_full = g_strconcat (param_info->name, " (Y)", NULL);
         g_object_class_install_property (gobject_class, count++,
-            g_param_spec_double (prop_name_full, param_info->name,
+            g_param_spec_double (prop_name_full, prop_nick_full,
                 param_info->explanation, 0.0, 1.0, def,
                 G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
         g_free (prop_name_full);
@@ -242,12 +258,8 @@ gst_frei0r_instance_construct (GstFrei0rFuncTable * ftable,
   f0r_instance_t *instance = ftable->construct (width, height);
   gint i;
 
-  for (i = 0; i < n_properties; i++) {
-    if (properties[i].info.type == F0R_PARAM_STRING)
-      ftable->set_param_value (instance, property_cache[i].data.s, i);
-    else
-      ftable->set_param_value (instance, &property_cache[i].data, i);
-  }
+  for (i = 0; i < n_properties; i++)
+    ftable->set_param_value (instance, &property_cache[i].data, i);
 
   return instance;
 }
@@ -278,7 +290,7 @@ gst_frei0r_get_property (f0r_instance_t * instance, GstFrei0rFuncTable * ftable,
       if (instance)
         ftable->get_param_value (instance, &d, prop->prop_idx);
       else
-        d = property_cache[prop->prop_idx].data.b ? 1.0 : 0.0;
+        d = property_cache[prop->prop_idx].data.b;
 
       g_value_set_boolean (value, (d < 0.5) ? FALSE : TRUE);
       break;
@@ -378,7 +390,7 @@ gst_frei0r_set_property (f0r_instance_t * instance, GstFrei0rFuncTable * ftable,
 
       if (instance)
         ftable->set_param_value (instance, &d, prop->prop_idx);
-      property_cache[prop->prop_idx].data.b = b;
+      property_cache[prop->prop_idx].data.b = d;
       break;
     }
     case F0R_PARAM_DOUBLE:{
@@ -448,10 +460,11 @@ gst_frei0r_set_property (f0r_instance_t * instance, GstFrei0rFuncTable * ftable,
 }
 
 static gboolean
-register_plugin (GstPlugin * plugin, const gchar * filename)
+register_plugin (GstPlugin * plugin, const gchar * vendor,
+    const gchar * filename)
 {
   GModule *module;
-  gboolean ret = FALSE;
+  GstFrei0rPluginRegisterReturn ret = GST_FREI0R_PLUGIN_REGISTER_RETURN_FAILED;
   GstFrei0rFuncTable ftable = { NULL, };
   gint i;
   f0r_plugin_info_t info = { NULL, };
@@ -538,23 +551,37 @@ register_plugin (GstPlugin * plugin, const gchar * filename)
 
   switch (info.plugin_type) {
     case F0R_PLUGIN_TYPE_FILTER:
-      ret = gst_frei0r_filter_register (plugin, &info, &ftable);
+      ret = gst_frei0r_filter_register (plugin, vendor, &info, &ftable);
       break;
     case F0R_PLUGIN_TYPE_SOURCE:
-      ret = gst_frei0r_src_register (plugin, &info, &ftable);
+      ret = gst_frei0r_src_register (plugin, vendor, &info, &ftable);
       break;
     case F0R_PLUGIN_TYPE_MIXER2:
     case F0R_PLUGIN_TYPE_MIXER3:
-      ret = gst_frei0r_mixer_register (plugin, &info, &ftable);
+      ret = gst_frei0r_mixer_register (plugin, vendor, &info, &ftable);
       break;
     default:
       break;
   }
 
-  if (!ret)
-    goto invalid_frei0r_plugin;
+  switch (ret) {
+    case GST_FREI0R_PLUGIN_REGISTER_RETURN_OK:
+      return TRUE;
+    case GST_FREI0R_PLUGIN_REGISTER_RETURN_FAILED:
+      GST_ERROR ("Failed to register frei0r plugin");
+      ftable.deinit ();
+      g_module_close (module);
+      return FALSE;
+    case GST_FREI0R_PLUGIN_REGISTER_RETURN_ALREADY_REGISTERED:
+      GST_DEBUG ("frei0r plugin already registered");
+      ftable.deinit ();
+      g_module_close (module);
+      return TRUE;
+    default:
+      g_return_val_if_reached (FALSE);
+  }
 
-  return ret;
+  g_return_val_if_reached (FALSE);
 
 invalid_frei0r_plugin:
   GST_ERROR ("Invalid frei0r plugin");
@@ -565,31 +592,59 @@ invalid_frei0r_plugin:
 }
 
 static gboolean
-register_plugins (GstPlugin * plugin, const gchar * path)
+register_plugins (GstPlugin * plugin, GHashTable * plugin_names,
+    const gchar * path, const gchar * base_path)
 {
   GDir *dir;
   gchar *filename;
   const gchar *entry_name;
-  gboolean ret = FALSE;
+  gboolean ret = TRUE;
 
-  GST_DEBUG ("Scanning director '%s' for frei0r plugins", path);
+  GST_DEBUG ("Scanning directory '%s' for frei0r plugins", path);
 
   dir = g_dir_open (path, 0, NULL);
   if (!dir)
     return FALSE;
 
   while ((entry_name = g_dir_read_name (dir))) {
+    gchar *tmp, *vendor = NULL;
+    gchar *hashtable_name;
+
+    tmp = g_strdup (path + strlen (base_path));
+    if (*tmp == G_DIR_SEPARATOR && *(tmp + 1))
+      vendor = tmp + 1;
+    else if (*tmp)
+      vendor = tmp;
+
+    if (vendor)
+      hashtable_name = g_strconcat (vendor, "-", entry_name, NULL);
+    else
+      hashtable_name = g_strdup (entry_name);
+
+    if (g_hash_table_lookup_extended (plugin_names, hashtable_name, NULL, NULL)) {
+      g_free (hashtable_name);
+      continue;
+    }
+
     filename = g_build_filename (path, entry_name, NULL);
     if ((g_str_has_suffix (filename, G_MODULE_SUFFIX)
 #ifdef GST_EXTRA_MODULE_SUFFIX
             || g_str_has_suffix (filename, GST_EXTRA_MODULE_SUFFIX)
 #endif
         ) && g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
-      ret |= register_plugin (plugin, filename);
+      gboolean this_ret;
+
+      this_ret = register_plugin (plugin, vendor, filename);
+      if (this_ret)
+        g_hash_table_insert (plugin_names, g_strdup (hashtable_name), NULL);
+
+      ret = ret && this_ret;
     } else if (g_file_test (filename, G_FILE_TEST_IS_DIR)) {
-      ret |= register_plugins (plugin, filename);
+      ret = ret && register_plugins (plugin, plugin_names, filename, base_path);
     }
     g_free (filename);
+    g_free (hashtable_name);
+    g_free (tmp);
   }
   g_dir_close (dir);
 
@@ -600,28 +655,58 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   const gchar *homedir;
-  gchar *path;
+  gchar *path, *libdir_path;
+  GHashTable *plugin_names;
+  const gchar *frei0r_path;
 
   GST_DEBUG_CATEGORY_INIT (frei0r_debug, "frei0r", 0, "frei0r");
 
   gst_plugin_add_dependency_simple (plugin,
-      "HOME/.frei0r-1/lib",
-      "/usr/lib/frei0r-1:/usr/local/lib/frei0r-1",
+      "FREI0R_PATH:HOME/.frei0r-1/lib",
+      LIBDIR "/frei0r-1:"
+      "/usr/lib/frei0r-1:/usr/local/lib/frei0r-1:"
+      "/usr/lib32/frei0r-1:/usr/local/lib32/frei0r-1:"
+      "/usr/lib64/frei0r-1:/usr/local/lib64/frei0r-1",
       NULL, GST_PLUGIN_DEPENDENCY_FLAG_RECURSE);
 
-  register_plugins (plugin, "/usr/lib/frei0r-1");
-  register_plugins (plugin, "/usr/local/lib/frei0r-1");
+  plugin_names =
+      g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal,
+      (GDestroyNotify) g_free, NULL);
 
-  homedir = g_get_home_dir ();
-  path = g_build_filename (homedir, ".frei0r-1", NULL);
-  register_plugins (plugin, path);
-  g_free (path);
+  frei0r_path = g_getenv ("FREI0R_PATH");
+  if (frei0r_path && *frei0r_path) {
+    gchar **p, **paths = g_strsplit (frei0r_path, ":", -1);
+
+    for (p = paths; *p; p++) {
+      register_plugins (plugin, plugin_names, *p, *p);
+    }
+
+    g_strfreev (paths);
+  } else {
+#define register_plugins2(plugin, pn, p) register_plugins(plugin, pn, p, p)
+    homedir = g_get_home_dir ();
+    path = g_build_filename (homedir, ".frei0r-1", "lib", NULL);
+    libdir_path = g_build_filename (LIBDIR, "frei0r-1", NULL);
+    register_plugins2 (plugin, plugin_names, path);
+    g_free (path);
+    register_plugins2 (plugin, plugin_names, libdir_path);
+    g_free (libdir_path);
+    register_plugins2 (plugin, plugin_names, "/usr/local/lib/frei0r-1");
+    register_plugins2 (plugin, plugin_names, "/usr/lib/frei0r-1");
+    register_plugins2 (plugin, plugin_names, "/usr/local/lib32/frei0r-1");
+    register_plugins2 (plugin, plugin_names, "/usr/lib32/frei0r-1");
+    register_plugins2 (plugin, plugin_names, "/usr/local/lib64/frei0r-1");
+    register_plugins2 (plugin, plugin_names, "/usr/lib64/frei0r-1");
+#undef register_plugins2
+  }
+
+  g_hash_table_unref (plugin_names);
 
   return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "frei0r",
+    frei0r,
     "frei0r plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

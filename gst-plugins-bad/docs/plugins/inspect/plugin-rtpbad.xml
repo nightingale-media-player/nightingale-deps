@@ -1,0 +1,55 @@
+<plugin>
+  <name>rtpbad</name>
+  <description>Real-time protocol plugins</description>
+  <filename>../../gst/rtp/.libs/libgstrtpbad.so</filename>
+  <basename>libgstrtpbad.so</basename>
+  <version>1.6.0</version>
+  <license>LGPL</license>
+  <source>gst-plugins-bad</source>
+  <package>GStreamer Bad Plug-ins source release</package>
+  <origin>Unknown package origin</origin>
+  <elements>
+    <element>
+      <name>rtph265depay</name>
+      <longname>RTP H265 depayloader</longname>
+      <class>Codec/Depayloader/Network/RTP</class>
+      <description>Extracts H265 video from RTP packets (draft-ietf-payload-rtp-h265-03.txt)</description>
+      <author>Jurgen Slowack &lt;jurgenslowack@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H265</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-h265, stream-format=(string)byte-stream, alignment=(string){ nal, au }</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>rtph265pay</name>
+      <longname>RTP H265 payloader</longname>
+      <class>Codec/Payloader/Network/RTP</class>
+      <description>Payload-encode H265 video into RTP packets (based on draft-ietf-payload-rtp-h265-03.txt)</description>
+      <author>Jurgen Slowack &lt;jurgenslowack@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-h265, stream-format=(string)byte-stream, alignment=(string){ nal, au }</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>application/x-rtp, media=(string)video, payload=(int)[ 96, 127 ], clock-rate=(int)90000, encoding-name=(string)H265</details>
+        </caps>
+      </pads>
+    </element>
+  </elements>
+</plugin>

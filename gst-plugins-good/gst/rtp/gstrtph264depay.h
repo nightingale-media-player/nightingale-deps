@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_H264_DEPAY_H__
@@ -22,7 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,7 +42,7 @@ typedef struct _GstRtpH264DepayClass GstRtpH264DepayClass;
 
 struct _GstRtpH264Depay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 
   gboolean    byte_stream;
 
@@ -50,14 +50,35 @@ struct _GstRtpH264Depay
   GstAdapter *adapter;
   gboolean    wait_start;
 
+  /* nal merging */
+  gboolean    merge;
+  GstAdapter *picture_adapter;
+  gboolean    picture_start;
+  GstClockTime last_ts;
+  gboolean    last_keyframe;
+
+  /* Work around broken payloaders wrt. FU-A & FU-B */
+  guint8 current_fu_type;
+  GstClockTime fu_timestamp;
+  gboolean fu_marker;
+
+  /* misc */
+  GPtrArray *sps;
+  GPtrArray *pps;
+  gboolean new_codec_data;
 };
 
 struct _GstRtpH264DepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
 
+GType gst_rtp_h264_depay_get_type (void);
+
 gboolean gst_rtp_h264_depay_plugin_init (GstPlugin * plugin);
+
+gboolean gst_rtp_h264_add_sps_pps (GstElement * rtph264, GPtrArray * sps,
+    GPtrArray * pps, GstBuffer * nal);
 
 G_END_DECLS
 

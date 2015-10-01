@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>output-selector: GStreamer Core Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Core Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gstreamer Elements">
+<link rel="prev" href="gstreamer-plugins-multiqueue.html" title="multiqueue">
+<link rel="next" href="gstreamer-plugins-queue.html" title="queue">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-output-selector.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-output-selector.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-output-selector.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-plugins-multiqueue.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-plugins-queue.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gstreamer-plugins-output-selector"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-plugins-output-selector.top_of_page"></a>output-selector</span></h2>
+<p>output-selector</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *</td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector--active-pad" title="The “active-pad” property">active-pad</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelectorPadNegotiationMode" title="enum GstOutputSelectorPadNegotiationMode"><span class="type">GstOutputSelectorPadNegotiationMode</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector--pad-negotiation-mode" title="The “pad-negotiation-mode” property">pad-negotiation-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector--resend-latest" title="The “resend-latest” property">resend-latest</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstOutputSelector"></a><div class="refsect1">
+<a name="gstreamer-plugins-output-selector.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector-struct" title="struct GstOutputSelector">GstOutputSelector</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelectorPadNegotiationMode" title="enum GstOutputSelectorPadNegotiationMode">GstOutputSelectorPadNegotiationMode</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstOutputSelector
+</pre>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.description"></a><h2>Description</h2>
+<p>Direct input stream to one out of N output pads.</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.15.7.3.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Stefan Kost &lt;stefan.kost@nokia.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.15.7.3.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstOutputSelector-struct"></a><h3>struct GstOutputSelector</h3>
+<pre class="programlisting">struct GstOutputSelector;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOutputSelectorPadNegotiationMode"></a><h3>enum GstOutputSelectorPadNegotiationMode</h3>
+<p>To what output pad the input stream should be directed.</p>
+<div class="refsect3">
+<a name="id-1.2.15.9.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-OUTPUT-SELECTOR-PAD-NEGOTIATION-MODE-NONE:CAPS"></a>GST_OUTPUT_SELECTOR_PAD_NEGOTIATION_MODE_NONE</p></td>
+<td class="enum_member_description">
+<p>don't propagate the input
+stream.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-OUTPUT-SELECTOR-PAD-NEGOTIATION-MODE-ALL:CAPS"></a>GST_OUTPUT_SELECTOR_PAD_NEGOTIATION_MODE_ALL</p></td>
+<td class="enum_member_description">
+<p>direct input stream to all
+output pads.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-OUTPUT-SELECTOR-PAD-NEGOTIATION-MODE-ACTIVE:CAPS"></a>GST_OUTPUT_SELECTOR_PAD_NEGOTIATION_MODE_ACTIVE</p></td>
+<td class="enum_member_description">
+<p>direct input stream to the
+currently active output pad as described by the <a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector--active-pad" title="The “active-pad” property"><span class="type">“active-pad”</span></a>
+property.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstOutputSelector--active-pad"></a><h3>The <code class="literal">“active-pad”</code> property</h3>
+<pre class="programlisting">  “active-pad”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *</pre>
+<p>Currently active src pad.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOutputSelector--pad-negotiation-mode"></a><h3>The <code class="literal">“pad-negotiation-mode”</code> property</h3>
+<pre class="programlisting">  “pad-negotiation-mode”     <a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelectorPadNegotiationMode" title="enum GstOutputSelectorPadNegotiationMode"><span class="type">GstOutputSelectorPadNegotiationMode</span></a></pre>
+<p>The mode to be used for pad negotiation.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: All</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOutputSelector--resend-latest"></a><h3>The <code class="literal">“resend-latest”</code> property</h3>
+<pre class="programlisting">  “resend-latest”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Resend latest buffer after a switch to a new pad.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-output-selector.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gstreamer-plugins-output-selector.html#GstOutputSelector"><span class="type">GstOutputSelector</span></a>, <a class="link" href="gstreamer-plugins-input-selector.html#GstInputSelector"><span class="type">GstInputSelector</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

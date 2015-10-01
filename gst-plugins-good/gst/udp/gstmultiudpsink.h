@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <2005> Wim Taymand <wim@fluendo.com>
+ * Copyright (C) <2005> Wim Taymans <wim@fluendo.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MULTIUDPSINK_H__
@@ -22,26 +22,49 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
 #include "gstudpnetutils.h"
-#include "gstudp.h"
 
 #define GST_TYPE_MULTIUDPSINK            (gst_multiudpsink_get_type())
 #define GST_MULTIUDPSINK(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MULTIUDPSINK,GstMultiUDPSink))
 #define GST_MULTIUDPSINK_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MULTIUDPSINK,GstMultiUDPSinkClass))
 #define GST_IS_MULTIUDPSINK(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MULTIUDPSINK))
 #define GST_IS_MULTIUDPSINK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MULTIUDPSINK))
+#define GST_MULTIUDPSINK_CAST(obj)       ((GstMultiUDPSink*)(obj))
 
 typedef struct _GstMultiUDPSink GstMultiUDPSink;
 typedef struct _GstMultiUDPSinkClass GstMultiUDPSinkClass;
 
+#if GLIB_CHECK_VERSION (2, 43, 2)
+#define HAVE_G_SOCKET_SEND_MESSAGES
+#endif
+
+#ifndef HAVE_G_SOCKET_SEND_MESSAGES
+/* same as GOutputMessage used for g_socket_send_messages() */
 typedef struct {
-  int *sock;
+  /*< private >*/
+  GSocketAddress         *address;
 
-  struct sockaddr_storage theiraddr;
+  GOutputVector          *vectors;
+  guint                   num_vectors;
 
+  guint                   bytes_sent;
+
+  GSocketControlMessage **control_messages;
+  guint                   num_control_messages;
+} GstOutputMessage;
+#else
+typedef GOutputMessage GstOutputMessage;
+#endif /* HAVE_G_SOCKET_SEND_MESSAGES*/
+
+typedef struct {
+  gint ref_count;         /* for memory management */
+  gint add_count;         /* how often this address has been added */
+
+  GSocketAddress *addr;
   gchar *host;
   gint port;
 
@@ -57,23 +80,48 @@ typedef struct {
 struct _GstMultiUDPSink {
   GstBaseSink parent;
 
-  int sock;
+  GSocket       *used_socket, *used_socket_v6;
 
-  GMutex        *client_lock;
+  GCancellable  *cancellable;
+  gboolean       made_cancel_fd;
+
+  /* client management */
+  GMutex         client_lock;
   GList         *clients;
+  guint          num_v4_unique;  /* number IPv4 clients (excluding duplicates) */
+  guint          num_v4_all;     /* number IPv4 clients (including duplicates) */
+  guint          num_v6_unique;  /* number IPv6 clients (excluding duplicates) */
+  guint          num_v6_all;     /* number IPv6 clients (including duplicates) */
+  GList         *clients_to_be_removed;
+
+  /* pre-allocated scrap space for render function */
+  GOutputVector    *vecs;
+  guint             n_vecs;
+  GstMapInfo       *maps;
+  guint             n_maps;
+  GstOutputMessage *messages;
+  guint             n_messages;
 
   /* properties */
   guint64        bytes_to_serve;
   guint64        bytes_served;
-  int            sockfd;
-  gboolean       closefd;
+  GSocket       *socket, *socket_v6;
+  gboolean       close_socket;
 
-  gboolean       externalfd;
+  gboolean       external_socket;
 
   gboolean       auto_multicast;
+  gchar         *multi_iface;
   gint           ttl;
+  gint           ttl_mc;
   gboolean       loop;
+  gboolean       force_ipv4;
   gint           qos_dscp;
+
+  gboolean       send_duplicates;
+  gint           buffer_size;
+  gchar         *bind_address;
+  gint           bind_port;
 };
 
 struct _GstMultiUDPSinkClass {
@@ -83,7 +131,7 @@ struct _GstMultiUDPSinkClass {
   void          (*add)          (GstMultiUDPSink *sink, const gchar *host, gint port);
   void          (*remove)       (GstMultiUDPSink *sink, const gchar *host, gint port);
   void          (*clear)        (GstMultiUDPSink *sink);
-  GValueArray*  (*get_stats)    (GstMultiUDPSink *sink, const gchar *host, gint port);
+  GstStructure* (*get_stats)    (GstMultiUDPSink *sink, const gchar *host, gint port);
 
   /* signals */
   void          (*client_added) (GstElement *element, const gchar *host, gint port);
@@ -95,7 +143,7 @@ GType gst_multiudpsink_get_type(void);
 void            gst_multiudpsink_add            (GstMultiUDPSink *sink, const gchar *host, gint port);
 void            gst_multiudpsink_remove         (GstMultiUDPSink *sink, const gchar *host, gint port);
 void            gst_multiudpsink_clear          (GstMultiUDPSink *sink);
-GValueArray*    gst_multiudpsink_get_stats      (GstMultiUDPSink *sink, const gchar *host, gint port);
+GstStructure*   gst_multiudpsink_get_stats      (GstMultiUDPSink *sink, const gchar *host, gint port);
 
 G_END_DECLS
 

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -31,7 +31,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch souphttpsrc location=http://some.server/ iradio-mode=true ! icydemux ! fakesink -t
+ * gst-launch-1.0 souphttpsrc location=http://some.server/ iradio-mode=true ! icydemux ! fakesink -t
  * ]| This pipeline should read any available ICY tag information and output it.
  * The contents of the stream should be detected, and the appropriate mime
  * type set on buffers produced from icydemux. (Using gnomevfssrc, neonhttpsrc
@@ -48,13 +48,6 @@
 #include "gsticydemux.h"
 
 #include <string.h>
-
-static const GstElementDetails gst_icydemux_details =
-GST_ELEMENT_DETAILS ("ICY tag demuxer",
-    "Codec/Demuxer/Metadata",
-    "Read and output ICY tags while demuxing the contents",
-    "Jan Schmidt <thaytan@mad.scientist.com>\n"
-    "Michael Smith <msmith@fluendo.com>");
 
 #define ICY_TYPE_FIND_MAX_SIZE (40*1024)
 
@@ -73,13 +66,12 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("ANY")
     );
 
-static void gst_icydemux_class_init (GstICYDemuxClass * klass);
-static void gst_icydemux_base_init (GstICYDemuxClass * klass);
-static void gst_icydemux_init (GstICYDemux * icydemux);
 static void gst_icydemux_dispose (GObject * object);
 
-static GstFlowReturn gst_icydemux_chain (GstPad * pad, GstBuffer * buf);
-static gboolean gst_icydemux_handle_event (GstPad * pad, GstEvent * event);
+static GstFlowReturn gst_icydemux_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
+static gboolean gst_icydemux_handle_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 
 static gboolean gst_icydemux_add_srcpad (GstICYDemux * icydemux,
     GstCaps * new_caps);
@@ -89,45 +81,12 @@ static GstStateChangeReturn gst_icydemux_change_state (GstElement * element,
     GstStateChange transition);
 static gboolean gst_icydemux_sink_setcaps (GstPad * pad, GstCaps * caps);
 
-static void gst_icydemux_send_tag_event (GstICYDemux * icydemux,
+static gboolean gst_icydemux_send_tag_event (GstICYDemux * icydemux,
     GstTagList * taglist);
 
-static GstElementClass *parent_class = NULL;
 
-GType
-gst_icydemux_get_type (void)
-{
-  static GType plugin_type = 0;
-
-  if (!plugin_type) {
-    static const GTypeInfo plugin_info = {
-      sizeof (GstICYDemuxClass),
-      (GBaseInitFunc) gst_icydemux_base_init,
-      NULL,
-      (GClassInitFunc) gst_icydemux_class_init,
-      NULL,
-      NULL,
-      sizeof (GstICYDemux),
-      0,
-      (GInstanceInitFunc) gst_icydemux_init,
-    };
-    plugin_type = g_type_register_static (GST_TYPE_ELEMENT,
-        "GstICYDemux", &plugin_info, 0);
-  }
-  return plugin_type;
-}
-
-static void
-gst_icydemux_base_init (GstICYDemuxClass * klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &gst_icydemux_details);
-}
+#define gst_icydemux_parent_class parent_class
+G_DEFINE_TYPE (GstICYDemux, gst_icydemux, GST_TYPE_ELEMENT);
 
 static void
 gst_icydemux_class_init (GstICYDemuxClass * klass)
@@ -144,6 +103,16 @@ gst_icydemux_class_init (GstICYDemuxClass * klass)
 
   gstelement_class->change_state = gst_icydemux_change_state;
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class, "ICY tag demuxer",
+      "Codec/Demuxer/Metadata",
+      "Read and output ICY tags while demuxing the contents",
+      "Jan Schmidt <thaytan@mad.scientist.com>, "
+      "Michael Smith <msmith@fluendo.com>");
 }
 
 static void
@@ -162,7 +131,7 @@ gst_icydemux_reset (GstICYDemux * icydemux)
   gst_icydemux_remove_srcpad (icydemux);
 
   if (icydemux->cached_tags) {
-    gst_tag_list_free (icydemux->cached_tags);
+    gst_tag_list_unref (icydemux->cached_tags);
     icydemux->cached_tags = NULL;
   }
 
@@ -183,6 +152,11 @@ gst_icydemux_reset (GstICYDemux * icydemux)
     gst_buffer_unref (icydemux->typefind_buf);
     icydemux->typefind_buf = NULL;
   }
+
+  if (icydemux->content_type) {
+    g_free (icydemux->content_type);
+    icydemux->content_type = NULL;
+  }
 }
 
 static void
@@ -197,8 +171,6 @@ gst_icydemux_init (GstICYDemux * icydemux)
       GST_DEBUG_FUNCPTR (gst_icydemux_chain));
   gst_pad_set_event_function (icydemux->sinkpad,
       GST_DEBUG_FUNCPTR (gst_icydemux_handle_event));
-  gst_pad_set_setcaps_function (icydemux->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_icydemux_sink_setcaps));
   gst_element_add_pad (GST_ELEMENT (icydemux), icydemux->sinkpad);
 
   gst_icydemux_reset (icydemux);
@@ -209,16 +181,20 @@ gst_icydemux_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstICYDemux *icydemux = GST_ICYDEMUX (GST_PAD_PARENT (pad));
   GstStructure *structure = gst_caps_get_structure (caps, 0);
+  const gchar *tmp;
 
   if (!gst_structure_get_int (structure, "metadata-interval",
           &icydemux->meta_interval))
     return FALSE;
-  else {
-    /* We have a meta interval, so initialise the rest */
-    icydemux->remaining = icydemux->meta_interval;
-    icydemux->meta_remaining = 0;
-    return TRUE;
-  }
+
+  /* If incoming caps have the HTTP Content-Type, copy that over */
+  if ((tmp = gst_structure_get_string (structure, "content-type")))
+    icydemux->content_type = g_strdup (tmp);
+
+  /* We have a meta interval, so initialise the rest */
+  icydemux->remaining = icydemux->meta_interval;
+  icydemux->meta_remaining = 0;
+  return TRUE;
 }
 
 static void
@@ -229,6 +205,28 @@ gst_icydemux_dispose (GObject * object)
   gst_icydemux_reset (icydemux);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+typedef struct
+{
+  GstCaps *caps;
+  GstPad *pad;
+} CopyStickyEventsData;
+
+static gboolean
+copy_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
+{
+  CopyStickyEventsData *data = user_data;
+
+  if (GST_EVENT_TYPE (*event) >= GST_EVENT_CAPS && data->caps) {
+    gst_pad_set_caps (data->pad, data->caps);
+    data->caps = NULL;
+  }
+
+  if (GST_EVENT_TYPE (*event) != GST_EVENT_CAPS)
+    gst_pad_push_event (data->pad, gst_event_ref (*event));
+
+  return TRUE;
 }
 
 static gboolean
@@ -249,20 +247,26 @@ gst_icydemux_add_srcpad (GstICYDemux * icydemux, GstCaps * new_caps)
   }
 
   if (icydemux->srcpad == NULL) {
+    CopyStickyEventsData data;
+
     icydemux->srcpad =
         gst_pad_new_from_template (gst_element_class_get_pad_template
         (GST_ELEMENT_GET_CLASS (icydemux), "src"), "src");
     g_return_val_if_fail (icydemux->srcpad != NULL, FALSE);
 
     gst_pad_use_fixed_caps (icydemux->srcpad);
+    gst_pad_set_active (icydemux->srcpad, TRUE);
 
-    if (icydemux->src_caps)
-      gst_pad_set_caps (icydemux->srcpad, icydemux->src_caps);
+    data.pad = icydemux->srcpad;
+    data.caps = icydemux->src_caps;
+    gst_pad_sticky_events_foreach (icydemux->sinkpad, copy_sticky_events,
+        &data);
+    if (data.caps)
+      gst_pad_set_caps (data.pad, data.caps);
 
     GST_DEBUG_OBJECT (icydemux, "Adding src pad with caps %" GST_PTR_FORMAT,
         icydemux->src_caps);
 
-    gst_pad_set_active (icydemux->srcpad, TRUE);
     if (!(gst_element_add_pad (GST_ELEMENT (icydemux), icydemux->srcpad)))
       return FALSE;
     gst_element_no_more_pads (GST_ELEMENT (icydemux));
@@ -295,26 +299,44 @@ gst_icydemux_unicodify (const gchar * str)
   return gst_tag_freeform_string_to_utf8 (str, -1, env_vars);
 }
 
+/* takes ownership of tag list */
+static gboolean
+gst_icydemux_tag_found (GstICYDemux * icydemux, GstTagList * tags)
+{
+  /* send the tag event if we have finished typefinding and have a src pad */
+  if (icydemux->srcpad)
+    return gst_icydemux_send_tag_event (icydemux, tags);
+
+  /* if we haven't a source pad yet, cache the tags */
+  if (!icydemux->cached_tags) {
+    icydemux->cached_tags = tags;
+  } else {
+    gst_tag_list_insert (icydemux->cached_tags, tags,
+        GST_TAG_MERGE_REPLACE_ALL);
+    gst_tag_list_unref (tags);
+  }
+
+  return TRUE;
+}
+
 static void
 gst_icydemux_parse_and_send_tags (GstICYDemux * icydemux)
 {
-  GstTagList *tags = gst_tag_list_new ();
+  GstTagList *tags;
   const guint8 *data;
   int length, i;
   gchar *buffer;
   gchar **strings;
-  gboolean found_tag = FALSE;
 
   length = gst_adapter_available (icydemux->meta_adapter);
 
-  data = gst_adapter_peek (icydemux->meta_adapter, length);
+  data = gst_adapter_map (icydemux->meta_adapter, length);
 
   /* Now, copy this to a buffer where we can NULL-terminate it to make things
    * a bit easier, then do that parsing. */
-  buffer = g_malloc (length + 1);
-  memcpy (buffer, data, length);
-  buffer[length] = 0;
+  buffer = g_strndup ((const gchar *) data, length);
 
+  tags = gst_tag_list_new_empty ();
   strings = g_strsplit (buffer, "';", 0);
 
   for (i = 0; strings[i]; i++) {
@@ -325,17 +347,13 @@ gst_icydemux_parse_and_send_tags (GstICYDemux * icydemux)
         gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE, GST_TAG_TITLE,
             title, NULL);
         g_free (title);
-        found_tag = TRUE;
       }
     } else if (!g_ascii_strncasecmp (strings[i], "StreamUrl=", 10)) {
       char *url = gst_icydemux_unicodify (strings[i] + 11);
 
-      if (url) {
-        /* 
-           gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE, GST_TAG_URL, 
-           url, NULL); 
-           found_tag = TRUE;
-         */
+      if (url && *url) {
+        gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE, GST_TAG_HOMEPAGE,
+            url, NULL);
         g_free (url);
       }
     }
@@ -343,26 +361,43 @@ gst_icydemux_parse_and_send_tags (GstICYDemux * icydemux)
 
   g_strfreev (strings);
   g_free (buffer);
-  gst_adapter_clear (icydemux->meta_adapter);
+  gst_adapter_unmap (icydemux->meta_adapter);
+  gst_adapter_flush (icydemux->meta_adapter, length);
 
-  if (found_tag) {
-    if (icydemux->srcpad) {
-      gst_icydemux_send_tag_event (icydemux, tags);
-    } else {
-      if (!icydemux->cached_tags) {
-        icydemux->cached_tags = gst_tag_list_new ();
-      }
-
-      gst_tag_list_insert (icydemux->cached_tags, tags,
-          GST_TAG_MERGE_REPLACE_ALL);
-    }
-  }
+  if (!gst_tag_list_is_empty (tags))
+    gst_icydemux_tag_found (icydemux, tags);
+  else
+    gst_tag_list_unref (tags);
 }
 
 static gboolean
-gst_icydemux_handle_event (GstPad * pad, GstEvent * event)
+gst_icydemux_handle_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstICYDemux *icydemux = GST_ICYDEMUX (GST_PAD_PARENT (pad));
+  GstICYDemux *icydemux = GST_ICYDEMUX (parent);
+  gboolean result;
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_TAG:
+    {
+      GstTagList *tags;
+
+      gst_event_parse_tag (event, &tags);
+      result = gst_icydemux_tag_found (icydemux, gst_tag_list_copy (tags));
+      gst_event_unref (event);
+      return result;
+    }
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      result = gst_icydemux_sink_setcaps (pad, caps);
+      gst_event_unref (event);
+      return result;
+    }
+    default:
+      break;
+  }
 
   if (icydemux->typefinding) {
     switch (GST_EVENT_TYPE (event)) {
@@ -372,14 +407,18 @@ gst_icydemux_handle_event (GstPad * pad, GstEvent * event)
         g_list_free (icydemux->cached_events);
         icydemux->cached_events = NULL;
 
-        return gst_pad_event_default (pad, event);
+        return gst_pad_event_default (pad, parent, event);
       default:
-        icydemux->cached_events = g_list_append (icydemux->cached_events,
-            event);
+        if (!GST_EVENT_IS_STICKY (event)) {
+          icydemux->cached_events =
+              g_list_append (icydemux->cached_events, event);
+        } else {
+          gst_event_unref (event);
+        }
         return TRUE;
     }
   } else {
-    return gst_pad_event_default (pad, event);
+    return gst_pad_event_default (pad, parent, event);
   }
 }
 
@@ -402,30 +441,47 @@ gst_icydemux_typefind_or_forward (GstICYDemux * icydemux, GstBuffer * buf)
 {
   if (icydemux->typefinding) {
     GstBuffer *tf_buf;
-    GstCaps *caps;
+    GstCaps *caps = NULL;
     GstTypeFindProbability prob;
 
+    /* If we have a content-type from upstream, let's see if we can shortcut
+     * typefinding */
+    if (G_UNLIKELY (icydemux->content_type)) {
+      if (!g_ascii_strcasecmp (icydemux->content_type, "video/nsv")) {
+        GST_DEBUG ("We have a NSV stream");
+        caps = gst_caps_new_empty_simple ("video/x-nsv");
+      } else {
+        GST_DEBUG ("Upstream Content-Type isn't supported");
+        g_free (icydemux->content_type);
+        icydemux->content_type = NULL;
+      }
+    }
+
     if (icydemux->typefind_buf) {
-      icydemux->typefind_buf = gst_buffer_join (icydemux->typefind_buf, buf);
+      icydemux->typefind_buf = gst_buffer_append (icydemux->typefind_buf, buf);
     } else {
       icydemux->typefind_buf = buf;
     }
 
-    caps = gst_type_find_helper_for_buffer (GST_OBJECT (icydemux),
-        icydemux->typefind_buf, &prob);
-
+    /* Only typefind if we haven't already got some caps */
     if (caps == NULL) {
-      if (GST_BUFFER_SIZE (icydemux->typefind_buf) < ICY_TYPE_FIND_MAX_SIZE) {
-        /* Just break for more data */
-        return GST_FLOW_OK;
-      }
+      caps = gst_type_find_helper_for_buffer (GST_OBJECT (icydemux),
+          icydemux->typefind_buf, &prob);
 
-      /* We failed typefind */
-      GST_ELEMENT_ERROR (icydemux, STREAM, TYPE_NOT_FOUND, (NULL),
-          ("No caps found for contents within an ICY stream"));
-      gst_buffer_unref (icydemux->typefind_buf);
-      icydemux->typefind_buf = NULL;
-      return GST_FLOW_ERROR;
+      if (caps == NULL) {
+        if (gst_buffer_get_size (icydemux->typefind_buf) <
+            ICY_TYPE_FIND_MAX_SIZE) {
+          /* Just break for more data */
+          return GST_FLOW_OK;
+        }
+
+        /* We failed typefind */
+        GST_ELEMENT_ERROR (icydemux, STREAM, TYPE_NOT_FOUND, (NULL),
+            ("No caps found for contents within an ICY stream"));
+        gst_buffer_unref (icydemux->typefind_buf);
+        icydemux->typefind_buf = NULL;
+        return GST_FLOW_ERROR;
+      }
     }
 
     if (!gst_icydemux_add_srcpad (icydemux, caps)) {
@@ -459,8 +515,7 @@ gst_icydemux_typefind_or_forward (GstICYDemux * icydemux, GstBuffer * buf)
       return GST_FLOW_ERROR;
     }
 
-    buf = gst_buffer_make_metadata_writable (buf);
-    gst_buffer_set_caps (buf, icydemux->src_caps);
+    buf = gst_buffer_make_writable (buf);
 
     /* Most things don't care, and it's a pain to track (we should preserve a
      * 0 offset on the first buffer though if it's there, for id3demux etc.) */
@@ -482,32 +537,38 @@ gst_icydemux_add_meta (GstICYDemux * icydemux, GstBuffer * buf)
 }
 
 static GstFlowReturn
-gst_icydemux_chain (GstPad * pad, GstBuffer * buf)
+gst_icydemux_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstICYDemux *icydemux;
   guint size, chunk, offset;
   GstBuffer *sub;
   GstFlowReturn ret = GST_FLOW_OK;
 
-  icydemux = GST_ICYDEMUX (GST_PAD_PARENT (pad));
+  icydemux = GST_ICYDEMUX (parent);
 
   if (G_UNLIKELY (icydemux->meta_interval < 0))
     goto not_negotiated;
 
   if (icydemux->meta_interval == 0) {
     ret = gst_icydemux_typefind_or_forward (icydemux, buf);
+    buf = NULL;
     goto done;
   }
 
   /* Go through the buffer, chopping it into appropriate chunks. Forward as
    * tags or buffers, as appropriate
    */
-  size = GST_BUFFER_SIZE (buf);
+  size = gst_buffer_get_size (buf);
   offset = 0;
   while (size) {
     if (icydemux->remaining) {
       chunk = (size <= icydemux->remaining) ? size : icydemux->remaining;
-      sub = gst_buffer_create_sub (buf, offset, chunk);
+      if (offset == 0 && chunk == size) {
+        sub = buf;
+        buf = NULL;
+      } else {
+        sub = gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, offset, chunk);
+      }
       offset += chunk;
       icydemux->remaining -= chunk;
       size -= chunk;
@@ -519,7 +580,7 @@ gst_icydemux_chain (GstPad * pad, GstBuffer * buf)
     } else if (icydemux->meta_remaining) {
       chunk = (size <= icydemux->meta_remaining) ?
           size : icydemux->meta_remaining;
-      sub = gst_buffer_create_sub (buf, offset, chunk);
+      sub = gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, offset, chunk);
       gst_icydemux_add_meta (icydemux, sub);
 
       offset += chunk;
@@ -534,12 +595,14 @@ gst_icydemux_chain (GstPad * pad, GstBuffer * buf)
         icydemux->remaining = icydemux->meta_interval;
       }
     } else {
+      guint8 byte;
       /* We need to read a single byte (always safe at this point in the loop)
        * to figure out how many bytes of metadata exist. 
        * The 'spec' tells us to read 16 * (byte_value) bytes of metadata after
        * this (zero is common, and means the metadata hasn't changed).
        */
-      icydemux->meta_remaining = 16 * GST_BUFFER_DATA (buf)[offset];
+      gst_buffer_extract (buf, offset, &byte, 1);
+      icydemux->meta_remaining = 16 * byte;
       if (icydemux->meta_remaining == 0)
         icydemux->remaining = icydemux->meta_interval;
 
@@ -549,11 +612,12 @@ gst_icydemux_chain (GstPad * pad, GstBuffer * buf)
   }
 
 done:
-  gst_buffer_unref (buf);
+  if (buf)
+    gst_buffer_unref (buf);
 
   return ret;
 
-/* ERRORS */
+  /* ERRORS */
 not_negotiated:
   {
     GST_WARNING_OBJECT (icydemux, "meta_interval not set, buffer probably had "
@@ -581,19 +645,17 @@ gst_icydemux_change_state (GstElement * element, GstStateChange transition)
   return ret;
 }
 
-static void
+/* takes ownership of tag list */
+static gboolean
 gst_icydemux_send_tag_event (GstICYDemux * icydemux, GstTagList * tags)
 {
   GstEvent *event;
-
-  gst_element_post_message (GST_ELEMENT (icydemux),
-      gst_message_new_tag (GST_OBJECT (icydemux), gst_tag_list_copy (tags)));
 
   event = gst_event_new_tag (tags);
   GST_EVENT_TIMESTAMP (event) = 0;
 
   GST_DEBUG_OBJECT (icydemux, "Sending tag event on src pad");
-  gst_pad_push_event (icydemux->srcpad, event);
+  return gst_pad_push_event (icydemux->srcpad, event);
 
 }
 
@@ -609,6 +671,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "icydemux",
+    icydemux,
     "Demux ICY tags from a stream",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

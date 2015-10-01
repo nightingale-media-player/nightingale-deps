@@ -13,22 +13,18 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_VIDEO_SCALE_H__
 #define __GST_VIDEO_SCALE_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstbasetransform.h>
-
-#include "vs_image.h"
+#include <gst/video/video.h>
+#include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
-
-GST_DEBUG_CATEGORY_EXTERN (video_scale_debug);
-#define GST_CAT_DEFAULT video_scale_debug
 
 #define GST_TYPE_VIDEO_SCALE \
   (gst_video_scale_get_type())
@@ -40,19 +36,36 @@ GST_DEBUG_CATEGORY_EXTERN (video_scale_debug);
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_VIDEO_SCALE))
 #define GST_IS_VIDEO_SCALE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_VIDEO_SCALE))
+#define GST_VIDEO_SCALE_CAST(obj)       ((GstVideoScale *)(obj))
+
 
 /**
  * GstVideoScaleMethod:
  * @GST_VIDEO_SCALE_NEAREST: use nearest neighbour scaling (fast and ugly)
- * @GST_VIDEO_SCALE_BILINEAR: use bilinear scaling (slower but prettier).
- * @GST_VIDEO_SCALE_4TAP: use a 4-tap filter for scaling (slow).
+ * @GST_VIDEO_SCALE_BILINEAR: use 2-tap bilinear scaling (slower but prettier).
+ * @GST_VIDEO_SCALE_4TAP: use a 4-tap sinc filter for scaling (slow).
+ * @GST_VIDEO_SCALE_LANCZOS: use a multitap Lanczos filter for scaling (slow).
+ * @GST_VIDEO_SCALE_BILINEAR2: use a multitap bilinear filter
+ * @GST_VIDEO_SCALE_SINC: use a multitap sinc filter
+ * @GST_VIDEO_SCALE_HERMITE: use a multitap bicubic Hermite filter
+ * @GST_VIDEO_SCALE_SPLINE: use a multitap bicubic spline filter
+ * @GST_VIDEO_SCALE_CATROM: use a multitap bicubic Catmull-Rom filter
+ * @GST_VIDEO_SCALE_MITCHELL: use a multitap bicubic Mitchell filter
  *
  * The videoscale method to use.
  */
 typedef enum {
   GST_VIDEO_SCALE_NEAREST,
   GST_VIDEO_SCALE_BILINEAR,
-  GST_VIDEO_SCALE_4TAP
+  GST_VIDEO_SCALE_4TAP,
+  GST_VIDEO_SCALE_LANCZOS,
+
+  GST_VIDEO_SCALE_BILINEAR2,
+  GST_VIDEO_SCALE_SINC,
+  GST_VIDEO_SCALE_HERMITE,
+  GST_VIDEO_SCALE_SPLINE,
+  GST_VIDEO_SCALE_CATROM,
+  GST_VIDEO_SCALE_MITCHELL
 } GstVideoScaleMethod;
 
 typedef struct _GstVideoScale GstVideoScale;
@@ -64,31 +77,29 @@ typedef struct _GstVideoScaleClass GstVideoScaleClass;
  * Opaque data structure
  */
 struct _GstVideoScale {
-  GstBaseTransform element;
+  GstVideoFilter element;
 
+  /* properties */
   GstVideoScaleMethod method;
+  gboolean add_borders;
+  double sharpness;
+  double sharpen;
+  gboolean dither;
+  int submethod;
+  double envelope;
+  gboolean gamma_decode;
 
-  /* negotiated stuff */
-  int format;
-  VSImage src;
-  VSImage dest;
-  guint src_size;
-  guint dest_size;
-  gint to_width;
-  gint to_height;
-  gint from_width;
-  gint from_height;
-  gboolean interlaced;
-  
-  /*< private >*/
-  guint8 *tmp_buf;
+  GstVideoConverter *convert;
+
+  gint borders_h;
+  gint borders_w;
 };
 
 struct _GstVideoScaleClass {
-  GstBaseTransformClass parent_class;
+  GstVideoFilterClass parent_class;
 };
 
-GType gst_video_scale_get_type(void);
+G_GNUC_INTERNAL GType gst_video_scale_get_type (void);
 
 G_END_DECLS
 

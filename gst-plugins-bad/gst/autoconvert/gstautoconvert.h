@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -41,25 +41,26 @@ struct _GstAutoConvert
   /*< private >*/
   GstBin bin;                   /* we extend GstBin */
 
-  /* Protected by the object lock too */
-  GList *factories;
+  volatile GList *factories;
 
   GstPad *sinkpad;
   GstPad *srcpad;
 
   /* Have to be set all at once
-   * Protected by the object lock */
+   * Protected by the object lock and the stream lock
+   * Both must be held to modify these
+   */
   GstElement *current_subelement;
   GstPad *current_internal_srcpad;
   GstPad *current_internal_sinkpad;
-
-  GList *cached_events;
 };
 
 struct _GstAutoConvertClass
 {
   GstBinClass parent_class;
 };
+
+GType gst_auto_convert_get_type (void);
 
 G_END_DECLS
 #endif /* __GST_AUTO_CONVERT_H__ */

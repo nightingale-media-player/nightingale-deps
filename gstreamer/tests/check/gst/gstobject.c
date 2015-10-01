@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,15 +42,16 @@ struct _GstFakeObjectClass
   GstObjectClass parent_class;
 };
 
-static GType _gst_fake_object_type = 0;
-
 //static GstObjectClass *parent_class = NULL;
 //static guint gst_fake_object_signals[LAST_SIGNAL] = { 0 };
 
 static GType
 gst_fake_object_get_type (void)
 {
-  if (!_gst_fake_object_type) {
+  static volatile gsize fake_object_type = 0;
+
+  if (g_once_init_enter (&fake_object_type)) {
+    GType type;
     static const GTypeInfo fake_object_info = {
       sizeof (GstFakeObjectClass),
       NULL,                     //gst_fake_object_base_class_init,
@@ -64,22 +65,12 @@ gst_fake_object_get_type (void)
       NULL
     };
 
-    _gst_fake_object_type = g_type_register_static (GST_TYPE_OBJECT,
+    type = g_type_register_static (GST_TYPE_OBJECT,
         "GstFakeObject", &fake_object_info, 0);
+    g_once_init_leave (&fake_object_type, type);
   }
-  return _gst_fake_object_type;
+  return fake_object_type;
 }
-
-/* g_object_new on abstract GstObject should fail */
-GST_START_TEST (test_fail_abstract_new)
-{
-  GstObject *object;
-
-  ASSERT_CRITICAL (object = g_object_new (gst_object_get_type (), NULL));
-  fail_unless (object == NULL, "Created an instance of abstract GstObject");
-}
-
-GST_END_TEST;
 
 /* g_object_new on GstFakeObject should succeed */
 GST_START_TEST (test_fake_object_new)
@@ -149,7 +140,7 @@ thread_name_object (GstObject * object)
   g_usleep (100000);
 
   /* write our name repeatedly */
-  g_message ("THREAD %s: starting loop\n", thread_id);
+  g_message ("THREAD %s: starting loop", thread_id);
   while (THREAD_TEST_RUNNING ()) {
     gst_object_set_name (object, thread_id);
     /* a minimal sleep invokes a thread switch */
@@ -157,7 +148,7 @@ thread_name_object (GstObject * object)
   }
 
   /* thread is done, so let's return */
-  g_message ("THREAD %s: set name\n", thread_id);
+  g_message ("THREAD %s: set name", thread_id);
   g_free (thread_id);
 
   return NULL;
@@ -171,7 +162,7 @@ GST_START_TEST (test_fake_object_name_threaded_wrong)
   gint i;
   gboolean expected_failure = FALSE;
 
-  g_message ("\nTEST: set/get without lock\n");
+  g_message ("\nTEST: set/get without lock");
 
   object = g_object_new (gst_fake_object_get_type (), NULL);
   gst_object_set_name (object, "main");
@@ -184,7 +175,7 @@ GST_START_TEST (test_fake_object_name_threaded_wrong)
     THREAD_SWITCH ();
     name = gst_object_get_name (object);
     if (strcmp (name, "main") != 0) {
-      g_message ("MAIN: expected failure during run %d\n", i);
+      g_message ("MAIN: expected failure during run %d", i);
       expected_failure = TRUE;
       g_free (name);
       break;
@@ -211,7 +202,7 @@ GST_START_TEST (test_fake_object_name_threaded_right)
   gchar *name;
   gint i;
 
-  g_message ("\nTEST: set/get inside lock\n");
+  g_message ("\nTEST: set/get inside lock");
 
   object = g_object_new (gst_fake_object_get_type (), NULL);
   gst_object_set_name (object, "main");
@@ -257,14 +248,14 @@ thread_name_object_default (int *i)
   for (j = *i; j < num_objects; j += num_threads) {
     GstObject *o = GST_OBJECT (g_list_nth_data (object_list, j));
 
-    /* g_message ("THREAD %p: setting default name on object %d\n",
+    /* g_message ("THREAD %p: setting default name on object %d",
        g_thread_self (), j); */
     gst_object_set_name (o, NULL);
     THREAD_SWITCH ();
   }
 
   /* thread is done, so let's return */
-  g_message ("THREAD %p: set name\n", g_thread_self ());
+  g_message ("THREAD %p: set name", g_thread_self ());
   g_free (i);
 
   return NULL;
@@ -302,7 +293,7 @@ GST_START_TEST (test_fake_object_name_threaded_unique)
   gchar *name1, *name2;
   GList *l;
 
-  g_message ("\nTEST: uniqueness of default names\n");
+  g_message ("\nTEST: uniqueness of default names");
 
   for (i = 0; i < num_objects; ++i) {
     object = g_object_new (gst_fake_object_get_type (), NULL);
@@ -330,7 +321,7 @@ GST_START_TEST (test_fake_object_name_threaded_unique)
 
   name1 = gst_object_get_name (GST_OBJECT (object_list->data));
   for (l = object_list->next; l->next; l = l->next) {
-    g_message ("object with name %s\n", name1);
+    g_message ("object with name %s", name1);
     name2 = gst_object_get_name (GST_OBJECT (l->data));
     fail_if (strcmp (name1, name2) == 0, "Two objects with name %s", name2);
     g_free (name1);
@@ -356,7 +347,7 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (object1 == NULL, "Failed to create instance of GstFakeObject");
   fail_unless (GST_IS_OBJECT (object1),
       "GstFakeObject instance is not a GstObject");
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
 
   /* check the parent */
@@ -364,13 +355,18 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (parent != NULL, "GstFakeObject has parent");
   /* try to set a NULL parent, this should give a warning */
   ASSERT_CRITICAL (result = gst_object_set_parent (object1, NULL));
-  fail_if (result == TRUE, "GstFakeObject accepted NULL parent");
+  fail_if (result, "GstFakeObject accepted NULL parent");
   /* try to set itself as parent, we expect a warning here */
   ASSERT_CRITICAL (result = gst_object_set_parent (object1, object1));
-  fail_if (result == TRUE, "GstFakeObject accepted itself as parent");
+  fail_if (result, "GstFakeObject accepted itself as parent");
+
+  /* _has_parent always returns FALSE if there is no parent */
+  fail_if (gst_object_has_as_parent (object1, NULL));
+  fail_if (gst_object_has_as_parent (NULL, object1));
+  fail_if (gst_object_has_as_parent (object1, object1));
 
   /* should still be floating */
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
 
   /* create another object */
@@ -379,28 +375,38 @@ GST_START_TEST (test_fake_object_parentage)
       "Failed to create another instance of GstFakeObject");
   fail_unless (GST_IS_OBJECT (object2),
       "second GstFakeObject instance is not a GstObject");
-  fail_unless (GST_OBJECT_IS_FLOATING (object1),
+  fail_unless (g_object_is_floating (object1),
       "GstFakeObject instance is not floating");
+
+  result = gst_object_has_as_parent (object1, object2);
+  fail_if (result, "GstFakeObject has a parent");
 
   /* try to set other object as parent */
   result = gst_object_set_parent (object1, object2);
-  fail_if (result == FALSE,
-      "GstFakeObject could not accept other object as parent");
+  fail_unless (result, "GstFakeObject could not accept other object as parent");
 
   /* should not be floating anymore */
-  fail_if (GST_OBJECT_IS_FLOATING (object1),
+  fail_if (g_object_is_floating (object1),
       "GstFakeObject instance is still floating");
   /* parent should still be floating */
-  fail_unless (GST_OBJECT_IS_FLOATING (object2),
+  fail_unless (g_object_is_floating (object2),
       "GstFakeObject instance is not floating");
 
   /* check the parent */
-  parent = gst_object_get_parent (object1);
-  fail_if (parent != object2, "GstFakeObject has wrong parent");
-  gst_object_unref (parent);
+  fail_unless (gst_object_has_as_parent (object1, object2));
+
+  /* any other combination is invalid */
+  fail_if (gst_object_has_as_parent (object2, object1));
+  fail_if (gst_object_has_as_parent (object1, NULL));
+  fail_if (gst_object_has_as_parent (object2, NULL));
+  fail_if (gst_object_has_as_parent (NULL, object1));
+  fail_if (gst_object_has_as_parent (NULL, object2));
+  fail_if (gst_object_has_as_parent (object1, object1));
+  fail_if (gst_object_has_as_parent (object2, object2));
+
   /* try to set other object as parent again */
   result = gst_object_set_parent (object1, object2);
-  fail_if (result == TRUE, "GstFakeObject could set parent twice");
+  fail_if (result, "GstFakeObject could set parent twice");
 
   /* ref before unparenting */
   gst_object_ref (object1);
@@ -412,7 +418,7 @@ GST_START_TEST (test_fake_object_parentage)
   fail_if (parent != NULL, "GstFakeObject has parent");
 
   /* object should not be floating */
-  fail_if (GST_OBJECT_IS_FLOATING (object1),
+  fail_if (g_object_is_floating (object1),
       "GstFakeObject instance is floating again");
 
   gst_object_unref (object1);
@@ -439,14 +445,93 @@ GST_START_TEST (test_fake_object_parentage_dispose)
 
   /* try to set other object as parent */
   result = gst_object_set_parent (object1, object2);
-  fail_if (result == FALSE,
-      "GstFakeObject could not accept other object as parent");
+  fail_unless (result, "GstFakeObject could not accept other object as parent");
 
   /* clear parent of object */
   gst_object_unparent (object1);
 
   /* now dispose parent */
   gst_object_unref (object2);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_fake_object_has_as_ancestor)
+{
+  GstObject *object1, *object2, *object3, *object4;
+  gboolean result;
+
+  object1 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object1 == NULL, "Failed to create instance of GstFakeObject");
+
+  object2 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object2 == NULL, "Failed to create instance of GstFakeObject");
+
+  object3 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object3 == NULL, "Failed to create instance of GstFakeObject");
+
+  object4 = g_object_new (gst_fake_object_get_type (), NULL);
+  fail_if (object4 == NULL, "Failed to create instance of GstFakeObject");
+
+  /* try to set other object as parent */
+  result = gst_object_set_parent (object1, object3);
+  fail_unless (result, "GstFakeObject could not accept other object as parent");
+  result = gst_object_set_parent (object2, object3);
+  fail_unless (result, "GstFakeObject could not accept other object as parent");
+  result = gst_object_set_parent (object3, object4);
+  fail_unless (result, "GstFakeObject could not accept other object as parent");
+
+  /* Hierarchy:
+   *  object4
+   *   `- object3
+   *       |- object2
+   *       `- object1
+   */
+
+  /* An object isn't its own parent, but it is its own ancestor */
+  fail_if (gst_object_has_as_parent (object1, object1));
+  fail_unless (gst_object_has_as_ancestor (object1, object1));
+
+  fail_if (gst_object_has_as_parent (object4, object4));
+  fail_unless (gst_object_has_as_ancestor (object4, object4));
+
+  /* direct parents */
+  fail_unless (gst_object_has_as_parent (object1, object3));
+  fail_unless (gst_object_has_as_ancestor (object1, object3));
+
+  fail_unless (gst_object_has_as_parent (object2, object3));
+  fail_unless (gst_object_has_as_ancestor (object2, object3));
+
+  fail_unless (gst_object_has_as_parent (object3, object4));
+  fail_unless (gst_object_has_as_ancestor (object3, object4));
+
+  /* grandparents */
+  fail_if (gst_object_has_as_parent (object1, object4));
+  fail_unless (gst_object_has_as_ancestor (object1, object4));
+
+  fail_if (gst_object_has_as_parent (object2, object4));
+  fail_unless (gst_object_has_as_ancestor (object2, object4));
+
+  /* not ancestors */
+  fail_if (gst_object_has_as_parent (object1, object2));
+  fail_if (gst_object_has_as_ancestor (object1, object2));
+
+  fail_if (gst_object_has_as_parent (object3, object1));
+  fail_if (gst_object_has_as_ancestor (object3, object1));
+
+  fail_if (gst_object_has_as_parent (object4, object1));
+  fail_if (gst_object_has_as_ancestor (object4, object1));
+
+  fail_if (gst_object_has_as_parent (object4, object3));
+  fail_if (gst_object_has_as_ancestor (object4, object3));
+
+  /* unparent everything */
+  gst_object_unparent (object3);
+  gst_object_unparent (object2);
+  gst_object_unparent (object1);
+
+  /* now dispose objects */
+  gst_object_unref (object4);
 }
 
 GST_END_TEST;
@@ -472,17 +557,9 @@ gst_object_suite (void)
   tcase_add_test (tc_chain, test_fake_object_name_threaded_unique);
   tcase_add_test (tc_chain, test_fake_object_parentage);
   tcase_add_test (tc_chain, test_fake_object_parentage_dispose);
-  //tcase_add_checked_fixture (tc_chain, setup, teardown);
 
-  /* FIXME: GLib shouldn't crash here, but issue a warning and return a NULL
-   * object, or at least g_error() and then abort properly ... (tpm) */
-#ifdef HAVE_OSX
-  /* on OSX we get SIGBUS instead it seems */
-  tcase_add_test_raise_signal (tc_chain, test_fail_abstract_new, SIGBUS);
-#else
-  /* SEGV tests go last so we can debug the others */
-  tcase_add_test_raise_signal (tc_chain, test_fail_abstract_new, SIGSEGV);
-#endif
+  tcase_add_test (tc_chain, test_fake_object_has_as_ancestor);
+  //tcase_add_checked_fixture (tc_chain, setup, teardown);
 
   return s;
 }

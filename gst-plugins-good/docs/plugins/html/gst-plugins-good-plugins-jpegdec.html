@@ -2,93 +2,93 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>jpegdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>jpegdec: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-interleave.html" title="interleave">
+<link rel="prev" href="gst-plugins-good-plugins-jackaudiosrc.html" title="jackaudiosrc">
 <link rel="next" href="gst-plugins-good-plugins-jpegenc.html" title="jpegenc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-interleave.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-jpegenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-jpegdec.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-jpegdec.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-jpegdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-jpegdec.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" title="jpegdec">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-jpegdec.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-jpegdec.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-jpegdec.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-jackaudiosrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-jpegenc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-jpegdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-jpegdec.top_of_page"></a>jpegdec</span></h2>
-<p>jpegdec — Decode images from JPEG format</p>
+<p>jpegdec</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-jpegdec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstJpegDec"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-jpegdec.html#GstJpegDec-struct" title="GstJpegDec">GstJpegDec</a>;
-</pre>
-</div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-jpegdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstJpegDec
-</pre>
-</div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-jpegdec.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-jpegdec.html#GstJpegDec--idct-method" title='The "idct-method" property'>idct-method</a>"              GstIDCTMethod         : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">GstIDCTMethod</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-jpegdec.html#GstJpegDec--idct-method" title="The “idct-method” property">idct-method</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-jpegdec.html#GstJpegDec--max-errors" title="The “max-errors” property">max-errors</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstJpegDec"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-jpegdec.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-jpegdec.html#GstJpegDec-struct" title="struct GstJpegDec">GstJpegDec</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-jpegdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder">GstVideoDecoder</a>
+                    <span class="lineart">╰──</span> GstJpegDec
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-jpegdec.description"></a><h2>Description</h2>
-<p>
-Decodes jpeg images.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example launch line">
-<a name="id544491"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v v4l2src ! jpegddec ! ffmpegcolorspace ! xvimagesink
-</pre></div> The above pipeline reads a motion JPEG stream from a v4l2 camera
-and renders it to the screen.
-</div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id550483"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.74.7.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -108,10 +108,13 @@ and renders it to the screen.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id558448"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.74.7.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -127,12 +130,15 @@ and renders it to the screen.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>image/jpeg, width=(int)[ 16, 65535 ], height=(int)[ 8, 65535 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>image/jpeg</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -148,36 +154,45 @@ and renders it to the screen.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ I420, RGB, BGR, RGBx, xRGB, BGRx, xBGR, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-jpegdec.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstJpegDec">
-<a name="GstJpegDec-struct"></a><h3>GstJpegDec</h3>
-<pre class="programlisting">typedef struct _GstJpegDec GstJpegDec;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-jpegdec.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-jpegdec.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstJpegDec-struct"></a><h3>struct GstJpegDec</h3>
+<pre class="programlisting">struct GstJpegDec;</pre>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-jpegdec.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "idct-method" property'>
-<a name="GstJpegDec--idct-method"></a><h3>The <code class="literal">"idct-method"</code> property</h3>
-<pre class="programlisting">  "idct-method"              GstIDCTMethod         : Read / Write</pre>
+<div class="refsect2">
+<a name="GstJpegDec--idct-method"></a><h3>The <code class="literal">“idct-method”</code> property</h3>
+<pre class="programlisting">  “idct-method”              <span class="type">GstIDCTMethod</span></pre>
 <p>The IDCT algorithm to use.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Faster, less accurate integer method</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegDec--max-errors"></a><h3>The <code class="literal">“max-errors”</code> property</h3>
+<pre class="programlisting">  “max-errors”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>(Deprecated) Error out after receiving N consecutive decoding errors (-1 = never fail, 0 = automatic, 1 = fail on first error).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: 0</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

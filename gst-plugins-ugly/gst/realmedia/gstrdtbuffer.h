@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RDTBUFFER_H__
@@ -86,6 +86,7 @@ struct _GstRDTPacket
   /*< private >*/
   GstRDTType   type;         /* type of current packet */
   guint16      length;       /* length of current packet in bytes */
+  GstMapInfo   map;          /* last mapped data */
 };
 
 /* validate buffers */
@@ -105,7 +106,8 @@ GstBuffer*      gst_rdt_packet_to_buffer          (GstRDTPacket *packet);
 
 /* data packets */
 guint16         gst_rdt_packet_data_get_seq       (GstRDTPacket *packet);
-gboolean        gst_rdt_packet_data_peek_data     (GstRDTPacket *packet, guint8 **data, guint *size);
+guint8 *        gst_rdt_packet_data_map           (GstRDTPacket *packet, guint *size);
+gboolean        gst_rdt_packet_data_unmap         (GstRDTPacket *packet);
 guint16         gst_rdt_packet_data_get_stream_id (GstRDTPacket *packet);
 guint32         gst_rdt_packet_data_get_timestamp (GstRDTPacket *packet);
 

@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <glib.h>
@@ -33,7 +33,7 @@
 #define GST_CAT_DEFAULT cam_debug_cat
 
 CamDevice *
-cam_device_new ()
+cam_device_new (void)
 {
   CamDevice *device = g_new0 (CamDevice, 1);
 
@@ -104,30 +104,45 @@ cam_device_open (CamDevice * device, const char *filename)
   ca_caps_t ca_caps;
   int ret;
   int i;
+  int count = 10;
 
   g_return_val_if_fail (device != NULL, FALSE);
   g_return_val_if_fail (device->state == CAM_DEVICE_STATE_CLOSED, FALSE);
   g_return_val_if_fail (filename != NULL, FALSE);
 
-  GST_INFO ("opening ca device %s", filename);
+  GST_INFO ("opening CA device %s", filename);
 
   ret = open (filename, O_RDWR);
   if (ret == -1) {
-    GST_ERROR ("can't open ca device: %s", strerror (errno));
+    GST_ERROR ("can't open CA device: %s", g_strerror (errno));
     return FALSE;
   }
+
+  GST_DEBUG ("Successfully opened device %s", filename);
 
   device->fd = ret;
 
   ret = ioctl (device->fd, CA_RESET);
-  sleep (1);
 
-  /* get the capabilities of the CA */
-  ret = ioctl (device->fd, CA_GET_CAP, &ca_caps);
-  if (ret == -1) {
-    GST_ERROR ("CA_GET_CAP ioctl failed: %s", strerror (errno));
-    reset_state (device);
-    return FALSE;
+  g_usleep (G_USEC_PER_SEC / 10);
+
+  while (TRUE) {
+    /* get the capabilities of the CA */
+    ret = ioctl (device->fd, CA_GET_CAP, &ca_caps);
+    if (ret == -1) {
+      GST_ERROR ("CA_GET_CAP ioctl failed: %s", g_strerror (errno));
+      reset_state (device);
+      return FALSE;
+    }
+    if (ca_caps.slot_num > 0)
+      break;
+    if (!count) {
+      GST_ERROR ("CA_GET_CAP succeeded but not slots");
+      reset_state (device);
+      return FALSE;
+    }
+    count--;
+    g_usleep (G_USEC_PER_SEC / 5);
   }
 
   device->tl = cam_tl_new (device->fd);
@@ -178,7 +193,7 @@ cam_device_close (CamDevice * device)
   g_return_if_fail (device != NULL);
   g_return_if_fail (device->state == CAM_DEVICE_STATE_OPEN);
 
-  GST_INFO ("closing ca device %s", device->filename);
+  GST_INFO ("closing CA device %s", device->filename);
   reset_state (device);
 }
 
@@ -202,7 +217,7 @@ cam_device_ready (CamDevice * device)
 
 void
 cam_device_set_pmt (CamDevice * device,
-    GstStructure * pmt, CamConditionalAccessPmtFlag flag)
+    GstMpegtsPMT * pmt, CamConditionalAccessPmtFlag flag)
 {
   g_return_if_fail (device != NULL);
   g_return_if_fail (device->state == CAM_DEVICE_STATE_OPEN);

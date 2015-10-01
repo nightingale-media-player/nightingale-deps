@@ -3,6 +3,7 @@
  *
  * GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) 2010 Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_VOLUME_H__
@@ -25,7 +26,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
-#include <gst/interfaces/streamvolume.h>
+#include <gst/audio/streamvolume.h>
 #include <gst/audio/audio.h>
 #include <gst/audio/gstaudiofilter.h>
 
@@ -54,6 +55,7 @@ struct _GstVolume {
   GstAudioFilter element;
 
   void (*process)(GstVolume*, gpointer, guint);
+  void (*process_controlled)(GstVolume*, gpointer, gdouble *, guint, guint);
 
   gboolean mute;
   gfloat volume;
@@ -68,6 +70,11 @@ struct _GstVolume {
   
   GList *tracklist;
   gboolean negotiated;
+
+  gboolean *mutes;
+  guint mutes_count;
+  gdouble *volumes;
+  guint volumes_count;
 };
 
 struct _GstVolumeClass {

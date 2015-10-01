@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -39,6 +39,7 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_TEE))
 #define GST_IS_TEE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_TEE))
+#define GST_TEE_CAST(obj) ((GstTee*) obj)
 
 typedef struct _GstTee 		GstTee;
 typedef struct _GstTeeClass 	GstTeeClass;
@@ -65,29 +66,28 @@ struct _GstTee {
   GstElement      element;
 
   /*< private >*/
-  /* lock protecting dynamic pads */
-  GMutex         *dyn_lock;
-
   GstPad         *sinkpad;
   GstPad         *allocpad;
-  gint            pad_counter;
+
+  GHashTable     *pad_indexes;
+  guint           next_pad_index;
 
   gboolean        has_chain;
-  gboolean        has_sink_loop;
   gboolean        silent;
   gchar          *last_message;
 
-  guint64         offset;
-  GstActivateMode sink_mode;
+  GstPadMode      sink_mode;
   GstTeePullMode  pull_mode;
   GstPad         *pull_pad;
+
+  gboolean        allow_not_linked;
 };
 
 struct _GstTeeClass {
   GstElementClass parent_class;
 };
 
-GType 	gst_tee_get_type	(void);
+G_GNUC_INTERNAL GType	gst_tee_get_type	(void);
 
 G_END_DECLS
 

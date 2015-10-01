@@ -13,9 +13,12 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "gstwasapiutil.h"
 
@@ -25,18 +28,23 @@
 const CLSID CLSID_MMDeviceEnumerator = { 0xbcde0395, 0xe52f, 0x467c,
   {0x8e, 0x3d, 0xc4, 0x57, 0x92, 0x91, 0x69, 0x2e}
 };
+
 const IID IID_IMMDeviceEnumerator = { 0xa95664d2, 0x9614, 0x4f35,
   {0xa7, 0x46, 0xde, 0x8d, 0xb6, 0x36, 0x17, 0xe6}
 };
+
 const IID IID_IAudioClient = { 0x1cb9ad4c, 0xdbfa, 0x4c32,
   {0xb1, 0x78, 0xc2, 0xf5, 0x68, 0xa7, 0x03, 0xb2}
 };
+
 const IID IID_IAudioClock = { 0xcd63314f, 0x3fba, 0x4a1b,
   {0x81, 0x2c, 0xef, 0x96, 0x35, 0x87, 0x28, 0xe7}
 };
+
 const IID IID_IAudioCaptureClient = { 0xc8adbd64, 0xe71e, 0x48a0,
   {0xa4, 0xde, 0x18, 0x5c, 0x39, 0x5c, 0xd3, 0x17}
 };
+
 const IID IID_IAudioRenderClient = { 0xf294acfc, 0x3146, 0x4483,
   {0xa7, 0xbf, 0xad, 0xdc, 0xa7, 0xc2, 0x60, 0xe2}
 };
@@ -129,22 +137,16 @@ gst_wasapi_util_hresult_to_string (HRESULT hr)
 
 gboolean
 gst_wasapi_util_get_default_device_client (GstElement * element,
-    gboolean capture,
-    guint rate,
-    GstClockTime buffer_time,
-    GstClockTime period_time,
-    DWORD flags, IAudioClient ** ret_client, GstClockTime * ret_latency)
+    gboolean capture, IAudioClient ** ret_client)
 {
   gboolean res = FALSE;
   HRESULT hr;
   IMMDeviceEnumerator *enumerator = NULL;
   IMMDevice *device = NULL;
   IAudioClient *client = NULL;
-  REFERENCE_TIME latency_rt, def_period, min_period;
-  WAVEFORMATEXTENSIBLE format;
 
   hr = CoCreateInstance (&CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL,
-      &IID_IMMDeviceEnumerator, &enumerator);
+      &IID_IMMDeviceEnumerator, (void **) &enumerator);
   if (hr != S_OK) {
     GST_ERROR_OBJECT (element, "CoCreateInstance (MMDeviceEnumerator) failed");
     goto beach;
@@ -159,60 +161,14 @@ gst_wasapi_util_get_default_device_client (GstElement * element,
   }
 
   hr = IMMDevice_Activate (device, &IID_IAudioClient, CLSCTX_ALL, NULL,
-      &client);
+      (void **) &client);
   if (hr != S_OK) {
     GST_ERROR_OBJECT (element, "IMMDevice::Activate (IID_IAudioClient) failed");
     goto beach;
   }
 
-  hr = IAudioClient_GetDevicePeriod (client, &def_period, &min_period);
-  if (hr != S_OK) {
-    GST_ERROR_OBJECT (element, "IAudioClient::GetDevicePeriod () failed");
-    goto beach;
-  }
-
-  ZeroMemory (&format, sizeof (format));
-  format.Format.cbSize = sizeof (format) - sizeof (format.Format);
-  format.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
-  format.Format.nChannels = 2;
-  format.Format.nSamplesPerSec = rate;
-  format.Format.wBitsPerSample = 16;
-  format.Format.nBlockAlign = format.Format.nChannels
-      * (format.Format.wBitsPerSample / 8);
-  format.Format.nAvgBytesPerSec = format.Format.nSamplesPerSec
-      * format.Format.nBlockAlign;
-  format.Samples.wValidBitsPerSample = 16;
-  format.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-  format.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-
-  hr = IAudioClient_Initialize (client, AUDCLNT_SHAREMODE_EXCLUSIVE,    /* or AUDCLNT_SHAREMODE_SHARED */
-      flags, buffer_time / 100, /* buffer duration in 100s of ns */
-      period_time / 100,        /* periodicity in 100s of ns */
-      (WAVEFORMATEX *) & format, NULL);
-  if (hr != S_OK) {
-    GST_ELEMENT_ERROR (element, RESOURCE, OPEN_READ, (NULL),
-        ("IAudioClient::Initialize () failed: %s",
-            gst_wasapi_util_hresult_to_string (hr)));
-    goto beach;
-  }
-
-  hr = IAudioClient_GetStreamLatency (client, &latency_rt);
-  if (hr != S_OK) {
-    GST_ERROR_OBJECT (element, "IAudioClient::GetStreamLatency () failed");
-    goto beach;
-  }
-
-  GST_INFO_OBJECT (element, "default period: %d (%d ms), "
-      "minimum period: %d (%d ms), "
-      "latency: %d (%d ms)",
-      (guint32) def_period, (guint32) def_period / 10000,
-      (guint32) min_period, (guint32) min_period / 10000,
-      (guint32) latency_rt, (guint32) latency_rt / 10000);
-
   IUnknown_AddRef (client);
   *ret_client = client;
-
-  *ret_latency = latency_rt * 100;
 
   res = TRUE;
 
@@ -227,6 +183,91 @@ beach:
     IUnknown_Release (enumerator);
 
   return res;
+}
+
+gboolean
+gst_wasapi_util_get_render_client (GstElement * element, IAudioClient * client,
+    IAudioRenderClient ** ret_render_client)
+{
+  gboolean res = FALSE;
+  HRESULT hr;
+  IAudioRenderClient *render_client = NULL;
+
+  hr = IAudioClient_GetService (client, &IID_IAudioRenderClient,
+      (void **) &render_client);
+  if (hr != S_OK) {
+    GST_ERROR_OBJECT (element, "IAudioClient::GetService "
+        "(IID_IAudioRenderClient) failed");
+    goto beach;
+  }
+
+  *ret_render_client = render_client;
+
+beach:
+  return res;
+}
+
+gboolean
+gst_wasapi_util_get_capture_client (GstElement * element, IAudioClient * client,
+    IAudioCaptureClient ** ret_capture_client)
+{
+  gboolean res = FALSE;
+  HRESULT hr;
+  IAudioCaptureClient *capture_client = NULL;
+
+  hr = IAudioClient_GetService (client, &IID_IAudioCaptureClient,
+      (void **) &capture_client);
+  if (hr != S_OK) {
+    GST_ERROR_OBJECT (element, "IAudioClient::GetService "
+        "(IID_IAudioCaptureClient) failed");
+    goto beach;
+  }
+
+  *ret_capture_client = capture_client;
+
+beach:
+  return res;
+}
+
+gboolean
+gst_wasapi_util_get_clock (GstElement * element, IAudioClient * client,
+    IAudioClock ** ret_clock)
+{
+  gboolean res = FALSE;
+  HRESULT hr;
+  IAudioClock *clock = NULL;
+
+  hr = IAudioClient_GetService (client, &IID_IAudioClock,
+      (void **) &clock);
+  if (hr != S_OK) {
+    GST_ERROR_OBJECT (element, "IAudioClient::GetService "
+        "(IID_IAudioClock) failed");
+    goto beach;
+  }
+
+  *ret_clock = clock;
+
+beach:
+  return res;
+}
+
+void
+gst_wasapi_util_audio_info_to_waveformatex (GstAudioInfo * info,
+    WAVEFORMATEXTENSIBLE * format)
+{
+  memset (format, 0, sizeof (*format));
+  format->Format.cbSize = sizeof (*format) - sizeof (format->Format);
+  format->Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+  format->Format.nChannels = info->channels;
+  format->Format.nSamplesPerSec = info->rate;
+  format->Format.wBitsPerSample = (info->bpf * 8) / format->Format.nChannels;
+  format->Format.nBlockAlign = info->bpf;
+  format->Format.nAvgBytesPerSec =
+      format->Format.nSamplesPerSec * format->Format.nBlockAlign;
+  format->Samples.wValidBitsPerSample = info->finfo->depth;
+  /* FIXME: Implement something here */
+  format->dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+  format->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
 }
 
 #if 0

@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>socketsrc: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-playsink.html" title="playsink">
+<link rel="next" href="gst-plugins-base-plugins-ssaparse.html" title="ssaparse">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-socketsrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-socketsrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-socketsrc.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-socketsrc.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-playsink.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-ssaparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-plugins-socketsrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-socketsrc.top_of_page"></a>socketsrc</span></h2>
+<p>socketsrc</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-socketsrc.html#GstSocketSrc--socket" title="The “socket” property">socket</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-socketsrc.html#GstSocketSrc--caps" title="The “caps” property">caps</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-socketsrc.html#GstSocketSrc-connection-closed-by-peer" title="The “connection-closed-by-peer” signal">connection-closed-by-peer</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstSocketSrc"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-socketsrc.html#GstSocketSrc-struct" title="struct GstSocketSrc">GstSocketSrc</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> GstSocketSrc
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.description"></a><h2>Description</h2>
+<p>Receive data from a socket.</p>
+<p>As compared to other elements:</p>
+<p>socketsrc can be considered a source counterpart to the <span class="type">multisocketsink</span>
+sink.</p>
+<p>socketsrc can also be considered a generalization of <span class="type">tcpclientsrc</span> and
+<span class="type">tcpserversrc</span>: it contains all the logic required to communicate over the
+socket but none of the logic for creating the sockets/establishing the
+connection in the first place, allowing the user to accomplish this
+externally in whatever manner they wish making it applicable to other types
+of sockets besides TCP.</p>
+<p>As compared to <span class="type">fdsrc</span> socketsrc is socket specific and deals with <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a>
+objects rather than sockets via integer file-descriptors.</p>
+<p><em class="parameter"><code>see_also</code></em>
+: <span class="type">multisocketsink</span></p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.30.8.8.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-tcp.html#plugin-tcp">tcp</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Thomas Vander Stichele &lt;thomas at apestaart dot org&gt;, William Manley &lt;will@williammanley.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.30.8.8.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstSocketSrc-struct"></a><h3>struct GstSocketSrc</h3>
+<pre class="programlisting">struct GstSocketSrc;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstSocketSrc--socket"></a><h3>The <code class="literal">“socket”</code> property</h3>
+<pre class="programlisting">  “socket”                   <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</pre>
+<p>The socket to receive packets from.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSocketSrc--caps"></a><h3>The <code class="literal">“caps”</code> property</h3>
+<pre class="programlisting">  “caps”                     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> *</pre>
+<p>The caps of the source pad.</p>
+<p>Flags: Read / Write</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-socketsrc.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstSocketSrc-connection-closed-by-peer"></a><h3>The <code class="literal">“connection-closed-by-peer”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-socketsrc.html#GstSocketSrc"><span class="type">GstSocketSrc</span></a> *gstsocketsrc,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>      user_data)</pre>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

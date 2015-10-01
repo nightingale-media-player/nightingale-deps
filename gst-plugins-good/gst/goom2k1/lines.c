@@ -48,6 +48,11 @@ goom_lines (GoomData * goomdata, gint16 data[2][512], unsigned int ID,
       color2 = 0x00AA33DD;
       break;
     }
+    default:{
+      color1 = color2 = 0;
+      g_assert_not_reached ();
+      break;
+    }
   }
   *color = lighten (*color, power);
   color++;
@@ -83,8 +88,8 @@ goom_lines (GoomData * goomdata, gint16 data[2][512], unsigned int ID,
     {
       float z;
       unsigned int monX = resolx / 2;
-      float monY = resoly / 4;
-      float monY2 = resoly / 2;
+      float monY = (float) resoly / 4;
+      float monY2 = (float) resoly / 2;
 
       for (z = 0; z < 6.2832f; z += 1.0f / monY) {
         /* float offset1 = 128+data[1][(unsigned int)(z*81.33f)])/200000; */

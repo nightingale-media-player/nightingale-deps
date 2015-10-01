@@ -13,12 +13,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <gst/gst.h>
+#include <gst/glib-compat-private.h>
 
 #define MAX_THREADS  100
 
@@ -33,7 +35,7 @@ run_test (void *user_data)
 
   while (running) {
     gst_clock_get_time (sysclock);
-    prev = g_atomic_int_exchange_and_add (&count, 1);
+    prev = g_atomic_int_add (&count, 1);
     if (prev == G_MAXINT)
       g_warning ("overflow");
   }
@@ -58,14 +60,22 @@ main (gint argc, gchar * argv[])
 
   num_threads = atoi (argv[1]);
 
+  if (num_threads <= 0 || num_threads > MAX_THREADS) {
+    g_print ("number of threads must be between 0 and %d\n", MAX_THREADS);
+    exit (-2);
+  }
+
   sysclock = gst_system_clock_obtain ();
 
   for (t = 0; t < num_threads; t++) {
     GError *error = NULL;
 
-    threads[t] = g_thread_create (run_test, sysclock, TRUE, &error);
+    threads[t] = g_thread_try_new ("clockstresstest", run_test,
+        sysclock, &error);
+
     if (error) {
-      printf ("ERROR: g_thread_create() %s\n", error->message);
+      printf ("ERROR: g_thread_try_new() %s\n", error->message);
+      g_clear_error (&error);
       exit (-1);
     }
   }

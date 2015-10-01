@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -23,7 +23,7 @@
 
 #include "gst/gst-i18n-plugin.h"
 
-#include "gstossmixerelement.h"
+#include "common.h"
 #include "gstosssink.h"
 #include "gstosssrc.h"
 
@@ -33,9 +33,7 @@ GST_DEBUG_CATEGORY (oss_debug);
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  if (!gst_element_register (plugin, "ossmixer", GST_RANK_NONE,
-          GST_TYPE_OSS_MIXER_ELEMENT) ||
-      !gst_element_register (plugin, "osssrc", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "osssrc", GST_RANK_SECONDARY,
           GST_TYPE_OSS_SRC) ||
       !gst_element_register (plugin, "osssink", GST_RANK_SECONDARY,
           GST_TYPE_OSSSINK)) {
@@ -56,6 +54,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "ossaudio",
+    ossaudio,
     "OSS (Open Sound System) support for GStreamer",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

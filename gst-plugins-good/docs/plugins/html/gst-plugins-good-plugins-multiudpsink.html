@@ -2,127 +2,233 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>multiudpsink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>multiudpsink: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-multipartmux.html" title="multipartmux">
 <link rel="next" href="gst-plugins-good-plugins-optv.html" title="optv">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-multipartmux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-optv.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-multiudpsink.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multiudpsink.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multiudpsink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multiudpsink.properties" class="shortcut">Properties</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multiudpsink.signals" class="shortcut">Signals</a>
-</td></tr>
-</table>
-<div class="refentry" title="multiudpsink">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multiudpsink.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multiudpsink.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multiudpsink.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multiudpsink.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-multipartmux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-optv.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-multiudpsink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-multiudpsink.top_of_page"></a>multiudpsink</span></h2>
-<p>multiudpsink — Send data over the network via UDP</p>
+<p>multiudpsink</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-multiudpsink.synopsis"></a><h2>Synopsis</h2>
-<a name="GstMultiUDPSink"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-struct" title="GstMultiUDPSink">GstMultiUDPSink</a>;
-</pre>
-</div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-multiudpsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-libs-0.10/GstBaseSink.html"
->GstBaseSink</a>
-                     +----GstMultiUDPSink
-                           +----<a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink">GstUDPSink</a>
-</pre>
-</div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multiudpsink.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bytes-served" title='The "bytes-served" property'>bytes-served</a>"             <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bytes-to-serve" title='The "bytes-to-serve" property'>bytes-to-serve</a>"           <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--clients" title='The "clients" property'>clients</a>"                  <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--closefd" title='The "closefd" property'>closefd</a>"                  <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--sock" title='The "sock" property'>sock</a>"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--sockfd" title='The "sockfd" property'>sockfd</a>"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--auto-multicast" title='The "auto-multicast" property'>auto-multicast</a>"           <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--loop" title='The "loop" property'>loop</a>"                     <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--qos-dscp" title='The "qos-dscp" property'>qos-dscp</a>"                 <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--ttl" title='The "ttl" property'>ttl</a>"                      <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-</pre>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bytes-served" title="The “bytes-served” property">bytes-served</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bytes-to-serve" title="The “bytes-to-serve” property">bytes-to-serve</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--clients" title="The “clients” property">clients</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--auto-multicast" title="The “auto-multicast” property">auto-multicast</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--loop" title="The “loop” property">loop</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--qos-dscp" title="The “qos-dscp” property">qos-dscp</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--ttl" title="The “ttl” property">ttl</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--ttl-mc" title="The “ttl-mc” property">ttl-mc</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--send-duplicates" title="The “send-duplicates” property">send-duplicates</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--buffer-size" title="The “buffer-size” property">buffer-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--close-socket" title="The “close-socket” property">close-socket</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--socket" title="The “socket” property">socket</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--used-socket" title="The “used-socket” property">used-socket</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--force-ipv4" title="The “force-ipv4” property">force-ipv4</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--multicast-iface" title="The “multicast-iface” property">multicast-iface</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bind-address" title="The “bind-address” property">bind-address</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--bind-port" title="The “bind-port” property">bind-port</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--socket-v6" title="The “socket-v6” property">socket-v6</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink--used-socket-v6" title="The “used-socket-v6” property">used-socket-v6</a></td>
+<td class="property_flags">Read</td>
+</tr>
+</tbody>
+</table></div>
 </div>
-<div class="refsect1" title="Signals">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multiudpsink.signals"></a><h2>Signals</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-add" title='The "add" signal'>add</a>"                                            : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-clear" title='The "clear" signal'>clear</a>"                                          : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-client-added" title='The "client-added" signal'>client-added</a>"                                   : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-client-removed" title='The "client-removed" signal'>client-removed</a>"                                 : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-get-stats" title='The "get-stats" signal'>get-stats</a>"                                      : Run Last
-  "<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-remove" title='The "remove" signal'>remove</a>"                                         : Run Last
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-add" title="The “add” signal">add</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-clear" title="The “clear” signal">clear</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-client-added" title="The “client-added” signal">client-added</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-client-removed" title="The “client-removed” signal">client-removed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="returnvalue">GstStructure</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-get-stats" title="The “get-stats” signal">get-stats</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-remove" title="The “remove” signal">remove</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstMultiUDPSink"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-multiudpsink.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink-struct" title="struct GstMultiUDPSink">GstMultiUDPSink</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multiudpsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSink.html">GstBaseSink</a>
+                    <span class="lineart">╰──</span> GstMultiUDPSink
+                        <span class="lineart">╰──</span> <a class="link" href="gst-plugins-good-plugins-udpsink.html#GstUDPSink">GstUDPSink</a>
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multiudpsink.description"></a><h2>Description</h2>
-<div class="refsynopsisdiv" title="Synopsis">
+<p>multiudpsink is a network sink that sends UDP packets to multiple
+clients.
+It can be combined with rtp payload encoders to implement RTP streaming.</p>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id502503"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.90.8.3.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -142,10 +248,13 @@ href="../glib/glib-Basic-Types.html#gint"
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id569175"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.90.8.3.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -167,367 +276,447 @@ href="../glib/glib-Basic-Types.html#gint"
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-multiudpsink.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstMultiUDPSink">
-<a name="GstMultiUDPSink-struct"></a><h3>GstMultiUDPSink</h3>
-<pre class="programlisting">typedef struct _GstMultiUDPSink GstMultiUDPSink;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multiudpsink.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multiudpsink.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstMultiUDPSink-struct"></a><h3>struct GstMultiUDPSink</h3>
+<pre class="programlisting">struct GstMultiUDPSink;</pre>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multiudpsink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "bytes-served" property'>
-<a name="GstMultiUDPSink--bytes-served"></a><h3>The <code class="literal">"bytes-served"</code> property</h3>
-<pre class="programlisting">  "bytes-served"             <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read</pre>
-<p>Total number of bytes send to all clients.</p>
+<div class="refsect2">
+<a name="GstMultiUDPSink--bytes-served"></a><h3>The <code class="literal">“bytes-served”</code> property</h3>
+<pre class="programlisting">  “bytes-served”             <span class="type">guint64</span></pre>
+<p>Total number of bytes sent to all clients.</p>
+<p>Flags: Read</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "bytes-to-serve" property'>
-<a name="GstMultiUDPSink--bytes-to-serve"></a><h3>The <code class="literal">"bytes-to-serve"</code> property</h3>
-<pre class="programlisting">  "bytes-to-serve"           <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read</pre>
+<div class="refsect2">
+<a name="GstMultiUDPSink--bytes-to-serve"></a><h3>The <code class="literal">“bytes-to-serve”</code> property</h3>
+<pre class="programlisting">  “bytes-to-serve”           <span class="type">guint64</span></pre>
 <p>Number of bytes received to serve to clients.</p>
+<p>Flags: Read</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" title='The "clients" property'>
-<a name="GstMultiUDPSink--clients"></a><h3>The <code class="literal">"clients"</code> property</h3>
-<pre class="programlisting">  "clients"                  <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write</pre>
+<div class="refsect2">
+<a name="GstMultiUDPSink--clients"></a><h3>The <code class="literal">“clients”</code> property</h3>
+<pre class="programlisting">  “clients”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>A comma separated list of host:port pairs with destinations.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "closefd" property'>
-<a name="GstMultiUDPSink--closefd"></a><h3>The <code class="literal">"closefd"</code> property</h3>
-<pre class="programlisting">  "closefd"                  <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
-<p>Close sockfd if passed as property on state change.</p>
-<p>Default value: TRUE</p>
-</div>
-<hr>
-<div class="refsect2" title='The "sock" property'>
-<a name="GstMultiUDPSink--sock"></a><h3>The <code class="literal">"sock"</code> property</h3>
-<pre class="programlisting">  "sock"                     <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read</pre>
-<p>Socket currently in use for UDP sending. (-1 == no socket).</p>
-<p>Allowed values: &gt;= G_MAXULONG</p>
-<p>Default value: -1</p>
-</div>
-<hr>
-<div class="refsect2" title='The "sockfd" property'>
-<a name="GstMultiUDPSink--sockfd"></a><h3>The <code class="literal">"sockfd"</code> property</h3>
-<pre class="programlisting">  "sockfd"                   <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Socket to use for UDP sending. (-1 == allocate).</p>
-<p>Allowed values: &gt;= G_MAXULONG</p>
-<p>Default value: -1</p>
-</div>
-<hr>
-<div class="refsect2" title='The "auto-multicast" property'>
-<a name="GstMultiUDPSink--auto-multicast"></a><h3>The <code class="literal">"auto-multicast"</code> property</h3>
-<pre class="programlisting">  "auto-multicast"           <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstMultiUDPSink--auto-multicast"></a><h3>The <code class="literal">“auto-multicast”</code> property</h3>
+<pre class="programlisting">  “auto-multicast”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Automatically join/leave the multicast groups, FALSE means user has to do it himself.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" title='The "loop" property'>
-<a name="GstMultiUDPSink--loop"></a><h3>The <code class="literal">"loop"</code> property</h3>
-<pre class="programlisting">  "loop"                     <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstMultiUDPSink--loop"></a><h3>The <code class="literal">“loop”</code> property</h3>
+<pre class="programlisting">  “loop”                     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Used for setting the multicast loop parameter. TRUE = enable, FALSE = disable.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" title='The "qos-dscp" property'>
-<a name="GstMultiUDPSink--qos-dscp"></a><h3>The <code class="literal">"qos-dscp"</code> property</h3>
-<pre class="programlisting">  "qos-dscp"                 <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstMultiUDPSink--qos-dscp"></a><h3>The <code class="literal">“qos-dscp”</code> property</h3>
+<pre class="programlisting">  “qos-dscp”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Quality of Service, differentiated services code point (-1 default).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [G_MAXULONG,63]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
-<div class="refsect2" title='The "ttl" property'>
-<a name="GstMultiUDPSink--ttl"></a><h3>The <code class="literal">"ttl"</code> property</h3>
-<pre class="programlisting">  "ttl"                      <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Used for setting the multicast TTL parameter.</p>
+<div class="refsect2">
+<a name="GstMultiUDPSink--ttl"></a><h3>The <code class="literal">“ttl”</code> property</h3>
+<pre class="programlisting">  “ttl”                      <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Used for setting the unicast TTL parameter.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,255]</p>
 <p>Default value: 64</p>
 </div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--ttl-mc"></a><h3>The <code class="literal">“ttl-mc”</code> property</h3>
+<pre class="programlisting">  “ttl-mc”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Used for setting the multicast TTL parameter.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 1</p>
 </div>
-<div class="refsect1" title="Signal Details">
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--send-duplicates"></a><h3>The <code class="literal">“send-duplicates”</code> property</h3>
+<pre class="programlisting">  “send-duplicates”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>When a distination/port pair is added multiple times, send packets multiple times as well.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--buffer-size"></a><h3>The <code class="literal">“buffer-size”</code> property</h3>
+<pre class="programlisting">  “buffer-size”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Size of the kernel send buffer in bytes, 0=default.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--close-socket"></a><h3>The <code class="literal">“close-socket”</code> property</h3>
+<pre class="programlisting">  “close-socket”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Close socket if passed as property on state change.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--socket"></a><h3>The <code class="literal">“socket”</code> property</h3>
+<pre class="programlisting">  “socket”                   <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</pre>
+<p>Socket to use for UDP sending. (NULL == allocate).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--used-socket"></a><h3>The <code class="literal">“used-socket”</code> property</h3>
+<pre class="programlisting">  “used-socket”              <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</pre>
+<p>Socket currently in use for UDP sending. (NULL == no socket).</p>
+<p>Flags: Read</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--force-ipv4"></a><h3>The <code class="literal">“force-ipv4”</code> property</h3>
+<pre class="programlisting">  “force-ipv4”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Forcing the use of an IPv4 socket (DEPRECATED, has no effect anymore).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--multicast-iface"></a><h3>The <code class="literal">“multicast-iface”</code> property</h3>
+<pre class="programlisting">  “multicast-iface”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>The network interface on which to join the multicast group.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--bind-address"></a><h3>The <code class="literal">“bind-address”</code> property</h3>
+<pre class="programlisting">  “bind-address”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Address to bind the socket to.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--bind-port"></a><h3>The <code class="literal">“bind-port”</code> property</h3>
+<pre class="programlisting">  “bind-port”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Port to bind the socket to.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,65535]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--socket-v6"></a><h3>The <code class="literal">“socket-v6”</code> property</h3>
+<pre class="programlisting">  “socket-v6”                <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</pre>
+<p>Socket to use for UDPv6 sending. (NULL == allocate).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink--used-socket-v6"></a><h3>The <code class="literal">“used-socket-v6”</code> property</h3>
+<pre class="programlisting">  “used-socket-v6”           <a href="https://developer.gnome.org/gio/unstable/GSocket.html"><span class="type">GSocket</span></a> *</pre>
+<p>Socket currently in use for UDPv6 sending. (NULL == no socket).</p>
+<p>Flags: Read</p>
+</div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multiudpsink.signal-details"></a><h2>Signal Details</h2>
-<div class="refsect2" title='The "add" signal'>
-<a name="GstMultiUDPSink-add"></a><h3>The <code class="literal">"add"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>           *host,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>             port,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Add a client with destination <em class="parameter"><code>host</code></em> and <em class="parameter"><code>port</code></em> to the list of
+<div class="refsect2">
+<a name="GstMultiUDPSink-add"></a><h3>The <code class="literal">“add”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>           *host,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>             port,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Add a client with destination <em class="parameter"><code>host</code></em>
+ and <em class="parameter"><code>port</code></em>
+ to the list of
+clients. When the same host/port pair is added multiple times, the
+send-duplicates property defines if the packets are sent multiple times to
+the same host/port pair or not.</p>
+<p>When a host/port pair is added multiple times, an equal amount of remove
+calls must be performed to actually remove the host/port pair from the list
+of destinations.</p>
+<div class="refsect3">
+<a name="id-1.2.90.12.2.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink on which the signal is emitted</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>host</p></td>
+<td class="parameter_description"><p>the hostname/IP address of the client to add</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>port</p></td>
+<td class="parameter_description"><p>the port of the client to add</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink-clear"></a><h3>The <code class="literal">“clear”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Clear the list of clients.</p>
+<div class="refsect3">
+<a name="id-1.2.90.12.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink on which the signal is emitted</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink-client-added"></a><h3>The <code class="literal">“client-added”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>           *host,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>             port,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Signal emited when a new client is added to the list of
 clients.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.90.12.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink on which the signal is emitted
-</td>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink emitting the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>host</code></em> :</span></p></td>
-<td> the hostname/IP address of the client to add
-</td>
+<td class="parameter_name"><p>host</p></td>
+<td class="parameter_description"><p>the hostname/IP address of the added client</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>port</code></em> :</span></p></td>
-<td> the port of the client to add
-</td>
+<td class="parameter_name"><p>port</p></td>
+<td class="parameter_description"><p>the port of the added client</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2" title='The "clear" signal'>
-<a name="GstMultiUDPSink-clear"></a><h3>The <code class="literal">"clear"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Clear the list of clients.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink on which the signal is emitted
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
 </div>
 <hr>
-<div class="refsect2" title='The "client-added" signal'>
-<a name="GstMultiUDPSink-client-added"></a><h3>The <code class="literal">"client-added"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>           *host,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>             port,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Signal emited when a new client is added to the list of
+<div class="refsect2">
+<a name="GstMultiUDPSink-client-removed"></a><h3>The <code class="literal">“client-removed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>           *host,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>             port,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Signal emited when a client is removed from the list of
 clients.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.90.12.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink emitting the signal
-</td>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink emitting the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>host</code></em> :</span></p></td>
-<td> the hostname/IP address of the added client
-</td>
+<td class="parameter_name"><p>host</p></td>
+<td class="parameter_description"><p>the hostname/IP address of the removed client</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>port</code></em> :</span></p></td>
-<td> the port of the added client
-</td>
+<td class="parameter_name"><p>port</p></td>
+<td class="parameter_description"><p>the port of the removed client</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
 <hr>
-<div class="refsect2" title='The "client-removed" signal'>
-<a name="GstMultiUDPSink-client-removed"></a><h3>The <code class="literal">"client-removed"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>           *host,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>             port,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Signal emited when a client is removed from the list of
+<div class="refsect2">
+<a name="GstMultiUDPSink-get-stats"></a><h3>The <code class="literal">“get-stats”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="returnvalue">GstStructure</span></a>*
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>           *host,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>             port,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Get the statistics of the client with destination <em class="parameter"><code>host</code></em>
+ and <em class="parameter"><code>port</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.90.12.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink on which the signal is emitted</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>host</p></td>
+<td class="parameter_description"><p>the hostname/IP address of the client to get stats on</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>port</p></td>
+<td class="parameter_description"><p>the port of the client to get stats on</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.90.12.6.6"></a><h4>Returns</h4>
+<p> a GstStructure: bytes_sent, packets_sent,
+connect_time (in epoch seconds), disconnect_time (in epoch seconds)</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiUDPSink-remove"></a><h3>The <code class="literal">“remove”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink"><span class="type">GstMultiUDPSink</span></a> *gstmultiudpsink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>           *host,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>             port,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<p>Remove the client with destination <em class="parameter"><code>host</code></em>
+ and <em class="parameter"><code>port</code></em>
+ from the list of
 clients.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.90.12.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink emitting the signal
-</td>
+<td class="parameter_name"><p>gstmultiudpsink</p></td>
+<td class="parameter_description"><p>the sink on which the signal is emitted</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>host</code></em> :</span></p></td>
-<td> the hostname/IP address of the removed client
-</td>
+<td class="parameter_name"><p>host</p></td>
+<td class="parameter_description"><p>the hostname/IP address of the client to remove</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>port</code></em> :</span></p></td>
-<td> the port of the removed client
-</td>
+<td class="parameter_name"><p>port</p></td>
+<td class="parameter_description"><p>the port of the client to remove</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2" title='The "get-stats" signal'>
-<a name="GstMultiUDPSink-get-stats"></a><h3>The <code class="literal">"get-stats"</code> signal</h3>
-<pre class="programlisting"><a
-href="../gobject/gobject-Value-arrays.html#GValueArray"
->GValueArray</a>*        user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>           *host,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>             port,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Get the statistics of the client with destination <em class="parameter"><code>host</code></em> and <em class="parameter"><code>port</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink on which the signal is emitted
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>host</code></em> :</span></p></td>
-<td> the hostname/IP address of the client to get stats on
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>port</code></em> :</span></p></td>
-<td> the port of the client to get stats on
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a GValueArray of uint64: bytes_sent, packets_sent,
-          connect_time (in epoch seconds), disconnect_time (in epoch seconds)
-</td>
-</tr>
-</tbody>
-</table></div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
 </div>
-<hr>
-<div class="refsect2" title='The "remove" signal'>
-<a name="GstMultiUDPSink-remove"></a><h3>The <code class="literal">"remove"</code> signal</h3>
-<pre class="programlisting">void                user_function                      (<a class="link" href="gst-plugins-good-plugins-multiudpsink.html#GstMultiUDPSink">GstMultiUDPSink</a> *gstmultiudpsink,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>           *host,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>             port,
-                                                        <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a>         user_data)            : Run Last</pre>
-<p>
-Remove the client with destination <em class="parameter"><code>host</code></em> and <em class="parameter"><code>port</code></em> from the list of
-clients.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>gstmultiudpsink</code></em> :</span></p></td>
-<td> the sink on which the signal is emitted
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>host</code></em> :</span></p></td>
-<td> the hostname/IP address of the client to remove
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>port</code></em> :</span></p></td>
-<td> the port of the client to remove
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
-</tr>
-</tbody>
-</table></div>
 </div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multiudpsink.see-also"></a><h2>See Also</h2>
+<p>udpsink, multifdsink</p>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

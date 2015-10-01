@@ -13,14 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _GST_ALPHA_COLOR_H_
 #define _GST_ALPHA_COLOR_H_
 
-#include <gst/base/gstbasetransform.h>
+#include <gst/video/video.h>
+#include <gst/video/gstvideofilter.h>
 
 #define GST_TYPE_ALPHA_COLOR \
   (gst_alpha_color_get_type())
@@ -38,20 +39,19 @@ typedef struct _GstAlphaColorClass GstAlphaColorClass;
 
 struct _GstAlphaColor
 {
-  GstBaseTransform element;
+  GstVideoFilter parent;
 
   /*< private >*/
-  /* caps */
-  gint in_width, in_height;
-  gboolean in_rgba;
-  gint out_width, out_height;
+  void (*process) (GstVideoFrame * frame, const gint * matrix);
+
+  const gint *matrix;
 };
 
 struct _GstAlphaColorClass
 {
-  GstBaseTransformClass parent_class;
+  GstVideoFilterClass parent_class;
 };
 
-GType   gst_alpha_color_get_type (void);
+GType gst_alpha_color_get_type (void);
 
 #endif /* _GST_ALPHA_COLOR_H_ */

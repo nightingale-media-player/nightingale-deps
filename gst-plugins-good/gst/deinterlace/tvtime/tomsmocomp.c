@@ -1,20 +1,26 @@
-/**
+/*
  * Copyright (C) 2004 Billy Biggs <vektor@dumbterm.net>
- * Copyright (C) 2008 Sebastian Dröge <slomo@collabora.co.uk>
+ * Copyright (C) 2008,2010 Sebastian Dröge <slomo@collabora.co.uk>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+/*
+ * Relicensed for GStreamer from GPL to LGPL with permit from Tom Barry.
+ * See: http://bugzilla.gnome.org/show_bug.cgi?id=163578
  */
 
 #ifdef HAVE_CONFIG_H
@@ -22,11 +28,13 @@
 #endif
 
 #include <stdlib.h>
-#include "_stdint.h"
 #include <string.h>
 
-#include "gst/gst.h"
-#include "gstdeinterlace.h"
+#include <gst/gst.h>
+#ifdef HAVE_ORC
+#include <orc/orc.h>
+#endif
+#include "gstdeinterlacemethod.h"
 #include "plugins.h"
 
 #define GST_TYPE_DEINTERLACE_METHOD_TOMSMOCOMP	(gst_deinterlace_method_tomsmocomp_get_type ())
@@ -37,8 +45,6 @@
 #define GST_DEINTERLACE_METHOD_TOMSMOCOMP_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_DEINTERLACE_METHOD_TOMSMOCOMP, GstDeinterlaceMethodTomsMoCompClass))
 #define GST_DEINTERLACE_METHOD_TOMSMOCOMP_CAST(obj)	((GstDeinterlaceMethodTomsMoComp*)(obj))
 
-GType gst_deinterlace_method_tomsmocomp_get_type (void);
-
 typedef struct
 {
   GstDeinterlaceMethod parent;
@@ -47,26 +53,19 @@ typedef struct
   gboolean strange_bob;
 } GstDeinterlaceMethodTomsMoComp;
 
-typedef struct
-{
-  GstDeinterlaceMethodClass parent_class;
-} GstDeinterlaceMethodTomsMoCompClass;
+typedef GstDeinterlaceMethodClass GstDeinterlaceMethodTomsMoCompClass;
 
-static int
-Fieldcopy (void *dest, const void *src, size_t count,
-    int rows, int dst_pitch, int src_pitch)
+static void
+Fieldcopy (guint8 * dest, const guint8 * src, gint count,
+    gint rows, gint dst_pitch, gint src_pitch)
 {
-  unsigned char *pDest = (unsigned char *) dest;
-  unsigned char *pSrc = (unsigned char *) src;
-
-  int i;
+  gint i;
 
   for (i = 0; i < rows; i++) {
-    oil_memcpy (pDest, pSrc, count);
-    pSrc += src_pitch;
-    pDest += dst_pitch;
+    memcpy (dest, src, count);
+    src += src_pitch;
+    dest += dst_pitch;
   }
-  return 0;
 }
 
 #define USE_FOR_DSCALER
@@ -115,9 +114,9 @@ G_DEFINE_TYPE (GstDeinterlaceMethodTomsMoComp,
 
 enum
 {
-  ARG_0,
-  ARG_SEARCH_EFFORT,
-  ARG_STRANGE_BOB
+  PROP_0,
+  PROP_SEARCH_EFFORT,
+  PROP_STRANGE_BOB
 };
 
 static void
@@ -128,10 +127,10 @@ gst_deinterlace_method_tomsmocomp_set_property (GObject * object, guint prop_id,
       GST_DEINTERLACE_METHOD_TOMSMOCOMP (object);
 
   switch (prop_id) {
-    case ARG_SEARCH_EFFORT:
+    case PROP_SEARCH_EFFORT:
       self->search_effort = g_value_get_uint (value);
       break;
-    case ARG_STRANGE_BOB:
+    case PROP_STRANGE_BOB:
       self->strange_bob = g_value_get_boolean (value);
       break;
     default:
@@ -147,10 +146,10 @@ gst_deinterlace_method_tomsmocomp_get_property (GObject * object, guint prop_id,
       GST_DEINTERLACE_METHOD_TOMSMOCOMP (object);
 
   switch (prop_id) {
-    case ARG_SEARCH_EFFORT:
+    case PROP_SEARCH_EFFORT:
       g_value_set_uint (value, self->search_effort);
       break;
-    case ARG_STRANGE_BOB:
+    case PROP_STRANGE_BOB:
       g_value_set_boolean (value, self->strange_bob);
       break;
     default:
@@ -165,19 +164,20 @@ static void
   GstDeinterlaceMethodClass *dim_class = (GstDeinterlaceMethodClass *) klass;
   GObjectClass *gobject_class = (GObjectClass *) klass;
 #ifdef BUILD_X86_ASM
-  guint cpu_flags = oil_cpu_get_flags ();
+  guint cpu_flags =
+      orc_target_get_default_flags (orc_target_get_by_name ("mmx"));
 #endif
 
   gobject_class->set_property = gst_deinterlace_method_tomsmocomp_set_property;
   gobject_class->get_property = gst_deinterlace_method_tomsmocomp_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_SEARCH_EFFORT,
+  g_object_class_install_property (gobject_class, PROP_SEARCH_EFFORT,
       g_param_spec_uint ("search-effort",
           "Search Effort",
           "Search Effort", 0, 27, 5, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
       );
 
-  g_object_class_install_property (gobject_class, ARG_STRANGE_BOB,
+  g_object_class_install_property (gobject_class, PROP_STRANGE_BOB,
       g_param_spec_boolean ("strange-bob",
           "Strange Bob",
           "Use strange bob", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
@@ -189,17 +189,22 @@ static void
   dim_class->latency = 1;
 
 #ifdef BUILD_X86_ASM
-  if (cpu_flags & OIL_IMPL_FLAG_MMXEXT) {
-    dim_class->deinterlace_frame = tomsmocompDScaler_MMXEXT;
-  } else if (cpu_flags & OIL_IMPL_FLAG_3DNOW) {
-    dim_class->deinterlace_frame = tomsmocompDScaler_3DNOW;
-  } else if (cpu_flags & OIL_IMPL_FLAG_MMX) {
-    dim_class->deinterlace_frame = tomsmocompDScaler_MMX;
+  if (cpu_flags & ORC_TARGET_MMX_MMXEXT) {
+    dim_class->deinterlace_frame_yuy2 = tomsmocompDScaler_MMXEXT;
+    dim_class->deinterlace_frame_yvyu = tomsmocompDScaler_MMXEXT;
+  } else if (cpu_flags & ORC_TARGET_MMX_3DNOW) {
+    dim_class->deinterlace_frame_yuy2 = tomsmocompDScaler_3DNOW;
+    dim_class->deinterlace_frame_yvyu = tomsmocompDScaler_3DNOW;
+  } else if (cpu_flags & ORC_TARGET_MMX_MMX) {
+    dim_class->deinterlace_frame_yuy2 = tomsmocompDScaler_MMX;
+    dim_class->deinterlace_frame_yvyu = tomsmocompDScaler_MMX;
   } else {
-    dim_class->deinterlace_frame = tomsmocompDScaler_C;
+    dim_class->deinterlace_frame_yuy2 = tomsmocompDScaler_C;
+    dim_class->deinterlace_frame_yvyu = tomsmocompDScaler_C;
   }
 #else
-  dim_class->deinterlace_frame = tomsmocompDScaler_C;
+  dim_class->deinterlace_frame_yuy2 = tomsmocompDScaler_C;
+  dim_class->deinterlace_frame_yvyu = tomsmocompDScaler_C;
 #endif
 }
 

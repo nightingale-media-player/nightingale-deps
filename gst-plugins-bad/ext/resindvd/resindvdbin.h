@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __RESINDVDBIN_H__
@@ -43,14 +43,15 @@ typedef struct _RsnDvdBinClass RsnDvdBinClass;
 #define DVD_ELEM_DEMUX          1
 #define DVD_ELEM_MQUEUE         2
 #define DVD_ELEM_SPUQ           3
-#define DVD_ELEM_VIDDEC         4
-#define DVD_ELEM_PARSET         5
-#define DVD_ELEM_AUDDEC         6
-#define DVD_ELEM_VIDQ           7
-#define DVD_ELEM_SPU_SELECT     8
-#define DVD_ELEM_AUD_SELECT     9
-#define DVD_ELEM_AUD_MUNGE      10
-#define DVD_ELEM_LAST           11
+#define DVD_ELEM_VIDPARSE       4
+#define DVD_ELEM_VIDDEC         5
+#define DVD_ELEM_PARSET         6
+#define DVD_ELEM_AUDPARSE       7 
+#define DVD_ELEM_AUDDEC         8
+#define DVD_ELEM_VIDQ           9
+#define DVD_ELEM_SPU_SELECT     10
+#define DVD_ELEM_AUD_SELECT     11
+#define DVD_ELEM_LAST           12
 
 struct _RsnDvdBin
 {
@@ -72,6 +73,8 @@ struct _RsnDvdBin
   gboolean audio_added;
   gboolean audio_broken;
   gboolean subpicture_added;
+
+  gboolean did_no_more_pads;
 
   GList *mq_req_pads;
 };

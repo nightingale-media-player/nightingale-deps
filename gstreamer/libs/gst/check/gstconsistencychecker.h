@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_CONSISTENCY_CHECKER_H__
@@ -31,17 +31,17 @@ G_BEGIN_DECLS
  * GstStreamConsistency:
  *
  * Opaque consistency checker handle.
- *
- * Since: 0.10.24
  */
 typedef struct _GstStreamConsistency GstStreamConsistency;
 
 
-GstStreamConsistency * gst_consistency_checker_new   (GstPad * pad);
+GstStreamConsistency * gst_consistency_checker_new     (GstPad * pad);
+gboolean               gst_consistency_checker_add_pad (GstStreamConsistency * consist,
+                                                        GstPad * pad);
 
-void                   gst_consistency_checker_reset (GstStreamConsistency * consist);
+void                   gst_consistency_checker_reset   (GstStreamConsistency * consist);
 
-void                   gst_consistency_checker_free  (GstStreamConsistency * consist);
+void                   gst_consistency_checker_free    (GstStreamConsistency * consist);
 
 G_END_DECLS
 

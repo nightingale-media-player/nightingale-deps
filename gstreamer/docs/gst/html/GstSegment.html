@@ -1,0 +1,1085 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstSegment: GStreamer 1.0 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstRegistry.html" title="GstRegistry">
+<link rel="next" href="GstStructure.html" title="GstStructure">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GstSegment.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GstSegment.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GstRegistry.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GstStructure.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstSegment"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstSegment.top_of_page"></a>GstSegment</span></h2>
+<p>GstSegment — Structure describing the configured region of interest
+                    in a media file.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstSegment.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-clip" title="gst_segment_clip ()">gst_segment_clip</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-init" title="gst_segment_init ()">gst_segment_init</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstSegment.html" title="GstSegment"><span class="returnvalue">GstSegment</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-new" title="gst_segment_new ()">gst_segment_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstSegment.html" title="GstSegment"><span class="returnvalue">GstSegment</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-copy" title="gst_segment_copy ()">gst_segment_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-free" title="gst_segment_free ()">gst_segment_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-do-seek" title="gst_segment_do_seek ()">gst_segment_do_seek</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()">gst_segment_to_running_time</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-to-running-time-full" title="gst_segment_to_running_time_full ()">gst_segment_to_running_time_full</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()">gst_segment_to_stream_time</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-to-position" title="gst_segment_to_position ()">gst_segment_to_position</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-set-running-time" title="gst_segment_set_running_time ()">gst_segment_set_running_time</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-copy-into" title="gst_segment_copy_into ()">gst_segment_copy_into</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-offset-running-time" title="gst_segment_offset_running_time ()">gst_segment_offset_running_time</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstSegment.html#gst-segment-is-equal" title="gst_segment_is_equal ()">gst_segment_is_equal</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstSegment.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GstSegment.html#GstSegment-struct" title="struct GstSegment">GstSegment</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstSegment.html#GstSegmentFlags" title="enum GstSegmentFlags">GstSegmentFlags</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstSegment.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Boxed-Types.html">GBoxed</a>
+    <span class="lineart">╰──</span> GstSegment
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstSegment.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstSegment.description"></a><h2>Description</h2>
+<p>This helper structure holds the relevant values for tracking the region of
+interest in a media file, called a segment.</p>
+<p>The structure can be used for two purposes:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>performing seeks (handling seek events)</p></li>
+<li class="listitem"><p>tracking playback regions (handling newsegment events)</p></li>
+</ul></div>
+<p>The segment is usually configured by the application with a seek event which
+is propagated upstream and eventually handled by an element that performs the seek.</p>
+<p>The configured segment is then propagated back downstream with a newsegment event.
+This information is then used to clip media to the segment boundaries.</p>
+<p>A segment structure is initialized with <a class="link" href="GstSegment.html#gst-segment-init" title="gst_segment_init ()"><code class="function">gst_segment_init()</code></a>, which takes a <a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a>
+that will be used as the format of the segment values. The segment will be configured
+with a start value of 0 and a stop/duration of -1, which is undefined. The default
+rate and applied_rate is 1.0.</p>
+<p>The public duration field contains the duration of the segment. When using
+the segment for seeking, the start and time members should normally be left
+to their default 0 value. The stop position is left to -1 unless explicitly
+configured to a different value after a seek event.</p>
+<p>The current position in the segment should be set by changing the position
+member in the structure.</p>
+<p>For elements that perform seeks, the current segment should be updated with the
+<a class="link" href="GstSegment.html#gst-segment-do-seek" title="gst_segment_do_seek ()"><code class="function">gst_segment_do_seek()</code></a> and the values from the seek event. This method will update
+all the segment fields. The position field will contain the new playback position.
+If the start_type was different from GST_SEEK_TYPE_NONE, playback continues from
+the position position, possibly with updated flags or rate.</p>
+<p>For elements that want to use <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> to track the playback region,
+update the segment fields with the information from the newsegment event.
+The <a class="link" href="GstSegment.html#gst-segment-clip" title="gst_segment_clip ()"><code class="function">gst_segment_clip()</code></a> method can be used to check and clip
+the media data to the segment boundaries.</p>
+<p>For elements that want to synchronize to the pipeline clock, <a class="link" href="GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a>
+can be used to convert a timestamp to a value that can be used to synchronize
+to the clock. This function takes into account the base as well as
+any rate or applied_rate conversions.</p>
+<p>For elements that need to perform operations on media data in stream_time,
+<a class="link" href="GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()"><code class="function">gst_segment_to_stream_time()</code></a> can be used to convert a timestamp and the segment
+info to stream time (which is always between 0 and the duration of the stream).</p>
+</div>
+<div class="refsect1">
+<a name="GstSegment.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-segment-clip"></a><h3>gst_segment_clip ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_segment_clip (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                  <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                  <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
+                  <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                  <em class="parameter"><code><span class="type">guint64</span> *clip_start</code></em>,
+                  <em class="parameter"><code><span class="type">guint64</span> *clip_stop</code></em>);</pre>
+<p>Clip the given <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ values to the segment boundaries given
+in <em class="parameter"><code>segment</code></em>
+. <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ are compared and clipped to <em class="parameter"><code>segment</code></em>
+
+start and stop values.</p>
+<p>If the function returns <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ are known to fall
+outside of <em class="parameter"><code>segment</code></em>
+ and <em class="parameter"><code>clip_start</code></em>
+ and <em class="parameter"><code>clip_stop</code></em>
+ are not updated.</p>
+<p>When the function returns <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, <em class="parameter"><code>clip_start</code></em>
+ and <em class="parameter"><code>clip_stop</code></em>
+ will be
+updated. If <em class="parameter"><code>clip_start</code></em>
+ or <em class="parameter"><code>clip_stop</code></em>
+ are different from <em class="parameter"><code>start</code></em>
+ or <em class="parameter"><code>stop</code></em>
+
+respectively, the region fell partially in the segment.</p>
+<p>Note that when <em class="parameter"><code>stop</code></em>
+ is -1, <em class="parameter"><code>clip_stop</code></em>
+ will be set to the end of the
+segment. Depending on the use case, this may or may not be what you want.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.2.8"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>start</p></td>
+<td class="parameter_description"><p>the start position in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stop</p></td>
+<td class="parameter_description"><p>the stop position in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>clip_start</p></td>
+<td class="parameter_description"><p> the clipped start position in the segment. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>clip_stop</p></td>
+<td class="parameter_description"><p> the clipped stop position in the segment. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.2.9"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the given <em class="parameter"><code>start</code></em>
+and <em class="parameter"><code>stop</code></em>
+times fall partially or
+completely in <em class="parameter"><code>segment</code></em>
+, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the values are completely outside
+of the segment.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-init"></a><h3>gst_segment_init ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_segment_init (<em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                  <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>);</pre>
+<p>The start/position fields are set to 0 and the stop/duration
+fields are set to -1 (unknown). The default rate of 1.0 and no
+flags are set.</p>
+<p>Initialize <em class="parameter"><code>segment</code></em>
+ to its default values.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.3.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-new"></a><h3>gst_segment_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstSegment.html" title="GstSegment"><span class="returnvalue">GstSegment</span></a> *
+gst_segment_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocate a new <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure and initialize it using
+<a class="link" href="GstSegment.html#gst-segment-init" title="gst_segment_init ()"><code class="function">gst_segment_init()</code></a>.</p>
+<p>Free-function: gst_segment_free</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.4.6"></a><h4>Returns</h4>
+<p> a new <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>, free with <a class="link" href="GstSegment.html#gst-segment-free" title="gst_segment_free ()"><code class="function">gst_segment_free()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-copy"></a><h3>gst_segment_copy ()</h3>
+<pre class="programlisting"><a class="link" href="GstSegment.html" title="GstSegment"><span class="returnvalue">GstSegment</span></a> *
+gst_segment_copy (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>);</pre>
+<p>Create a copy of given <em class="parameter"><code>segment</code></em>
+.</p>
+<p>Free-function: gst_segment_free</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.5.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.5.7"></a><h4>Returns</h4>
+<p> a new <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>, free with <a class="link" href="GstSegment.html#gst-segment-free" title="gst_segment_free ()"><code class="function">gst_segment_free()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-free"></a><h3>gst_segment_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_segment_free (<em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>);</pre>
+<p>Free the allocated segment <em class="parameter"><code>segment</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-do-seek"></a><h3>gst_segment_do_seek ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_segment_do_seek (<em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> rate</code></em>,
+                     <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                     <em class="parameter"><code><a class="link" href="GstEvent.html#GstSeekFlags" title="enum GstSeekFlags"><span class="type">GstSeekFlags</span></a> flags</code></em>,
+                     <em class="parameter"><code><a class="link" href="GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> start_type</code></em>,
+                     <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
+                     <em class="parameter"><code><a class="link" href="GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> stop_type</code></em>,
+                     <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *update</code></em>);</pre>
+<p>Update the segment structure with the field values of a seek event (see
+<a class="link" href="GstEvent.html#gst-event-new-seek" title="gst_event_new_seek ()"><code class="function">gst_event_new_seek()</code></a>).</p>
+<p>After calling this method, the segment field position and time will
+contain the requested new position in the segment. The new requested
+position in the segment depends on <em class="parameter"><code>rate</code></em>
+ and <em class="parameter"><code>start_type</code></em>
+ and <em class="parameter"><code>stop_type</code></em>
+.</p>
+<p>For positive <em class="parameter"><code>rate</code></em>
+, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
+
+start field when it was updated with a <em class="parameter"><code>start_type</code></em>
+ different from
+<a class="link" href="GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no update was performed on <em class="parameter"><code>segment</code></em>
+ start position
+(<a class="link" href="GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>), <em class="parameter"><code>start</code></em>
+ is ignored and <em class="parameter"><code>segment</code></em>
+ position is
+unmodified.</p>
+<p>For negative <em class="parameter"><code>rate</code></em>
+, the new position in the segment is the new <em class="parameter"><code>segment</code></em>
+
+stop field when it was updated with a <em class="parameter"><code>stop_type</code></em>
+ different from
+<a class="link" href="GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>. If no stop was previously configured in the segment, the
+duration of the segment will be used to update the stop position.
+If no update was performed on <em class="parameter"><code>segment</code></em>
+ stop position (<a class="link" href="GstEvent.html#GST-SEEK-TYPE-NONE:CAPS"><span class="type">GST_SEEK_TYPE_NONE</span></a>),
+<em class="parameter"><code>stop</code></em>
+ is ignored and <em class="parameter"><code>segment</code></em>
+ position is unmodified.</p>
+<p>The applied rate of the segment will be set to 1.0 by default.
+If the caller can apply a rate change, it should update <em class="parameter"><code>segment</code></em>
+
+rate and applied_rate after calling this function.</p>
+<p><em class="parameter"><code>update</code></em>
+ will be set to <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if a seek should be performed to the segment
+position field. This field can be <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if, for example, only the <em class="parameter"><code>rate</code></em>
+
+has been changed but not the playback position.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.7.10"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rate</p></td>
+<td class="parameter_description"><p>the rate of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flags</p></td>
+<td class="parameter_description"><p>the segment flags for the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>start_type</p></td>
+<td class="parameter_description"><p>the seek method</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>start</p></td>
+<td class="parameter_description"><p>the seek start value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stop_type</p></td>
+<td class="parameter_description"><p>the seek method</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stop</p></td>
+<td class="parameter_description"><p>the seek stop value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>update</p></td>
+<td class="parameter_description"><p>boolean holding whether position was updated.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.7.11"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the seek could be performed.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-to-running-time"></a><h3>gst_segment_to_running_time ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_segment_to_running_time (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                             <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                             <em class="parameter"><code><span class="type">guint64</span> position</code></em>);</pre>
+<p>Translate <em class="parameter"><code>position</code></em>
+ to the total running time using the currently configured
+segment. Position is a value between <em class="parameter"><code>segment</code></em>
+ start and stop time.</p>
+<p>This function is typically used by elements that need to synchronize to the
+global clock in a pipeline. The running time is a constantly increasing value
+starting from 0. When <a class="link" href="GstSegment.html#gst-segment-init" title="gst_segment_init ()"><code class="function">gst_segment_init()</code></a> is called, this value will reset to
+0.</p>
+<p>This function returns -1 if the position is outside of <em class="parameter"><code>segment</code></em>
+ start and stop.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.8.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>position</p></td>
+<td class="parameter_description"><p>the position in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.8.8"></a><h4>Returns</h4>
+<p> the position as the total running time or -1 when an invalid position
+was given.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-to-running-time-full"></a><h3>gst_segment_to_running_time_full ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+gst_segment_to_running_time_full (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                                  <em class="parameter"><code><span class="type">guint64</span> position</code></em>,
+                                  <em class="parameter"><code><span class="type">guint64</span> *running_time</code></em>);</pre>
+<p>Translate <em class="parameter"><code>position</code></em>
+ to the total running time using the currently configured
+segment. Compared to <a class="link" href="GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a> this function can return
+negative running-time.</p>
+<p>This function is typically used by elements that need to synchronize buffers
+against the clock or eachother.</p>
+<p><em class="parameter"><code>position</code></em>
+ can be any value and the result of this function for values outside
+of the segment is extrapolated.</p>
+<p>When 1 is returned, <em class="parameter"><code>position</code></em>
+ resulted in a positive running-time returned
+in <em class="parameter"><code>running_time</code></em>
+.</p>
+<p>When this function returns -1, the returned <em class="parameter"><code>running_time</code></em>
+ should be negated
+to get the real negative running time.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.9.9"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>position</p></td>
+<td class="parameter_description"><p>the position in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>running_time</p></td>
+<td class="parameter_description"><p>result running-time</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.9.10"></a><h4>Returns</h4>
+<p> a 1 or -1 on success, 0 on failure.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix03.html#api-index-1.6">1.6</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-to-stream-time"></a><h3>gst_segment_to_stream_time ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_segment_to_stream_time (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                            <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                            <em class="parameter"><code><span class="type">guint64</span> position</code></em>);</pre>
+<p>Translate <em class="parameter"><code>position</code></em>
+ to stream time using the currently configured
+segment. The <em class="parameter"><code>position</code></em>
+ value must be between <em class="parameter"><code>segment</code></em>
+ start and
+stop value.</p>
+<p>This function is typically used by elements that need to operate on
+the stream time of the buffers it receives, such as effect plugins.
+In those use cases, <em class="parameter"><code>position</code></em>
+ is typically the buffer timestamp or
+clock time that one wants to convert to the stream time.
+The stream time is always between 0 and the total duration of the
+media stream.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.10.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>position</p></td>
+<td class="parameter_description"><p>the position in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.10.7"></a><h4>Returns</h4>
+<p> the position in stream_time or -1 when an invalid position
+was given.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-to-position"></a><h3>gst_segment_to_position ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_segment_to_position (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                         <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                         <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);</pre>
+<p>Convert <em class="parameter"><code>running_time</code></em>
+ into a position in the segment so that
+<a class="link" href="GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a> with that position returns <em class="parameter"><code>running_time</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>running_time</p></td>
+<td class="parameter_description"><p>the running_time in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.11.6"></a><h4>Returns</h4>
+<p> the position in the segment for <em class="parameter"><code>running_time</code></em>
+. This function returns
+-1 when <em class="parameter"><code>running_time</code></em>
+is -1 or when it is not inside <em class="parameter"><code>segment</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-set-running-time"></a><h3>gst_segment_set_running_time ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_segment_set_running_time (<em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                              <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                              <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);</pre>
+<p>Adjust the start/stop and base values of <em class="parameter"><code>segment</code></em>
+ such that the next valid
+buffer will be one with <em class="parameter"><code>running_time</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>running_time</p></td>
+<td class="parameter_description"><p>the running_time in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.12.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the segment could be updated successfully. If <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> is
+returned, <em class="parameter"><code>running_time</code></em>
+is -1 or not in <em class="parameter"><code>segment</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-copy-into"></a><h3>gst_segment_copy_into ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_segment_copy_into (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *src</code></em>,
+                       <em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *dest</code></em>);</pre>
+<p>Copy the contents of <em class="parameter"><code>src</code></em>
+ into <em class="parameter"><code>dest</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>dest</p></td>
+<td class="parameter_description"><p> a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-offset-running-time"></a><h3>gst_segment_offset_running_time ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_segment_offset_running_time (<em class="parameter"><code><a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                 <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
+                                 <em class="parameter"><code><span class="type">gint64</span> offset</code></em>);</pre>
+<p>Adjust the values in <em class="parameter"><code>segment</code></em>
+ so that <em class="parameter"><code>offset</code></em>
+ is applied to all
+future running-time calculations.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the format of the segment.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>offset</p></td>
+<td class="parameter_description"><p>the offset to apply in the segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.14.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the segment could be updated successfully. If <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> is
+returned, <em class="parameter"><code>offset</code></em>
+is not in <em class="parameter"><code>segment</code></em>
+.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix05.html#api-index-1.2.3">1.2.3</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-segment-is-equal"></a><h3>gst_segment_is_equal ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_segment_is_equal (<em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *s0</code></em>,
+                      <em class="parameter"><code>const <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> *s1</code></em>);</pre>
+<p>Checks for two segments being equal. Equality here is defined
+as perfect equality, including floating point values.</p>
+<div class="refsect3">
+<a name="id-1.3.45.8.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>s0</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>s1</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structure.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.45.8.15.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the segments are equal, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix03.html#api-index-1.6">1.6</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstSegment.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstSegment-struct"></a><h3>struct GstSegment</h3>
+<pre class="programlisting">struct GstSegment {
+  GstSegmentFlags flags;
+
+  gdouble         rate;
+  gdouble         applied_rate;
+
+  GstFormat       format;
+  guint64         base;
+  guint64         offset;
+  guint64         start;
+  guint64         stop;
+  guint64         time;
+
+  guint64         position;
+  guint64         duration;
+};
+</pre>
+<p>A helper structure that holds the configured region of
+interest in a media file.</p>
+<div class="refsect3">
+<a name="id-1.3.45.9.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstSegment.html#GstSegmentFlags" title="enum GstSegmentFlags"><span class="type">GstSegmentFlags</span></a> <em class="structfield"><code><a name="GstSegment-struct.flags"></a>flags</code></em>;</p></td>
+<td class="struct_member_description"><p>flags for this segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> <em class="structfield"><code><a name="GstSegment-struct.rate"></a>rate</code></em>;</p></td>
+<td class="struct_member_description"><p>the rate of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> <em class="structfield"><code><a name="GstSegment-struct.applied-rate"></a>applied_rate</code></em>;</p></td>
+<td class="struct_member_description"><p>the already applied rate to the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> <em class="structfield"><code><a name="GstSegment-struct.format"></a>format</code></em>;</p></td>
+<td class="struct_member_description"><p>the format of the segment values</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.base"></a>base</code></em>;</p></td>
+<td class="struct_member_description"><p>the base of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.offset"></a>offset</code></em>;</p></td>
+<td class="struct_member_description"><p>the offset to apply to <em class="parameter"><code>start</code></em>
+or <em class="parameter"><code>stop</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.start"></a>start</code></em>;</p></td>
+<td class="struct_member_description"><p>the start of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.stop"></a>stop</code></em>;</p></td>
+<td class="struct_member_description"><p>the stop of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.time"></a>time</code></em>;</p></td>
+<td class="struct_member_description"><p>the stream time of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.position"></a>position</code></em>;</p></td>
+<td class="struct_member_description"><p>the position in the segment (used internally by elements
+such as sources, demuxers or parsers to track progress)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment-struct.duration"></a>duration</code></em>;</p></td>
+<td class="struct_member_description"><p>the duration of the segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSegmentFlags"></a><h3>enum GstSegmentFlags</h3>
+<p>Flags for the GstSegment structure. Currently mapped to the corresponding
+values of the seek flags.</p>
+<div class="refsect3">
+<a name="id-1.3.45.9.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-NONE:CAPS"></a>GST_SEGMENT_FLAG_NONE</p></td>
+<td class="enum_member_description">
+<p>no flags</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-RESET:CAPS"></a>GST_SEGMENT_FLAG_RESET</p></td>
+<td class="enum_member_description">
+<p>reset the pipeline running_time to the segment
+                         running_time</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-TRICKMODE:CAPS"></a>GST_SEGMENT_FLAG_TRICKMODE</p></td>
+<td class="enum_member_description">
+<p>perform skip playback (Since 1.6)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-SKIP:CAPS"></a>GST_SEGMENT_FLAG_SKIP</p></td>
+<td class="enum_member_description">
+<p>Deprecated backward compatibility flag, replaced
+                        by <em class="parameter"><code>GST_SEGMENT_FLAG_TRICKMODE</code></em>
+</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-SEGMENT:CAPS"></a>GST_SEGMENT_FLAG_SEGMENT</p></td>
+<td class="enum_member_description">
+<p>send SEGMENT_DONE instead of EOS</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-TRICKMODE-KEY-UNITS:CAPS"></a>GST_SEGMENT_FLAG_TRICKMODE_KEY_UNITS</p></td>
+<td class="enum_member_description">
+<p>Decode only keyframes, where
+                                       possible (Since 1.6)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-SEGMENT-FLAG-TRICKMODE-NO-AUDIO:CAPS"></a>GST_SEGMENT_FLAG_TRICKMODE_NO_AUDIO</p></td>
+<td class="enum_member_description">
+<p>Do not decode any audio, where
+                                       possible (Since 1.6)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstSegment.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="GstEvent.html" title="GstEvent"><span class="type">GstEvent</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

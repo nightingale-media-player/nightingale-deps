@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -29,30 +29,25 @@ static GtkTreeStore *treestore = NULL;
 static gchar *
 g_value_to_string (const GValue * val)
 {
-  if (G_VALUE_TYPE (val) == GST_TYPE_BUFFER) {
-#if GLIB_CHECK_VERSION (2,16,0)
-    const GstBuffer *buf = gst_value_get_buffer (val);
-    gchar *ret = g_base64_encode (GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
-#else
-    gchar *ret = gst_value_serialize (val);
-#endif
+  gchar *ret = NULL;
 
-    return ret;
+  if (G_VALUE_TYPE (val) == GST_TYPE_BUFFER) {
+    GstBuffer *buf = gst_value_get_buffer (val);
+    GstMapInfo map;
+
+    gst_buffer_map (buf, &map, GST_MAP_READ);
+    ret = g_base64_encode (map.data, map.size);
+    gst_buffer_unmap (buf, &map);
   } else {
     GValue s = { 0, };
-    gchar *ret;
 
     g_value_init (&s, G_TYPE_STRING);
-
-    if (!g_value_transform (val, &s)) {
-      return NULL;
+    if (g_value_transform (val, &s)) {
+      ret = g_value_dup_string (&s);
+      g_value_unset (&s);
     }
-
-    ret = g_value_dup_string (&s);
-    g_value_unset (&s);
-
-    return ret;
   }
+  return ret;
 }
 
 static gboolean
@@ -123,15 +118,32 @@ insert_structure (const GstStructure * s, GtkTreeIter * iter)
   gst_structure_foreach (s, insert_field, iter);
 }
 
-static void
-on_message (GstBus * bus, GstMessage * message, gpointer data)
+static gboolean
+bus_callback (GstBus * bus, GstMessage * message, gpointer data)
 {
   switch (GST_MESSAGE_TYPE (message)) {
-    case GST_MESSAGE_WARNING:
-    case GST_MESSAGE_ERROR:
-      g_error ("Got error");
+    case GST_MESSAGE_WARNING:{
+      GError *err;
+      gchar *debug;
+
+      gst_message_parse_warning (message, &err, &debug);
+      g_print ("Warning: %s\n", err->message);
+      g_error_free (err);
+      g_free (debug);
+      break;
+    }
+    case GST_MESSAGE_ERROR:{
+      GError *err;
+      gchar *debug = NULL;
+
+      gst_message_parse_error (message, &err, &debug);
+      g_print ("Error: %s : %s\n", err->message, debug);
+      g_error_free (err);
+      g_free (debug);
+
       gtk_main_quit ();
       break;
+    }
     case GST_MESSAGE_TAG:{
       GstTagList *tags;
       GValue v = { 0, };
@@ -153,12 +165,13 @@ on_message (GstBus * bus, GstMessage * message, gpointer data)
         g_value_unset (&v);
       }
 
-      gst_tag_list_free (tags);
-      break;
-    default:
+      gst_tag_list_unref (tags);
       break;
     }
+    default:
+      break;
   }
+  return TRUE;
 }
 
 static void
@@ -176,8 +189,8 @@ on_pad_added (GstElement * src, GstPad * pad, gpointer data)
   gst_object_unref (bin);
 }
 
-gint
-main (gint argc, gchar ** argv)
+int
+main (int argc, char **argv)
 {
   GstElement *pipeline, *src, *mxfdemux;
   GstBus *bus;
@@ -188,11 +201,8 @@ main (gint argc, gchar ** argv)
     return -1;
   }
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
-
-  gst_init (NULL, NULL);
-  gtk_init (NULL, NULL);
+  gst_init (&argc, &argv);
+  gtk_init (&argc, &argv);
 
   pipeline = gst_pipeline_new ("pipeline");
 
@@ -214,8 +224,7 @@ main (gint argc, gchar ** argv)
   }
 
   bus = gst_element_get_bus (pipeline);
-  gst_bus_add_signal_watch (bus);
-  g_signal_connect (bus, "message", G_CALLBACK (on_message), NULL);
+  gst_bus_add_watch (bus, bus_callback, NULL);
   gst_object_unref (bus);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -233,6 +242,7 @@ main (gint argc, gchar ** argv)
 
   gtk_container_add (GTK_CONTAINER (scrolled_window), treeview);
   gtk_container_add (GTK_CONTAINER (window), scrolled_window);
+  gtk_widget_show_all (window);
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 

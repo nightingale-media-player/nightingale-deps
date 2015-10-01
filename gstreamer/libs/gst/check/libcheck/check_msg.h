@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CHECK_MSG_NEW_H
@@ -24,13 +24,16 @@
 
 /* Functions implementing messaging during test runs */
 
-void send_failure_info(const char *msg);
-void send_loc_info(const char *file, int line);
-void send_ctx_info(enum ck_result_ctx ctx);
+void send_failure_info (const char *msg);
+void send_loc_info (const char *file, int line);
+void send_ctx_info (enum ck_result_ctx ctx);
+void send_duration_info (int duration);
 
-TestResult *receive_test_result(int waserror);
+TestResult *receive_test_result (int waserror);
 
-void setup_messaging(void);
-void teardown_messaging(void);
+void setup_messaging (void);
+void teardown_messaging (void);
+
+FILE *open_tmp_file (char **name);
 
 #endif /*CHECK_MSG_NEW_H */

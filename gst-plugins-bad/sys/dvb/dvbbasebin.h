@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef GST_DVB_BASE_BIN_H
@@ -47,27 +47,34 @@ typedef struct _DvbBaseBinClass DvbBaseBinClass;
 struct _DvbBaseBin {
   GstBin bin;
 
-  GstPad *ts_pad;
-
   GstElement *dvbsrc;
   GstElement *buffer_queue;
-  GstElement *mpegtsparse;
+  GstElement *tsparse;
   CamDevice *hwcam;
+  gboolean trycam;
   GList *pmtlist;
   gboolean pmtlist_changed;
   gchar *filter;
   GHashTable *streams;
   GHashTable *programs;
   gboolean disposed;
+
+  GstTask *task;
+  GstPoll *poll;
+  GRecMutex lock;
+
+  /* Cached value */
+  gchar *program_numbers;
 };
 
 struct _DvbBaseBinClass {
   GstBinClass parent_class;
 
   /* signals */
+  void (*do_tune) (DvbBaseBin * dvbbasebin);
 };
 
-GType gst_dvb_base_bin_get_type(void);
+GType dvb_base_bin_get_type(void);
 gboolean gst_dvb_base_bin_plugin_init (GstPlugin *plugin);
 
 G_END_DECLS

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -64,7 +64,7 @@ add_source (gdouble freq)
   info->srcpad = gst_element_get_static_pad (info->element, "src");
 
   /* get new pad from adder, adder will now wait for data on this pad */
-  info->sinkpad = gst_element_get_request_pad (adder, "sink%d");
+  info->sinkpad = gst_element_get_request_pad (adder, "sink_%u");
 
   /* link pad to adder */
   gst_pad_link (info->srcpad, info->sinkpad);
@@ -164,7 +164,12 @@ do_sprinkle (SprinkleState * state)
     state->count++;
   } else {
     state->infos[0] = NULL;
+
+    /* if no more sources left, quit */
+    if (!state->infos[2])
+      g_main_loop_quit (loop);
   }
+
   return TRUE;
 }
 
@@ -202,7 +207,7 @@ main (int argc, char *argv[])
   GstBus *bus;
   GstElement *filter, *convert, *sink;
   GstCaps *caps;
-  gboolean res;
+  gboolean linked;
   SprinkleState *state;
 
   gst_init (&argc, &argv);
@@ -219,19 +224,16 @@ main (int argc, char *argv[])
   convert = gst_element_factory_make ("audioconvert", "convert");
   sink = gst_element_factory_make ("autoaudiosink", "sink");
 
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "endianness", G_TYPE_INT, G_LITTLE_ENDIAN,
-      "channels", G_TYPE_INT, 1,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "rate", G_TYPE_INT, 44100, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw",
+      "format", G_TYPE_STRING, "S16LE",
+      "channels", G_TYPE_INT, 1, "rate", G_TYPE_INT, 44100, NULL);
   g_object_set (filter, "caps", caps, NULL);
   gst_caps_unref (caps);
 
   gst_bin_add_many (GST_BIN (pipeline), adder, filter, convert, sink, NULL);
 
-  res = gst_element_link_many (adder, filter, convert, sink, NULL);
-  g_assert (res);
+  linked = gst_element_link_many (adder, filter, convert, sink, NULL);
+  g_assert (linked);
 
   /* setup message handling */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));

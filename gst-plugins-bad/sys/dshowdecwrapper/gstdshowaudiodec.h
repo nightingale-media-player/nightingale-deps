@@ -39,15 +39,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_DSHOWAUDIODEC_H__
 #define __GST_DSHOWAUDIODEC_H__
-
-#include <atlbase.h>
 
 #include <gst/gst.h>
 #include "gstdshowutil.h"
@@ -88,11 +86,11 @@ struct _GstDshowAudioDec
   FakeSrc *fakesrc;
   AudioFakeSink *fakesink;
 
-  CComPtr<IBaseFilter> decfilter;
+  IBaseFilterPtr decfilter;
   
   /* graph manager interfaces */  
-  CComPtr<IMediaFilter> mediafilter;
-  CComPtr<IFilterGraph> filtergraph;
+  IMediaFilterPtr mediafilter;
+  IFilterGraphPtr filtergraph;
 
   /* true when dshow graph is setup */
   gboolean setup;
@@ -113,11 +111,11 @@ struct _GstDshowAudioDec
   GstClockTime timestamp;
 
   gboolean comInitialized;
-  GMutex   *com_init_lock;
-  GMutex   *com_deinit_lock;
-  GCond    *com_initialized;
-  GCond    *com_uninitialize;
-  GCond    *com_uninitialized;
+  GMutex   com_init_lock;
+  GMutex   com_deinit_lock;
+  GCond    com_initialized;
+  GCond    com_uninitialize;
+  GCond    com_uninitialized;
 };
 
 struct _GstDshowAudioDecClass
@@ -149,6 +147,7 @@ public:
     m_MediaType.Set (*pmt);
     return S_OK;
   }
+  int GetBufferSize();
 
 protected:
   HRESULT m_hres;

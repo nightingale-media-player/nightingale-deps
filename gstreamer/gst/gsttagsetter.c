@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -64,8 +64,6 @@
  *  
  * GST_LOG_OBJECT (tagsetter, "final tags: %" GST_PTR_FORMAT, result);
  * ]|
- * 
- * Last reviewed on 2006-05-18 (0.10.6)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -77,49 +75,26 @@
 #include <gobject/gvaluecollector.h>
 #include <string.h>
 
-GST_DEBUG_CATEGORY_STATIC (gst_tag_interface_debug);
-#define GST_CAT_DEFAULT tag_tag_interface_debug
-
 static GQuark gst_tag_key;
 
 typedef struct
 {
   GstTagMergeMode mode;
   GstTagList *list;
+  GMutex lock;
 } GstTagData;
 
-GType
-gst_tag_setter_get_type (void)
+#define GST_TAG_DATA_LOCK(data) g_mutex_lock(&data->lock)
+#define GST_TAG_DATA_UNLOCK(data) g_mutex_unlock(&data->lock)
+
+G_DEFINE_INTERFACE_WITH_CODE (GstTagSetter, gst_tag_setter, GST_TYPE_ELEMENT,
+    gst_tag_key = g_quark_from_static_string ("gst-tag-setter-data");
+    );
+
+static void
+gst_tag_setter_default_init (GstTagSetterInterface * klass)
 {
-  static volatile gsize tag_setter_type = 0;
-
-  if (g_once_init_enter (&tag_setter_type)) {
-    GType _type;
-    static const GTypeInfo tag_setter_info = {
-      sizeof (GstTagSetterIFace),       /* class_size */
-      NULL,                     /* base_init */
-      NULL,                     /* base_finalize */
-      NULL,
-      NULL,                     /* class_finalize */
-      NULL,                     /* class_data */
-      0,
-      0,
-      NULL
-    };
-
-    GST_DEBUG_CATEGORY_INIT (gst_tag_interface_debug, "GstTagInterface", 0,
-        "interfaces for tagging");
-
-    _type = g_type_register_static (G_TYPE_INTERFACE, "GstTagSetter",
-        &tag_setter_info, 0);
-
-    g_type_interface_add_prerequisite (_type, GST_TYPE_ELEMENT);
-
-    gst_tag_key = g_quark_from_static_string ("GST_TAG_SETTER");
-    g_once_init_leave (&tag_setter_type, _type);
-  }
-
-  return tag_setter_type;
+  /* nothing to do here, it's a dummy interface */
 }
 
 static void
@@ -128,9 +103,11 @@ gst_tag_data_free (gpointer p)
   GstTagData *data = (GstTagData *) p;
 
   if (data->list)
-    gst_tag_list_free (data->list);
+    gst_tag_list_unref (data->list);
 
-  g_free (data);
+  g_mutex_clear (&data->lock);
+
+  g_slice_free (GstTagData, data);
 }
 
 static GstTagData *
@@ -140,11 +117,22 @@ gst_tag_setter_get_data (GstTagSetter * setter)
 
   data = g_object_get_qdata (G_OBJECT (setter), gst_tag_key);
   if (!data) {
-    data = g_new (GstTagData, 1);
-    data->list = NULL;
-    data->mode = GST_TAG_MERGE_KEEP;
-    g_object_set_qdata_full (G_OBJECT (setter), gst_tag_key, data,
-        gst_tag_data_free);
+    /* make sure no other thread is creating a GstTagData at the same time */
+    static GMutex create_mutex; /* no initialisation required */
+
+    g_mutex_lock (&create_mutex);
+
+    data = g_object_get_qdata (G_OBJECT (setter), gst_tag_key);
+    if (!data) {
+      data = g_slice_new (GstTagData);
+      g_mutex_init (&data->lock);
+      data->list = NULL;
+      data->mode = GST_TAG_MERGE_KEEP;
+      g_object_set_qdata_full (G_OBJECT (setter), gst_tag_key, data,
+          gst_tag_data_free);
+    }
+
+    g_mutex_unlock (&create_mutex);
   }
 
   return data;
@@ -156,8 +144,6 @@ gst_tag_setter_get_data (GstTagSetter * setter)
  *
  * Reset the internal taglist. Elements should call this from within the
  * state-change handler.
- *
- * Since: 0.10.22
  */
 void
 gst_tag_setter_reset_tags (GstTagSetter * setter)
@@ -167,10 +153,13 @@ gst_tag_setter_reset_tags (GstTagSetter * setter)
   g_return_if_fail (GST_IS_TAG_SETTER (setter));
 
   data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
   if (data->list) {
-    gst_tag_list_free (data->list);
+    gst_tag_list_unref (data->list);
     data->list = NULL;
   }
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -192,12 +181,15 @@ gst_tag_setter_merge_tags (GstTagSetter * setter, const GstTagList * list,
   g_return_if_fail (GST_IS_TAG_LIST (list));
 
   data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
   if (data->list == NULL) {
     if (mode != GST_TAG_MERGE_KEEP_ALL)
       data->list = gst_tag_list_copy (list);
   } else {
     gst_tag_list_insert (data->list, list, mode);
   }
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -208,7 +200,7 @@ gst_tag_setter_merge_tags (GstTagSetter * setter, const GstTagList * list,
  * @...: more tag / value pairs to set
  *
  * Adds the given tag / value pairs on the setter using the given merge mode.
- * The list must be terminated with NULL.
+ * The list must be terminated with %NULL.
  */
 void
 gst_tag_setter_add_tags (GstTagSetter * setter, GstTagMergeMode mode,
@@ -232,7 +224,7 @@ gst_tag_setter_add_tags (GstTagSetter * setter, GstTagMergeMode mode,
  * @...: more tag / GValue pairs to set
  *
  * Adds the given tag / GValue pairs on the setter using the given merge mode.
- * The list must be terminated with NULL.
+ * The list must be terminated with %NULL.
  */
 void
 gst_tag_setter_add_tag_values (GstTagSetter * setter, GstTagMergeMode mode,
@@ -256,7 +248,7 @@ gst_tag_setter_add_tag_values (GstTagSetter * setter, GstTagMergeMode mode,
  * @var_args: tag / value pairs to set
  *
  * Adds the given tag / value pairs on the setter using the given merge mode.
- * The list must be terminated with NULL.
+ * The list must be terminated with %NULL.
  */
 void
 gst_tag_setter_add_tag_valist (GstTagSetter * setter, GstTagMergeMode mode,
@@ -268,10 +260,14 @@ gst_tag_setter_add_tag_valist (GstTagSetter * setter, GstTagMergeMode mode,
   g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
 
   data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
   if (!data->list)
-    data->list = gst_tag_list_new ();
+    data->list = gst_tag_list_new_empty ();
 
   gst_tag_list_add_valist (data->list, mode, tag, var_args);
+
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -282,7 +278,7 @@ gst_tag_setter_add_tag_valist (GstTagSetter * setter, GstTagMergeMode mode,
  * @var_args: tag / GValue pairs to set
  *
  * Adds the given tag / GValue pairs on the setter using the given merge mode.
- * The list must be terminated with NULL.
+ * The list must be terminated with %NULL.
  */
 void
 gst_tag_setter_add_tag_valist_values (GstTagSetter * setter,
@@ -294,10 +290,15 @@ gst_tag_setter_add_tag_valist_values (GstTagSetter * setter,
   g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
 
   data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
+
   if (!data->list)
-    data->list = gst_tag_list_new ();
+    data->list = gst_tag_list_new_empty ();
 
   gst_tag_list_add_valist_values (data->list, mode, tag, var_args);
+
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -308,8 +309,6 @@ gst_tag_setter_add_tag_valist_values (GstTagSetter * setter,
  * @value: GValue to set for the tag
  *
  * Adds the given tag / GValue pair on the setter using the given merge mode.
- *
- * Since: 0.10.24
  */
 void
 gst_tag_setter_add_tag_value (GstTagSetter * setter,
@@ -321,10 +320,15 @@ gst_tag_setter_add_tag_value (GstTagSetter * setter,
   g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
 
   data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
+
   if (!data->list)
-    data->list = gst_tag_list_new ();
+    data->list = gst_tag_list_new_empty ();
 
   gst_tag_list_add_value (data->list, mode, tag, value);
+
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -334,10 +338,12 @@ gst_tag_setter_add_tag_value (GstTagSetter * setter,
  * Returns the current list of tags the setter uses.  The list should not be
  * modified or freed.
  *
- * Returns: a current snapshot of the taglist used in the setter
- *          or NULL if none is used.
+ * This function is not thread-safe.
+ *
+ * Returns: (transfer none) (nullable): a current snapshot of the
+ *          taglist used in the setter or %NULL if none is used.
  */
-G_CONST_RETURN GstTagList *
+const GstTagList *
 gst_tag_setter_get_tag_list (GstTagSetter * setter)
 {
   g_return_val_if_fail (GST_IS_TAG_SETTER (setter), NULL);
@@ -357,10 +363,16 @@ gst_tag_setter_get_tag_list (GstTagSetter * setter)
 void
 gst_tag_setter_set_tag_merge_mode (GstTagSetter * setter, GstTagMergeMode mode)
 {
+  GstTagData *data;
+
   g_return_if_fail (GST_IS_TAG_SETTER (setter));
   g_return_if_fail (GST_TAG_MODE_IS_VALID (mode));
 
-  gst_tag_setter_get_data (setter)->mode = mode;
+  data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
+  data->mode = mode;
+  GST_TAG_DATA_UNLOCK (data);
 }
 
 /**
@@ -375,7 +387,16 @@ gst_tag_setter_set_tag_merge_mode (GstTagSetter * setter, GstTagMergeMode mode)
 GstTagMergeMode
 gst_tag_setter_get_tag_merge_mode (GstTagSetter * setter)
 {
-  g_return_val_if_fail (GST_IS_TAG_SETTER (setter), FALSE);
+  GstTagMergeMode mode;
+  GstTagData *data;
 
-  return gst_tag_setter_get_data (setter)->mode;
+  g_return_val_if_fail (GST_IS_TAG_SETTER (setter), GST_TAG_MERGE_UNDEFINED);
+
+  data = gst_tag_setter_get_data (setter);
+
+  GST_TAG_DATA_LOCK (data);
+  mode = data->mode;
+  GST_TAG_DATA_UNLOCK (data);
+
+  return mode;
 }

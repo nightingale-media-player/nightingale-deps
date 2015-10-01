@@ -1,21 +1,37 @@
-# The interfaces directory has to be built before the others,
-# otherwise some generated header files will be missing for the
-# plugins in the other directories.
-# Also, the tag directory has to be built before the cdda directory.
 SUBDIRS = \
-	interfaces \
 	tag \
-	audio \
-	cdda \
 	fft \
-	floatcast \
-	netbuffer \
-	pbutils \
-	riff \
-	rtp \
 	sdp \
 	rtsp \
 	video \
-	app
+	audio \
+	rtp \
+	pbutils \
+	riff \
+	app \
+	allocators
 
-noinst_HEADERS = gettext.h gst-i18n-plugin.h
+noinst_HEADERS = gettext.h gst-i18n-app.h gst-i18n-plugin.h glib-compat-private.h
+
+# dependencies:
+audio: tag
+
+riff: tag audio
+
+rtsp: sdp
+
+pbutils: video audio
+
+rtp: audio
+
+INDEPENDENT_SUBDIRS = \
+	tag audio fft sdp video app
+
+.PHONY: independent-subdirs $(INDEPENDENT_SUBDIRS)
+
+independent-subdirs: $(INDEPENDENT_SUBDIRS)
+
+$(INDEPENDENT_SUBDIRS):
+	$(MAKE) -C $@
+
+all-recursive: independent-subdirs

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gsttagexif: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="prev" href="gst-plugins-base-libs-gsttagid3.html" title="gsttagid3">
+<link rel="next" href="gst-plugins-base-libs-gsttagxmp.html" title="gsttagxmp">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gsttagexif.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-tag.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gsttagid3.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gsttagxmp.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gsttagexif"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gsttagexif.top_of_page"></a>gsttagexif</span></h2>
+<p>gsttagexif — tag mappings and support functions for plugins
+                    dealing with exif tags</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="returnvalue">GstBuffer</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttagexif.html#gst-tag-list-to-exif-buffer" title="gst_tag_list_to_exif_buffer ()">gst_tag_list_to_exif_buffer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="returnvalue">GstBuffer</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttagexif.html#gst-tag-list-to-exif-buffer-with-tiff-header" title="gst_tag_list_to_exif_buffer_with_tiff_header ()">gst_tag_list_to_exif_buffer_with_tiff_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttagexif.html#gst-tag-list-from-exif-buffer" title="gst_tag_list_from_exif_buffer ()">gst_tag_list_from_exif_buffer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttagexif.html#gst-tag-list-from-exif-buffer-with-tiff-header" title="gst_tag_list_from_exif_buffer_with_tiff_header ()">gst_tag_list_from_exif_buffer_with_tiff_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/tag/tag.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.description"></a><h2>Description</h2>
+<p>Contains utility function to parse <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a>s from exif
+buffers and to create exif buffers from <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a>s</p>
+<p>Note that next IFD fields on the created exif buffers are set to 0.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-tag-list-to-exif-buffer"></a><h3>gst_tag_list_to_exif_buffer ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="returnvalue">GstBuffer</span></a> *
+gst_tag_list_to_exif_buffer (<em class="parameter"><code>const <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a> *taglist</code></em>,
+                             <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> byte_order</code></em>,
+                             <em class="parameter"><code><span class="type">guint32</span> base_offset</code></em>);</pre>
+<p>Formats the tags in taglist on exif format. The resulting buffer contains
+the tags IFD and is followed by the data pointed by the tag entries.</p>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>taglist</p></td>
+<td class="parameter_description"><p>The taglist</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>byte_order</p></td>
+<td class="parameter_description"><p>byte order used in writing (G_LITTLE_ENDIAN or G_BIG_ENDIAN)</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>base_offset</p></td>
+<td class="parameter_description"><p>Offset from the tiff header first byte</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.2.6"></a><h4>Returns</h4>
+<p> A GstBuffer containing the tag entries followed by the tag data</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-list-to-exif-buffer-with-tiff-header"></a><h3>gst_tag_list_to_exif_buffer_with_tiff_header ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="returnvalue">GstBuffer</span></a> *
+gst_tag_list_to_exif_buffer_with_tiff_header
+                               (<em class="parameter"><code>const <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a> *taglist</code></em>);</pre>
+<p>Formats the tags in taglist into exif structure, a tiff header
+is put in the beginning of the buffer.</p>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>taglist</p></td>
+<td class="parameter_description"><p>The taglist</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.3.6"></a><h4>Returns</h4>
+<p> A GstBuffer containing the data</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-list-from-exif-buffer"></a><h3>gst_tag_list_from_exif_buffer ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a> *
+gst_tag_list_from_exif_buffer (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *buffer</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> byte_order</code></em>,
+                               <em class="parameter"><code><span class="type">guint32</span> base_offset</code></em>);</pre>
+<p>Parses the IFD and IFD tags data contained in the buffer and puts it
+on a taglist. The base_offset is used to subtract from the offset in
+the tag entries and be able to get the offset relative to the buffer
+start</p>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>The exif buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>byte_order</p></td>
+<td class="parameter_description"><p>byte order of the data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>base_offset</p></td>
+<td class="parameter_description"><p>Offset from the tiff header to this buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.4.6"></a><h4>Returns</h4>
+<p> The parsed taglist</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-list-from-exif-buffer-with-tiff-header"></a><h3>gst_tag_list_from_exif_buffer_with_tiff_header ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a> *
+gst_tag_list_from_exif_buffer_with_tiff_header
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *buffer</code></em>);</pre>
+<p>Parses the exif tags starting with a tiff header structure.</p>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>The exif buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.6.6.5.6"></a><h4>Returns</h4>
+<p> The taglist</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.other_details"></a><h2>Types and Values</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttagexif.see-also"></a><h2>See Also</h2>
+<p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

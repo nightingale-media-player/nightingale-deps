@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /**
  * SECTION:element-alawenc
@@ -26,6 +26,7 @@
 #include "config.h"
 #endif
 
+#include <gst/audio/audio.h>
 #include "alaw-encode.h"
 
 GST_DEBUG_CATEGORY_STATIC (alaw_enc_debug);
@@ -34,9 +35,13 @@ GST_DEBUG_CATEGORY_STATIC (alaw_enc_debug);
 extern GstStaticPadTemplate alaw_enc_src_factory;
 extern GstStaticPadTemplate alaw_enc_sink_factory;
 
-static GstFlowReturn gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer);
+G_DEFINE_TYPE (GstALawEnc, gst_alaw_enc, GST_TYPE_AUDIO_ENCODER);
 
-GST_BOILERPLATE (GstALawEnc, gst_alaw_enc, GstElement, GST_TYPE_ELEMENT);
+static gboolean gst_alaw_enc_start (GstAudioEncoder * audioenc);
+static gboolean gst_alaw_enc_set_format (GstAudioEncoder * enc,
+    GstAudioInfo * info);
+static GstFlowReturn gst_alaw_enc_handle_frame (GstAudioEncoder * enc,
+    GstBuffer * buffer);
 
 /* some day we might have defines in gstconfig.h that tell us about the
  * desired cpu/memory/binary size trade-offs */
@@ -296,229 +301,127 @@ s16_to_alaw (gint pcm_val)
 
 #endif /* GST_ALAW_ENC_USE_TABLE */
 
-static GstCaps *
-gst_alaw_enc_getcaps (GstPad * pad)
+static gboolean
+gst_alaw_enc_start (GstAudioEncoder * audioenc)
 {
-  GstALawEnc *alawenc;
-  GstPad *otherpad;
-  GstCaps *othercaps, *result;
-  const GstCaps *templ;
-  gchar *name;
-  gint i;
+  GstALawEnc *alawenc = GST_ALAW_ENC (audioenc);
 
-  alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
+  alawenc->channels = 0;
+  alawenc->rate = 0;
 
-  /* figure out the name of the caps we are going to return */
-  if (pad == alawenc->srcpad) {
-    name = "audio/x-alaw";
-    otherpad = alawenc->sinkpad;
-  } else {
-    name = "audio/x-raw-int";
-    otherpad = alawenc->srcpad;
-  }
-  /* get caps from the peer, this can return NULL when there is no peer */
-  othercaps = gst_pad_peer_get_caps (otherpad);
-
-  /* get the template caps to make sure we return something acceptable */
-  templ = gst_pad_get_pad_template_caps (pad);
-
-  if (othercaps) {
-    /* there was a peer */
-    othercaps = gst_caps_make_writable (othercaps);
-
-    /* go through the caps and remove the fields we don't want */
-    for (i = 0; i < gst_caps_get_size (othercaps); i++) {
-      GstStructure *structure;
-
-      structure = gst_caps_get_structure (othercaps, i);
-
-      /* adjust the name */
-      gst_structure_set_name (structure, name);
-
-      if (pad == alawenc->srcpad) {
-        /* remove the fields we don't want */
-        gst_structure_remove_fields (structure, "width", "depth", "endianness",
-            "signed", NULL);
-      } else {
-        /* add fixed fields */
-        gst_structure_set (structure, "width", G_TYPE_INT, 16,
-            "depth", G_TYPE_INT, 16,
-            "endianness", G_TYPE_INT, G_BYTE_ORDER,
-            "signed", G_TYPE_BOOLEAN, TRUE, NULL);
-      }
-    }
-    /* filter against the allowed caps of the pad to return our result */
-    result = gst_caps_intersect (othercaps, templ);
-    gst_caps_unref (othercaps);
-  } else {
-    /* there was no peer, return the template caps */
-    result = gst_caps_copy (templ);
-  }
-
-  return result;
+  return TRUE;
 }
 
 static gboolean
-gst_alaw_enc_setcaps (GstPad * pad, GstCaps * caps)
+gst_alaw_enc_set_format (GstAudioEncoder * audioenc, GstAudioInfo * info)
 {
-  GstALawEnc *alawenc;
-  GstPad *otherpad;
-  GstStructure *structure;
-  gboolean ret;
   GstCaps *base_caps;
+  GstStructure *structure;
+  GstALawEnc *alawenc = GST_ALAW_ENC (audioenc);
+  gboolean ret;
 
-  alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
+  alawenc->rate = info->rate;
+  alawenc->channels = info->channels;
 
-  structure = gst_caps_get_structure (caps, 0);
-  gst_structure_get_int (structure, "channels", &alawenc->channels);
-  gst_structure_get_int (structure, "rate", &alawenc->rate);
+  base_caps =
+      gst_pad_get_pad_template_caps (GST_AUDIO_ENCODER_SRC_PAD (audioenc));
+  g_assert (base_caps);
+  base_caps = gst_caps_make_writable (base_caps);
+  g_assert (base_caps);
 
-  if (pad == alawenc->sinkpad) {
-    otherpad = alawenc->srcpad;
-  } else {
-    otherpad = alawenc->sinkpad;
-  }
-
-  base_caps = gst_caps_copy (gst_pad_get_pad_template_caps (otherpad));
   structure = gst_caps_get_structure (base_caps, 0);
+  g_assert (structure);
   gst_structure_set (structure, "rate", G_TYPE_INT, alawenc->rate, NULL);
   gst_structure_set (structure, "channels", G_TYPE_INT, alawenc->channels,
       NULL);
 
-  GST_DEBUG_OBJECT (alawenc, "rate=%d, channels=%d", alawenc->rate,
-      alawenc->channels);
-
-  ret = gst_pad_set_caps (otherpad, base_caps);
-
+  ret = gst_audio_encoder_set_output_format (audioenc, base_caps);
   gst_caps_unref (base_caps);
 
   return ret;
 }
 
+static GstFlowReturn
+gst_alaw_enc_handle_frame (GstAudioEncoder * audioenc, GstBuffer * buffer)
+{
+  GstALawEnc *alawenc;
+  GstMapInfo inmap, outmap;
+  gint16 *linear_data;
+  gsize linear_size;
+  guint8 *alaw_data;
+  guint alaw_size;
+  GstBuffer *outbuf;
+  GstFlowReturn ret;
+  gint i;
+
+  if (!buffer) {
+    ret = GST_FLOW_OK;
+    goto done;
+  }
+
+  alawenc = GST_ALAW_ENC (audioenc);
+
+  if (!alawenc->rate || !alawenc->channels)
+    goto not_negotiated;
+
+  gst_buffer_map (buffer, &inmap, GST_MAP_READ);
+  linear_data = (gint16 *) inmap.data;
+  linear_size = inmap.size;
+
+  alaw_size = linear_size / 2;
+
+  outbuf = gst_audio_encoder_allocate_output_buffer (audioenc, alaw_size);
+
+  g_assert (outbuf);
+
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
+  alaw_data = outmap.data;
+
+  for (i = 0; i < alaw_size; i++) {
+    alaw_data[i] = s16_to_alaw (linear_data[i]);
+  }
+
+  gst_buffer_unmap (outbuf, &outmap);
+  gst_buffer_unmap (buffer, &inmap);
+
+  ret = gst_audio_encoder_finish_frame (audioenc, outbuf, -1);
+
+done:
+  return ret;
+
+not_negotiated:
+  {
+    GST_DEBUG_OBJECT (alawenc, "no format negotiated");
+    ret = GST_FLOW_NOT_NEGOTIATED;
+    goto done;
+  }
+}
+
 static void
-gst_alaw_enc_base_init (gpointer klass)
+gst_alaw_enc_class_init (GstALawEncClass * klass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstAudioEncoderClass *audio_encoder_class = GST_AUDIO_ENCODER_CLASS (klass);
+
+  audio_encoder_class->start = GST_DEBUG_FUNCPTR (gst_alaw_enc_start);
+  audio_encoder_class->set_format = GST_DEBUG_FUNCPTR (gst_alaw_enc_set_format);
+  audio_encoder_class->handle_frame =
+      GST_DEBUG_FUNCPTR (gst_alaw_enc_handle_frame);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&alaw_enc_src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&alaw_enc_sink_factory));
 
-  gst_element_class_set_details_simple (element_class,
+  gst_element_class_set_static_metadata (element_class,
       "A Law audio encoder", "Codec/Encoder/Audio",
       "Convert 16bit PCM to 8bit A law",
       "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
-
   GST_DEBUG_CATEGORY_INIT (alaw_enc_debug, "alawenc", 0, "A Law audio encoder");
 }
 
 static void
-gst_alaw_enc_class_init (GstALawEncClass * klass)
+gst_alaw_enc_init (GstALawEnc * alawenc)
 {
-  /* nothing to do here for now */
-}
-
-static void
-gst_alaw_enc_init (GstALawEnc * alawenc, GstALawEncClass * klass)
-{
-  alawenc->sinkpad =
-      gst_pad_new_from_static_template (&alaw_enc_sink_factory, "sink");
-  gst_pad_set_setcaps_function (alawenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_setcaps));
-  gst_pad_set_getcaps_function (alawenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_getcaps));
-  gst_pad_set_chain_function (alawenc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_chain));
-  gst_element_add_pad (GST_ELEMENT (alawenc), alawenc->sinkpad);
-
-  alawenc->srcpad =
-      gst_pad_new_from_static_template (&alaw_enc_src_factory, "src");
-  gst_pad_set_setcaps_function (alawenc->srcpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_setcaps));
-  gst_pad_set_getcaps_function (alawenc->srcpad,
-      GST_DEBUG_FUNCPTR (gst_alaw_enc_getcaps));
-  gst_pad_use_fixed_caps (alawenc->srcpad);
-  gst_element_add_pad (GST_ELEMENT (alawenc), alawenc->srcpad);
-
-  /* init rest */
-  alawenc->channels = 0;
-  alawenc->rate = 0;
-}
-
-static GstFlowReturn
-gst_alaw_enc_chain (GstPad * pad, GstBuffer * buffer)
-{
-  GstALawEnc *alawenc;
-  gint16 *linear_data;
-  guint linear_size;
-  guint8 *alaw_data;
-  guint alaw_size;
-  GstBuffer *outbuf;
-  gint i;
-  GstFlowReturn ret;
-  GstClockTime timestamp, duration;
-
-  alawenc = GST_ALAW_ENC (GST_PAD_PARENT (pad));
-
-  if (G_UNLIKELY (alawenc->rate == 0 || alawenc->channels == 0))
-    goto not_negotiated;
-
-  linear_data = (gint16 *) GST_BUFFER_DATA (buffer);
-  linear_size = GST_BUFFER_SIZE (buffer);
-
-  alaw_size = linear_size / 2;
-
-  timestamp = GST_BUFFER_TIMESTAMP (buffer);
-  duration = GST_BUFFER_DURATION (buffer);
-
-  GST_LOG_OBJECT (alawenc, "buffer with ts=%" GST_TIME_FORMAT,
-      GST_TIME_ARGS (timestamp));
-
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (alawenc->srcpad,
-      GST_BUFFER_OFFSET_NONE, alaw_size, GST_PAD_CAPS (alawenc->srcpad),
-      &outbuf);
-  if (ret != GST_FLOW_OK)
-    goto done;
-
-  if (duration == GST_CLOCK_TIME_NONE) {
-    duration = gst_util_uint64_scale_int (alaw_size,
-        GST_SECOND, alawenc->rate * alawenc->channels);
-  }
-
-  if (GST_BUFFER_SIZE (outbuf) < alaw_size) {
-    /* pad-alloc can return a smaller buffer */
-    gst_buffer_unref (outbuf);
-    outbuf = gst_buffer_new_and_alloc (alaw_size);
-  }
-
-  alaw_data = (guint8 *) GST_BUFFER_DATA (outbuf);
-
-  /* copy discont flag */
-  if (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DISCONT))
-    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
-
-  GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
-  GST_BUFFER_DURATION (outbuf) = duration;
-
-  gst_buffer_set_caps (outbuf, GST_PAD_CAPS (alawenc->srcpad));
-
-  for (i = 0; i < alaw_size; i++) {
-    alaw_data[i] = s16_to_alaw (linear_data[i]);
-  }
-
-  ret = gst_pad_push (alawenc->srcpad, outbuf);
-
-done:
-
-  gst_buffer_unref (buffer);
-
-  return ret;
-
-not_negotiated:
-  {
-    ret = GST_FLOW_NOT_NEGOTIATED;
-    goto done;
-  }
+  GST_PAD_SET_ACCEPT_TEMPLATE (GST_AUDIO_ENCODER_SINK_PAD (alawenc));
 }

@@ -17,14 +17,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CAM_SW_CLIENT_H
 #define CAM_SW_CLIENT_H
 
 #include <glib.h>
+#include "camutils.h"
 
 typedef enum
 {
@@ -41,13 +42,13 @@ typedef struct
 
 } CamSwClient;
 
-CamSwClient *cam_sw_client_new ();
+CamSwClient *cam_sw_client_new (void);
 void cam_sw_client_free (CamSwClient *sw_client);
 
 gboolean cam_sw_client_open (CamSwClient *sw_client, const char *sock_path);
 void cam_sw_client_close (CamSwClient *sw_client);
 
-void cam_sw_client_set_pmt (CamSwClient *sw_client, GstStructure *pmt);
-void cam_sw_client_update_pmt (CamSwClient *sw_client, GstStructure *pmt);
+void cam_sw_client_set_pmt (CamSwClient *sw_client, GstMpegtsPMT *pmt);
+void cam_sw_client_update_pmt (CamSwClient *sw_client, GstMpegtsPMT *pmt);
 
 #endif /* CAM_SW_CLIENT_H */

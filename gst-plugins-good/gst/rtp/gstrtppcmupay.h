@@ -17,7 +17,7 @@
 #define __GST_RTP_PCMU_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpaudiopayload.h>
+#include <gst/rtp/gstrtpbaseaudiopayload.h>
 
 G_BEGIN_DECLS
 
@@ -37,13 +37,15 @@ typedef struct _GstRtpPcmuPayClass GstRtpPcmuPayClass;
 
 struct _GstRtpPcmuPay
 {
-  GstBaseRTPAudioPayload audiopayload;
+  GstRTPBaseAudioPayload audiopayload;
 };
 
 struct _GstRtpPcmuPayClass
 {
-  GstBaseRTPAudioPayloadClass parent_class;
+  GstRTPBaseAudioPayloadClass parent_class;
 };
+
+GType gst_rtp_pcmu_pay_get_type (void);
 
 gboolean gst_rtp_pcmu_pay_plugin_init (GstPlugin * plugin);
 

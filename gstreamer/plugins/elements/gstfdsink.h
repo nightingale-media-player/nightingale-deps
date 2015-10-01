@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -40,6 +40,7 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_FD_SINK))
 #define GST_IS_FD_SINK_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FD_SINK))
+#define GST_FD_SINK_CAST(obj) ((GstFdSink *)(obj))
 
 typedef struct _GstFdSink GstFdSink;
 typedef struct _GstFdSinkClass GstFdSinkClass;
@@ -59,13 +60,15 @@ struct _GstFdSink {
   int fd;
   guint64 bytes_written;
   guint64 current_pos;
+
+  gboolean seekable;
 };
 
 struct _GstFdSinkClass {
   GstBaseSinkClass parent_class;
 };
 
-GType gst_fd_sink_get_type(void);
+G_GNUC_INTERNAL GType gst_fd_sink_get_type (void);
 
 G_END_DECLS
 

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -168,8 +168,6 @@ mxf_ber_encode_size (guint size, guint8 ber[9])
   if (size <= 127) {
     ber[0] = size;
     return 1;
-  } else if (size > G_MAXUINT) {
-    return 0;
   }
 
   slen = 0;
@@ -191,15 +189,20 @@ GstBuffer *
 mxf_fill_to_buffer (guint size)
 {
   GstBuffer *ret;
+  GstMapInfo map;
   guint slen;
   guint8 ber[9];
 
   slen = mxf_ber_encode_size (size, ber);
 
   ret = gst_buffer_new_and_alloc (16 + slen + size);
-  memcpy (GST_BUFFER_DATA (ret), MXF_UL (FILL), 16);
-  memcpy (GST_BUFFER_DATA (ret) + 16, &ber, slen);
-  memset (GST_BUFFER_DATA (ret) + slen, 0, size);
+  gst_buffer_map (ret, &map, GST_MAP_WRITE);
+
+  memcpy (map.data, MXF_UL (FILL), 16);
+  memcpy (map.data + 16, &ber, slen);
+  memset (map.data + slen, 0, size);
+
+  gst_buffer_unmap (ret, &map);
 
   return ret;
 }
@@ -645,8 +648,8 @@ mxf_utf8_to_utf16 (const gchar * str, guint16 * size)
   }
 
   ret = (guint8 *)
-      g_convert_with_fallback (str, -1, "UTF-16BE", "UTF-8", "*", NULL, &s,
-      &error);
+      g_convert_with_fallback (str, -1, "UTF-16BE", "UTF-8", (char *) "*", NULL,
+      &s, &error);
 
   if (ret == NULL) {
     GST_WARNING ("UTF-16-BE to UTF-8 conversion failed: %s", error->message);
@@ -902,6 +905,7 @@ mxf_partition_pack_to_buffer (const MXFPartitionPack * pack)
   guint slen;
   guint8 ber[9];
   GstBuffer *ret;
+  GstMapInfo map;
   guint8 *data;
   guint i;
   guint size =
@@ -911,23 +915,25 @@ mxf_partition_pack_to_buffer (const MXFPartitionPack * pack)
   slen = mxf_ber_encode_size (size, ber);
 
   ret = gst_buffer_new_and_alloc (16 + slen + size);
-  memcpy (GST_BUFFER_DATA (ret), MXF_UL (PARTITION_PACK), 13);
-  if (pack->type == MXF_PARTITION_PACK_HEADER)
-    GST_BUFFER_DATA (ret)[13] = 0x02;
-  else if (pack->type == MXF_PARTITION_PACK_BODY)
-    GST_BUFFER_DATA (ret)[13] = 0x03;
-  else if (pack->type == MXF_PARTITION_PACK_FOOTER)
-    GST_BUFFER_DATA (ret)[13] = 0x04;
-  GST_BUFFER_DATA (ret)[14] = 0;
-  if (pack->complete)
-    GST_BUFFER_DATA (ret)[14] |= 0x02;
-  if (pack->closed)
-    GST_BUFFER_DATA (ret)[14] |= 0x01;
-  GST_BUFFER_DATA (ret)[14] += 1;
-  GST_BUFFER_DATA (ret)[15] = 0;
-  memcpy (GST_BUFFER_DATA (ret) + 16, &ber, slen);
+  gst_buffer_map (ret, &map, GST_MAP_WRITE);
 
-  data = GST_BUFFER_DATA (ret) + 16 + slen;
+  memcpy (map.data, MXF_UL (PARTITION_PACK), 13);
+  if (pack->type == MXF_PARTITION_PACK_HEADER)
+    map.data[13] = 0x02;
+  else if (pack->type == MXF_PARTITION_PACK_BODY)
+    map.data[13] = 0x03;
+  else if (pack->type == MXF_PARTITION_PACK_FOOTER)
+    map.data[13] = 0x04;
+  map.data[14] = 0;
+  if (pack->complete)
+    map.data[14] |= 0x02;
+  if (pack->closed)
+    map.data[14] |= 0x01;
+  map.data[14] += 1;
+  map.data[15] = 0;
+  memcpy (map.data + 16, &ber, slen);
+
+  data = map.data + 16 + slen;
 
   GST_WRITE_UINT16_BE (data, pack->major_version);
   GST_WRITE_UINT16_BE (data + 2, pack->minor_version);
@@ -969,6 +975,8 @@ mxf_partition_pack_to_buffer (const MXFPartitionPack * pack)
 
   for (i = 0; i < pack->n_essence_containers; i++)
     memcpy (data + 16 * i, &pack->essence_containers[i], 16);
+
+  gst_buffer_unmap (ret, &map);
 
   return ret;
 }
@@ -1019,6 +1027,7 @@ mxf_random_index_pack_to_buffer (const GArray * array)
   MXFRandomIndexPackEntry *entry;
   guint i;
   GstBuffer *ret;
+  GstMapInfo map;
   guint8 slen, ber[9];
   guint size;
   guint8 *data;
@@ -1029,10 +1038,12 @@ mxf_random_index_pack_to_buffer (const GArray * array)
   size = array->len * 12 + 4;
   slen = mxf_ber_encode_size (size, ber);
   ret = gst_buffer_new_and_alloc (16 + slen + size);
-  memcpy (GST_BUFFER_DATA (ret), MXF_UL (RANDOM_INDEX_PACK), 16);
-  memcpy (GST_BUFFER_DATA (ret) + 16, ber, slen);
+  gst_buffer_map (ret, &map, GST_MAP_WRITE);
 
-  data = GST_BUFFER_DATA (ret) + 16 + slen;
+  memcpy (map.data, MXF_UL (RANDOM_INDEX_PACK), 16);
+  memcpy (map.data + 16, ber, slen);
+
+  data = map.data + 16 + slen;
 
   for (i = 0; i < array->len; i++) {
     entry = &g_array_index (array, MXFRandomIndexPackEntry, i);
@@ -1040,7 +1051,9 @@ mxf_random_index_pack_to_buffer (const GArray * array)
     GST_WRITE_UINT64_BE (data + 4, entry->offset);
     data += 12;
   }
-  GST_WRITE_UINT32_BE (data, GST_BUFFER_SIZE (ret));
+  GST_WRITE_UINT32_BE (data, gst_buffer_get_size (ret));
+
+  gst_buffer_unmap (ret, &map);
 
   return ret;
 }
@@ -1241,7 +1254,8 @@ mxf_index_table_segment_parse (const MXFUL * ul,
 
           entry->pos_table = g_new0 (MXFFraction, segment->pos_table_count);
           for (j = 0; j < segment->pos_table_count; j++) {
-            mxf_fraction_parse (&entry->pos_table[j], tag_data, tag_size);
+            if (!mxf_fraction_parse (&entry->pos_table[j], tag_data, tag_size))
+              goto error;
             tag_data += 8;
             tag_size -= 8;
             GST_DEBUG ("    pos table %u = %d/%d", j, entry->pos_table[j].n,
@@ -1268,6 +1282,7 @@ mxf_index_table_segment_parse (const MXFUL * ul,
 
 error:
   GST_ERROR ("Invalid index table segment");
+  mxf_index_table_segment_reset (segment);
   return FALSE;
 }
 
@@ -1435,6 +1450,7 @@ mxf_primer_pack_to_buffer (const MXFPrimerPack * pack)
   guint slen;
   guint8 ber[9];
   GstBuffer *ret;
+  GstMapInfo map;
   guint n;
   guint8 *data;
 
@@ -1446,10 +1462,12 @@ mxf_primer_pack_to_buffer (const MXFPrimerPack * pack)
   slen = mxf_ber_encode_size (8 + 18 * n, ber);
 
   ret = gst_buffer_new_and_alloc (16 + slen + 8 + 18 * n);
-  memcpy (GST_BUFFER_DATA (ret), MXF_UL (PRIMER_PACK), 16);
-  memcpy (GST_BUFFER_DATA (ret) + 16, &ber, slen);
+  gst_buffer_map (ret, &map, GST_MAP_WRITE);
 
-  data = GST_BUFFER_DATA (ret) + 16 + slen;
+  memcpy (map.data, MXF_UL (PRIMER_PACK), 16);
+  memcpy (map.data + 16, &ber, slen);
+
+  data = map.data + 16 + slen;
 
   GST_WRITE_UINT32_BE (data, n);
   GST_WRITE_UINT32_BE (data + 4, 18);
@@ -1469,6 +1487,8 @@ mxf_primer_pack_to_buffer (const MXFPrimerPack * pack)
       data += 18;
     }
   }
+
+  gst_buffer_unmap (ret, &map);
 
   return ret;
 }
@@ -1537,10 +1557,11 @@ mxf_local_tag_add_to_hash_table (const MXFPrimerPack * primer,
     GST_DEBUG ("Adding local tag 0x%04x with UL %s and size %u", tag,
         mxf_ul_to_string (ul, str), tag_size);
 
-    local_tag = g_slice_new (MXFLocalTag);
+    local_tag = g_slice_new0 (MXFLocalTag);
     memcpy (&local_tag->ul, ul, sizeof (MXFUL));
     local_tag->size = tag_size;
     local_tag->data = g_memdup (tag_data, tag_size);
+    local_tag->g_slice = FALSE;
 
     g_hash_table_insert (*hash_table, &local_tag->ul, local_tag);
   } else {

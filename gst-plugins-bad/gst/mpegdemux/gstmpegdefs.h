@@ -29,8 +29,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * The Original Code is Fluendo MPEG Demuxer plugin.
  *
@@ -159,7 +159,9 @@
 #define ST_H222_1                       0x09
 
 /* later extensions */
-#define ST_AUDIO_AAC                    0x0f
+#define ST_AUDIO_AAC_ADTS               0x0f
+/* LATM/LOAS AAC syntax */
+#define ST_AUDIO_AAC_LOAS               0x11
 #define ST_VIDEO_MPEG4                  0x10
 #define ST_VIDEO_H264                   0x1b
 
@@ -178,6 +180,7 @@
 #define ST_BD_AUDIO_AC3_TRUE_HD         0x83
 #define ST_BD_AUDIO_AC3_PLUS            0x84
 #define ST_BD_AUDIO_DTS_HD              0x85
+#define ST_BD_AUDIO_DTS_HD_MASTER_AUDIO 0x86
 #define ST_BD_AUDIO_EAC3                0x87
 #define ST_BD_PGS_SUBPICTURE            0x90
 #define ST_BD_IGS                       0x91
@@ -225,7 +228,7 @@
     target |= ((guint64) (*data++ & 0xFE)) >> 1;
 
 /* some extra GstFlowReturn values used internally */
-#define GST_FLOW_NEED_MORE_DATA   -100
-#define GST_FLOW_LOST_SYNC        -101
+#define GST_FLOW_NEED_MORE_DATA   GST_FLOW_CUSTOM_SUCCESS
+#define GST_FLOW_LOST_SYNC        GST_FLOW_CUSTOM_SUCCESS_1
 
 #endif /* __GST_MPEG_DEFS_H__ */

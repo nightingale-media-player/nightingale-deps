@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -164,43 +164,185 @@ GST_START_TEST (test_link_no_pads)
 
 GST_END_TEST;
 
-/* check if the elementfactory of a class is filled (see #131079) */
-GST_START_TEST (test_class)
+typedef struct _GstTestElement
 {
-  GstElementClass *klass;
-  GstElementFactory *factory, *tmp;
-  GType type;
+  GstElement parent;
 
-  GST_DEBUG ("finding factory for queue");
-  factory = gst_element_factory_find ("queue");
-  fail_if (factory == NULL);
+} GstTestElement;
 
-  GST_DEBUG ("getting the type");
-  /* feature is not loaded, should return 0 as the type */
-  type = gst_element_factory_get_element_type (factory);
-  fail_if (type != 0);
+typedef struct _GstTestElementClass
+{
+  GstElementClass parent;
 
-  GST_DEBUG ("now loading the plugin");
-  tmp =
-      GST_ELEMENT_FACTORY (gst_plugin_feature_load (GST_PLUGIN_FEATURE
-          (factory)));
-  fail_if (tmp == NULL);
+} GstTestElementClass;
 
-  gst_object_unref (factory);
-  factory = tmp;
+static void
+gst_test_element_class_init (GstTestElementClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstPadTemplate *templ;
 
-  /* feature is now loaded */
-  type = gst_element_factory_get_element_type (factory);
-  fail_if (type == 0);
+  gst_element_class_set_metadata (element_class, "Test element",
+      "Element", "Does nothing", "Foo Bar <foo@bar.com>");
 
-  klass = g_type_class_ref (factory->type);
-  fail_if (klass == NULL);
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 0);
 
-  GST_DEBUG ("checking the element factory class field");
-  /* and elementfactory is filled in */
-  fail_if (klass->elementfactory == NULL);
-  fail_if (klass->elementfactory != factory);
+  fail_unless (gst_element_class_get_pad_template (element_class,
+          "test") == NULL);
 
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("test", GST_PAD_SRC, GST_PAD_ALWAYS, GST_CAPS_ANY));
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 1);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test")) != NULL);
+  fail_unless (gst_caps_is_any (templ->caps));
+
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("test2", GST_PAD_SRC, GST_PAD_ALWAYS,
+          GST_CAPS_ANY));
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 2);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test2")) != NULL);
+  fail_unless (gst_caps_is_any (templ->caps));
+
+  /* Add "test" again, with NONE caps this time */
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("test", GST_PAD_SRC, GST_PAD_ALWAYS,
+          GST_CAPS_NONE));
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 2);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test")) != NULL);
+  fail_unless (gst_caps_is_empty (templ->caps));
+}
+
+static GType
+gst_test_element_get_type (void)
+{
+  static GType gst_test_element_type = G_TYPE_NONE;
+
+  if (gst_test_element_type == G_TYPE_NONE) {
+    static const GTypeInfo gst_test_element_info = {
+      sizeof (GstTestElementClass),
+      NULL,                     /* base_init */
+      NULL,                     /* base_finalize */
+      (GClassInitFunc) gst_test_element_class_init,
+      NULL,
+      NULL,
+      sizeof (GstTestElement),
+      0,
+      NULL,                     /* instance_init */
+      NULL
+    };
+
+    gst_test_element_type = g_type_register_static (GST_TYPE_ELEMENT,
+        "GstTestElement", &gst_test_element_info, 0);
+  }
+  return gst_test_element_type;
+}
+
+typedef struct _GstTestElement2
+{
+  GstTestElement parent;
+
+} GstTestElement2;
+
+typedef struct _GstTestElement2Class
+{
+  GstTestElementClass parent;
+
+} GstTestElement2Class;
+
+static void
+gst_test_element2_class_init (GstTestElement2Class * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstPadTemplate *templ;
+
+  gst_element_class_set_metadata (element_class, "Test element 2",
+      "Element", "Does nothing", "Foo Bar <foo@bar.com>");
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 2);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test")) != NULL);
+  fail_unless (gst_caps_is_empty (templ->caps));
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test2")) != NULL);
+  fail_unless (gst_caps_is_any (templ->caps));
+
+  /* Add "test" pad with ANY caps, should have "test" pad with EMPTY caps before */
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("test", GST_PAD_SRC, GST_PAD_ALWAYS, GST_CAPS_ANY));
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 2);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test")) != NULL);
+  fail_unless (gst_caps_is_any (templ->caps));
+
+
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("test4", GST_PAD_SRC, GST_PAD_ALWAYS,
+          GST_CAPS_ANY));
+
+  fail_unless_equals_int (g_list_length (gst_element_class_get_pad_template_list
+          (element_class)), 3);
+
+  fail_unless ((templ =
+          gst_element_class_get_pad_template (element_class, "test4")) != NULL);
+  fail_unless (gst_caps_is_any (templ->caps));
+}
+
+static GType
+gst_test_element2_get_type (void)
+{
+  static GType gst_test_element2_type = G_TYPE_NONE;
+
+  if (gst_test_element2_type == G_TYPE_NONE) {
+    static const GTypeInfo gst_test_element2_info = {
+      sizeof (GstTestElement2Class),
+      NULL,                     /* base_init */
+      NULL,                     /* base_finalize */
+      (GClassInitFunc) gst_test_element2_class_init,
+      NULL,
+      NULL,
+      sizeof (GstTestElement2),
+      0,
+      NULL,                     /* instance_init */
+      NULL
+    };
+
+    gst_test_element2_type =
+        g_type_register_static (gst_test_element_get_type (), "GstTestElement2",
+        &gst_test_element2_info, 0);
+  }
+  return gst_test_element2_type;
+}
+
+
+GST_START_TEST (test_pad_templates)
+{
+  GstTestElement *test;
+  GstTestElement2 *test2;
+
+  test = g_object_new (gst_test_element_get_type (), NULL);
+  test2 = g_object_new (gst_test_element2_get_type (), NULL);
+
+  g_object_unref (test);
+  g_object_unref (test2);
 }
 
 GST_END_TEST;
@@ -217,7 +359,7 @@ gst_element_suite (void)
   tcase_add_test (tc_chain, test_error_no_bus);
   tcase_add_test (tc_chain, test_link);
   tcase_add_test (tc_chain, test_link_no_pads);
-  tcase_add_test (tc_chain, test_class);
+  tcase_add_test (tc_chain, test_pad_templates);
 
   return s;
 }

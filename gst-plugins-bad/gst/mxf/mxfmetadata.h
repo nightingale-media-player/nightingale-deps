@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* Handling of MXF structural metadata */
@@ -23,6 +23,7 @@
 #define __MXF_METADATA_H__
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 #include "mxftypes.h"
 
 #define MXF_TYPE_METADATA_BASE \
@@ -192,6 +193,16 @@ GType mxf_metadata_structural_component_get_type (void);
 typedef struct _MXFMetadataSourceClip MXFMetadataSourceClip;
 typedef MXFMetadataClass MXFMetadataSourceClipClass;
 GType mxf_metadata_source_clip_get_type (void);
+
+#define MXF_TYPE_METADATA_FILLER \
+  (mxf_metadata_filler_get_type())
+#define MXF_METADATA_FILLER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),MXF_TYPE_METADATA_FILLER, MXFMetadataFiller))
+#define MXF_IS_METADATA_FILLER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),MXF_TYPE_METADATA_FILLER))
+typedef struct _MXFMetadataFiller MXFMetadataFiller;
+typedef MXFMetadataClass MXFMetadataFillerClass;
+GType mxf_metadata_filler_get_type (void);
 
 #define MXF_TYPE_METADATA_TIMECODE_COMPONENT \
   (mxf_metadata_timecode_component_get_type())
@@ -368,7 +379,7 @@ typedef enum {
 } MXFMetadataBaseResolveState;
 
 struct _MXFMetadataBase {
-  GstMiniObject parent;
+  GObject parent;
 
   MXFUUID instance_uid;
   MXFUUID generation_uid;
@@ -381,7 +392,7 @@ struct _MXFMetadataBase {
 };
 
 struct _MXFMetadataBaseClass {
-  GstMiniObjectClass parent;
+  GObjectClass parent;
 
   gboolean (*handle_tag) (MXFMetadataBase *self, MXFPrimerPack *primer, guint16 tag, const guint8 *tag_data, guint tag_size);
   gboolean (*resolve) (MXFMetadataBase *self, GHashTable *metadata);
@@ -581,6 +592,10 @@ struct _MXFMetadataSourceClip {
   guint32 source_track_id;
 };
 
+struct _MXFMetadataFiller {
+  MXFMetadataStructuralComponent parent;
+};
+
 struct _MXFMetadataDMSourceClip {
   MXFMetadataSourceClip parent;
 
@@ -739,7 +754,7 @@ struct _MXFDescriptiveMetadata {
 };
 
 struct _MXFDescriptiveMetadataClass {
-  MXFMetadataBase parent;
+  MXFMetadataBaseClass parent;
 
   guint8 scheme;
   guint32 type;
@@ -764,6 +779,7 @@ const MXFUL * mxf_metadata_track_identifier_get (MXFMetadataTrackType type);
 void mxf_metadata_generic_picture_essence_descriptor_set_caps (MXFMetadataGenericPictureEssenceDescriptor * self, GstCaps * caps);
 gboolean mxf_metadata_generic_picture_essence_descriptor_from_caps (MXFMetadataGenericPictureEssenceDescriptor * self, GstCaps * caps);
 
+GstCaps *mxf_metadata_generic_sound_essence_descriptor_create_caps (MXFMetadataGenericSoundEssenceDescriptor * self, GstAudioFormat *format);
 void mxf_metadata_generic_sound_essence_descriptor_set_caps (MXFMetadataGenericSoundEssenceDescriptor * self, GstCaps * caps);
 gboolean mxf_metadata_generic_sound_essence_descriptor_from_caps (MXFMetadataGenericSoundEssenceDescriptor * self, GstCaps * caps);
 

@@ -13,16 +13,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_WASAPI_SINK_H__
 #define __GST_WASAPI_SINK_H__
 
 #include "gstwasapiutil.h"
-
-#include <gst/base/gstbasesink.h>
 
 G_BEGIN_DECLS
 
@@ -42,12 +40,9 @@ typedef struct _GstWasapiSinkClass GstWasapiSinkClass;
 
 struct _GstWasapiSink
 {
-  GstBaseSink base_sink;
+  GstAudioSink parent;
 
-  guint rate;
-  GstClockTime buffer_time;
-  GstClockTime period_time;
-  GstClockTime latency;
+  GstAudioInfo info;
 
   IAudioClient * client;
   IAudioRenderClient * render_client;
@@ -56,7 +51,7 @@ struct _GstWasapiSink
 
 struct _GstWasapiSinkClass
 {
-  GstBaseSinkClass parent_class;
+  GstAudioSinkClass parent_class;
 };
 
 GType gst_wasapi_sink_get_type (void);

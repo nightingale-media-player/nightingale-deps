@@ -1,0 +1,457 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gsttaglicenses: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
+<link rel="prev" href="gst-plugins-base-libs-gsttaglanguagecodes.html" title="gsttaglanguagecodes">
+<link rel="next" href="gstreamer-base-utils.html" title="Base Utils Library">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gsttaglicenses.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-tag.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gsttaglanguagecodes.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-base-utils.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gsttaglicenses"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gsttaglicenses.top_of_page"></a>gsttaglicenses</span></h2>
+<p>gsttaglicenses — utility functions for Creative Commons licenses</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#GstTagLicenseFlags" title="enum GstTagLicenseFlags"><span class="returnvalue">GstTagLicenseFlags</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-flags" title="gst_tag_get_license_flags ()">gst_tag_get_license_flags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-nick" title="gst_tag_get_license_nick ()">gst_tag_get_license_nick</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-title" title="gst_tag_get_license_title ()">gst_tag_get_license_title</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-description" title="gst_tag_get_license_description ()">gst_tag_get_license_description</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-jurisdiction" title="gst_tag_get_license_jurisdiction ()">gst_tag_get_license_jurisdiction</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-license-version" title="gst_tag_get_license_version ()">gst_tag_get_license_version</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#gst-tag-get-licenses" title="gst_tag_get_licenses ()">gst_tag_get_licenses</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#GstTagLicenseFlags" title="enum GstTagLicenseFlags">GstTagLicenseFlags</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/tag/tag.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.description"></a><h2>Description</h2>
+<p>Provides information about Creative Commons media licenses, which are
+often expressed in media files as a license URI in tags. Also useful
+for applications creating media files, in case the user wants to license
+the content under a Creative Commons license.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-tag-get-license-flags"></a><h3>gst_tag_get_license_flags ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gsttaglicenses.html#GstTagLicenseFlags" title="enum GstTagLicenseFlags"><span class="returnvalue">GstTagLicenseFlags</span></a>
+gst_tag_get_license_flags (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the flags of a license, which describe most of the features of
+a license in their most general form.</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.2.6"></a><h4>Returns</h4>
+<p> the flags of the license, or 0 if the license is unknown</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-license-nick"></a><h3>gst_tag_get_license_nick ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_get_license_nick (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the nick name of a license, which is a short (untranslated) string
+such as e.g. "CC BY-NC-ND 2.0 UK".</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.3.6"></a><h4>Returns</h4>
+<p> the nick name of the license, or NULL if the license is unknown</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-license-title"></a><h3>gst_tag_get_license_title ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_get_license_title (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the title of a license, which is a short translated description
+of the license's features (generally not very pretty though).</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.4.6"></a><h4>Returns</h4>
+<p> the title of the license, or NULL if the license is unknown or
+no title is available.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-license-description"></a><h3>gst_tag_get_license_description ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_get_license_description (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the description of a license, which is a translated description
+of the license's main features.</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.5.6"></a><h4>Returns</h4>
+<p> the description of the license, or NULL if the license is unknown
+or a description is not available.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-license-jurisdiction"></a><h3>gst_tag_get_license_jurisdiction ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_get_license_jurisdiction (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the jurisdiction code of a license. This is usually a two-letter
+ISO 3166-1 alpha-2 code, but there is also the special case of Scotland,
+for which no code exists and which is thus represented as "scotland".</p>
+<p>Known jurisdictions: ar, at, au, be, bg, br, ca, ch, cl, cn, co, de,
+dk, es, fi, fr, hr, hu, il, in, it, jp, kr, mk, mt, mx, my, nl, pe, pl,
+pt, scotland, se, si, tw, uk, us, za.</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.6.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.6.7"></a><h4>Returns</h4>
+<p> the jurisdiction code of the license, or NULL if the license is
+unknown or is not specific to a particular jurisdiction.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-license-version"></a><h3>gst_tag_get_license_version ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_get_license_version (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *license_ref</code></em>);</pre>
+<p>Get the version of a license.</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>license_ref</p></td>
+<td class="parameter_description"><p>a license reference string in form of a URI,
+e.g. "http://creativecommons.org/licenses/by-nc-nd/2.0/"</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.7.6"></a><h4>Returns</h4>
+<p> the version of the license, or NULL if the license is not known or
+has no version</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-tag-get-licenses"></a><h3>gst_tag_get_licenses ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+gst_tag_get_licenses (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Returns a list of known license references (in form of URIs). This is
+useful for UIs to build a list of available licenses for tagging purposes
+(e.g. to tag an audio track appropriately in a video or audio editor, or
+an image in a camera application).</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.7.8.5"></a><h4>Returns</h4>
+<p> NULL-terminated array of license strings. Free
+with <a href="https://developer.gnome.org/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a> when no longer needed. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstTagLicenseFlags"></a><h3>enum GstTagLicenseFlags</h3>
+<p>See http://creativecommons.org/ns for more information.</p>
+<div class="refsect3">
+<a name="id-1.2.13.12.8.2.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PERMITS-REPRODUCTION:CAPS"></a>GST_TAG_LICENSE_PERMITS_REPRODUCTION</p></td>
+<td class="enum_member_description">
+<p>making multiple copies
+    is allowed</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PERMITS-DISTRIBUTION:CAPS"></a>GST_TAG_LICENSE_PERMITS_DISTRIBUTION</p></td>
+<td class="enum_member_description">
+<p>distribution, public display
+    and public performance are allowed</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PERMITS-DERIVATIVE-WORKS:CAPS"></a>GST_TAG_LICENSE_PERMITS_DERIVATIVE_WORKS</p></td>
+<td class="enum_member_description">
+<p>distribution of derivative
+    works is allowed</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PERMITS-SHARING:CAPS"></a>GST_TAG_LICENSE_PERMITS_SHARING</p></td>
+<td class="enum_member_description">
+<p>commercial derivatives are allowed,
+    but only non-commercial distribution is allowed</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-NOTICE:CAPS"></a>GST_TAG_LICENSE_REQUIRES_NOTICE</p></td>
+<td class="enum_member_description">
+<p>copyright and license notices
+    must be kept intact</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-ATTRIBUTION:CAPS"></a>GST_TAG_LICENSE_REQUIRES_ATTRIBUTION</p></td>
+<td class="enum_member_description">
+<p>credit must be given to
+    copyright holder and/or author</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-SHARE-ALIKE:CAPS"></a>GST_TAG_LICENSE_REQUIRES_SHARE_ALIKE</p></td>
+<td class="enum_member_description">
+<p>derivative works must be
+    licensed under the same terms or compatible terms as the original work</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-SOURCE-CODE:CAPS"></a>GST_TAG_LICENSE_REQUIRES_SOURCE_CODE</p></td>
+<td class="enum_member_description">
+<p>source code (the preferred
+    form for making modifications) must be provided when exercising some
+    rights granted by the license</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-COPYLEFT:CAPS"></a>GST_TAG_LICENSE_REQUIRES_COPYLEFT</p></td>
+<td class="enum_member_description">
+<p>derivative and combined works
+    must be licensed under specified terms, similar to those of the original
+    work</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-REQUIRES-LESSER-COPYLEFT:CAPS"></a>GST_TAG_LICENSE_REQUIRES_LESSER_COPYLEFT</p></td>
+<td class="enum_member_description">
+<p>derivative works must be
+    licensed under specified terms, with at least the same conditions as
+    the original work; combinations with the work may be licensed under
+    different terms</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PROHIBITS-COMMERCIAL-USE:CAPS"></a>GST_TAG_LICENSE_PROHIBITS_COMMERCIAL_USE</p></td>
+<td class="enum_member_description">
+<p>exercising rights for
+    commercial purposes is prohibited</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-PROHIBITS-HIGH-INCOME-NATION-USE:CAPS"></a>GST_TAG_LICENSE_PROHIBITS_HIGH_INCOME_NATION_USE</p></td>
+<td class="enum_member_description">
+<p>use in a
+    non-developing country is prohibited</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-CREATIVE-COMMONS-LICENSE:CAPS"></a>GST_TAG_LICENSE_CREATIVE_COMMONS_LICENSE</p></td>
+<td class="enum_member_description">
+<p>this license was created
+    by the Creative Commons project</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-LICENSE-FREE-SOFTWARE-FOUNDATION-LICENSE:CAPS"></a>GST_TAG_LICENSE_FREE_SOFTWARE_FOUNDATION_LICENSE</p></td>
+<td class="enum_member_description">
+<p>this license was
+    created by the Free Software Foundation (FSF)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttaglicenses.see-also"></a><h2>See Also</h2>
+<p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

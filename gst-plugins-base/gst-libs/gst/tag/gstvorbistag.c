@@ -1,7 +1,7 @@
 /* GStreamer
  * Copyright (C) 2003 Benjamin Otte <in7y118@public.uni-hamburg.de>
  *
- * gstvorbistagsetter.c: plugin for reading / modifying vorbis tags
+ * gstvorbistag.c: library for reading / modifying vorbis tags
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -37,6 +37,8 @@
 #include "config.h"
 #endif
 #include <gst/gsttagsetter.h>
+#include <gst/base/gstbytereader.h>
+#include <gst/base/gstbytewriter.h>
 #include "gsttageditingprivate.h"
 #include <stdlib.h>
 #include <string.h>
@@ -51,7 +53,9 @@ static const GstTagEntryMatch tag_matches[] = {
   {GST_TAG_TRACK_NUMBER, "TRACKNUMBER"},
   {GST_TAG_ALBUM_VOLUME_NUMBER, "DISCNUMBER"},
   {GST_TAG_TRACK_COUNT, "TRACKTOTAL"},
+  {GST_TAG_TRACK_COUNT, "TOTALTRACKS"}, /* old / non-standard */
   {GST_TAG_ALBUM_VOLUME_COUNT, "DISCTOTAL"},
+  {GST_TAG_ALBUM_VOLUME_COUNT, "TOTALDISCS"},   /* old / non-standard */
   {GST_TAG_ARTIST, "ARTIST"},
   {GST_TAG_PERFORMER, "PERFORMER"},
   {GST_TAG_COMPOSER, "COMPOSER"},
@@ -62,7 +66,7 @@ static const GstTagEntryMatch tag_matches[] = {
   {GST_TAG_ORGANIZATION, "ORGANIZATION"},
   {GST_TAG_DESCRIPTION, "DESCRIPTION"},
   {GST_TAG_GENRE, "GENRE"},
-  {GST_TAG_DATE, "DATE"},
+  {GST_TAG_DATE_TIME, "DATE"},
   {GST_TAG_CONTACT, "CONTACT"},
   {GST_TAG_ISRC, "ISRC"},
   {GST_TAG_COMMENT, "COMMENT"},
@@ -84,6 +88,7 @@ static const GstTagEntryMatch tag_matches[] = {
   {GST_TAG_TITLE_SORTNAME, "TITLESORT"},
   {GST_TAG_TITLE_SORTNAME, "TITLESORTORDER"},
   {GST_TAG_ALBUM_ARTIST, "ALBUMARTIST"},
+  {GST_TAG_ALBUM_ARTIST, "ALBUM ARTIST"},
   {GST_TAG_ALBUM_ARTIST_SORTNAME, "ALBUMARTISTSORT"},
   {GST_TAG_ALBUM_ARTIST_SORTNAME, "ALBUMARTISTSORTORDER"},
   {GST_TAG_LANGUAGE_CODE, "LANGUAGE"},
@@ -96,6 +101,11 @@ static const GstTagEntryMatch tag_matches[] = {
    * http://mail.kde.org/pipermail/amarok/2006-May/000090.html
    */
   {GST_TAG_BEATS_PER_MINUTE, "BPM"},
+  /* What GStreamer calls encoder ("encoder used to encode this stream") is
+     stored in the vendor string in Vorbis/Theora/Kate and possibly others.
+     The Vorbis comment packet used in those streams uses ENCODER as the name
+     of the encoding program, which GStreamer calls application-name. */
+  {GST_TAG_APPLICATION_NAME, "ENCODER"},
   {NULL, NULL}
 };
 
@@ -107,7 +117,7 @@ static const GstTagEntryMatch tag_matches[] = {
  *
  * Returns: The corresponding GStreamer tag or NULL if none exists.
  */
-G_CONST_RETURN gchar *
+const gchar *
 gst_tag_from_vorbis_tag (const gchar * vorbis_tag)
 {
   int i = 0;
@@ -136,7 +146,7 @@ gst_tag_from_vorbis_tag (const gchar * vorbis_tag)
  *
  * Returns: The corresponding vorbiscomment tag or NULL if none exists.
  */
-G_CONST_RETURN gchar *
+const gchar *
 gst_tag_to_vorbis_tag (const gchar * gst_tag)
 {
   int i = 0;
@@ -166,7 +176,7 @@ gst_tag_to_vorbis_tag (const gchar * gst_tag)
  * given taglist @list.
  *
  * Unknown vorbiscomment tags will be added to the tag list in form
- * of a #GST_TAG_EXTENDED_COMMENT (since 0.10.10 at least).
+ * of a #GST_TAG_EXTENDED_COMMENT.
  */
 void
 gst_vorbis_tag_add (GstTagList * list, const gchar * tag, const gchar * value)
@@ -265,38 +275,17 @@ gst_vorbis_tag_add (GstTagList * list, const gchar * tag, const gchar * value)
       break;
     }
     default:{
-      if (tag_type == GST_TYPE_DATE) {
-        guint y, d = 1, m = 1;
-        gchar *check = (gchar *) value;
+      if (tag_type == GST_TYPE_DATE_TIME) {
+        GstDateTime *datetime;
 
-        y = strtoul (check, &check, 10);
-        if (*check == '-') {
-          check++;
-          m = strtoul (check, &check, 10);
-          if (*check == '-') {
-            check++;
-            d = strtoul (check, &check, 10);
-          }
-        }
+        datetime = gst_date_time_new_from_iso8601_string (value);
 
-        /* accept dates like 2007-00-00 and 2007-05-00 */
-        if (y != 0) {
-          if (m == 0 && d == 0)
-            m = d = 1;
-          else if (m != 0 && d == 0)
-            d = 1;
-        }
-
-        /* date might be followed by a time */
-        if ((*check == '\0' || g_ascii_isspace (*check)) && y != 0 &&
-            g_date_valid_dmy (d, m, y)) {
-          GDate *date;
-
-          date = g_date_new_dmy (d, m, y);
-          gst_tag_list_add (list, GST_TAG_MERGE_APPEND, gst_tag, date, NULL);
-          g_date_free (date);
+        if (datetime) {
+          gst_tag_list_add (list, GST_TAG_MERGE_APPEND, gst_tag, datetime,
+              NULL);
+          gst_date_time_unref (datetime);
         } else {
-          GST_DEBUG ("skipping invalid date '%s' (%u,%u,%u)", value, y, m, d);
+          GST_WARNING ("could not parse datetime string '%s'", value);
         }
       } else {
         GST_WARNING ("Unhandled tag of type '%s' (%d)",
@@ -311,30 +300,22 @@ static void
 gst_vorbis_tag_add_coverart (GstTagList * tags, gchar * img_data_base64,
     gint base64_len)
 {
-  GstBuffer *img;
+  GstSample *img;
   gsize img_len;
-  guchar *out;
-  guint save = 0;
-  gint state = 0;
 
   if (base64_len < 2)
     goto not_enough_data;
 
   /* img_data_base64 points to a temporary copy of the base64 encoded data, so
    * it's safe to do inpace decoding here
-   * TODO: glib 2.20 and later provides g_base64_decode_inplace, so change this
-   * to use glib's API instead once it's in wider use:
-   *  http://bugzilla.gnome.org/show_bug.cgi?id=564728
-   *  http://svn.gnome.org/viewvc/glib?view=revision&revision=7807 */
-  out = (guchar *) img_data_base64;
-  img_len = g_base64_decode_step (img_data_base64, base64_len,
-      out, &state, &save);
-
+   */
+  g_base64_decode_inplace (img_data_base64, &img_len);
   if (img_len == 0)
     goto decode_failed;
 
-  img = gst_tag_image_data_to_image_buffer (out, img_len,
-      GST_TAG_IMAGE_TYPE_NONE);
+  img =
+      gst_tag_image_data_to_image_sample ((const guint8 *) img_data_base64,
+      img_len, GST_TAG_IMAGE_TYPE_NONE);
 
   if (img == NULL)
     goto convert_failed;
@@ -342,7 +323,7 @@ gst_vorbis_tag_add_coverart (GstTagList * tags, gchar * img_data_base64,
   gst_tag_list_add (tags, GST_TAG_MERGE_APPEND,
       GST_TAG_PREVIEW_IMAGE, img, NULL);
 
-  gst_buffer_unref (img);
+  gst_sample_unref (img);
   return;
 
 /* ERRORS */
@@ -363,9 +344,69 @@ convert_failed:
   }
 }
 
+/* Standardized way of adding pictures to vorbiscomments:
+ * http://wiki.xiph.org/VorbisComment#METADATA_BLOCK_PICTURE
+ */
+static void
+gst_vorbis_tag_add_metadata_block_picture (GstTagList * tags,
+    gchar * value, gint value_len)
+{
+  GstByteReader reader;
+  guint32 img_len = 0, img_type = 0;
+  guint32 img_mimetype_len = 0, img_description_len = 0;
+  gsize decoded_len;
+  const guint8 *data = NULL;
+
+  /* img_data_base64 points to a temporary copy of the base64 encoded data, so
+   * it's safe to do inpace decoding here
+   */
+  g_base64_decode_inplace (value, &decoded_len);
+  if (decoded_len == 0)
+    goto decode_failed;
+
+  gst_byte_reader_init (&reader, (guint8 *) value, decoded_len);
+
+  if (!gst_byte_reader_get_uint32_be (&reader, &img_type))
+    goto error;
+
+  if (!gst_byte_reader_get_uint32_be (&reader, &img_mimetype_len))
+    goto error;
+  if (!gst_byte_reader_skip (&reader, img_mimetype_len))
+    goto error;
+
+  if (!gst_byte_reader_get_uint32_be (&reader, &img_description_len))
+    goto error;
+  if (!gst_byte_reader_skip (&reader, img_description_len))
+    goto error;
+
+  /* Skip width, height, color depth and number of colors for
+   * indexed formats */
+  if (!gst_byte_reader_skip (&reader, 4 * 4))
+    goto error;
+
+  if (!gst_byte_reader_get_uint32_be (&reader, &img_len))
+    goto error;
+
+  if (!gst_byte_reader_get_data (&reader, img_len, &data))
+    goto error;
+
+  gst_tag_list_add_id3_image (tags, data, img_len, img_type);
+
+  return;
+
+error:
+  GST_WARNING
+      ("Couldn't extract image or image type from METADATA_BLOCK_PICTURE tag");
+  return;
+decode_failed:
+  GST_WARNING ("Failed to decode Base64 data from METADATA_BLOCK_PICTURE tag");
+  return;
+}
+
 /**
- * gst_tag_list_from_vorbiscomment_buffer:
- * @buffer: buffer to convert
+ * gst_tag_list_from_vorbiscomment:
+ * @data: data to convert
+ * @size: size of @data
  * @id_data: identification data at start of stream
  * @id_data_length: length of identification data
  * @vendor_string: pointer to a string that should take the vendor string
@@ -378,7 +419,7 @@ convert_failed:
  *          given vorbiscomment buffer or NULL on error.
  */
 GstTagList *
-gst_tag_list_from_vorbiscomment_buffer (const GstBuffer * buffer,
+gst_tag_list_from_vorbiscomment (const guint8 * data, gsize size,
     const guint8 * id_data, const guint id_data_length, gchar ** vendor_string)
 {
 #define ADVANCE(x) G_STMT_START{                                                \
@@ -394,16 +435,13 @@ gst_tag_list_from_vorbiscomment_buffer (const GstBuffer * buffer,
   gchar *cur, *value;
   guint cur_size;
   guint iterations;
-  guint8 *data;
-  guint size, value_len;
+  guint value_len;
   GstTagList *list;
 
-  g_return_val_if_fail (GST_IS_BUFFER (buffer), NULL);
+  g_return_val_if_fail (data != NULL, NULL);
   g_return_val_if_fail (id_data != NULL || id_data_length == 0, NULL);
 
-  data = GST_BUFFER_DATA (buffer);
-  size = GST_BUFFER_SIZE (buffer);
-  list = gst_tag_list_new ();
+  list = gst_tag_list_new_empty ();
 
   if (size < 11 || size <= id_data_length + 4)
     goto error;
@@ -438,9 +476,12 @@ gst_tag_list_from_vorbiscomment_buffer (const GstBuffer * buffer,
     }
     /* we'll just ignore COVERARTMIME and typefind the image data */
     if (g_ascii_strcasecmp (cur, "COVERARTMIME") == 0) {
+      g_free (cur);
       continue;
     } else if (g_ascii_strcasecmp (cur, "COVERART") == 0) {
       gst_vorbis_tag_add_coverart (list, value, value_len);
+    } else if (g_ascii_strcasecmp (cur, "METADATA_BLOCK_PICTURE") == 0) {
+      gst_vorbis_tag_add_metadata_block_picture (list, value, value_len);
     } else {
       gst_vorbis_tag_add (list, cur, value);
     }
@@ -450,9 +491,41 @@ gst_tag_list_from_vorbiscomment_buffer (const GstBuffer * buffer,
   return list;
 
 error:
-  gst_tag_list_free (list);
+  gst_tag_list_unref (list);
   return NULL;
 #undef ADVANCE
+}
+
+/**
+ * gst_tag_list_from_vorbiscomment_buffer:
+ * @buffer: buffer to convert
+ * @id_data: identification data at start of stream
+ * @id_data_length: length of identification data
+ * @vendor_string: pointer to a string that should take the vendor string
+ *                 of this vorbis comment or NULL if you don't need it.
+ *
+ * Creates a new tag list that contains the information parsed out of a
+ * vorbiscomment packet.
+ *
+ * Returns: A new #GstTagList with all tags that could be extracted from the
+ *          given vorbiscomment buffer or NULL on error.
+ */
+GstTagList *
+gst_tag_list_from_vorbiscomment_buffer (GstBuffer * buffer,
+    const guint8 * id_data, const guint id_data_length, gchar ** vendor_string)
+{
+  GstTagList *res;
+  GstMapInfo info;
+
+  if (!gst_buffer_map (buffer, &info, GST_MAP_READ))
+    g_return_val_if_reached (NULL);
+
+  res =
+      gst_tag_list_from_vorbiscomment (info.data, info.size, id_data,
+      id_data_length, vendor_string);
+  gst_buffer_unmap (buffer, &info);
+
+  return res;
 }
 
 typedef struct
@@ -464,34 +537,100 @@ typedef struct
 MyForEach;
 
 static GList *
-gst_tag_to_coverart (const GValue * image_value)
+gst_tag_to_metadata_block_picture (const gchar * tag,
+    const GValue * image_value)
 {
-  gchar *coverart_data, *data_result, *mime_result;
+  gchar *comment_data, *data_result;
   const gchar *mime_type;
+  guint mime_type_len;
   GstStructure *mime_struct;
+  GstSample *sample;
   GstBuffer *buffer;
+  GstCaps *caps;
   GList *l = NULL;
+  GstMapInfo mapinfo = { 0, };
+  GstByteWriter writer;
+  GstTagImageType image_type = GST_TAG_IMAGE_TYPE_NONE;
+  gint width = 0, height = 0;
+  guint8 *metadata_block;
+  guint metadata_block_len;
 
   g_return_val_if_fail (image_value != NULL, NULL);
 
-  buffer = gst_value_get_buffer (image_value);
-  g_return_val_if_fail (gst_caps_is_fixed (buffer->caps), NULL);
-  mime_struct = gst_caps_get_structure (buffer->caps, 0);
-  mime_type = gst_structure_get_name (mime_struct);
+  sample = gst_value_get_sample (image_value);
+  buffer = gst_sample_get_buffer (sample);
+  caps = gst_sample_get_caps (sample);
+  g_return_val_if_fail (gst_caps_is_fixed (caps), NULL);
+  mime_struct = gst_caps_get_structure (caps, 0);
 
-  if (strcmp (mime_type, "text/uri-list") == 0) {
-    /* URI reference */
-    coverart_data = g_strndup ((gchar *) buffer->data, buffer->size);
-  } else {
-    coverart_data = g_base64_encode (buffer->data, buffer->size);
+  mime_type = gst_structure_get_name (mime_struct);
+  if (strcmp (mime_type, "text/uri-list") == 0)
+    mime_type = "-->";
+  mime_type_len = strlen (mime_type);
+
+  /* FIXME 2.0: Remove the image-type reading from the caps, this was
+   * a bug until 1.2.2. The image-type is only supposed to be in the
+   * info structure */
+  gst_structure_get (mime_struct, "image-type", GST_TYPE_TAG_IMAGE_TYPE,
+      &image_type, "width", G_TYPE_INT, &width, "height", G_TYPE_INT, &height,
+      NULL);
+
+  if (image_type == GST_TAG_IMAGE_TYPE_NONE) {
+    const GstStructure *info_struct;
+
+    info_struct = gst_sample_get_info (sample);
+    if (info_struct && gst_structure_has_name (info_struct, "GstTagImageInfo")) {
+      gst_structure_get (info_struct, "image-type", GST_TYPE_TAG_IMAGE_TYPE,
+          &image_type, NULL);
+    }
   }
 
-  data_result = g_strdup_printf ("COVERART=%s", coverart_data);
-  mime_result = g_strdup_printf ("COVERARTMIME=%s", mime_type);
-  g_free (coverart_data);
+  metadata_block_len = 32 + mime_type_len + gst_buffer_get_size (buffer);
+  gst_byte_writer_init_with_size (&writer, metadata_block_len, TRUE);
+
+  if (image_type == GST_TAG_IMAGE_TYPE_NONE
+      && strcmp (tag, GST_TAG_PREVIEW_IMAGE) == 0) {
+    gst_byte_writer_put_uint32_be_unchecked (&writer, 0x01);
+  } else {
+    /* Convert to ID3v2 APIC image type */
+    if (image_type == GST_TAG_IMAGE_TYPE_NONE)
+      image_type = GST_TAG_IMAGE_TYPE_UNDEFINED;
+    else
+      image_type = image_type + 2;
+    gst_byte_writer_put_uint32_be_unchecked (&writer, image_type);
+  }
+
+  gst_byte_writer_put_uint32_be_unchecked (&writer, mime_type_len);
+  gst_byte_writer_put_data_unchecked (&writer, (guint8 *) mime_type,
+      mime_type_len);
+  /* description length */
+  gst_byte_writer_put_uint32_be_unchecked (&writer, 0);
+  gst_byte_writer_put_uint32_be_unchecked (&writer, width);
+  gst_byte_writer_put_uint32_be_unchecked (&writer, height);
+  /* color depth */
+  gst_byte_writer_put_uint32_be_unchecked (&writer, 0);
+  /* for indexed formats the number of colors */
+  gst_byte_writer_put_uint32_be_unchecked (&writer, 0);
+
+  if (gst_buffer_map (buffer, &mapinfo, GST_MAP_READ)) {
+    gst_byte_writer_put_uint32_be_unchecked (&writer, mapinfo.size);
+    gst_byte_writer_put_data_unchecked (&writer, mapinfo.data, mapinfo.size);
+    gst_buffer_unmap (buffer, &mapinfo);
+  } else {
+    GST_WARNING ("Failed to map vorbistag image buffer");
+    gst_byte_writer_reset (&writer);
+    return NULL;                /* List is always null up to here */
+  }
+
+  g_assert (gst_byte_writer_get_pos (&writer) == metadata_block_len);
+
+  metadata_block = gst_byte_writer_reset_and_get_data (&writer);
+  comment_data = g_base64_encode (metadata_block, metadata_block_len);
+  g_free (metadata_block);
+  data_result = g_strdup_printf ("METADATA_BLOCK_PICTURE=%s", comment_data);
+  g_free (comment_data);
 
   l = g_list_append (l, data_result);
-  l = g_list_append (l, mime_result);
 
   return l;
 }
@@ -504,8 +643,9 @@ gst_tag_to_coverart (const GValue * image_value)
  * Creates a new tag list that contains the information parsed out of a
  * vorbiscomment packet.
  *
- * Returns: A #GList of newly-allowcated key=value strings. Free with
- *          g_list_foreach (list, (GFunc) g_free, NULL) plus g_list_free (list)
+ * Returns: (element-type utf8) (transfer full): A #GList of newly-allocated
+ *     key=value strings. Free with g_list_foreach (list, (GFunc) g_free, NULL)
+ *     plus g_list_free (list)
  */
 GList *
 gst_tag_to_vorbis_comments (const GstTagList * list, const gchar * tag)
@@ -526,7 +666,8 @@ gst_tag_to_vorbis_comments (const GstTagList * list, const gchar * tag)
   if ((strcmp (tag, GST_TAG_PREVIEW_IMAGE) == 0 &&
           gst_tag_list_get_tag_size (list, GST_TAG_IMAGE) == 0) ||
       strcmp (tag, GST_TAG_IMAGE) == 0) {
-    return gst_tag_to_coverart (gst_tag_list_get_value_index (list, tag, 0));
+    return gst_tag_to_metadata_block_picture (tag,
+        gst_tag_list_get_value_index (list, tag, 0));
   }
 
   if (strcmp (tag, GST_TAG_EXTENDED_COMMENT) != 0) {
@@ -551,9 +692,9 @@ gst_tag_to_vorbis_comments (const GstTagList * list, const gchar * tag)
         break;
       }
       case G_TYPE_STRING:{
-        gchar *str = NULL;
+        const gchar *str = NULL;
 
-        if (!gst_tag_list_get_string_index (list, tag, i, &str))
+        if (!gst_tag_list_peek_string_index (list, tag, i, &str))
           g_return_val_if_reached (NULL);
 
         /* special case: GST_TAG_EXTENDED_COMMENT */
@@ -571,7 +712,6 @@ gst_tag_to_vorbis_comments (const GstTagList * list, const gchar * tag)
         } else {
           result = g_strdup_printf ("%s=%s", vorbis_tag, str);
         }
-        g_free (str);
         break;
       }
       case G_TYPE_DOUBLE:{
@@ -585,18 +725,20 @@ gst_tag_to_vorbis_comments (const GstTagList * list, const gchar * tag)
         break;
       }
       default:{
-        if (tag_type == GST_TYPE_DATE) {
-          GDate *date;
+        if (tag_type == GST_TYPE_DATE_TIME) {
+          GstDateTime *datetime;
 
-          if (!gst_tag_list_get_date_index (list, tag, i, &date))
-            g_return_val_if_reached (NULL);
+          if (gst_tag_list_get_date_time_index (list, tag, i, &datetime)) {
+            gchar *string;
 
-          /* vorbis suggests using ISO date formats */
-          result =
-              g_strdup_printf ("%s=%04d-%02d-%02d", vorbis_tag,
-              (gint) g_date_get_year (date), (gint) g_date_get_month (date),
-              (gint) g_date_get_day (date));
-          g_date_free (date);
+            /* vorbis suggests using ISO date formats:
+             * http://wiki.xiph.org/VorbisComment#Date_and_time */
+            string = gst_date_time_to_iso8601_string (datetime);
+            result = g_strdup_printf ("%s=%s", vorbis_tag, string);
+            g_free (string);
+
+            gst_date_time_unref (datetime);
+          }
         } else {
           GST_DEBUG ("Couldn't write tag %s", tag);
           continue;
@@ -648,6 +790,7 @@ gst_tag_list_to_vorbiscomment_buffer (const GstTagList * list,
     const gchar * vendor_string)
 {
   GstBuffer *buffer;
+  GstMapInfo info;
   guint8 *data;
   guint i;
   GList *l;
@@ -664,8 +807,10 @@ gst_tag_list_to_vorbiscomment_buffer (const GstTagList * list,
   required_size = id_data_length + 4 + vendor_len + 4 + 1;
   gst_tag_list_foreach ((GstTagList *) list, write_one_tag, &my_data);
   required_size += 4 * my_data.count + my_data.data_count;
+
   buffer = gst_buffer_new_and_alloc (required_size);
-  data = GST_BUFFER_DATA (buffer);
+  gst_buffer_map (buffer, &info, GST_MAP_WRITE);
+  data = info.data;
   if (id_data_length > 0) {
     memcpy (data, id_data, id_data_length);
     data += id_data_length;
@@ -693,6 +838,7 @@ gst_tag_list_to_vorbiscomment_buffer (const GstTagList * list,
   g_list_foreach (my_data.entries, (GFunc) g_free, NULL);
   g_list_free (my_data.entries);
   *data = 1;
+  gst_buffer_unmap (buffer, &info);
 
   return buffer;
 }

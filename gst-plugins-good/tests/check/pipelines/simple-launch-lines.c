@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -105,7 +105,7 @@ done:
 
 GST_START_TEST (test_rtp_payloaders)
 {
-  gchar *s;
+  const gchar *s;
 
   /* FIXME: going to playing would be nice, but thet leads to lot of failure */
   GstState target_state = GST_STATE_PAUSED;
@@ -220,10 +220,20 @@ GST_START_TEST (test_rtp_payloaders)
   /*s = FAKESRC " ! ! rtpsv3vdepay ! " FAKESINK; */
 }
 
-GST_END_TEST
+GST_END_TEST;
+
+static gboolean
+have_elements (const gchar * element1, const gchar * element2)
+{
+  return gst_registry_check_feature_version (gst_registry_get (), element1,
+      GST_VERSION_MAJOR, GST_VERSION_MINOR, 0) &&
+      gst_registry_check_feature_version (gst_registry_get (), element2,
+      GST_VERSION_MAJOR, GST_VERSION_MINOR, 0);
+}
+
 GST_START_TEST (test_video_encoders_decoders)
 {
-  gchar *s;
+  const gchar *s;
   GstState target_state = GST_STATE_PLAYING;
 
   /* no is-live on the source because we actually want to preroll since
@@ -231,25 +241,51 @@ GST_START_TEST (test_video_encoders_decoders)
 #define ENC_DEC_PIPELINE_STRING(bufcount, enc, dec) "videotestsrc num-buffers=" bufcount " ! " enc " ! " dec " ! fakesink"
 #define DEFAULT_BUFCOUNT "5"
 
-  s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "jpegenc", "jpegdec");
-  run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
-      GST_MESSAGE_UNKNOWN, target_state);
+  if (have_elements ("jpegenc", "jpegdec")) {
+    s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "jpegenc", "jpegdec");
+    run_pipeline (setup_pipeline (s), s,
+        GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+        GST_MESSAGE_UNKNOWN, target_state);
+  }
 
-  s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "pngenc", "pngdec");
-  run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
-      GST_MESSAGE_UNKNOWN, target_state);
+  if (have_elements ("pngenc", "pngdec")) {
+    s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "pngenc", "pngdec");
+    run_pipeline (setup_pipeline (s), s,
+        GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+        GST_MESSAGE_UNKNOWN, target_state);
+  }
 
-  s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "smokeenc", "smokedec");
-  run_pipeline (setup_pipeline (s), s,
-      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
-      GST_MESSAGE_UNKNOWN, target_state);
+  if (have_elements ("smokeenc", "smokedec")) {
+    s = ENC_DEC_PIPELINE_STRING (DEFAULT_BUFCOUNT, "smokeenc", "smokedec");
+    run_pipeline (setup_pipeline (s), s,
+        GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+        GST_MESSAGE_UNKNOWN, target_state);
+  }
 }
 
-GST_END_TEST
+GST_END_TEST;
+
+#define VIDEOMIXER_PIPELINE \
+    "videomixer name=mix  background=transparent ! fakesink " \
+    "videotestsrc num-buffers=50 ! " \
+    "  video/x-raw,format=RGBA, width=200,height=200,framerate=10/1  ! " \
+    "  videoconvert ! mix.sink_1 " \
+    "videotestsrc num-buffers=50 pattern=smpte ! " \
+    "  video/x-raw,format=RGBA, width=720,height=480,framerate=10/1  ! " \
+    "  videoconvert ! mix.sink_0 "
+
+GST_START_TEST (test_videomixer)
+{
+  run_pipeline (setup_pipeline (VIDEOMIXER_PIPELINE), VIDEOMIXER_PIPELINE,
+      GST_MESSAGE_ANY & ~(GST_MESSAGE_ERROR | GST_MESSAGE_WARNING),
+      GST_MESSAGE_UNKNOWN, GST_STATE_PLAYING);
+}
+
+GST_END_TEST;
+
 #endif /* #ifndef GST_DISABLE_PARSE */
-    Suite * simple_launch_lines_suite (void)
+static Suite *
+simple_launch_lines_suite (void)
 {
   Suite *s = suite_create ("Pipelines");
   TCase *tc_chain = tcase_create ("linear");
@@ -261,23 +297,10 @@ GST_END_TEST
 #ifndef GST_DISABLE_PARSE
   tcase_add_test (tc_chain, test_rtp_payloaders);
   tcase_add_test (tc_chain, test_video_encoders_decoders);
+  /* FIXME: very rarely fails, maybe because of negotiation issues? */
+  tcase_add_test (tc_chain, test_videomixer);
 #endif
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = simple_launch_lines_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (simple_launch_lines);

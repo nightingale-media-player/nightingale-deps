@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifndef __RESINDVDSRC_H__
 #define __RESINDVDSRC_H__
 
 #include <gst/gst.h>
 
-#include "rsnpushsrc.h"
+#include <gst/base/gstbasesrc.h>
 
 #include "_stdint.h"
 
@@ -46,7 +46,7 @@ typedef struct _resinDvdSrcClass resinDvdSrcClass;
 
 struct _resinDvdSrc
 {
-  RsnPushSrc parent;
+  GstBaseSrc parent;
 
   gboolean	faststart;
 
@@ -58,7 +58,7 @@ struct _resinDvdSrc
   gchar		*device;
   dvdnav_t	*dvdnav;
 
-  const char    *disc_name;
+  gchar     *disc_name;
 
   /* dvd_reader instance is used to load and cache VTS/VMG ifo info */
   dvd_reader_t  *dvdread;
@@ -84,6 +84,7 @@ struct _resinDvdSrc
   gboolean	first_seek;
   gboolean	flushing_seek;
   gboolean	need_segment;
+  gboolean	need_tag_update;
   gboolean	active_highlight;
   gboolean      in_still_state;
   gboolean      in_playing;
@@ -147,7 +148,7 @@ struct _resinDvdSrc
 
 struct _resinDvdSrcClass 
 {
-  RsnPushSrcClass parent_class;
+  GstBaseSrcClass parent_class;
 };
 
 GType rsn_dvdsrc_get_type (void);

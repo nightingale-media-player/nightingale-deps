@@ -2,185 +2,1306 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>GstBitReader</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
+<title>GstBitReader: GStreamer 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
 <link rel="prev" href="GstAdapter.html" title="GstAdapter">
 <link rel="next" href="gstreamer-libs-GstByteReader.html" title="GstByteReader">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
-<link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
-<link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
-<link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
-<link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
-<link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
-<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="GstAdapter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-libs-GstByteReader.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gstreamer-libs-GstBitReader.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gstreamer-libs-GstBitReader.description" class="shortcut">Description</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-libs-GstBitReader.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GstAdapter.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-libs-GstByteReader.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gstreamer-libs-GstBitReader"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-libs-GstBitReader.top_of_page"></a>GstBitReader</span></h2>
 <p>GstBitReader — Reads any number of bits from a memory buffer</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gstreamer-libs-GstBitReader.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-
-#include &lt;gst/base/gstbitreader.h&gt;
-
-                    <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a>;
-#define             <a class="link" href="gstreamer-libs-GstBitReader.html#GST-BIT-READER-INIT--CAPS" title="GST_BIT_READER_INIT()">GST_BIT_READER_INIT</a>                 (data, size)
-#define             <a class="link" href="gstreamer-libs-GstBitReader.html#GST-BIT-READER-INIT-FROM-BUFFER--CAPS" title="GST_BIT_READER_INIT_FROM_BUFFER()">GST_BIT_READER_INIT_FROM_BUFFER</a>     (buffer)
-<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *      <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new" title="gst_bit_reader_new ()">gst_bit_reader_new</a>                  (const <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *data,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> size);
-<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *      <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new-from-buffer" title="gst_bit_reader_new_from_buffer ()">gst_bit_reader_new_from_buffer</a>      (const <a
-href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a> *buffer);
-void                <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-free" title="gst_bit_reader_free ()">gst_bit_reader_free</a>                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);
-void                <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init" title="gst_bit_reader_init ()">gst_bit_reader_init</a>                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         const <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *data,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> size);
-void                <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init-from-buffer" title="gst_bit_reader_init_from_buffer ()">gst_bit_reader_init_from_buffer</a>     (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         const <a
-href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a> *buffer);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>               <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-pos" title="gst_bit_reader_get_pos ()">gst_bit_reader_get_pos</a>              (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>               <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-remaining" title="gst_bit_reader_get_remaining ()">gst_bit_reader_get_remaining</a>        (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-set-pos" title="gst_bit_reader_set_pos ()">gst_bit_reader_set_pos</a>              (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> pos);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip" title="gst_bit_reader_skip ()">gst_bit_reader_skip</a>                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip-to-byte" title="gst_bit_reader_skip_to_byte ()">gst_bit_reader_skip_to_byte</a>         (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint16" title="gst_bit_reader_get_bits_uint16 ()">gst_bit_reader_get_bits_uint16</a>      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint16"
->guint16</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint32" title="gst_bit_reader_get_bits_uint32 ()">gst_bit_reader_get_bits_uint32</a>      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint64" title="gst_bit_reader_get_bits_uint64 ()">gst_bit_reader_get_bits_uint64</a>      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint8" title="gst_bit_reader_get_bits_uint8 ()">gst_bit_reader_get_bits_uint8</a>       (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint16" title="gst_bit_reader_peek_bits_uint16 ()">gst_bit_reader_peek_bits_uint16</a>     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint16"
->guint16</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint32" title="gst_bit_reader_peek_bits_uint32 ()">gst_bit_reader_peek_bits_uint32</a>     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint64" title="gst_bit_reader_peek_bits_uint64 ()">gst_bit_reader_peek_bits_uint64</a>     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint8" title="gst_bit_reader_peek_bits_uint8 ()">gst_bit_reader_peek_bits_uint8</a>      (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);
+<div class="refsect1">
+<a name="gstreamer-libs-GstBitReader.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#GST-BIT-READER-INIT:CAPS" title="GST_BIT_READER_INIT()">GST_BIT_READER_INIT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="returnvalue">GstBitReader</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new" title="gst_bit_reader_new ()">gst_bit_reader_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-free" title="gst_bit_reader_free ()">gst_bit_reader_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init" title="gst_bit_reader_init ()">gst_bit_reader_init</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-pos" title="gst_bit_reader_get_pos ()">gst_bit_reader_get_pos</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-remaining" title="gst_bit_reader_get_remaining ()">gst_bit_reader_get_remaining</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-set-pos" title="gst_bit_reader_set_pos ()">gst_bit_reader_set_pos</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-size" title="gst_bit_reader_get_size ()">gst_bit_reader_get_size</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip" title="gst_bit_reader_skip ()">gst_bit_reader_skip</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip-to-byte" title="gst_bit_reader_skip_to_byte ()">gst_bit_reader_skip_to_byte</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint16" title="gst_bit_reader_get_bits_uint16 ()">gst_bit_reader_get_bits_uint16</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint32" title="gst_bit_reader_get_bits_uint32 ()">gst_bit_reader_get_bits_uint32</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint64" title="gst_bit_reader_get_bits_uint64 ()">gst_bit_reader_get_bits_uint64</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint8" title="gst_bit_reader_get_bits_uint8 ()">gst_bit_reader_get_bits_uint8</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint16" title="gst_bit_reader_peek_bits_uint16 ()">gst_bit_reader_peek_bits_uint16</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint32" title="gst_bit_reader_peek_bits_uint32 ()">gst_bit_reader_peek_bits_uint32</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint64" title="gst_bit_reader_peek_bits_uint64 ()">gst_bit_reader_peek_bits_uint64</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint8" title="gst_bit_reader_peek_bits_uint8 ()">gst_bit_reader_peek_bits_uint8</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip-unchecked" title="gst_bit_reader_skip_unchecked ()">gst_bit_reader_skip_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-skip-to-byte-unchecked" title="gst_bit_reader_skip_to_byte_unchecked ()">gst_bit_reader_skip_to_byte_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint16</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint16-unchecked" title="gst_bit_reader_get_bits_uint16_unchecked ()">gst_bit_reader_get_bits_uint16_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint32</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint32-unchecked" title="gst_bit_reader_get_bits_uint32_unchecked ()">gst_bit_reader_get_bits_uint32_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint64-unchecked" title="gst_bit_reader_get_bits_uint64_unchecked ()">gst_bit_reader_get_bits_uint64_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint8</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-get-bits-uint8-unchecked" title="gst_bit_reader_get_bits_uint8_unchecked ()">gst_bit_reader_get_bits_uint8_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint16</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint16-unchecked" title="gst_bit_reader_peek_bits_uint16_unchecked ()">gst_bit_reader_peek_bits_uint16_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint32</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint32-unchecked" title="gst_bit_reader_peek_bits_uint32_unchecked ()">gst_bit_reader_peek_bits_uint32_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint64-unchecked" title="gst_bit_reader_peek_bits_uint64_unchecked ()">gst_bit_reader_peek_bits_uint64_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint8</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-peek-bits-uint8-unchecked" title="gst_bit_reader_peek_bits_uint8_unchecked ()">gst_bit_reader_peek_bits_uint8_unchecked</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-libs-GstBitReader.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-libs-GstBitReader.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/base/gstbitreader.h&gt;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gstreamer-libs-GstBitReader.description"></a><h2>Description</h2>
-<p>
-<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> provides a bit reader that can read any number of bits
+<p><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> provides a bit reader that can read any number of bits
 from a memory buffer. It provides functions for reading any number of bits
 into 8, 16, 32 and 64 bit variables.</p>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gstreamer-libs-GstBitReader.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect1">
+<a name="gstreamer-libs-GstBitReader.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GST-BIT-READER-INIT:CAPS"></a><h3>GST_BIT_READER_INIT()</h3>
+<pre class="programlisting">#define GST_BIT_READER_INIT(data, size) {data, size, 0, 0}
+</pre>
+<p>A <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> must be initialized with this macro, before it can be
+used. This macro can used be to initialize a variable, but it cannot
+be assigned to a variable. In that case you have to use
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init" title="gst_bit_reader_init ()"><code class="function">gst_bit_reader_init()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>Data from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>Size of <em class="parameter"><code>data</code></em>
+in bytes</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-new"></a><h3>gst_bit_reader_new ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="returnvalue">GstBitReader</span></a> *
+gst_bit_reader_new (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>);</pre>
+<p>Create a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance, which will read from <em class="parameter"><code>data</code></em>
+.</p>
+<p>Free-function: gst_bit_reader_free</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.3.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> Data from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a>
+should read. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>Size of <em class="parameter"><code>data</code></em>
+in bytes</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.3.8"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-free"></a><h3>gst_bit_reader_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_bit_reader_free (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Frees a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance, which was previously allocated by
+<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new" title="gst_bit_reader_new ()"><code class="function">gst_bit_reader_new()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-init"></a><h3>gst_bit_reader_init ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_bit_reader_init (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                     <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>);</pre>
+<p>Initializes a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance to read from <em class="parameter"><code>data</code></em>
+. This function
+can be called on already initialized instances.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> data from which the bit reader should read. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>Size of <em class="parameter"><code>data</code></em>
+in bytes</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-pos"></a><h3>gst_bit_reader_get_pos ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_bit_reader_get_pos (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Returns the current position of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance in bits.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.6.6"></a><h4>Returns</h4>
+<p> The current position of <em class="parameter"><code>reader</code></em>
+in bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-remaining"></a><h3>gst_bit_reader_get_remaining ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_bit_reader_get_remaining (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Returns the remaining number of bits of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.7.6"></a><h4>Returns</h4>
+<p> The remaining number of bits of <em class="parameter"><code>reader</code></em>
+instance.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-set-pos"></a><h3>gst_bit_reader_set_pos ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_set_pos (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> pos</code></em>);</pre>
+<p>Sets the new position of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance to <em class="parameter"><code>pos</code></em>
+ in bits.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>pos</p></td>
+<td class="parameter_description"><p>The new position in bits</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.8.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the position could be set successfully, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-size"></a><h3>gst_bit_reader_get_size ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_bit_reader_get_size (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Returns the total number of bits of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.9.6"></a><h4>Returns</h4>
+<p> The total number of bits of <em class="parameter"><code>reader</code></em>
+instance.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-skip"></a><h3>gst_bit_reader_skip ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_skip (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                     <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Skips <em class="parameter"><code>nbits</code></em>
+ bits of the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>the number of bits to skip</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.10.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>nbits</code></em>
+bits could be skipped, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-skip-to-byte"></a><h3>gst_bit_reader_skip_to_byte ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_skip_to_byte (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Skips until the next byte.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.11.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint16"></a><h3>gst_bit_reader_get_bits_uint16 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_get_bits_uint16 (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><span class="type">guint16</span> *val</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint16</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.12.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint32"></a><h3>gst_bit_reader_get_bits_uint32 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_get_bits_uint32 (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><span class="type">guint32</span> *val</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint32</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.13.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint64"></a><h3>gst_bit_reader_get_bits_uint64 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_get_bits_uint64 (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><span class="type">guint64</span> *val</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint64</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.14.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint8"></a><h3>gst_bit_reader_get_bits_uint8 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_get_bits_uint8 (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                               <em class="parameter"><code><span class="type">guint8</span> *val</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint8</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.15.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint16"></a><h3>gst_bit_reader_peek_bits_uint16 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_peek_bits_uint16 (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                 <em class="parameter"><code><span class="type">guint16</span> *val</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint16</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.16.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint32"></a><h3>gst_bit_reader_peek_bits_uint32 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_peek_bits_uint32 (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                 <em class="parameter"><code><span class="type">guint32</span> *val</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint32</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.17.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint64"></a><h3>gst_bit_reader_peek_bits_uint64 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_peek_bits_uint64 (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                 <em class="parameter"><code><span class="type">guint64</span> *val</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint64</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.18.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint8"></a><h3>gst_bit_reader_peek_bits_uint8 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_bit_reader_peek_bits_uint8 (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><span class="type">guint8</span> *val</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> Pointer to a <span class="type">guint8</span> to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.19.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if successful, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-skip-unchecked"></a><h3>gst_bit_reader_skip_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_bit_reader_skip_unchecked (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Skips <em class="parameter"><code>nbits</code></em>
+ bits of the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance without checking if there
+are enough bits available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>the number of bits to skip</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-skip-to-byte-unchecked"></a><h3>gst_bit_reader_skip_to_byte_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_bit_reader_skip_to_byte_unchecked (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>);</pre>
+<p>Skips until the next byte without checking if there are enough bits
+available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint16-unchecked"></a><h3>gst_bit_reader_get_bits_uint16_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint16</span>
+gst_bit_reader_get_bits_uint16_unchecked
+                               (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position without
+checking if there are enough bits available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.22.6"></a><h4>Returns</h4>
+<p> unsigned 16 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint32-unchecked"></a><h3>gst_bit_reader_get_bits_uint32_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint32</span>
+gst_bit_reader_get_bits_uint32_unchecked
+                               (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position without
+checking if there are enough bits available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.23.6"></a><h4>Returns</h4>
+<p> unsigned 32 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint64-unchecked"></a><h3>gst_bit_reader_get_bits_uint64_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_bit_reader_get_bits_uint64_unchecked
+                               (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position without
+checking if there are enough bits available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.24.6"></a><h4>Returns</h4>
+<p> unsigned 64 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-get-bits-uint8-unchecked"></a><h3>gst_bit_reader_get_bits_uint8_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint8</span>
+gst_bit_reader_get_bits_uint8_unchecked
+                               (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ and update the current position without
+checking if there are enough bits available in the bit reader.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.25.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.25.6"></a><h4>Returns</h4>
+<p> unsigned 8 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint16-unchecked"></a><h3>gst_bit_reader_peek_bits_uint16_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint16</span>
+gst_bit_reader_peek_bits_uint16_unchecked
+                               (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position without
+checking if there are enough bits available in the bit reader</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.26.6"></a><h4>Returns</h4>
+<p> unsigned 16 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint32-unchecked"></a><h3>gst_bit_reader_peek_bits_uint32_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint32</span>
+gst_bit_reader_peek_bits_uint32_unchecked
+                               (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position without
+checking if there are enough bits available in the bit reader</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.27.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.27.6"></a><h4>Returns</h4>
+<p> unsigned 32 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint64-unchecked"></a><h3>gst_bit_reader_peek_bits_uint64_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_bit_reader_peek_bits_uint64_unchecked
+                               (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position without
+checking if there are enough bits available in the bit reader</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.28.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.28.6"></a><h4>Returns</h4>
+<p> unsigned 64 bit integer with the bits.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-bit-reader-peek-bits-uint8-unchecked"></a><h3>gst_bit_reader_peek_bits_uint8_unchecked ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint8</span>
+gst_bit_reader_peek_bits_uint8_unchecked
+                               (<em class="parameter"><code>const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> *reader</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nbits</code></em>);</pre>
+<p>Read <em class="parameter"><code>nbits</code></em>
+ bits into <em class="parameter"><code>val</code></em>
+ but keep the current position without
+checking if there are enough bits available in the bit reader</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.29.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>reader</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nbits</p></td>
+<td class="parameter_description"><p>number of bits to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.9.7.29.6"></a><h4>Returns</h4>
+<p> unsigned 8 bit integer with the bits.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-libs-GstBitReader.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
 <a name="GstBitReader"></a><h3>GstBitReader</h3>
 <pre class="programlisting">typedef struct {
   const guint8 *data;
@@ -190,820 +1311,45 @@ into 8, 16, 32 and 64 bit variables.</p>
   guint bit;   /* Bit position in the current byte */
 } GstBitReader;
 </pre>
-<p>
-A bit reader instance.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<p>A bit reader instance.</p>
+<div class="refsect3">
+<a name="id-1.2.4.9.8.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term">const <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *<em class="structfield"><code>data</code></em>;</span></p></td>
-<td> Data from which the bit reader will read
-</td>
+<td class="struct_member_name"><p>const <span class="type">guint8</span> *<em class="structfield"><code><a name="GstBitReader.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p> Data from which the bit reader will
+read. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size]</span></td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> <em class="structfield"><code>size</code></em>;</span></p></td>
-<td> Size of <em class="parameter"><code>data</code></em> in bytes
-</td>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstBitReader.size"></a>size</code></em>;</p></td>
+<td class="struct_member_description"><p>Size of <em class="parameter"><code>data</code></em>
+in bytes</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> <em class="structfield"><code>byte</code></em>;</span></p></td>
-<td> Current byte position
-</td>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstBitReader.byte"></a>byte</code></em>;</p></td>
+<td class="struct_member_description"><p>Current byte position</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> <em class="structfield"><code>bit</code></em>;</span></p></td>
-<td> Bit position in the current byte
-</td>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstBitReader.bit"></a>bit</code></em>;</p></td>
+<td class="struct_member_description"><p>Bit position in the current byte</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-BIT-READER-INIT--CAPS"></a><h3>GST_BIT_READER_INIT()</h3>
-<pre class="programlisting">#define GST_BIT_READER_INIT(data, size) {data, size, 0, 0}
-</pre>
-<p>
-A <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> must be initialized with this macro, before it can be
-used. This macro can used be to initialize a variable, but it cannot
-be assigned to a variable. In that case you have to use
-<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init" title="gst_bit_reader_init ()"><code class="function">gst_bit_reader_init()</code></a>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> Data from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td> Size of <em class="parameter"><code>data</code></em> in bytes
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-BIT-READER-INIT-FROM-BUFFER--CAPS"></a><h3>GST_BIT_READER_INIT_FROM_BUFFER()</h3>
-<pre class="programlisting">#define GST_BIT_READER_INIT_FROM_BUFFER(buffer) {GST_BUFFER_DATA (buffer), GST_BUFFER_SIZE (buffer), 0, 0}
-</pre>
-<p>
-A <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> must be initialized with this macro, before it can be
-used. This macro can used be to initialize a variable, but it cannot
-be assigned to a variable. In that case you have to use
-<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-init" title="gst_bit_reader_init ()"><code class="function">gst_bit_reader_init()</code></a>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> Buffer from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr></tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-new"></a><h3>gst_bit_reader_new ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *      gst_bit_reader_new                  (const <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *data,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> size);</pre>
-<p>
-Create a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance, which will read from <em class="parameter"><code>data</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> Data from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td> Size of <em class="parameter"><code>data</code></em> in bytes
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-new-from-buffer"></a><h3>gst_bit_reader_new_from_buffer ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *      gst_bit_reader_new_from_buffer      (const <a
-href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a> *buffer);</pre>
-<p>
-Create a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance, which will read from the
-<a
-href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
-><span class="type">GstBuffer</span></a> <em class="parameter"><code>buffer</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> Buffer from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a new <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-free"></a><h3>gst_bit_reader_free ()</h3>
-<pre class="programlisting">void                gst_bit_reader_free                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);</pre>
-<p>
-Frees a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance, which was previously allocated by
-<a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new" title="gst_bit_reader_new ()"><code class="function">gst_bit_reader_new()</code></a> or <a class="link" href="gstreamer-libs-GstBitReader.html#gst-bit-reader-new-from-buffer" title="gst_bit_reader_new_from_buffer ()"><code class="function">gst_bit_reader_new_from_buffer()</code></a>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr></tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-init"></a><h3>gst_bit_reader_init ()</h3>
-<pre class="programlisting">void                gst_bit_reader_init                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         const <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *data,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> size);</pre>
-<p>
-Initializes a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance to read from <em class="parameter"><code>data</code></em>. This function
-can be called on already initialized instances.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> Data from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td> Size of <em class="parameter"><code>data</code></em> in bytes
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-init-from-buffer"></a><h3>gst_bit_reader_init_from_buffer ()</h3>
-<pre class="programlisting">void                gst_bit_reader_init_from_buffer     (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         const <a
-href="../gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a> *buffer);</pre>
-<p>
-Initializes a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance to read from <em class="parameter"><code>buffer</code></em>. This function
-can be called on already initialized instances.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
-<td> Buffer from which the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> should read
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-pos"></a><h3>gst_bit_reader_get_pos ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>               gst_bit_reader_get_pos              (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);</pre>
-<p>
-Returns the current position of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance in bits.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The current position of <em class="parameter"><code>reader</code></em> in bits.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-remaining"></a><h3>gst_bit_reader_get_remaining ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>               gst_bit_reader_get_remaining        (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);</pre>
-<p>
-Returns the remaining number of bits of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The remaining number of bits of <em class="parameter"><code>reader</code></em> instance.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-set-pos"></a><h3>gst_bit_reader_set_pos ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_set_pos              (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> pos);</pre>
-<p>
-Sets the new position of a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance to <em class="parameter"><code>pos</code></em> in bits.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>pos</code></em> :</span></p></td>
-<td> The new position in bits
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the position could be set successfully, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a>
-otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-skip"></a><h3>gst_bit_reader_skip ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_skip                 (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Skips <em class="parameter"><code>nbits</code></em> bits of the <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> the number of bits to skip
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if <em class="parameter"><code>nbits</code></em> bits could be skipped, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-skip-to-byte"></a><h3>gst_bit_reader_skip_to_byte ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_skip_to_byte         (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader);</pre>
-<p>
-Skips until the next byte.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-bits-uint16"></a><h3>gst_bit_reader_get_bits_uint16 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_get_bits_uint16      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint16"
->guint16</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> and update the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint16"
-><span class="type">guint16</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-bits-uint32"></a><h3>gst_bit_reader_get_bits_uint32 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_get_bits_uint32      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> and update the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint32"
-><span class="type">guint32</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-bits-uint64"></a><h3>gst_bit_reader_get_bits_uint64 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_get_bits_uint64      (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> and update the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint64"
-><span class="type">guint64</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-get-bits-uint8"></a><h3>gst_bit_reader_get_bits_uint8 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_get_bits_uint8       (<a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> and update the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint8"
-><span class="type">guint8</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-peek-bits-uint16"></a><h3>gst_bit_reader_peek_bits_uint16 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_peek_bits_uint16     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint16"
->guint16</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> but keep the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint16"
-><span class="type">guint16</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-peek-bits-uint32"></a><h3>gst_bit_reader_peek_bits_uint32 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_peek_bits_uint32     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> but keep the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint32"
-><span class="type">guint32</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-peek-bits-uint64"></a><h3>gst_bit_reader_peek_bits_uint64 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_peek_bits_uint64     (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> but keep the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint64"
-><span class="type">guint64</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-bit-reader-peek-bits-uint8"></a><h3>gst_bit_reader_peek_bits_uint8 ()</h3>
-<pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_bit_reader_peek_bits_uint8      (const <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader">GstBitReader</a> *reader,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint8"
->guint8</a> *val,
-                                                         <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> nbits);</pre>
-<p>
-Read <em class="parameter"><code>nbits</code></em> bits into <em class="parameter"><code>val</code></em> but keep the current position.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reader</code></em> :</span></p></td>
-<td> a <a class="link" href="gstreamer-libs-GstBitReader.html#GstBitReader" title="GstBitReader"><span class="type">GstBitReader</span></a> instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="../glib/glib-Basic-Types.html#guint8"
-><span class="type">guint8</span></a> to store the result
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>nbits</code></em> :</span></p></td>
-<td> number of bits to read
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="../glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if successful, <a
-href="../glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> otherwise.
-
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.22</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

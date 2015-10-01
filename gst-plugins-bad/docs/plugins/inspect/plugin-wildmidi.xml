@@ -3,10 +3,10 @@
   <description>Wildmidi Plugin</description>
   <filename>../../ext/timidity/.libs/libgstwildmidi.so</filename>
   <basename>libgstwildmidi.so</basename>
-  <version>0.10.16</version>
+  <version>1.6.0</version>
   <license>GPL</license>
   <source>gst-plugins-bad</source>
-  <package>GStreamer Bad Plug-ins prerelease</package>
+  <package>GStreamer Bad Plug-ins source release</package>
   <origin>Unknown package origin</origin>
   <elements>
     <element>
@@ -26,7 +26,7 @@
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-raw-int, rate=(int)44100, channels=(int)2, endianness=(int)1234, width=(int)16, depth=(int)16, signed=(boolean)true</details>
+          <details>audio/x-raw, format=(string)S16LE, rate=(int)44100, channels=(int)2, layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>

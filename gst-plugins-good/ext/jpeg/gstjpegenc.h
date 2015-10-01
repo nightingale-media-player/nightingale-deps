@@ -1,5 +1,7 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) 2012 Collabora Ltd.
+ *	Author : Edward Hervey <edward@collabora.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,14 +25,16 @@
 
 
 #include <gst/gst.h>
+#include <gst/video/video.h>
+#include <gst/video/gstvideoencoder.h>
 /* this is a hack hack hack to get around jpeglib header bugs... */
 #ifdef HAVE_STDLIB_H
 # undef HAVE_STDLIB_H
 #endif
+#include <stdio.h>
 #include <jpeglib.h>
 
 G_BEGIN_DECLS
-
 #define GST_TYPE_JPEGENC \
   (gst_jpegenc_get_type())
 #define GST_JPEGENC(obj) \
@@ -45,21 +49,32 @@ G_BEGIN_DECLS
 typedef struct _GstJpegEnc GstJpegEnc;
 typedef struct _GstJpegEncClass GstJpegEncClass;
 
-struct _GstJpegEnc {
-  GstElement element;
+struct _GstJpegEnc
+{
+  GstVideoEncoder encoder;
 
-  /* pads */
-  GstPad *sinkpad,*srcpad;
+  GstVideoCodecState *input_state;
+  GstVideoFrame current_vframe;
+  GstVideoCodecFrame *current_frame;
+  GstFlowReturn res;
 
-  /* video state */
-  gint format;
-  gint width;
-  gint height;
+  guint channels;
+
+  gint inc[GST_VIDEO_MAX_COMPONENTS];
+  gint cwidth[GST_VIDEO_MAX_COMPONENTS];
+  gint cheight[GST_VIDEO_MAX_COMPONENTS];
+  gint h_samp[GST_VIDEO_MAX_COMPONENTS];
+  gint v_samp[GST_VIDEO_MAX_COMPONENTS];
+  gint h_max_samp;
+  gint v_max_samp;
+  gboolean planar;
+  gint sof_marker;
   /* the video buffer */
   gint bufsize;
-  guint row_stride;
   /* the jpeg line buffer */
   guchar **line[3];
+  /* indirect encoding line buffers */
+  guchar *row[3][4 * DCTSIZE];
 
   struct jpeg_compress_struct cinfo;
   struct jpeg_error_mgr jerr;
@@ -70,21 +85,16 @@ struct _GstJpegEnc {
   gint smoothing;
   gint idct_method;
 
-  /* cached return state for any problems that may occur in callbacks */
-  GstFlowReturn last_ret;
-
-  GstBuffer* output_buffer;
+  GstMemory *output_mem;
+  GstMapInfo output_map;
 };
 
-struct _GstJpegEncClass {
-  GstElementClass parent_class;
-
-  /* signals */
-  void (*frame_encoded) (GstElement *element);
+struct _GstJpegEncClass
+{
+  GstVideoEncoderClass parent_class;
 };
 
-GType gst_jpegenc_get_type(void);
+GType gst_jpegenc_get_type (void);
 
 G_END_DECLS
-
 #endif /* __GST_JPEGENC_H__ */

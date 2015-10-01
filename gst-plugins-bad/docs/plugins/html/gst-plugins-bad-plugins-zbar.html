@@ -2,101 +2,99 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>zbar</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<title>zbar: GStreamer Bad Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="prev" href="gst-plugins-bad-plugins-wildmidi.html" title="wildmidi">
-<link rel="next" href="ch02.html" title="gst-plugins-bad Plugins">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="prev" href="gst-plugins-bad-plugins-waterripple.html" title="waterripple">
+<link rel="next" href="gst-plugins-bad-plugins-voaacenc.html" title="voaacenc">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-wildmidi.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="ch02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-bad-plugins-zbar.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-bad-plugins-zbar.description" class="shortcut">Description</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-zbar.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-zbar.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-zbar.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-waterripple.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-voaacenc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-bad-plugins-zbar"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-zbar.top_of_page"></a>zbar</span></h2>
-<p>zbar — Detect bar codes in the video streams</p>
+<p>zbar</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-bad-plugins-zbar.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-zbar.html#GstZBar" title="GstZBar">GstZBar</a>;
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-zbar.html#GstZBar--message" title="The “message” property">message</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-zbar.html#GstZBar--cache" title="The “cache” property">cache</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-zbar.html#GstZBar--attach-frame" title="The “attach-frame” property">attach-frame</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstZBar"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-plugins-zbar.html#GstZBar-struct" title="struct GstZBar">GstZBar</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
+                        <span class="lineart">╰──</span> GstZBar
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-bad-plugins-zbar.description"></a><h2>Description</h2>
-<p>
-Detect bar codes in the video streams and send them as element messages to
-the <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBus.html"
-><span class="type">GstBus</span></a> if .<span class="type">"message"</span> property is <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a>.
-</p>
-<p>
-The element generate messages named
-<code class="classname">"barcode"</code>. The structure containes these
-fields:
-</p>
-<div class="itemizedlist"><ul type="disc">
-<li><p>
-  <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstClock.html#GstClockTime"
-><span class="type">GstClockTime</span></a>
-  <code class="classname">"timestamp"</code>:
-  the timestamp of the buffer that triggered the message.
-  </p></li>
-<li><p>
-  gchar*
-  <code class="classname">"type"</code>:
-  the symbol type.
-  </p></li>
-<li><p>
-  gchar*
-  <code class="classname">"symbol"</code>:
-  the deteted bar code data.
-  </p></li>
-</ul></div>
-<p>
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2877940"></a><h3>Example launch lines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -m v4l2src ! ffmpegcolorspace ! zbar ! ffmpegcolorspace ! xvimagesink
-</pre></div> This pipeline will detect barcodes and send them as messages.
-<div class="informalexample"><pre class="programlisting">
-gst-launch -m v4l2src ! tee name=t ! queue ! ffmpegcolorspace ! zbar ! fakesink t. ! queue ! xvimagesink
-</pre></div> Same as above, but running the filter on a branch to keep the display in color
-</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2827916"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.85.7.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -116,10 +114,37 @@ gst-launch -m v4l2src ! tee name=t ! queue ! ffmpegcolorspace ! zbar ! fakesink 
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2921670"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.85.7.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw, format=(string){ Y800, I420, YV12, NV12, NV21, Y41B, Y42B, YUV9, YVU9 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -135,63 +160,52 @@ gst-launch -m v4l2src ! tee name=t ! queue ! ffmpegcolorspace ! zbar ! fakesink 
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ Y800 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ Y800 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, format=(string){ Y800, I420, YV12, NV12, NV21, Y41B, Y42B, YUV9, YVU9 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-bad-plugins-zbar.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstZBar"></a><h3>GstZBar</h3>
-<pre class="programlisting">typedef struct {
-  GstVideoFilter videofilter;
-
-  /* format */
-  gint width;
-  gint height;
-
-  /* properties */
-  gboolean message;
-  
-  /* internals */
-  zbar_image_scanner_t *scanner;
-} GstZBar;
-</pre>
-<p>
-Opaque data structure.</p>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstZBar-struct"></a><h3>struct GstZBar</h3>
+<pre class="programlisting">struct GstZBar;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-zbar.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstZBar--message"></a><h3>The <code class="literal">“message”</code> property</h3>
+<pre class="programlisting">  “message”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Post a barcode message for each detected code.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstZBar--cache"></a><h3>The <code class="literal">“cache”</code> property</h3>
+<pre class="programlisting">  “cache”                    <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable or disable the inter-image result cache.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstZBar--attach-frame"></a><h3>The <code class="literal">“attach-frame”</code> property</h3>
+<pre class="programlisting">  “attach-frame”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Attach a frame dump to each barcode message.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

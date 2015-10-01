@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <string.h>
@@ -39,7 +39,7 @@ gst_wavpack_stream_reader_read_bytes (void *id, void *data, int32_t bcount)
       rid->length, rid->position);
 
   if (to_read > 0) {
-    g_memmove (data, rid->buffer + rid->position, to_read);
+    memmove (data, rid->buffer + rid->position, to_read);
     rid->position += to_read;
     return to_read;
   } else {
@@ -78,9 +78,10 @@ gst_wavpack_stream_reader_push_back_byte (void *id, int c)
 
   GST_DEBUG ("Pushing back one byte: 0x%x", c);
 
+  if (rid->position == 0)
+    return rid->position;
+
   rid->position -= 1;
-  if (rid->position < 0)
-    rid->position = 0;
   return rid->position;
 }
 
@@ -107,7 +108,7 @@ gst_wavpack_stream_reader_write_bytes (void *id, void *data, int32_t bcount)
 }
 
 WavpackStreamReader *
-gst_wavpack_stream_reader_new ()
+gst_wavpack_stream_reader_new (void)
 {
   WavpackStreamReader *stream_reader =
       (WavpackStreamReader *) g_malloc0 (sizeof (WavpackStreamReader));

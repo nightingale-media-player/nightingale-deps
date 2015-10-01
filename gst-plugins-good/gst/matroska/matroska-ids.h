@@ -15,16 +15,24 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MATROSKA_IDS_H__
 #define __GST_MATROSKA_IDS_H__
 
 #include <gst/gst.h>
+#include <gst/video/video-info.h>
 
 #include "ebml-ids.h"
+
+/*
+ * EBML DocType.
+ */
+
+#define GST_MATROSKA_DOCTYPE_MATROSKA              "matroska"
+#define GST_MATROSKA_DOCTYPE_WEBM                  "webm"
 
 /*
  * Matroska element IDs. max. 32-bit.
@@ -203,7 +211,7 @@
 #define GST_MATROSKA_ID_TARGETTYPEVALUE            0x68CA
 #define GST_MATROSKA_ID_TARGETTYPE                 0x63CA
 #define GST_MATROSKA_ID_TARGETTRACKUID             0x63C5
-#define GST_MATROSKA_ID_TARGETEDITIONUID           0x63C5
+#define GST_MATROSKA_ID_TARGETEDITIONUID           0x63C9
 #define GST_MATROSKA_ID_TARGETCHAPTERUID           0x63C4
 #define GST_MATROSKA_ID_TARGETATTACHMENTUID        0x63C6
 
@@ -337,6 +345,9 @@
 #define GST_MATROSKA_CODEC_ID_VIDEO_QUICKTIME    "V_QUICKTIME"
 #define GST_MATROSKA_CODEC_ID_VIDEO_SNOW         "V_SNOW"
 #define GST_MATROSKA_CODEC_ID_VIDEO_DIRAC        "V_DIRAC"
+#define GST_MATROSKA_CODEC_ID_VIDEO_VP8          "V_VP8"
+#define GST_MATROSKA_CODEC_ID_VIDEO_VP9          "V_VP9"
+#define GST_MATROSKA_CODEC_ID_VIDEO_MPEGH_HEVC   "V_MPEGH/ISO/HEVC"
 
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L1       "A_MPEG/L1"
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L2       "A_MPEG/L2"
@@ -348,6 +359,7 @@
 #define GST_MATROSKA_CODEC_ID_AUDIO_AC3_BSID9      "A_AC3/BSID9"
 #define GST_MATROSKA_CODEC_ID_AUDIO_AC3_BSID10     "A_AC3/BSID10"
 #define GST_MATROSKA_CODEC_ID_AUDIO_EAC3           "A_EAC3"
+#define GST_MATROSKA_CODEC_ID_AUDIO_TRUEHD         "A_TRUEHD"
 #define GST_MATROSKA_CODEC_ID_AUDIO_DTS            "A_DTS"
 #define GST_MATROSKA_CODEC_ID_AUDIO_VORBIS         "A_VORBIS"
 #define GST_MATROSKA_CODEC_ID_AUDIO_FLAC           "A_FLAC"
@@ -367,6 +379,7 @@
 #define GST_MATROSKA_CODEC_ID_AUDIO_AAC_MPEG4      "A_AAC/MPEG4/"
 #define GST_MATROSKA_CODEC_ID_AUDIO_QUICKTIME_QDMC "A_QUICKTIME/QDMC"
 #define GST_MATROSKA_CODEC_ID_AUDIO_QUICKTIME_QDM2 "A_QUICKTIME/QDM2"
+#define GST_MATROSKA_CODEC_ID_AUDIO_OPUS           "A_OPUS"
 /* Undefined for now:
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPC            "A_MPC"
 */
@@ -387,12 +400,13 @@
 
 #define GST_MATROSKA_TAG_ID_TITLE    "TITLE"
 #define GST_MATROSKA_TAG_ID_AUTHOR   "AUTHOR"
+#define GST_MATROSKA_TAG_ID_ARTIST   "ARTIST"
 #define GST_MATROSKA_TAG_ID_ALBUM    "ALBUM"
 #define GST_MATROSKA_TAG_ID_COMMENTS "COMMENTS"
+#define GST_MATROSKA_TAG_ID_COMMENT  "COMMENT"
 #define GST_MATROSKA_TAG_ID_BITSPS   "BITSPS"
 #define GST_MATROSKA_TAG_ID_BPS      "BPS"
 #define GST_MATROSKA_TAG_ID_ENCODER  "ENCODER"
-#define GST_MATROSKA_TAG_ID_DATE     "DATE"
 #define GST_MATROSKA_TAG_ID_ISRC     "ISRC"
 #define GST_MATROSKA_TAG_ID_COPYRIGHT "COPYRIGHT"
 #define GST_MATROSKA_TAG_ID_BPM       "BPM"
@@ -401,6 +415,25 @@
 #define GST_MATROSKA_TAG_ID_COMPOSER  "COMPOSER"
 #define GST_MATROSKA_TAG_ID_LEAD_PERFORMER  "LEAD_PERFOMER"
 #define GST_MATROSKA_TAG_ID_GENRE     "GENRE"
+#define GST_MATROSKA_TAG_ID_TOTAL_PARTS "TOTAL_PARTS"
+#define GST_MATROSKA_TAG_ID_PART_NUMBER "PART_NUMBER"
+#define GST_MATROSKA_TAG_ID_SUBTITLE "SUBTITLE"
+#define GST_MATROSKA_TAG_ID_ACCOMPANIMENT "ACCOMPANIMENT"
+#define GST_MATROSKA_TAG_ID_LYRICS "LYRICS"
+#define GST_MATROSKA_TAG_ID_CONDUCTOR "CONDUCTOR"
+#define GST_MATROSKA_TAG_ID_ENCODED_BY "ENCODED_BY"
+#define GST_MATROSKA_TAG_ID_DESCRIPTION "DESCRIPTION"
+#define GST_MATROSKA_TAG_ID_KEYWORDS "KEYWORDS"
+#define GST_MATROSKA_TAG_ID_DATE_RELEASED "DATE_RELEASED"
+#define GST_MATROSKA_TAG_ID_DATE_RECORDED "DATE_RECORDED"
+#define GST_MATROSKA_TAG_ID_DATE_ENCODED "DATE_ENCODED"
+#define GST_MATROSKA_TAG_ID_DATE_TAGGED "DATE_TAGGED"
+#define GST_MATROSKA_TAG_ID_DATE_DIGITIZED "DATE_DIGITIZED"
+#define GST_MATROSKA_TAG_ID_DATE_WRITTEN "DATE_WRITTEN"
+#define GST_MATROSKA_TAG_ID_DATE_PURCHASED "DATE_PURCHASED"
+#define GST_MATROSKA_TAG_ID_RECORDING_LOCATION "RECORDING_LOCATION"
+#define GST_MATROSKA_TAG_ID_PRODUCTION_COPYRIGHT "PRODUCTION_COPYRIGHT"
+#define GST_MATROSKA_TAG_ID_LICENSE "LICENSE"
 
 /*
  * TODO: add this tag & mappings
@@ -457,6 +490,16 @@ typedef enum {
   GST_MATROSKA_VIDEOTRACK_INTERLACED = (GST_MATROSKA_TRACK_SHIFT<<0)
 } GstMatroskaVideoTrackFlags;
 
+typedef enum {
+  GST_MATROSKA_STEREO_MODE_SBS_LR      = 0x1,
+  GST_MATROSKA_STEREO_MODE_TB_RL       = 0x2,
+  GST_MATROSKA_STEREO_MODE_TB_LR       = 0x3,
+  GST_MATROSKA_STEREO_MODE_CHECKER_RL  = 0x4,
+  GST_MATROSKA_STEREO_MODE_CHECKER_LR  = 0x5,
+  GST_MATROSKA_STEREO_MODE_SBS_RL      = 0x9,
+  GST_MATROSKA_STEREO_MODE_FBF_LR      = 0xD,
+  GST_MATROSKA_STEREO_MODE_FBF_RL      = 0xE
+} GstMatroskaStereoMode;
 
 typedef struct _GstMatroskaTrackContext GstMatroskaTrackContext;
 
@@ -465,20 +508,24 @@ struct _GstMatroskaTrackContext {
   GstPad       *pad;
   GstCaps      *caps;
   guint         index;
-  GstFlowReturn last_flow;
+  /* reverse playback */
+  GstClockTime  from_time;
+  gint64                   from_offset;
+  gint64                   to_offset;
 
   GArray       *index_table;
 
   gint          index_writer_id;
 
   /* some often-used info */
+  guint64       track_uid;
   gchar        *codec_id, *codec_name, *name, *language;
-  guint8       *codec_priv;
-  guint         codec_priv_size;
-  guint8       *codec_state;
-  guint         codec_state_size;
+  gpointer      codec_priv;
+  gsize         codec_priv_size;
+  gpointer      codec_state;
+  gsize         codec_state_size;
   GstMatroskaTrackType type;
-  guint         uid, num;
+  guint64       uid, num;
   GstMatroskaTrackFlags flags;
   guint64       default_duration;
   guint64       pos;
@@ -486,20 +533,9 @@ struct _GstMatroskaTrackContext {
 
   gboolean      set_discont; /* TRUE = set DISCONT flag on next buffer */
 
-  /* Special flag for Vorbis and Theora, for which we need to send
-   * codec_priv first before sending any data, and just testing
-   * for time == 0 is not enough to detect that. Used by demuxer */
-  gboolean      send_xiph_headers;
-
-  /* Special flag for Flac, for which we need to reconstruct the header
-   * buffer from the codec_priv data before sending any data, and just
-   * testing for time == 0 is not enough to detect that. Used by demuxer */
-  gboolean      send_flac_headers;
-
-  /* Special flag for Speex, for which we need to reconstruct the header
-   * buffer from the codec_priv data before sending any data, and just
-   * testing for time == 0 is not enough to detect that. Used by demuxer */
-  gboolean      send_speex_headers;
+  /* Stream header buffer, to put into caps and send before any other buffers */
+  GstBufferList * stream_headers;
+  gboolean        send_stream_headers;
 
   /* Special flag for VobSub, for which we have to send colour table info
    * (if available) first before sending any data, and just testing
@@ -515,12 +551,26 @@ struct _GstMatroskaTrackContext {
                                       GstMatroskaTrackContext *context,
 				      GstBuffer **buffer);
 
-  /* Tags to send after newsegment event */
-  GstTagList   *pending_tags;
+  /* List of tags for this stream */
+  GstTagList   *tags;
+  /* Tags changed and should be pushed again */
+  gboolean      tags_changed;
 
   /* A GArray of GstMatroskaTrackEncoding structures which contain the
    * encoding (compression/encryption) settings for this track, if any */
   GArray       *encodings;
+
+  /* Whether the stream is EOS */
+  gboolean      eos;
+
+  /* any alignment we need our output buffers to have */
+  gint          alignment;
+  
+  /* for compatibility with VFW files, where timestamp represents DTS */
+  gboolean      dts_only;
+  
+  /* indicate that the track is raw (jpeg,raw variants) and so pts=dts */
+  gboolean		intra_only;
 };
 
 typedef struct _GstMatroskaTrackVideoContext {
@@ -531,6 +581,12 @@ typedef struct _GstMatroskaTrackVideoContext {
   gdouble       default_fps;
   GstMatroskaAspectRatioMode asr_mode;
   guint32       fourcc;
+
+  GstVideoMultiviewMode multiview_mode;
+  GstVideoMultiviewFlags multiview_flags;
+
+  /* QoS */
+  GstClockTime  earliest_time;
 
   GstBuffer     *dirac_unit;
 } GstMatroskaTrackVideoContext;
@@ -547,7 +603,10 @@ typedef struct _GstMatroskaTrackSubtitleContext {
   GstMatroskaTrackContext parent;
 
   gboolean    check_utf8;     /* buffers should be valid UTF-8 */
+  gboolean    check_markup;   /* check if buffers contain markup
+                               * or plaintext and escape characters */
   gboolean    invalid_utf8;   /* work around broken files      */
+  gboolean    seen_markup_tag;  /* markup found in text */
 } GstMatroskaTrackSubtitleContext;
 
 typedef struct _GstMatroskaIndex {
@@ -597,5 +656,19 @@ gboolean gst_matroska_track_init_audio_context    (GstMatroskaTrackContext ** p_
 gboolean gst_matroska_track_init_subtitle_context (GstMatroskaTrackContext ** p_context);
 
 void gst_matroska_register_tags (void);
+
+GstBufferList * gst_matroska_parse_xiph_stream_headers  (gpointer codec_data,
+                                                         gsize codec_data_size);
+
+GstBufferList * gst_matroska_parse_speex_stream_headers (gpointer codec_data,
+                                                         gsize codec_data_size);
+
+GstBufferList * gst_matroska_parse_opus_stream_headers  (gpointer codec_data,
+                                                         gsize codec_data_size);
+
+GstBufferList * gst_matroska_parse_flac_stream_headers  (gpointer codec_data,
+                                                         gsize codec_data_size);
+void gst_matroska_track_free (GstMatroskaTrackContext * track);
+GstClockTime gst_matroska_track_get_buffer_timestamp (GstMatroskaTrackContext * track, GstBuffer *buf);
 
 #endif /* __GST_MATROSKA_IDS_H__ */

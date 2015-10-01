@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -24,6 +24,7 @@
 
 #include <gst/gst.h>
 #include <gst/video/video.h>
+#include <gst/video/gstvideodecoder.h>
 #include <mpeg2.h>
 
 G_BEGIN_DECLS
@@ -47,92 +48,38 @@ typedef struct _GstMpeg2decClass GstMpeg2decClass;
 
 typedef enum
 {
-  MPEG2DEC_FORMAT_NONE,
-  MPEG2DEC_FORMAT_I422,
-  MPEG2DEC_FORMAT_I420,
-  MPEG2DEC_FORMAT_YV12,
-  MPEG2DEC_FORMAT_Y444
-} Mpeg2decFormat;
-
-typedef enum 
-{
   MPEG2DEC_DISC_NONE            = 0,
   MPEG2DEC_DISC_NEW_PICTURE,
   MPEG2DEC_DISC_NEW_KEYFRAME
 } DiscontState;
 
 struct _GstMpeg2dec {
-  GstElement     element;
-
-  /* pads */
-  GstPad        *sinkpad,
-                *srcpad,
-                *userdatapad;
+  GstVideoDecoder element;
 
   mpeg2dec_t    *decoder;
   const mpeg2_info_t *info;
 
-  gboolean       closed;
-  gboolean       have_fbuf;
+  /* Buffer lifetime management */
+  GList         *buffers;
 
-  /* buffer management */
-  guint          ip_bufpos;
-  GstBuffer     *ip_buffers[4];
-  GstBuffer     *b_buffer;
-
+  /* FIXME This should not be necessary. It is used to prevent image
+   * corruption when the parser does not behave the way it should.
+   * See https://bugzilla.gnome.org/show_bug.cgi?id=674238
+   */
   DiscontState   discont_state;
 
-  /* the timestamp of the next frame */
-  GstClockTime   next_time;
-  GstSegment     segment;
-
   /* video state */
-  Mpeg2decFormat format;
-  gint           width;
-  gint           height;
-  gint           decoded_width;
-  gint           decoded_height;
-  gint           pixel_width;
-  gint           pixel_height;
-  gint           frame_rate_code;
-  gint64         total_frames;
-  gint64         frame_period;
-  gboolean       interlaced;
+  GstVideoCodecState *input_state;
+  GstVideoInfo        decoded_info;
+  GstVideoAlignment   valign;
+  GstBufferPool *     downstream_pool;
+  gboolean            need_alignment;
 
-  gint           size;
-  gint           u_offs;
-  gint           v_offs;
   guint8        *dummybuf[4];
-
-  
-  guint64        offset;
-  gint           fps_n;
-  gint           fps_d;
-  gboolean       need_sequence;
-
-#ifndef GST_DISABLE_INDEX
-  GstIndex      *index;
-  gint           index_id;
-#endif
-  
-  gint           error_count;
-  gboolean       can_allocate_aligned;
-
-  /* QoS stuff */ /* with LOCK*/
-  gdouble        proportion;
-  GstClockTime   earliest_time;
-
-  /* gather/decode queues for reverse playback */
-  GList *gather;
-  GList *decode;
-  GList *queued;
-
-  /* whether we have a pixel aspect ratio from the sink caps */
-  gboolean have_par;
 };
 
 struct _GstMpeg2decClass {
-  GstElementClass parent_class;
+  GstVideoDecoderClass parent_class;
 };
 
 GType gst_mpeg2dec_get_type(void);

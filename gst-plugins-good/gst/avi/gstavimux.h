@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -117,6 +117,8 @@ typedef struct _GstAviAudioPad {
   /* audio info for bps calculation */
   guint32 audio_size;
   guint64 audio_time;
+  /* max audio chunk size for vbr */
+  guint32 max_audio_chunk;
 
   /* counts the number of samples to put in indx chunk
    * useful for raw audio where usually there are more than
@@ -143,8 +145,7 @@ struct _GstAviMux {
   GSList              *sinkpads;
   /* video restricted to 1 pad */
   guint               video_pads, audio_pads;
-  GstCollectPads      *collect;
-  GstPadEventFunction  collect_event;
+  GstCollectPads     *collect;
 
   /* the AVI header */
   /* still some single stream video data in mux struct */

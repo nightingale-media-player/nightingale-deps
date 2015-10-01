@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,8 +28,11 @@
 
 #include <gst/gst.h>
 
-GType gst_multi_file_src_get_type (void);
-GType gst_multi_file_sink_get_type (void);
+#include "gstmultifilesink.h"
+#include "gstmultifilesrc.h"
+#include "gstsplitfilesrc.h"
+#include "gstsplitmuxsink.h"
+#include "gstsplitmuxsrc.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -38,12 +41,20 @@ plugin_init (GstPlugin * plugin)
       gst_multi_file_src_get_type ());
   gst_element_register (plugin, "multifilesink", GST_RANK_NONE,
       gst_multi_file_sink_get_type ());
+  gst_element_register (plugin, "splitfilesrc", GST_RANK_NONE,
+      gst_split_file_src_get_type ());
+
+  if (!register_splitmuxsink (plugin))
+    return FALSE;
+
+  if (!register_splitmuxsrc (plugin))
+    return FALSE;
 
   return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "multifile",
-    "Writes buffers to sequentially named files",
+    multifile,
+    "Reads/Writes buffers from/to sequentially named files",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

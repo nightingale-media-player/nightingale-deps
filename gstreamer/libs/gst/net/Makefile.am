@@ -1,47 +1,81 @@
-lib_LTLIBRARIES = libgstnet-@GST_MAJORMINOR@.la
+lib_LTLIBRARIES = libgstnet-@GST_API_VERSION@.la
 
-libgstnet_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/net
-libgstnet_@GST_MAJORMINOR@_include_HEADERS = \
+libgstnet_@GST_API_VERSION@_includedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/net
+libgstnet_@GST_API_VERSION@_include_HEADERS = \
+    net.h \
     gstnet.h \
+    gstnetaddressmeta.h \
     gstnetclientclock.h \
+    gstnetcontrolmessagemeta.h \
     gstnettimepacket.h \
-    gstnettimeprovider.h
+    gstnettimeprovider.h \
+    gstptpclock.h
 
-libgstnet_@GST_MAJORMINOR@_la_SOURCES = \
+libgstnet_@GST_API_VERSION@_la_SOURCES = \
+    gstnetaddressmeta.c \
     gstnetclientclock.c \
+    gstnetcontrolmessagemeta.c \
     gstnettimepacket.c \
-    gstnettimeprovider.c
+    gstnettimeprovider.c \
+    gstptpclock.c \
+    gstntppacket.c
 
-libgstnet_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
-libgstnet_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS) $(INET_ATON_LIBS) $(WIN32_LIBS)
-libgstnet_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+noinst_HEADERS = gstptp_private.h gstntppacket.h
+
+libgstnet_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS) $(GIO_CFLAGS)
+libgstnet_@GST_API_VERSION@_la_LIBADD = $(GST_OBJ_LIBS) $(GIO_LIBS) \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la
+libgstnet_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+
+# try to prevent packaging errors
+check-libexecdir-consistency:
+	@if test "${GST_PTP_HELPER_INSTALLED}" != "${libexecdir}/gstreamer-$(GST_API_VERSION)/gst-ptp-helper"; then \
+	  echo "*** Inconsistent libexecdir! Please use ./configure --libexecdir=/foo/bar"; \
+	  echo "*** to set the libexecdir and not make libexecdir=/foo/bar or the like."; \
+	  echo "*** The same goes for prefix, libdir etc."; \
+	  echo "*** ${GST_PTP_HELPER_INSTALLED} != ${libexecdir}/gstreamer-$(GST_API_VERSION)/gst-ptp-helper"; \
+	  exit 1; \
+	fi
+
+all-local: check-libexecdir-consistency
 
 CLEANFILES = *.gcno *.gcda *.gcov
 
-%.c.gcov: .libs/libgstnet_@GST_MAJORMINOR@_la-%.gcda %.c
+%.c.gcov: .libs/libgstnet_@GST_API_VERSION@_la-%.gcda %.c
 	$(GCOV) -b -f -o $^ > $@.out
 
-gcov: $(libgstnet_@GST_MAJORMINOR@_la_SOURCES:=.gcov)
+gcov: $(libgstnet_@GST_API_VERSION@_la_SOURCES:=.gcov)
+
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstNet-@GST_MAJORMINOR@.gir
+BUILT_GIRSOURCES = GstNet-@GST_API_VERSION@.gir
 
-gir_headers=$(patsubst %,$(srcdir)/%, $(libgstnet_@GST_MAJORMINOR@_include_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstnet_@GST_MAJORMINOR@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/net/%',$(libgstbase_@GST_MAJORMINOR@_include_HEADERS))
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstnet_@GST_API_VERSION@_include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstnet_@GST_API_VERSION@_la_SOURCES))
+gir_cincludes=--c-include="gst/net/net.h"
 
-GstNet-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstnet-@GST_MAJORMINOR@.la
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+GstNet-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstnet-@GST_API_VERSION@.la
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" GI_SCANNER_DISABLE_CACHE=yes\
+		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstNet \
 		--strip-prefix=Gst \
-		--nsversion=@GST_MAJORMINOR@ \
+		--warn-all \
+		--nsversion=@GST_API_VERSION@ \
 		-I$(top_srcdir) \
+		-I$(top_srcdir)/libs \
+		-I$(top_builddir) \
+		-I$(top_builddir)/libs \
 		$(gir_cincludes) \
 		--add-include-path=$(top_builddir)/gst \
-		--library=gstnet-0.10 \
-		--include=Gst-0.10 \
-		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-0.10 \
+		--library-path=$(top_builddir)/gst \
+		--library=libgstnet-@GST_API_VERSION@.la \
+		--include=Gst-@GST_API_VERSION@ \
+		--include=Gio-2.0 \
+		--libtool="${LIBTOOL}" \
+		--pkg gstreamer-@GST_API_VERSION@ \
+		--pkg gio-2.0 \
+		--pkg-export="gstreamer-net-@GST_API_VERSION@" \
+		--add-init-section="$(INTROSPECTION_INIT)" \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -56,7 +90,7 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(AM_V_GEN)$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
 CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -24,6 +24,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
+#include "gst1394clock.h"
 
 #include <libraw1394/raw1394.h>
 #ifdef HAVE_LIBIEC61883
@@ -82,6 +83,8 @@ struct _GstDV1394Src {
   #ifdef HAVE_LIBIEC61883
   iec61883_dv_fb_t iec61883dv;
   #endif
+
+  Gst1394Clock *provided_clock;
 };
 
 struct _GstDV1394SrcClass {

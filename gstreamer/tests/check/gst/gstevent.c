@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -39,12 +39,17 @@ GST_START_TEST (create_events)
   }
   /* FLUSH_STOP */
   {
-    event = gst_event_new_flush_stop ();
+    gboolean reset_time;
+
+    event = gst_event_new_flush_stop (TRUE);
     fail_if (event == NULL);
     fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_FLUSH_STOP);
     fail_unless (GST_EVENT_IS_UPSTREAM (event));
     fail_unless (GST_EVENT_IS_DOWNSTREAM (event));
     fail_unless (GST_EVENT_IS_SERIALIZED (event));
+
+    gst_event_parse_flush_stop (event, &reset_time);
+    fail_unless (reset_time == TRUE);
     gst_event_unref (event);
   }
   /* EOS */
@@ -57,70 +62,56 @@ GST_START_TEST (create_events)
     fail_unless (GST_EVENT_IS_SERIALIZED (event));
     gst_event_unref (event);
   }
-  /* NEWSEGMENT */
+  /* GAP */
   {
-    gdouble rate, applied_rate;
-    GstFormat format;
-    gint64 start, end, base;
-    gboolean update;
+    GstClockTime ts = 0, dur = 0;
 
-    event =
-        gst_event_new_new_segment (FALSE, 0.5, GST_FORMAT_TIME, 1, G_MAXINT64,
-        0xdeadbeef);
+    ASSERT_CRITICAL (gst_event_new_gap (GST_CLOCK_TIME_NONE, GST_SECOND));
+
+    event = gst_event_new_gap (90 * GST_SECOND, GST_SECOND);
     fail_if (event == NULL);
-    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT);
+    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_GAP);
     fail_if (GST_EVENT_IS_UPSTREAM (event));
     fail_unless (GST_EVENT_IS_DOWNSTREAM (event));
     fail_unless (GST_EVENT_IS_SERIALIZED (event));
-
-    gst_event_parse_new_segment (event, &update, &rate, &format, &start, &end,
-        &base);
-    fail_unless (update == FALSE);
-    fail_unless (rate == 0.5);
-    fail_unless (format == GST_FORMAT_TIME);
-    fail_unless (start == 1);
-    fail_unless (end == G_MAXINT64);
-    fail_unless (base == 0xdeadbeef);
-
-    /* Check that the new segment was created with applied_rate of 1.0 */
-    gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
-        &format, &start, &end, &base);
-
-    fail_unless (update == FALSE);
-    fail_unless (rate == 0.5);
-    fail_unless (applied_rate == 1.0);
-    fail_unless (format == GST_FORMAT_TIME);
-    fail_unless (start == 1);
-    fail_unless (end == G_MAXINT64);
-
+    gst_event_parse_gap (event, &ts, NULL);
+    fail_unless_equals_int64 (ts, 90 * GST_SECOND);
+    gst_event_parse_gap (event, &ts, &dur);
+    fail_unless_equals_int64 (dur, GST_SECOND);
     gst_event_unref (event);
+  }
+  /* SEGMENT */
+  {
+    GstSegment segment, parsed;
 
-    event =
-        gst_event_new_new_segment_full (TRUE, 0.75, 0.5, GST_FORMAT_BYTES, 0,
-        G_MAXINT64 - 1, 0xdeadbeef);
+    gst_segment_init (&segment, GST_FORMAT_TIME);
+    segment.rate = 0.5;
+    segment.applied_rate = 1.0;
+    segment.start = 1;
+    segment.stop = G_MAXINT64;
+    segment.time = 0xdeadbeef;
 
+    event = gst_event_new_segment (&segment);
     fail_if (event == NULL);
-    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT);
+    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT);
     fail_if (GST_EVENT_IS_UPSTREAM (event));
     fail_unless (GST_EVENT_IS_DOWNSTREAM (event));
     fail_unless (GST_EVENT_IS_SERIALIZED (event));
 
-    gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
-        &format, &start, &end, &base);
-
-    fail_unless (update == TRUE);
-    fail_unless (rate == 0.75);
-    fail_unless (applied_rate == 0.5);
-    fail_unless (format == GST_FORMAT_BYTES);
-    fail_unless (start == 0);
-    fail_unless (end == (G_MAXINT64 - 1));
+    gst_event_copy_segment (event, &parsed);
+    fail_unless (parsed.rate == 0.5);
+    fail_unless (parsed.applied_rate == 1.0);
+    fail_unless (parsed.format == GST_FORMAT_TIME);
+    fail_unless (parsed.start == 1);
+    fail_unless (parsed.stop == G_MAXINT64);
+    fail_unless (parsed.time == 0xdeadbeef);
 
     gst_event_unref (event);
   }
 
   /* TAGS */
   {
-    GstTagList *taglist = gst_tag_list_new ();
+    GstTagList *taglist = gst_tag_list_new_empty ();
     GstTagList *tl2 = NULL;
 
     event = gst_event_new_tag (taglist);
@@ -138,18 +129,38 @@ GST_START_TEST (create_events)
 
   /* QOS */
   {
+    GstQOSType t1 = GST_QOS_TYPE_THROTTLE, t2;
     gdouble p1 = 1.0, p2;
     GstClockTimeDiff ctd1 = G_GINT64_CONSTANT (10), ctd2;
     GstClockTime ct1 = G_GUINT64_CONSTANT (20), ct2;
 
-    event = gst_event_new_qos (p1, ctd1, ct1);
+    event = gst_event_new_qos (t1, p1, ctd1, ct1);
     fail_if (event == NULL);
     fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_QOS);
     fail_unless (GST_EVENT_IS_UPSTREAM (event));
     fail_if (GST_EVENT_IS_DOWNSTREAM (event));
     fail_if (GST_EVENT_IS_SERIALIZED (event));
 
-    gst_event_parse_qos (event, &p2, &ctd2, &ct2);
+    gst_event_parse_qos (event, &t2, &p2, &ctd2, &ct2);
+    fail_unless (p1 == p2);
+    fail_unless (ctd1 == ctd2);
+    fail_unless (ct1 == ct2);
+    gst_event_parse_qos (event, &t2, &p2, &ctd2, &ct2);
+    fail_unless (t2 == GST_QOS_TYPE_THROTTLE);
+    fail_unless (p1 == p2);
+    fail_unless (ctd1 == ctd2);
+    fail_unless (ct1 == ct2);
+    gst_event_unref (event);
+
+    ctd1 = G_GINT64_CONSTANT (-10);
+    event = gst_event_new_qos (t1, p1, ctd1, ct1);
+    gst_event_parse_qos (event, &t2, &p2, &ctd2, &ct2);
+    fail_unless (t2 == GST_QOS_TYPE_THROTTLE);
+    gst_event_unref (event);
+
+    event = gst_event_new_qos (t1, p1, ctd1, ct1);
+    gst_event_parse_qos (event, &t2, &p2, &ctd2, &ct2);
+    fail_unless (t2 == GST_QOS_TYPE_THROTTLE);
     fail_unless (p1 == p2);
     fail_unless (ctd1 == ctd2);
     fail_unless (ct1 == ct2);
@@ -161,8 +172,8 @@ GST_START_TEST (create_events)
     gdouble rate;
     GstFormat format;
     GstSeekFlags flags;
-    GstSeekType cur_type, stop_type;
-    gint64 cur, stop;
+    GstSeekType start_type, stop_type;
+    gint64 start, stop;
 
     event = gst_event_new_seek (0.5, GST_FORMAT_BYTES,
         GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_ACCURATE,
@@ -174,16 +185,37 @@ GST_START_TEST (create_events)
     fail_if (GST_EVENT_IS_DOWNSTREAM (event));
     fail_if (GST_EVENT_IS_SERIALIZED (event));
 
-    gst_event_parse_seek (event, &rate, &format, &flags, &cur_type, &cur,
+    gst_event_parse_seek (event, &rate, &format, &flags, &start_type, &start,
         &stop_type, &stop);
     fail_unless (rate == 0.5);
     fail_unless (format == GST_FORMAT_BYTES);
     fail_unless (flags == (GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_ACCURATE));
-    fail_unless (cur_type == GST_SEEK_TYPE_SET);
-    fail_unless (cur == 1);
+    fail_unless (start_type == GST_SEEK_TYPE_SET);
+    fail_unless (start == 1);
     fail_unless (stop_type == GST_SEEK_TYPE_NONE);
     fail_unless (stop == 0xdeadbeef);
 
+    gst_event_unref (event);
+  }
+
+  /* STREAM_START */
+  {
+    GstStreamFlags flags = ~GST_STREAM_FLAG_NONE;
+
+    event = gst_event_new_stream_start ("7f4b2f0/audio_02");
+    fail_if (event == NULL);
+    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_STREAM_START);
+    fail_if (GST_EVENT_IS_UPSTREAM (event));
+    fail_unless (GST_EVENT_IS_DOWNSTREAM (event));
+    fail_unless (GST_EVENT_IS_SERIALIZED (event));
+    gst_event_parse_stream_flags (event, &flags);
+    fail_unless_equals_int (flags, GST_STREAM_FLAG_NONE);
+    gst_event_set_stream_flags (event, GST_STREAM_FLAG_SPARSE);
+    gst_event_parse_stream_flags (event, &flags);
+    fail_unless_equals_int (flags, GST_STREAM_FLAG_SPARSE);
+    gst_event_ref (event);
+    ASSERT_CRITICAL (gst_event_set_stream_flags (event, GST_STREAM_FLAG_NONE));
+    gst_event_unref (event);
     gst_event_unref (event);
   }
 
@@ -203,9 +235,46 @@ GST_START_TEST (create_events)
     gst_event_unref (event);
   }
 
+  /* Protection */
+  {
+    GstBuffer *data;
+    GstMemory *mem;
+    const gchar *parsed_origin;
+    const gchar *parsed_id;
+    GstBuffer *parsed_data;
+    const gchar clearkey_sys_id[] = "78f32170-d883-11e0-9572-0800200c9a66";
+    gsize offset;
+
+    data = gst_buffer_new ();
+    mem = gst_allocator_alloc (NULL, 40, NULL);
+    gst_buffer_insert_memory (data, -1, mem);
+    for (offset = 0; offset < 40; offset += 4) {
+      gst_buffer_fill (data, offset, "pssi", 4);
+    }
+    ASSERT_MINI_OBJECT_REFCOUNT (data, "data", 1);
+    event = gst_event_new_protection (clearkey_sys_id, data, "test");
+    fail_if (event == NULL);
+    ASSERT_MINI_OBJECT_REFCOUNT (data, "data", 2);
+    fail_unless (GST_EVENT_TYPE (event) == GST_EVENT_PROTECTION);
+    fail_unless (GST_EVENT_IS_DOWNSTREAM (event));
+    fail_unless (GST_EVENT_IS_SERIALIZED (event));
+    gst_event_parse_protection (event, &parsed_id, &parsed_data,
+        &parsed_origin);
+    fail_if (parsed_id == NULL);
+    fail_unless (g_strcmp0 (clearkey_sys_id, parsed_id) == 0);
+    fail_if (parsed_data == NULL);
+    fail_if (parsed_data != data);
+    ASSERT_MINI_OBJECT_REFCOUNT (data, "data", 2);
+    fail_if (parsed_origin == NULL);
+    fail_unless (g_strcmp0 ("test", parsed_origin) == 0);
+    gst_event_unref (event);
+    ASSERT_MINI_OBJECT_REFCOUNT (data, "data", 1);
+    gst_buffer_unref (data);
+  }
+
   /* Custom event types */
   {
-    structure = gst_structure_empty_new ("application/x-custom");
+    structure = gst_structure_new_empty ("application/x-custom");
     fail_if (structure == NULL);
     event = gst_event_new_custom (GST_EVENT_CUSTOM_UPSTREAM, structure);
     fail_if (event == NULL);
@@ -224,7 +293,7 @@ GST_START_TEST (create_events)
 
   /* Event copying */
   {
-    structure = gst_structure_empty_new ("application/x-custom");
+    structure = gst_structure_new_empty ("application/x-custom");
     fail_if (structure == NULL);
     event = gst_event_new_custom (GST_EVENT_CUSTOM_BOTH, structure);
 
@@ -244,7 +313,7 @@ GST_START_TEST (create_events)
 
   /* Make events writable */
   {
-    structure = gst_structure_empty_new ("application/x-custom");
+    structure = gst_structure_new_empty ("application/x-custom");
     fail_if (structure == NULL);
     event = gst_event_new_custom (GST_EVENT_CUSTOM_BOTH, structure);
     /* ref the event so that it becomes non-writable */
@@ -276,14 +345,15 @@ static GTimeVal sent_event_time;
 static GstEvent *got_event_before_q, *got_event_after_q;
 static GTimeVal got_event_time;
 
-static gboolean
-event_probe (GstPad * pad, GstMiniObject ** data, gpointer user_data)
+static GstPadProbeReturn
+event_probe (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
 {
+  GstMiniObject *data = GST_PAD_PROBE_INFO_DATA (info);
   gboolean before_q = (gboolean) GPOINTER_TO_INT (user_data);
 
-  fail_unless (GST_IS_EVENT (data));
+  GST_DEBUG ("event probe called %p", data);
 
-  GST_DEBUG ("event probe called");
+  fail_unless (GST_IS_EVENT (data));
 
   if (before_q) {
     switch (GST_EVENT_TYPE (GST_EVENT (data))) {
@@ -316,7 +386,65 @@ event_probe (GstPad * pad, GstMiniObject ** data, gpointer user_data)
     }
   }
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
+}
+
+
+typedef struct
+{
+  GMutex lock;
+  GCond cond;
+  gboolean signaled;
+} SignalData;
+
+static void
+signal_data_init (SignalData * data)
+{
+  GST_DEBUG ("init %p", data);
+  g_mutex_init (&data->lock);
+  g_cond_init (&data->cond);
+  data->signaled = FALSE;
+}
+
+static void
+signal_data_cleanup (SignalData * data)
+{
+  GST_DEBUG ("free %p", data);
+  g_mutex_clear (&data->lock);
+  g_cond_clear (&data->cond);
+}
+
+static void
+signal_data_signal (SignalData * data)
+{
+  g_mutex_lock (&data->lock);
+  data->signaled = TRUE;
+  g_cond_broadcast (&data->cond);
+  GST_DEBUG ("signaling %p", data);
+  g_mutex_unlock (&data->lock);
+}
+
+static void
+signal_data_wait (SignalData * data)
+{
+  g_mutex_lock (&data->lock);
+  GST_DEBUG ("signal wait %p", data);
+  while (!data->signaled)
+    g_cond_wait (&data->cond, &data->lock);
+  GST_DEBUG ("signal wait done %p", data);
+  g_mutex_unlock (&data->lock);
+}
+
+static GstPadProbeReturn
+signal_blocked (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
+{
+  SignalData *data = (SignalData *) user_data;
+
+  GST_DEBUG ("signal called %p", data);
+  signal_data_signal (data);
+  GST_DEBUG ("signal done %p", data);
+
+  return GST_PAD_PROBE_OK;
 }
 
 static void test_event
@@ -326,6 +454,8 @@ static void test_event
   GstEvent *event;
   GstPad *peer;
   gint i;
+  SignalData data;
+  gulong id;
 
   got_event_before_q = got_event_after_q = NULL;
 
@@ -336,20 +466,27 @@ static void test_event
   GST_DEBUG ("test event called");
 
   event = gst_event_new_custom (type,
-      gst_structure_empty_new ("application/x-custom"));
+      gst_structure_new_empty ("application/x-custom"));
   g_get_current_time (&sent_event_time);
   got_event_time.tv_sec = 0;
   got_event_time.tv_usec = 0;
 
+  signal_data_init (&data);
+
   /* We block the pad so the stream lock is released and we can send the event */
-  fail_unless (gst_pad_set_blocked (fake_srcpad, TRUE) == TRUE);
+  id = gst_pad_add_probe (fake_srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
+      signal_blocked, &data, NULL);
+  fail_unless (id != 0);
+
+  signal_data_wait (&data);
 
   /* We send on the peer pad, since the pad is blocked */
+  GST_DEBUG ("sending event %p", event);
   fail_unless ((peer = gst_pad_get_peer (pad)) != NULL);
   gst_pad_send_event (peer, event);
   gst_object_unref (peer);
 
-  fail_unless (gst_pad_set_blocked (fake_srcpad, FALSE) == TRUE);
+  gst_pad_remove_probe (fake_srcpad, id);
 
   if (expect_before_q) {
     /* Wait up to 5 seconds for the event to appear */
@@ -384,6 +521,8 @@ static void test_event
     gst_event_unref (got_event_after_q);
 
   got_event_before_q = got_event_after_q = NULL;
+
+  signal_data_cleanup (&data);
 }
 
 static gint64
@@ -420,12 +559,12 @@ GST_START_TEST (send_custom_events)
 
   /* add pad-probes to faksrc.src and fakesink.sink */
   fail_if ((srcpad = gst_element_get_static_pad (fakesrc, "src")) == NULL);
-  gst_pad_add_event_probe (srcpad, (GCallback) event_probe,
-      GINT_TO_POINTER (TRUE));
+  gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_EVENT_BOTH,
+      event_probe, GINT_TO_POINTER (TRUE), NULL);
 
   fail_if ((sinkpad = gst_element_get_static_pad (fakesink, "sink")) == NULL);
-  gst_pad_add_event_probe (sinkpad, (GCallback) event_probe,
-      GINT_TO_POINTER (FALSE));
+  gst_pad_add_probe (sinkpad, GST_PAD_PROBE_TYPE_EVENT_BOTH,
+      event_probe, GINT_TO_POINTER (FALSE), NULL);
 
   /* Upstream events */
   test_event (pipeline, GST_EVENT_CUSTOM_UPSTREAM, sinkpad, TRUE, srcpad);
@@ -460,7 +599,7 @@ GST_START_TEST (send_custom_events)
       G_GINT64_FORMAT " us", timediff (&got_event_time, &sent_event_time));
 
   /* In-band downstream events are expected to take at least 1 second
-   * to traverse the the queue */
+   * to traverse the queue */
   test_event (pipeline, GST_EVENT_CUSTOM_DOWNSTREAM, srcpad, FALSE, srcpad);
   fail_unless (timediff (&got_event_time,
           &sent_event_time) >= G_USEC_PER_SEC / 2,
@@ -477,6 +616,8 @@ GST_START_TEST (send_custom_events)
   gst_element_get_state (GST_ELEMENT (pipeline), NULL, NULL,
       GST_CLOCK_TIME_NONE);
 
+  gst_object_unref (sinkpad);
+  gst_object_unref (srcpad);
   gst_object_unref (pipeline);
 }
 

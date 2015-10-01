@@ -32,8 +32,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * GPL:
  *
@@ -49,7 +49,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * MIT:
  *
@@ -81,8 +81,7 @@
 #define __TSMUX_COMMON_H__
 
 #include <glib.h>
-
-#undef TS_DEBUG_ON
+#include <gst/gst.h>
 
 G_BEGIN_DECLS
 
@@ -94,7 +93,7 @@ G_BEGIN_DECLS
 #define TSMUX_MIN_ES_DESC_LEN 8
 
 /* Frequency for PCR representation */
-#define TSMUX_SYS_CLOCK_FREQ (27000000L)
+#define TSMUX_SYS_CLOCK_FREQ ((gint64) 27000000)
 /* Frequency for PTS values */
 #define TSMUX_CLOCK_FREQ (TSMUX_SYS_CLOCK_FREQ / 300)
 
@@ -114,6 +113,14 @@ G_BEGIN_DECLS
 #define TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS (1 << 10)
 #define TSMUX_PACKET_FLAG_PES_WRITE_ESCR    (1 << 11)
 #define TSMUX_PACKET_FLAG_PES_EXT_STREAMID  (1 << 12)
+#define TSMUX_PACKET_FLAG_PES_DATA_ALIGNMENT (1 << 13)
+
+/* PAT interval (1/10th sec) */
+#define TSMUX_DEFAULT_PAT_INTERVAL (TSMUX_CLOCK_FREQ / 10)
+/* PMT interval (1/10th sec) */
+#define TSMUX_DEFAULT_PMT_INTERVAL (TSMUX_CLOCK_FREQ / 10)
+/* SI  interval (1/10th sec) */
+#define TSMUX_DEFAULT_SI_INTERVAL  (TSMUX_CLOCK_FREQ / 10)
 
 typedef struct TsMuxPacketInfo TsMuxPacketInfo;
 typedef struct TsMuxProgram TsMuxProgram;
@@ -122,19 +129,28 @@ typedef struct TsMuxStream TsMuxStream;
 struct TsMuxPacketInfo {
   guint16 pid;
   guint32 flags;
+  guint32 pes_header_length;
 
+  gboolean packet_start_unit_indicator;
+
+  /* continuity counter */
+  guint8 packet_count;
+
+  /* payload bytes available
+   * (including PES header if applicable) */
+  guint stream_avail;
+
+  /* optional PCR */
   guint64 pcr;
+
+  /* following not really actively used */
+
   guint64 opcr;
 
   guint8 splice_countdown;
 
   guint8 private_data_len;
-  guint8 private_data [256];
-
-  guint8 packet_count; /* continuity counter */
-
-  guint stream_avail; /* Number of payload bytes available */
-  gboolean packet_start_unit_indicator;
+  guint8 private_data[256];
 };
 
 static inline void
@@ -164,11 +180,8 @@ tsmux_put_ts (guint8 **pos, guint8 id, gint64 ts)
   tsmux_put16 (pos, ((ts << 1) & 0xfffe) | 0x01);
 }
 
-#ifdef TS_DEBUG_ON
-#define TS_DEBUG(...) g_print(__VA_ARGS__); g_print ("\n")
-#else
-#define TS_DEBUG(...)
-#endif
+GST_DEBUG_CATEGORY_EXTERN (mpegtsmux_debug);
+#define TS_DEBUG GST_DEBUG
 
 G_END_DECLS
 

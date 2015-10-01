@@ -39,21 +39,21 @@
  * their output since they generally save metadata in the file header.
  * Therefore, it is often necessary that applications read the results in a bus
  * event handler for the tag message.  Obtaining the values this way is always
- * needed for <link linkend="GstRgAnalysis--num-tracks">album processing</link>
- * since the album gain and peak values need to be associated with all tracks of
- * an album, not just the last one.
+ * needed for album processing (see #GstRgAnalysis:num-tracks property) since
+ * the album gain and peak values need to be associated with all tracks of an
+ * album, not just the last one.
  * 
  * <refsect2>
  * <title>Example launch lines</title>
  * |[
- * gst-launch -t audiotestsrc wave=sine num-buffers=512 ! rganalysis ! fakesink
+ * gst-launch-1.0 -t audiotestsrc wave=sine num-buffers=512 ! rganalysis ! fakesink
  * ]| Analyze a simple test waveform
  * |[
- * gst-launch -t filesrc location=filename.ext ! decodebin \
+ * gst-launch-1.0 -t filesrc location=filename.ext ! decodebin \
  *     ! audioconvert ! audioresample ! rganalysis ! fakesink
  * ]| Analyze a given file
  * |[
- * gst-launch -t gnomevfssrc location=http://replaygain.hydrogenaudio.org/ref_pink.wav \
+ * gst-launch-1.0 -t gnomevfssrc location=http://replaygain.hydrogenaudio.org/ref_pink.wav \
  *     ! wavparse ! rganalysis ! fakesink
  * ]| Analyze the pink noise reference file
  * <para>
@@ -79,19 +79,13 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
+#include <gst/audio/audio.h>
 
 #include "gstrganalysis.h"
 #include "replaygain.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_rg_analysis_debug);
 #define GST_CAT_DEFAULT gst_rg_analysis_debug
-
-static const GstElementDetails rganalysis_details = {
-  "ReplayGain analysis",
-  "Filter/Analyzer/Audio",
-  "Perform the ReplayGain analysis",
-  "Ren\xc3\xa9 Stadler <mail@renestadler.de>"
-};
 
 /* Default property value. */
 #define FORCED_DEFAULT TRUE
@@ -109,35 +103,32 @@ enum
 /* The ReplayGain algorithm is intended for use with mono and stereo
  * audio.  The used implementation has filter coefficients for the
  * "usual" sample rates in the 8000 to 48000 Hz range. */
-#define REPLAY_GAIN_CAPS                                                \
-  "channels = (int) { 1, 2 }, "                                         \
+#define REPLAY_GAIN_CAPS "audio/x-raw," \
+  "format = (string) { "GST_AUDIO_NE(F32)","GST_AUDIO_NE(S16)" }, "     \
+  "layout = (string) interleaved, "                                     \
+  "channels = (int) 1, "                                                \
+  "rate = (int) { 8000, 11025, 12000, 16000, 22050, 24000, 32000, "     \
+  "44100, 48000 }; "                                                    \
+  "audio/x-raw,"                                                        \
+  "format = (string) { "GST_AUDIO_NE(F32)","GST_AUDIO_NE(S16)" }, "     \
+  "layout = (string) interleaved, "                                     \
+  "channels = (int) 2, "                                                \
+  "channel-mask = (bitmask) 0x3, "                                      \
   "rate = (int) { 8000, 11025, 12000, 16000, 22050, 24000, 32000, "     \
   "44100, 48000 }"
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, " "endianness = (int) BYTE_ORDER, "
-        REPLAY_GAIN_CAPS "; "
-        "audio/x-raw-int, "
-        "width = (int) 16, " "depth = (int) [ 1, 16 ], "
-        "signed = (boolean) true, " "endianness = (int) BYTE_ORDER, "
-        REPLAY_GAIN_CAPS));
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (REPLAY_GAIN_CAPS));
 
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
-    GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "width = (int) 32, " "endianness = (int) BYTE_ORDER, "
-        REPLAY_GAIN_CAPS "; "
-        "audio/x-raw-int, "
-        "width = (int) 16, " "depth = (int) [ 1, 16 ], "
-        "signed = (boolean) true, " "endianness = (int) BYTE_ORDER, "
-        REPLAY_GAIN_CAPS));
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (REPLAY_GAIN_CAPS));
 
-GST_BOILERPLATE (GstRgAnalysis, gst_rg_analysis, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM);
-
-static void gst_rg_analysis_class_init (GstRgAnalysisClass * klass);
-static void gst_rg_analysis_init (GstRgAnalysis * filter,
-    GstRgAnalysisClass * gclass);
+#define gst_rg_analysis_parent_class parent_class
+G_DEFINE_TYPE (GstRgAnalysis, gst_rg_analysis, GST_TYPE_BASE_TRANSFORM);
 
 static void gst_rg_analysis_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -149,7 +140,7 @@ static gboolean gst_rg_analysis_set_caps (GstBaseTransform * base,
     GstCaps * incaps, GstCaps * outcaps);
 static GstFlowReturn gst_rg_analysis_transform_ip (GstBaseTransform * base,
     GstBuffer * buf);
-static gboolean gst_rg_analysis_event (GstBaseTransform * base,
+static gboolean gst_rg_analysis_sink_event (GstBaseTransform * base,
     GstEvent * event);
 static gboolean gst_rg_analysis_stop (GstBaseTransform * base);
 
@@ -162,27 +153,15 @@ static gboolean gst_rg_analysis_album_result (GstRgAnalysis * filter,
     GstTagList ** tag_list);
 
 static void
-gst_rg_analysis_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &rganalysis_details);
-
-  GST_DEBUG_CATEGORY_INIT (gst_rg_analysis_debug, "rganalysis", 0,
-      "ReplayGain analysis element");
-}
-
-static void
 gst_rg_analysis_class_init (GstRgAnalysisClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *element_class;
   GstBaseTransformClass *trans_class;
 
   gobject_class = (GObjectClass *) klass;
+  element_class = (GstElementClass *) klass;
+
   gobject_class->set_property = gst_rg_analysis_set_property;
   gobject_class->get_property = gst_rg_analysis_get_property;
 
@@ -220,7 +199,7 @@ gst_rg_analysis_class_init (GstRgAnalysisClass * klass)
   g_object_class_install_property (gobject_class, PROP_NUM_TRACKS,
       g_param_spec_int ("num-tracks", "Number of album tracks",
           "Number of remaining album tracks", 0, G_MAXINT, 0,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgAnalysis:forced:
    *
@@ -242,7 +221,7 @@ gst_rg_analysis_class_init (GstRgAnalysisClass * klass)
   g_object_class_install_property (gobject_class, PROP_FORCED,
       g_param_spec_boolean ("forced", "Forced",
           "Analyze even if ReplayGain tags exist",
-          FORCED_DEFAULT, G_PARAM_READWRITE));
+          FORCED_DEFAULT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgAnalysis:reference-level:
    *
@@ -272,24 +251,37 @@ gst_rg_analysis_class_init (GstRgAnalysisClass * klass)
   g_object_class_install_property (gobject_class, PROP_REFERENCE_LEVEL,
       g_param_spec_double ("reference-level", "Reference level",
           "Reference level [dB]", 0.0, 150., RG_REFERENCE_LEVEL,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_MESSAGE,
       g_param_spec_boolean ("message", "Message",
           "Post statics messages",
-          DEFAULT_MESSAGE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+          DEFAULT_MESSAGE,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   trans_class = (GstBaseTransformClass *) klass;
   trans_class->start = GST_DEBUG_FUNCPTR (gst_rg_analysis_start);
   trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_rg_analysis_set_caps);
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_rg_analysis_transform_ip);
-  trans_class->event = GST_DEBUG_FUNCPTR (gst_rg_analysis_event);
+  trans_class->sink_event = GST_DEBUG_FUNCPTR (gst_rg_analysis_sink_event);
   trans_class->stop = GST_DEBUG_FUNCPTR (gst_rg_analysis_stop);
   trans_class->passthrough_on_same_caps = TRUE;
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_factory));
+  gst_element_class_set_static_metadata (element_class, "ReplayGain analysis",
+      "Filter/Analyzer/Audio",
+      "Perform the ReplayGain analysis",
+      "Ren\xc3\xa9 Stadler <mail@renestadler.de>");
+
+  GST_DEBUG_CATEGORY_INIT (gst_rg_analysis_debug, "rganalysis", 0,
+      "ReplayGain analysis element");
 }
 
 static void
-gst_rg_analysis_init (GstRgAnalysis * filter, GstRgAnalysisClass * gclass)
+gst_rg_analysis_init (GstRgAnalysis * filter)
 {
   GstBaseTransform *base = GST_BASE_TRANSFORM (filter);
 
@@ -406,9 +398,8 @@ gst_rg_analysis_set_caps (GstBaseTransform * base, GstCaps * in_caps,
     GstCaps * out_caps)
 {
   GstRgAnalysis *filter = GST_RG_ANALYSIS (base);
-  GstStructure *structure;
-  const gchar *name;
-  gint n_channels, sample_rate, sample_bit_size, sample_size;
+  GstAudioInfo info;
+  gint rate, channels;
 
   g_return_val_if_fail (filter->ctx != NULL, FALSE);
 
@@ -416,58 +407,42 @@ gst_rg_analysis_set_caps (GstBaseTransform * base, GstCaps * in_caps,
       "set_caps in %" GST_PTR_FORMAT " out %" GST_PTR_FORMAT,
       in_caps, out_caps);
 
-  structure = gst_caps_get_structure (in_caps, 0);
-  name = gst_structure_get_name (structure);
-
-  if (!gst_structure_get_int (structure, "width", &sample_bit_size)
-      || !gst_structure_get_int (structure, "channels", &n_channels)
-      || !gst_structure_get_int (structure, "rate", &sample_rate))
+  if (!gst_audio_info_from_caps (&info, in_caps))
     goto invalid_format;
 
-  if (!rg_analysis_set_sample_rate (filter->ctx, sample_rate))
+  rate = GST_AUDIO_INFO_RATE (&info);
+
+  if (!rg_analysis_set_sample_rate (filter->ctx, rate))
     goto invalid_format;
 
-  if (sample_bit_size % 8 != 0)
+  channels = GST_AUDIO_INFO_CHANNELS (&info);
+
+  if (channels < 1 || channels > 2)
     goto invalid_format;
-  sample_size = sample_bit_size / 8;
 
-  if (g_str_equal (name, "audio/x-raw-float")) {
+  switch (GST_AUDIO_INFO_FORMAT (&info)) {
+    case GST_AUDIO_FORMAT_F32:
+      /* The depth is not variable for float formats of course.  It just
+       * makes the transform function nice and simple if the
+       * rg_analysis_analyze_* functions have a common signature. */
+      filter->depth = sizeof (gfloat) * 8;
 
-    if (sample_size != sizeof (gfloat))
+      if (channels == 1)
+        filter->analyze = rg_analysis_analyze_mono_float;
+      else
+        filter->analyze = rg_analysis_analyze_stereo_float;
+
+      break;
+    case GST_AUDIO_FORMAT_S16:
+      filter->depth = sizeof (gint16) * 8;
+
+      if (channels == 1)
+        filter->analyze = rg_analysis_analyze_mono_int16;
+      else
+        filter->analyze = rg_analysis_analyze_stereo_int16;
+      break;
+    default:
       goto invalid_format;
-
-    /* The depth is not variable for float formats of course.  It just
-     * makes the transform function nice and simple if the
-     * rg_analysis_analyze_* functions have a common signature. */
-    filter->depth = sizeof (gfloat) * 8;
-
-    if (n_channels == 1)
-      filter->analyze = rg_analysis_analyze_mono_float;
-    else if (n_channels == 2)
-      filter->analyze = rg_analysis_analyze_stereo_float;
-    else
-      goto invalid_format;
-
-  } else if (g_str_equal (name, "audio/x-raw-int")) {
-
-    if (sample_size != sizeof (gint16))
-      goto invalid_format;
-
-    if (!gst_structure_get_int (structure, "depth", &filter->depth))
-      goto invalid_format;
-    if (filter->depth < 1 || filter->depth > 16)
-      goto invalid_format;
-
-    if (n_channels == 1)
-      filter->analyze = rg_analysis_analyze_mono_int16;
-    else if (n_channels == 2)
-      filter->analyze = rg_analysis_analyze_stereo_int16;
-    else
-      goto invalid_format;
-
-  } else {
-
-    goto invalid_format;
   }
 
   return TRUE;
@@ -486,25 +461,28 @@ static GstFlowReturn
 gst_rg_analysis_transform_ip (GstBaseTransform * base, GstBuffer * buf)
 {
   GstRgAnalysis *filter = GST_RG_ANALYSIS (base);
+  GstMapInfo map;
 
-  g_return_val_if_fail (filter->ctx != NULL, GST_FLOW_WRONG_STATE);
+  g_return_val_if_fail (filter->ctx != NULL, GST_FLOW_FLUSHING);
   g_return_val_if_fail (filter->analyze != NULL, GST_FLOW_NOT_NEGOTIATED);
 
   if (filter->skip)
     return GST_FLOW_OK;
 
-  GST_LOG_OBJECT (filter, "processing buffer of size %u",
-      GST_BUFFER_SIZE (buf));
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  GST_LOG_OBJECT (filter, "processing buffer of size %" G_GSIZE_FORMAT,
+      map.size);
 
   rg_analysis_start_buffer (filter->ctx, GST_BUFFER_TIMESTAMP (buf));
-  filter->analyze (filter->ctx, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf),
-      filter->depth);
+  filter->analyze (filter->ctx, map.data, map.size, filter->depth);
+
+  gst_buffer_unmap (buf, &map);
 
   return GST_FLOW_OK;
 }
 
 static gboolean
-gst_rg_analysis_event (GstBaseTransform * base, GstEvent * event)
+gst_rg_analysis_sink_event (GstBaseTransform * base, GstEvent * event)
 {
   GstRgAnalysis *filter = GST_RG_ANALYSIS (base);
 
@@ -536,7 +514,7 @@ gst_rg_analysis_event (GstBaseTransform * base, GstEvent * event)
       break;
   }
 
-  return GST_BASE_TRANSFORM_CLASS (parent_class)->event (base, event);
+  return GST_BASE_TRANSFORM_CLASS (parent_class)->sink_event (base, event);
 }
 
 static gboolean
@@ -554,6 +532,7 @@ gst_rg_analysis_stop (GstBaseTransform * base)
   return TRUE;
 }
 
+/* FIXME: handle global vs. stream-tags? */
 static void
 gst_rg_analysis_handle_tags (GstRgAnalysis * filter,
     const GstTagList * tag_list)
@@ -654,9 +633,10 @@ gst_rg_analysis_handle_eos (GstRgAnalysis * filter)
       GST_LOG_OBJECT (filter, "posting tag list with results");
       gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
           GST_TAG_REFERENCE_LEVEL, filter->reference_level, NULL);
-      /* This steals our reference to the list: */
-      gst_element_found_tags_for_pad (GST_ELEMENT (filter),
-          GST_BASE_TRANSFORM_SRC_PAD (GST_BASE_TRANSFORM (filter)), tag_list);
+      /* This takes ownership of our reference to the list */
+      gst_pad_push_event (GST_BASE_TRANSFORM_SRC_PAD (filter),
+          gst_event_new_tag (tag_list));
+      tag_list = NULL;
     }
   }
 
@@ -675,6 +655,7 @@ gst_rg_analysis_handle_eos (GstRgAnalysis * filter)
     g_object_notify (G_OBJECT (filter), "num-tracks");
 }
 
+/* FIXME: return tag list (lists?) based on input tags.. */
 static gboolean
 gst_rg_analysis_track_result (GstRgAnalysis * filter, GstTagList ** tag_list)
 {
@@ -694,7 +675,7 @@ gst_rg_analysis_track_result (GstRgAnalysis * filter, GstTagList ** tag_list)
 
   if (track_success) {
     if (*tag_list == NULL)
-      *tag_list = gst_tag_list_new ();
+      *tag_list = gst_tag_list_new_empty ();
     gst_tag_list_add (*tag_list, GST_TAG_MERGE_APPEND,
         GST_TAG_TRACK_PEAK, track_peak, GST_TAG_TRACK_GAIN, track_gain, NULL);
   }
@@ -721,7 +702,7 @@ gst_rg_analysis_album_result (GstRgAnalysis * filter, GstTagList ** tag_list)
 
   if (album_success) {
     if (*tag_list == NULL)
-      *tag_list = gst_tag_list_new ();
+      *tag_list = gst_tag_list_new_empty ();
     gst_tag_list_add (*tag_list, GST_TAG_MERGE_APPEND,
         GST_TAG_ALBUM_PEAK, album_peak, GST_TAG_ALBUM_GAIN, album_gain, NULL);
   }

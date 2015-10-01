@@ -1,572 +1,232 @@
-# Catalan translation for GStreamer.
-# Copyright © 2004 Free Software Foundation, Inc.
-# This file is distributed under the same licence as the gst-plugins package.
-# Jordi Mallach <jordi@sindominio.net>, 2004.
+# Catalan translation for gst-plugins-bad.
+# Copyright © 2004, 2005, 2010 Free Software Foundation, Inc.
+# This file is distributed under the same licence as the gst-plugins-bad package.
+# Jordi Mallach <jordi@sindominio.net>, 2004, 2005, 2010.
+# Jordi Estrada <jordi.estrada@yamaha-motor.es>, 2011.
+# Gil Forcada <gforcada@gnome.org>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins 0.8.3\n"
+"Project-Id-Version: gst-plugins-bad 0.10.21.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
-"PO-Revision-Date: 2004-08-05 15:48+0200\n"
-"Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
+"POT-Creation-Date: 2015-09-25 22:59+0200\n"
+"PO-Revision-Date: 2012-01-01 14:19+0100\n"
+"Last-Translator: Gil Forcada <gforcada@gnome.org>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#, fuzzy
+msgid "format wasn't negotiated before get function"
+msgstr ""
+
+msgid "default GStreamer sound events audiosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play audio using any number of output elements. Some possible "
+"choices are osssink, pulsesink and alsasink. The audiosink can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer sound events audiosink"
+msgstr ""
+
+msgid "Describes the selected audiosink element."
+msgstr ""
+
+msgid "default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid ""
+"description for default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid "default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "description for default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "default GStreamer videosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play video using any number of output elements. Some possible "
+"choices are xvimagesink, ximagesink, sdlvideosink and aasink. The videosink "
+"can be a partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosink"
+msgstr ""
+
+msgid "Describes the selected videosink element."
+msgstr ""
+
+msgid "default GStreamer audiosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record audio using any number of input elements. Some possible "
+"choices are osssrc, pulsesrc and alsasrc. The audio source can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer audiosrc"
+msgstr ""
+
+msgid "Describes the selected audiosrc element."
+msgstr ""
+
+msgid "default GStreamer videosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record video from any number of input elements. Some possible "
+"choices are v4lsrc, v4l2src and videotestsrc. The video source can be a "
+"partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosrc"
+msgstr ""
+
+msgid "Describes the selected videosrc element."
+msgstr ""
+
+msgid "default GStreamer visualization"
+msgstr ""
+
+msgid ""
+"GStreamer can put visualization plugins in a pipeline to transform audio "
+"streams in video frames. Some possible choices are goom, goom2k1 and "
+"synaesthesia. The visualization plugin can be a partial pipeline instead of "
+"just one element."
+msgstr ""
+
+msgid "description for default GStreamer visualization"
+msgstr ""
+
+msgid "Describes the selected visualization element."
+msgstr ""
+
+msgid "OpenCV failed to load template image"
+msgstr ""
+
 msgid "Could not read title information for DVD."
-msgstr "No s'ha pogut escriure al fitxer «%s»."
+msgstr "No s'ha pogut llegir la informació del títol del DVD."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open DVD device '%s'."
-msgstr "No s'ha pogut tancar el dispositiu de control «%s»."
+msgstr "No s'ha pogut obrir el dispositiu de DVD «%s»."
 
 msgid "Failed to set PGC based seeking."
-msgstr ""
+msgstr "No s'ha pogut establir la cerca basada en PGC."
 
-msgid "Internal clock error."
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
 msgstr ""
+"No s'ha pogut llegir el DVD. Possiblement el DVD està encriptat i la "
+"biblioteca de desencriptació de DVD no està instal·lada."
 
-msgid "Internal data flow error."
+msgid "Could not read DVD."
+msgstr "No s'ha pogut llegir el DVD."
+
+msgid "This file contains no playable streams."
 msgstr ""
 
 #, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "No s'ha pogut obrir el fitxer «%s» per a la lectura."
+
+msgid "Could not establish connection to sndio"
+msgstr ""
+
+msgid "Failed to query sndio capabilities"
+msgstr ""
+
+#, fuzzy
+msgid "Could not configure sndio"
+msgstr "No s'ha pogut obrir el fitxer «%s» per a la lectura."
+
+#, fuzzy
+msgid "Could not start sndio"
+msgstr "No s'ha pogut llegir el DVD."
+
+msgid "Internal data flow error."
+msgstr "S'ha produït un error intern de flux de dades."
+
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr ""
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+
+msgid "Digitalzoom element couldn't be created"
+msgstr ""
+
+msgid "Subpicture format was not configured before data flow"
+msgstr ""
+
+msgid "Failed to get fragment URL."
+msgstr ""
+
+msgid "Internal data stream error."
+msgstr "S'ha produït un error intern de flux de dades."
+
+msgid "Couldn't download fragments"
+msgstr ""
+
 msgid "No file name specified for writing."
-msgstr "No s'ha especificat cap nom de fitxer."
+msgstr "No s'ha especificat cap nom de fitxer per a l'escriptura."
+
+#, c-format
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "No s'ha pogut obrir el fitxer «%s» per a l'escriptura."
 
-msgid "Internal data stream error."
-msgstr ""
-
-#, c-format
-msgid "Could not write to file \"%s\"."
-msgstr "No s'ha pogut escriure al fitxer «%s»."
-
 #, c-format
 msgid "Device \"%s\" does not exist."
 msgstr "El dispositiu «%s» no existeix."
 
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open frontend device \"%s\"."
-msgstr "No s'ha pogut tancar el dispositiu de control «%s»."
+msgstr "No s'ha pogut obrir el dispositiu frontal «%s»."
+
+#, c-format
+msgid "Could not get settings from frontend device \"%s\"."
+msgstr "No s'ha pogut obtenir els paràmetres des del dispositiu frontal «%s»."
 
 #, fuzzy, c-format
-msgid "Could not get settings from frontend device \"%s\"."
-msgstr "No s'han pogut obtenir búfers suficients del dispositiu «%s»."
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr "No s'ha pogut obtenir els paràmetres des del dispositiu frontal «%s»."
 
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "No s'ha pogut obrir el fitxer «%s» per a la lectura."
 
-#, fuzzy
-msgid "Could not open audio device for mixer control handling."
-msgstr "No s'ha pogut el dispositiu d'àudio «%s» per a l'escriptura."
-
-#, fuzzy
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr "No s'ha pogut el dispositiu d'àudio «%s» per a l'escriptura."
-
-msgid "Volume"
-msgstr "Volum"
-
-msgid "Master"
-msgstr ""
-
-msgid "Front"
-msgstr ""
-
-#, fuzzy
-msgid "Rear"
-msgstr "Enregistrament"
-
-msgid "Headphones"
-msgstr ""
-
-msgid "Center"
-msgstr ""
-
-msgid "LFE"
-msgstr ""
-
-msgid "Surround"
-msgstr ""
-
-#, fuzzy
-msgid "Side"
-msgstr "Vídeo"
-
-#, fuzzy
-msgid "Built-in Speaker"
-msgstr "Altaveu"
-
-msgid "AUX 1 Out"
-msgstr ""
-
-msgid "AUX 2 Out"
-msgstr ""
-
-msgid "AUX Out"
-msgstr ""
-
-msgid "Bass"
-msgstr "Baixos"
-
-msgid "Treble"
-msgstr "Aguts"
-
-msgid "3D Depth"
-msgstr ""
-
-msgid "3D Center"
-msgstr ""
-
-msgid "3D Enhance"
-msgstr ""
-
-msgid "Telephone"
-msgstr ""
-
-msgid "Microphone"
-msgstr "Micròfon"
-
-msgid "Line Out"
-msgstr ""
-
-#, fuzzy
-msgid "Line In"
-msgstr "Línia-entrada"
-
-msgid "Internal CD"
-msgstr ""
-
-msgid "Video In"
-msgstr ""
-
-msgid "AUX 1 In"
-msgstr ""
-
-msgid "AUX 2 In"
-msgstr ""
-
-msgid "AUX In"
-msgstr ""
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Record Gain"
-msgstr ""
-
-#, fuzzy
-msgid "Output Gain"
-msgstr "Ganància-sortida"
-
-#, fuzzy
-msgid "Microphone Boost"
-msgstr "Micròfon"
-
-msgid "Loopback"
-msgstr ""
-
-msgid "Diagnostic"
-msgstr ""
-
-msgid "Bass Boost"
-msgstr ""
-
-msgid "Playback Ports"
-msgstr ""
-
-msgid "Input"
-msgstr ""
-
-msgid "Record Source"
-msgstr ""
-
-#, fuzzy
-msgid "Monitor Source"
-msgstr "Monitor"
-
-msgid "Keyboard Beep"
-msgstr ""
-
-msgid "Monitor"
-msgstr "Monitor"
-
-msgid "Simulate Stereo"
-msgstr ""
-
-msgid "Stereo"
-msgstr ""
-
-msgid "Surround Sound"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone Gain"
-msgstr "Micròfon"
-
-#, fuzzy
-msgid "Speaker Source"
-msgstr "Altaveu"
-
-#, fuzzy
-msgid "Microphone Source"
-msgstr "Micròfon"
-
-msgid "Jack"
-msgstr ""
-
-msgid "Center / LFE"
-msgstr ""
-
-msgid "Stereo Mix"
-msgstr ""
-
-msgid "Mono Mix"
-msgstr ""
-
-msgid "Input Mix"
-msgstr ""
-
-msgid "SPDIF In"
-msgstr ""
-
-msgid "SPDIF Out"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone 1"
-msgstr "Micròfon"
-
-#, fuzzy
-msgid "Microphone 2"
-msgstr "Micròfon"
-
-#, fuzzy
-msgid "Digital Out"
-msgstr "Digital-1"
-
-#, fuzzy
-msgid "Digital In"
-msgstr "Digital-1"
-
-msgid "HDMI"
-msgstr ""
-
-msgid "Modem"
-msgstr ""
-
-msgid "Handset"
-msgstr ""
-
-msgid "Other"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "On"
-msgstr ""
-
-msgid "Off"
-msgstr ""
-
-msgid "Mute"
-msgstr ""
-
-msgid "Fast"
-msgstr ""
-
-msgid "Very Low"
-msgstr ""
-
-msgid "Low"
-msgstr ""
-
-msgid "Medium"
-msgstr ""
-
-msgid "High"
-msgstr ""
-
-msgid "Very High"
-msgstr ""
-
-msgid "Production"
-msgstr ""
-
-#, fuzzy
-msgid "Front Panel Microphone"
-msgstr "Micròfon"
-
-msgid "Front Panel Line In"
-msgstr ""
-
-msgid "Front Panel Headphones"
-msgstr ""
-
-msgid "Front Panel Line Out"
-msgstr ""
-
-msgid "Green Connector"
-msgstr ""
-
-msgid "Pink Connector"
-msgstr ""
-
-msgid "Blue Connector"
-msgstr ""
-
-msgid "White Connector"
-msgstr ""
-
-msgid "Black Connector"
-msgstr ""
-
-msgid "Gray Connector"
-msgstr ""
-
-msgid "Orange Connector"
-msgstr ""
-
-msgid "Red Connector"
-msgstr ""
-
-msgid "Yellow Connector"
-msgstr ""
-
-msgid "Green Front Panel Connector"
-msgstr ""
-
-msgid "Pink Front Panel Connector"
-msgstr ""
-
-msgid "Blue Front Panel Connector"
-msgstr ""
-
-msgid "White Front Panel Connector"
-msgstr ""
-
-msgid "Black Front Panel Connector"
-msgstr ""
-
-msgid "Gray Front Panel Connector"
-msgstr ""
-
-msgid "Orange Front Panel Connector"
-msgstr ""
-
-msgid "Red Front Panel Connector"
-msgstr ""
-
-msgid "Yellow Front Panel Connector"
-msgstr ""
-
-msgid "Spread Output"
-msgstr ""
-
-msgid "Downmix"
-msgstr ""
-
-msgid "Virtual Mixer Input"
-msgstr ""
-
-msgid "Virtual Mixer Output"
-msgstr ""
-
-msgid "Virtual Mixer Channels"
+msgid "Couldn't find DVB channel configuration file"
 msgstr ""
 
 #, c-format
-msgid "%s Function"
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr ""
+
+msgid "DVB channel configuration file doesn't contain any channels"
 msgstr ""
 
 #, c-format
-msgid "%s %d"
+msgid "Couldn't find details for DVB channel %s"
 msgstr ""
 
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-
-#, fuzzy
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr "No s'ha pogut el dispositiu d'àudio «%s» per a l'escriptura."
-
-#, fuzzy
-msgid "Could not open audio device for playback."
-msgstr "No s'ha pogut el dispositiu d'àudio «%s» per a l'escriptura."
-
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-
-msgid "Playback is not supported by this audio device."
-msgstr ""
-
-msgid "Audio playback error."
-msgstr ""
-
-msgid "Recording is not supported by this audio device."
-msgstr ""
-
-msgid "Error recording from audio device."
-msgstr ""
-
-#, fuzzy
-#~ msgid "PCM 1"
-#~ msgstr "PCM"
-
-#, fuzzy
-#~ msgid "PCM 2"
-#~ msgstr "PCM-2"
-
-#, fuzzy
-#~ msgid "PCM 3"
-#~ msgstr "PCM"
-
-#, fuzzy
-#~ msgid "PCM 4"
-#~ msgstr "PCM"
-
-#~ msgid "Error closing file \"%s\"."
-#~ msgstr "S'ha produït un error en tancar el fitxer «%s»."
-
-#~ msgid "Could not open CD device for reading."
-#~ msgstr "No s'ha pogut obrir el dispositiu de CD per a la lectura."
-
-#~ msgid "Could not open vfs file \"%s\" for reading."
-#~ msgstr "No s'ha pogut obrir el fitxer vfs «%s» per a la lectura."
-
-#~ msgid "Could not open vfs file \"%s\" for writing: %s."
-#~ msgstr "No s'ha pogut obrir el fitxer vfs «%s» per a l'escriptura: %s."
-
-#~ msgid "No filename given"
-#~ msgstr "No s'ha donat cap nom de fitxer"
-
-#~ msgid "Could not close vfs file \"%s\"."
-#~ msgstr "No s'ha pogut tancar el fitxer vfs «%s»."
-
-#~ msgid "No or invalid input audio, AVI stream will be corrupt."
-#~ msgstr ""
-#~ "L'entrada d'àudio no existeix o és invàlida, el flux AVI serà corrupte."
-
-#~ msgid ""
-#~ "The %s element could not be found. This element is essential for "
-#~ "playback. Please install the right plug-in and verify that it works by "
-#~ "running 'gst-inspect %s'"
-#~ msgstr ""
-#~ "No s'ha pogut trobar l'element %s. Aquest element és essencial per a la "
-#~ "reproducció. Si us plau, instal·leu el connector adequat i verifiqueu que "
-#~ "funciona correctament executant «gst-inspect %s»"
-
-#~ msgid ""
-#~ "No usable colorspace element could be found.\n"
-#~ "Please install one and restart."
-#~ msgstr ""
-#~ "No s'ha trobat cap element d'espai de color utilitzable.\n"
-#~ "Si us plau, instal·leu un i reinicieu."
-
-#~ msgid "Could not open control device \"%s\" for writing."
-#~ msgstr ""
-#~ "No s'ha pogut obrir el dispositiu de control «%s» per a l'escriptura."
-
-#~ msgid "Could not configure audio device \"%s\"."
-#~ msgstr "No s'ha pogut configurar el dispositiu d'àudio «%s»."
-
-#~ msgid "Could not set audio device \"%s\" to %d Hz."
-#~ msgstr "No s'ha pogut establir el dispositiu d'àudio «%s» a %d Hz."
-
-#~ msgid "Could not close audio device \"%s\"."
-#~ msgstr "No s'ha pogut tancar el dispositiu d'àudio «%s»."
-
-#~ msgid "Could not open video device \"%s\" for writing."
-#~ msgstr "No s'ha pogut obrir el dispositiu de vídeo «%s» per a l'escriptura."
-
-#~ msgid "Could not close video device \"%s\"."
-#~ msgstr "No s'ha pogut tancar el dispositiu de vídeo «%s»."
-
-#~ msgid "Could not write to device \"%s\"."
-#~ msgstr "No s'ha pogut escriure al dispositiu «%s»."
-
-#~ msgid "OSS device \"%s\" is already in use by another program."
-#~ msgstr "El dispositiu OSS «%s» ja està en ús per un altre programa."
-
-#~ msgid "Could not access device \"%s\", check its permissions."
-#~ msgstr ""
-#~ "No s'ha pogut accedir al dispositiu «%s», comproveu els seus permisos."
-
-#~ msgid "Could not open device \"%s\" for writing."
-#~ msgstr "No s'ha pogut obrir el dispositiu «%s» per a l'escriptura."
-
-#~ msgid "Could not open device \"%s\" for reading."
-#~ msgstr "No s'ha pogut obrir el dispositiu «%s» per a la lectura."
-
-#~ msgid "Your OSS device could not be probed correctly"
-#~ msgstr "No s'ha pogut detectar el vostre dispositiu d'OSS correctament"
-
-#~ msgid "Synth"
-#~ msgstr "Sintetitzador"
-
-#~ msgid "CD"
-#~ msgstr "CD"
-
-#~ msgid "Mixer"
-#~ msgstr "Mesclador"
-
-#~ msgid "In-gain"
-#~ msgstr "Ganància-entrada"
-
-#~ msgid "Line-1"
-#~ msgstr "Línia-1"
-
-#~ msgid "Line-2"
-#~ msgstr "Línia-2"
-
-#~ msgid "Line-3"
-#~ msgstr "Línia-3"
-
-#~ msgid "Digital-2"
-#~ msgstr "Digital-2"
-
-#~ msgid "Digital-3"
-#~ msgstr "Digital-3"
-
-#~ msgid "Phone-in"
-#~ msgstr "Telèfon-entrada"
-
-#~ msgid "Phone-out"
-#~ msgstr "Telèfon-sortida"
-
-#~ msgid "Radio"
-#~ msgstr "Ràdio"
-
-#~ msgid "No device specified."
-#~ msgstr "No s'ha especificat cap dispositiu."
-
-#~ msgid "Could not open device \"%s\" for reading and writing."
-#~ msgstr "No s'ha pogut obrir el dispositiu «%s» per a l'escriptura i lectura."
-
-#~ msgid "Device is not open."
-#~ msgstr "El dispositiu no està obert."
-
-#~ msgid "Device is open."
-#~ msgstr "El dispositiu està obert."
-
-#~ msgid "Device \"%s\" is not a capture device."
-#~ msgstr "El dispositiu «%s» no és un dispositiu de captura."
-
-#~ msgid "Could not get buffers from device \"%s\"."
-#~ msgstr "No s'han pogut obtenir els búfers del dispositiu «%s»."
+#~ msgid "Could not write to file \"%s\"."
+#~ msgstr "No s'ha pogut escriure al fitxer «%s»."

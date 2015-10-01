@@ -16,29 +16,24 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
  * SECTION:gst
  * @short_description: Media library supporting arbitrary formats and filter
  *                     graphs.
- * @see_also: Check out both <ulink url="http://www.cse.ogi.edu/sysl/">OGI's
- *            pipeline</ulink> and Microsoft's DirectShow for some background.
  *
  * GStreamer is a framework for constructing graphs of various filters
- * (termed elements here) that will handle streaming media.  Any discreet
+ * (termed elements here) that will handle streaming media.  Any discrete
  * (packetizable) media type is supported, with provisions for automatically
  * determining source type.  Formatting/framing information is provided with
  * a powerful negotiation framework.  Plugins are heavily used to provide for
  * all elements, allowing one to construct plugins outside of the GST
  * library, even released binary-only if license require (please don't).
- *
- * GStreamer borrows heavily from both the <ulink
- * url="http://www.cse.ogi.edu/sysl/">OGI media pipeline</ulink> and
- * Microsoft's DirectShow, hopefully taking the best of both and leaving the
- * cruft behind. Its interface is slowly getting stable.
+ * GStreamer covers a wide range of use cases including: playback, recording,
+ * editing, serving streams, voice over ip and video calls.
  *
  * The <application>GStreamer</application> library should be initialized with
  * gst_init() before it can be used. You should pass pointers to the main argc
@@ -58,7 +53,7 @@
  * </programlisting>
  * </example>
  *
- * It's allowed to pass two NULL pointers to gst_init() in case you don't want
+ * It's allowed to pass two %NULL pointers to gst_init() in case you don't want
  * to pass the command line args to GStreamer.
  *
  * You can also use GOption to initialize your own parameters as shown in
@@ -76,9 +71,6 @@
  *       N_("Output tags (also known as metadata)"), NULL},
  *   {NULL}
  *  };
- *  // must initialise the threading system before using any other GLib funtion
- *  if (!g_thread_supported ())
- *    g_thread_init (NULL);
  *  ctx = g_option_context_new ("[ADDITIONAL ARGUMENTS]");
  *  g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
  *  g_option_context_add_group (ctx, gst_init_get_option_group ());
@@ -99,8 +91,6 @@
  * The gst_deinit() call is used to clean up all internal resources used
  * by <application>GStreamer</application>. It is mostly used in unit tests 
  * to check for leaks.
- *
- * Last reviewed on 2006-08-11 (0.10.10)
  */
 
 #include "gst_private.h"
@@ -108,9 +98,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef HAVE_FORK
-#include <sys/wait.h>
-#endif /* HAVE_FORK */
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -126,6 +113,7 @@
 #include <locale.h>             /* for LC_ALL */
 
 #include "gst.h"
+#include "gsttrace.h"
 
 #define GST_CAT_DEFAULT GST_CAT_GST_INIT
 
@@ -136,34 +124,24 @@ static gboolean gst_initialized = FALSE;
 static gboolean gst_deinitialized = FALSE;
 
 #ifdef G_OS_WIN32
-static HMODULE gst_dll_handle = NULL;
+HMODULE _priv_gst_dll_handle = NULL;
 #endif
 
 #ifndef GST_DISABLE_REGISTRY
-static GList *plugin_paths = NULL;      /* for delayed processing in post_init */
+GList *_priv_gst_plugin_paths = NULL;   /* for delayed processing in post_init */
+
+extern gboolean _priv_gst_disable_registry_update;
 #endif
 
 #ifndef GST_DISABLE_GST_DEBUG
-extern const gchar *priv_gst_dump_dot_dir;
+const gchar *priv_gst_dump_dot_dir;
 #endif
 
 /* defaults */
-#if defined(HAVE_FORK) && !defined(GST_HAVE_UNSAFE_FORK)
-#define DEFAULT_FORK TRUE
-#else
-#define DEFAULT_FORK FALSE
-#endif /* HAVE_FORK */
 
 /* set to TRUE when segfaults need to be left as is */
 static gboolean _gst_disable_segtrap = FALSE;
 
-/* control the behaviour of registry rebuild */
-static gboolean _gst_enable_registry_fork = DEFAULT_FORK;
-
-/*set to TRUE when registry needn't to be updated */
-static gboolean _gst_disable_registry_update = FALSE;
-
-static void load_plugin_func (gpointer data, gpointer user_data);
 static gboolean init_pre (GOptionContext * context, GOptionGroup * group,
     gpointer data, GError ** error);
 static gboolean init_post (GOptionContext * context, GOptionGroup * group,
@@ -173,7 +151,7 @@ static gboolean parse_goption_arg (const gchar * s_opt,
     const gchar * arg, gpointer data, GError ** err);
 #endif
 
-static GSList *preload_plugins = NULL;
+GSList *_priv_gst_preload_plugins = NULL;
 
 const gchar g_log_domain_gstreamer[] = "GStreamer";
 
@@ -196,6 +174,7 @@ enum
   ARG_DEBUG,
   ARG_DEBUG_DISABLE,
   ARG_DEBUG_NO_COLOR,
+  ARG_DEBUG_COLOR_MODE,
   ARG_DEBUG_HELP,
 #endif
   ARG_PLUGIN_SPEW,
@@ -212,95 +191,31 @@ enum
  * val ::= [0-5]
  */
 
-#ifndef NUL
-#define NUL '\0'
-#endif
-
-#ifndef GST_DISABLE_GST_DEBUG
-static gboolean
-parse_debug_category (gchar * str, const gchar ** category)
-{
-  if (!str)
-    return FALSE;
-
-  /* works in place */
-  g_strstrip (str);
-
-  if (str[0] != NUL) {
-    *category = str;
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-static gboolean
-parse_debug_level (gchar * str, gint * level)
-{
-  if (!str)
-    return FALSE;
-
-  /* works in place */
-  g_strstrip (str);
-
-  if (str[0] != NUL && str[1] == NUL
-      && str[0] >= '0' && str[0] < '0' + GST_LEVEL_COUNT) {
-    *level = str[0] - '0';
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-static void
-parse_debug_list (const gchar * list)
-{
-  gchar **split;
-  gchar **walk;
-
-  g_return_if_fail (list != NULL);
-
-  split = g_strsplit (list, ",", 0);
-
-  for (walk = split; *walk; walk++) {
-    if (strchr (*walk, ':')) {
-      gchar **values = g_strsplit (*walk, ":", 2);
-
-      if (values[0] && values[1]) {
-        gint level;
-        const gchar *category;
-
-        if (parse_debug_category (values[0], &category)
-            && parse_debug_level (values[1], &level))
-          gst_debug_set_threshold_for_name (category, level);
-      }
-
-      g_strfreev (values);
-    } else {
-      gint level;
-
-      if (parse_debug_level (*walk, &level))
-        gst_debug_set_default_threshold (level);
-    }
-  }
-
-  g_strfreev (split);
-}
-#endif
-
 #ifdef G_OS_WIN32
+/* Note: DllMain is only called when DLLs are loaded or unloaded, so this will
+ * never be called if libgstreamer-1.0 is linked statically. Do not add any code
+ * here to, say, initialize variables or set things up since that will only
+ * happen for dynamically-built GStreamer.
+ *
+ * Also, ideally this should not be defined when GStreamer is built statically.
+ * i.e., it should be conditional on #ifdef DLL_EXPORT. It will be ignored, but
+ * if other libraries make the same mistake of defining it when building
+ * statically, there will be a symbol collision during linking. Fixing this
+ * requires one to build two object files: one for static linking and another
+ * for dynamic linking. */
+BOOL WINAPI DllMain (HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
 BOOL WINAPI
 DllMain (HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
   if (fdwReason == DLL_PROCESS_ATTACH)
-    gst_dll_handle = (HMODULE) hinstDLL;
+    _priv_gst_dll_handle = (HMODULE) hinstDLL;
   return TRUE;
 }
 
 #endif
 
 /**
- * gst_init_get_option_group:
+ * gst_init_get_option_group: (skip)
  *
  * Returns a #GOptionGroup with GStreamer's argument specifications. The
  * group is set up to use standard GOption callbacks, so when using this
@@ -314,7 +229,7 @@ DllMain (HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
  * threading system as one of the very first things in your program
  * (see the example at the beginning of this section).
  *
- * Returns: a pointer to GStreamer's option group.
+ * Returns: (transfer full): a pointer to GStreamer's option group.
  */
 
 GOptionGroup *
@@ -334,7 +249,7 @@ gst_init_get_option_group (void)
         NULL},
     {"gst-debug-level", 0, 0, G_OPTION_ARG_CALLBACK,
           (gpointer) parse_goption_arg,
-          N_("Default debug level from 1 (only error) to 5 (anything) or "
+          N_("Default debug level from 1 (only error) to 9 (anything) or "
               "0 for no output"),
         N_("LEVEL")},
     {"gst-debug", 0, 0, G_OPTION_ARG_CALLBACK, (gpointer) parse_goption_arg,
@@ -344,6 +259,11 @@ gst_init_get_option_group (void)
         N_("LIST")},
     {"gst-debug-no-color", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK,
           (gpointer) parse_goption_arg, N_("Disable colored debugging output"),
+        NULL},
+    {"gst-debug-color-mode", 0, 0, G_OPTION_ARG_CALLBACK,
+          (gpointer) parse_goption_arg,
+          N_("Changes coloring mode of the debug log. "
+              "Possible modes: off, on, disable, auto, unix"),
         NULL},
     {"gst-debug-disable", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK,
         (gpointer) parse_goption_arg, N_("Disable debugging"), NULL},
@@ -372,26 +292,10 @@ gst_init_get_option_group (void)
     {"gst-disable-registry-fork", 0, G_OPTION_FLAG_NO_ARG,
           G_OPTION_ARG_CALLBACK,
           (gpointer) parse_goption_arg,
-          N_("Disable the use of fork() while scanning the registry"),
+          N_("Disable spawning a helper process while scanning the registry"),
         NULL},
     {NULL}
   };
-
-  /* The GLib threading system must be initialised before calling any other
-   * GLib function according to the documentation; if the application hasn't
-   * called gst_init() yet or initialised the threading system otherwise, we
-   * better issue a warning here (since chances are high that the application
-   * has already called other GLib functions such as g_option_context_new() */
-  if (!g_thread_supported ()) {
-    g_warning ("The GStreamer function gst_init_get_option_group() was\n"
-        "\tcalled, but the GLib threading system has not been initialised\n"
-        "\tyet, something that must happen before any other GLib function\n"
-        "\tis called. The application needs to be fixed so that it calls\n"
-        "\t   if (!g_thread_supported ()) g_thread_init(NULL);\n"
-        "\tas very first thing in its main() function. Please file a bug\n"
-        "\tagainst this application.");
-    g_thread_init (NULL);
-  }
 
   group = g_option_group_new ("gst", _("GStreamer Options"),
       _("Show GStreamer Options"), NULL, NULL);
@@ -409,8 +313,8 @@ gst_init_get_option_group (void)
 
 /**
  * gst_init_check:
- * @argc: pointer to application's argc
- * @argv: pointer to application's argv
+ * @argc: (inout) (allow-none): pointer to application's argc
+ * @argv: (inout) (array length=argc) (allow-none): pointer to application's argv
  * @err: pointer to a #GError to which a message will be posted on error
  *
  * Initializes the GStreamer library, setting up internal path lists,
@@ -420,31 +324,29 @@ gst_init_get_option_group (void)
  * for some reason.  If you want your program to fail fatally,
  * use gst_init() instead.
  *
- * This function should be called before calling any other GLib functions. If
- * this is not an option, your program must initialise the GLib thread system
- * using g_thread_init() before any other GLib functions are called.
- *
  * Returns: %TRUE if GStreamer could be initialized.
  */
 gboolean
 gst_init_check (int *argc, char **argv[], GError ** err)
 {
+  static GMutex init_lock;
 #ifndef GST_DISABLE_OPTION_PARSING
   GOptionGroup *group;
   GOptionContext *ctx;
 #endif
   gboolean res;
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
+  g_mutex_lock (&init_lock);
 
   if (gst_initialized) {
     GST_DEBUG ("already initialized gst");
+    g_mutex_unlock (&init_lock);
     return TRUE;
   }
 #ifndef GST_DISABLE_OPTION_PARSING
   ctx = g_option_context_new ("- GStreamer initialization");
   g_option_context_set_ignore_unknown_options (ctx, TRUE);
+  g_option_context_set_help_enabled (ctx, FALSE);
   group = gst_init_get_option_group ();
   g_option_context_add_group (ctx, group);
   res = g_option_context_parse (ctx, argc, argv, err);
@@ -457,26 +359,25 @@ gst_init_check (int *argc, char **argv[], GError ** err)
 
   gst_initialized = res;
 
-  if (res) {
-    GST_INFO ("initialized GStreamer successfully");
-  } else {
-    GST_INFO ("failed to initialize GStreamer");
-  }
+  g_mutex_unlock (&init_lock);
 
   return res;
 }
 
 /**
  * gst_init:
- * @argc: (inout): pointer to application's argc
+ * @argc: (inout) (allow-none): pointer to application's argc
  * @argv: (inout) (array length=argc) (allow-none): pointer to application's argv
  *
  * Initializes the GStreamer library, setting up internal path lists,
  * registering built-in elements, and loading standard plugins.
  *
- * This function should be called before calling any other GLib functions. If
- * this is not an option, your program must initialise the GLib thread system
- * using g_thread_init() before any other GLib functions are called.
+ * Unless the plugin registry is disabled at compile time, the registry will be
+ * loaded. By default this will also check if the registry cache needs to be
+ * updated and rescan all plugins if needed. See gst_update_registry() for
+ * details and section
+ * <link linkend="gst-running">Running GStreamer Applications</link>
+ * for how to disable automatic registry updates.
  *
  * <note><para>
  * This function will terminate your program if it was unable to initialize
@@ -485,7 +386,7 @@ gst_init_check (int *argc, char **argv[], GError ** err)
  * </para></note>
  *
  * WARNING: This function does not work in the same way as corresponding
- * functions in other glib-style libraries, such as gtk_init().  In
+ * functions in other glib-style libraries, such as gtk_init\(\). In
  * particular, unknown command line options cause this function to
  * abort program execution.
  */
@@ -504,12 +405,27 @@ gst_init (int *argc, char **argv[])
   }
 }
 
+/**
+ * gst_is_initialized:
+ *
+ * Use this function to check if GStreamer has been initialized with gst_init()
+ * or gst_init_check().
+ *
+ * Returns: %TRUE if initialization has been done, %FALSE otherwise.
+ */
+gboolean
+gst_is_initialized (void)
+{
+  return gst_initialized;
+}
+
 #ifndef GST_DISABLE_REGISTRY
 static void
 add_path_func (gpointer data, gpointer user_data)
 {
   GST_INFO ("Adding plugin path: \"%s\", will scan later", (gchar *) data);
-  plugin_paths = g_list_append (plugin_paths, g_strdup (data));
+  _priv_gst_plugin_paths =
+      g_list_append (_priv_gst_plugin_paths, g_strdup (data));
 }
 #endif
 
@@ -517,40 +433,15 @@ add_path_func (gpointer data, gpointer user_data)
 static void
 prepare_for_load_plugin_func (gpointer data, gpointer user_data)
 {
-  preload_plugins = g_slist_prepend (preload_plugins, g_strdup (data));
+  _priv_gst_preload_plugins =
+      g_slist_prepend (_priv_gst_preload_plugins, g_strdup (data));
 }
 #endif
 
-static void
-load_plugin_func (gpointer data, gpointer user_data)
-{
-  GstPlugin *plugin;
-  const gchar *filename;
-  GError *err = NULL;
-
-  filename = (const gchar *) data;
-
-  plugin = gst_plugin_load_file (filename, &err);
-
-  if (plugin) {
-    GST_INFO ("Loaded plugin: \"%s\"", filename);
-
-    gst_default_registry_add_plugin (plugin);
-  } else {
-    if (err) {
-      /* Report error to user, and free error */
-      GST_ERROR ("Failed to load plugin: %s", err->message);
-      g_error_free (err);
-    } else {
-      GST_WARNING ("Failed to load plugin: \"%s\"", filename);
-    }
-  }
-}
-
 #ifndef GST_DISABLE_OPTION_PARSING
 static void
-split_and_iterate (const gchar * stringlist, gchar * separator, GFunc iterator,
-    gpointer user_data)
+split_and_iterate (const gchar * stringlist, const gchar * separator,
+    GFunc iterator, gpointer user_data)
 {
   gchar **strings;
   gint j = 0;
@@ -579,52 +470,46 @@ static gboolean
 init_pre (GOptionContext * context, GOptionGroup * group, gpointer data,
     GError ** error)
 {
+  gchar *libdir;
   if (gst_initialized) {
     GST_DEBUG ("already initialized");
     return TRUE;
   }
-
-  /* GStreamer was built against a GLib >= 2.8 and is therefore not doing
-   * the refcount hack. Check that it isn't being run against an older GLib */
-  if (glib_major_version < 2 ||
-      (glib_major_version == 2 && glib_minor_version < 8)) {
-    g_warning ("GStreamer was compiled against GLib %d.%d.%d but is running"
-        " against %d.%d.%d. This will cause reference counting issues",
-        GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION,
-        glib_major_version, glib_minor_version, glib_micro_version);
-  }
-
+#if !GLIB_CHECK_VERSION(2, 35, 0)
   g_type_init ();
+#endif
 
-  /* we need threading to be enabled right here */
-  g_assert (g_thread_supported ());
-  _gst_debug_init ();
+#ifndef GST_DISABLE_GST_DEBUG
+  _priv_gst_debug_init ();
+  priv_gst_dump_dot_dir = g_getenv ("GST_DEBUG_DUMP_DOT_DIR");
+#endif
 
 #ifdef ENABLE_NLS
-  setlocale (LC_ALL, "");
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
-#ifndef GST_DISABLE_GST_DEBUG
-  {
-    const gchar *debug_list;
-
-    if (g_getenv ("GST_DEBUG_NO_COLOR") != NULL)
-      gst_debug_set_colored (FALSE);
-
-    debug_list = g_getenv ("GST_DEBUG");
-    if (debug_list) {
-      parse_debug_list (debug_list);
-    }
-  }
-
-  priv_gst_dump_dot_dir = g_getenv ("GST_DEBUG_DUMP_DOT_DIR");
-#endif
   /* This is the earliest we can make stuff show up in the logs.
    * So give some useful info about GStreamer here */
+#ifdef G_OS_WIN32
+  {
+    gchar *basedir =
+        g_win32_get_package_installation_directory_of_module
+        (_priv_gst_dll_handle);
+
+    libdir = g_build_filename (basedir,
+#ifdef _DEBUG
+        "debug"
+#endif
+        "lib", NULL);
+    g_free (basedir);
+  }
+#else
+  libdir = g_strdup (LIBDIR);
+#endif
   GST_INFO ("Initializing GStreamer Core Library version %s", VERSION);
-  GST_INFO ("Using library installed in %s", LIBDIR);
+  GST_INFO ("Using library installed in %s", libdir);
+  g_free (libdir);
 
   /* Print some basic system details if possible (OS/architecture) */
 #ifdef HAVE_SYS_UTSNAME_H
@@ -637,6 +522,11 @@ init_pre (GOptionContext * context, GOptionGroup * group, gpointer data,
           sys_details.machine);
     }
   }
+#endif
+
+#ifndef G_ATOMIC_LOCK_FREE
+  GST_CAT_WARNING (GST_CAT_PERFORMANCE, "GLib atomic operations are NOT "
+      "implemented using real hardware atomic operations!");
 #endif
 
   return TRUE;
@@ -656,321 +546,6 @@ gst_register_core_elements (GstPlugin * plugin)
   return TRUE;
 }
 
-#ifndef GST_DISABLE_REGISTRY
-
-typedef enum
-{
-  REGISTRY_SCAN_AND_UPDATE_FAILURE = 0,
-  REGISTRY_SCAN_AND_UPDATE_SUCCESS_NOT_CHANGED,
-  REGISTRY_SCAN_AND_UPDATE_SUCCESS_UPDATED
-} GstRegistryScanAndUpdateResult;
-
-/*
- * scan_and_update_registry:
- * @default_registry: the #GstRegistry
- * @registry_file: registry filename
- * @write_changes: write registry if it has changed?
- *
- * Scans for registry changes and eventually updates the registry cache. 
- *
- * Return: %REGISTRY_SCAN_AND_UPDATE_FAILURE if the registry could not scanned
- *         or updated, %REGISTRY_SCAN_AND_UPDATE_SUCCESS_NOT_CHANGED if the
- *         registry is clean and %REGISTRY_SCAN_AND_UPDATE_SUCCESS_UPDATED if
- *         it has been updated and the cache needs to be re-read.
- */
-static GstRegistryScanAndUpdateResult
-scan_and_update_registry (GstRegistry * default_registry,
-    const gchar * registry_file, gboolean write_changes, GError ** error)
-{
-  const gchar *plugin_path;
-  gboolean changed = FALSE;
-  GList *l;
-
-  GST_INFO ("Validating registry cache: %s", registry_file);
-  /* It sounds tempting to just compare the mtime of directories with the mtime
-   * of the registry cache, but it does not work. It would not catch updated
-   * plugins, which might bring more or less features.
-   */
-
-  /* scan paths specified via --gst-plugin-path */
-  GST_DEBUG ("scanning paths added via --gst-plugin-path");
-  for (l = plugin_paths; l != NULL; l = l->next) {
-    GST_INFO ("Scanning plugin path: \"%s\"", (gchar *) l->data);
-    changed |= gst_registry_scan_path (default_registry, (gchar *) l->data);
-  }
-  /* keep plugin_paths around in case a re-scan is forced later on */
-
-  /* GST_PLUGIN_PATH specifies a list of directories to scan for
-   * additional plugins.  These take precedence over the system plugins */
-  plugin_path = g_getenv ("GST_PLUGIN_PATH");
-  if (plugin_path) {
-    char **list;
-    int i;
-
-    GST_DEBUG ("GST_PLUGIN_PATH set to %s", plugin_path);
-    list = g_strsplit (plugin_path, G_SEARCHPATH_SEPARATOR_S, 0);
-    for (i = 0; list[i]; i++) {
-      changed |= gst_registry_scan_path (default_registry, list[i]);
-    }
-    g_strfreev (list);
-  } else {
-    GST_DEBUG ("GST_PLUGIN_PATH not set");
-  }
-
-  /* GST_PLUGIN_SYSTEM_PATH specifies a list of plugins that are always
-   * loaded by default.  If not set, this defaults to the system-installed
-   * path, and the plugins installed in the user's home directory */
-  plugin_path = g_getenv ("GST_PLUGIN_SYSTEM_PATH");
-  if (plugin_path == NULL) {
-    char *home_plugins;
-
-    GST_DEBUG ("GST_PLUGIN_SYSTEM_PATH not set");
-
-    /* plugins in the user's home directory take precedence over
-     * system-installed ones */
-    home_plugins = g_build_filename (g_get_home_dir (),
-        ".gstreamer-" GST_MAJORMINOR, "plugins", NULL);
-    GST_DEBUG ("scanning home plugins %s", home_plugins);
-    changed |= gst_registry_scan_path (default_registry, home_plugins);
-    g_free (home_plugins);
-
-    /* add the main (installed) library path */
-    GST_DEBUG ("scanning main plugins %s", PLUGINDIR);
-    changed |= gst_registry_scan_path (default_registry, PLUGINDIR);
-
-#ifdef G_OS_WIN32
-    {
-      char *base_dir;
-      char *dir;
-
-      base_dir =
-          g_win32_get_package_installation_directory_of_module (gst_dll_handle);
-
-      dir = g_build_filename (base_dir, "lib", "gstreamer-0.10", NULL);
-      GST_DEBUG ("scanning DLL dir %s", dir);
-
-      changed |= gst_registry_scan_path (default_registry, dir);
-
-      g_free (dir);
-      g_free (base_dir);
-    }
-#endif
-  } else {
-    gchar **list;
-    gint i;
-
-    GST_DEBUG ("GST_PLUGIN_SYSTEM_PATH set to %s", plugin_path);
-    list = g_strsplit (plugin_path, G_SEARCHPATH_SEPARATOR_S, 0);
-    for (i = 0; list[i]; i++) {
-      changed |= gst_registry_scan_path (default_registry, list[i]);
-    }
-    g_strfreev (list);
-  }
-
-  /* Remove cached plugins so stale info is cleared. */
-  changed |= _priv_gst_registry_remove_cache_plugins (default_registry);
-
-  if (!changed) {
-    GST_INFO ("Registry cache has not changed");
-    return REGISTRY_SCAN_AND_UPDATE_SUCCESS_NOT_CHANGED;
-  }
-
-  if (!write_changes) {
-    GST_INFO ("Registry cache changed, but writing is disabled. Not writing.");
-    return REGISTRY_SCAN_AND_UPDATE_FAILURE;
-  }
-
-  GST_INFO ("Registry cache changed. Writing new registry cache");
-  if (!gst_registry_binary_write_cache (default_registry, registry_file)) {
-    g_set_error (error, GST_CORE_ERROR, GST_CORE_ERROR_FAILED,
-        _("Error writing registry cache to %s: %s"),
-        registry_file, g_strerror (errno));
-    return REGISTRY_SCAN_AND_UPDATE_FAILURE;
-  }
-
-  GST_INFO ("Registry cache written successfully");
-  return REGISTRY_SCAN_AND_UPDATE_SUCCESS_UPDATED;
-}
-
-static gboolean
-ensure_current_registry_nonforking (GstRegistry * default_registry,
-    const gchar * registry_file, GError ** error)
-{
-  /* fork() not available */
-  GST_DEBUG ("Updating registry cache in-process");
-  scan_and_update_registry (default_registry, registry_file, TRUE, error);
-  return TRUE;
-}
-
-/* when forking is not available this function always does nothing but return
- * TRUE immediatly */
-static gboolean
-ensure_current_registry_forking (GstRegistry * default_registry,
-    const gchar * registry_file, GError ** error)
-{
-#ifdef HAVE_FORK
-  pid_t pid;
-  int pfd[2];
-  int ret;
-
-  /* We fork here, and let the child read and possibly rebuild the registry.
-   * After that, the parent will re-read the freshly generated registry. */
-  GST_DEBUG ("forking to update registry");
-
-  if (pipe (pfd) == -1) {
-    g_set_error (error, GST_CORE_ERROR, GST_CORE_ERROR_FAILED,
-        _("Error re-scanning registry %s: %s"),
-        ", could not create pipes. Error", g_strerror (errno));
-    return FALSE;
-  }
-
-  pid = fork ();
-  if (pid == -1) {
-    GST_ERROR ("Failed to fork()");
-    g_set_error (error, GST_CORE_ERROR, GST_CORE_ERROR_FAILED,
-        _("Error re-scanning registry %s: %s"),
-        ", failed to fork. Error", g_strerror (errno));
-    return FALSE;
-  }
-
-  if (pid == 0) {
-    gint result_code;
-
-    /* this is the child. Close the read pipe */
-    (void) close (pfd[0]);
-
-    GST_DEBUG ("child reading registry cache");
-    result_code =
-        scan_and_update_registry (default_registry, registry_file, TRUE, NULL);
-
-    /* need to use _exit, so that any exit handlers registered don't
-     * bring down the main program */
-    GST_DEBUG ("child exiting: %d", result_code);
-
-    /* make valgrind happy (yes, you can call it insane) */
-    g_free ((char *) registry_file);
-
-    /* write a result byte to the pipe */
-    do {
-      ret = write (pfd[1], &result_code, sizeof (result_code));
-    } while (ret == -1 && errno == EINTR);
-    /* if ret == -1 now, we could not write to pipe, probably 
-     * means parent has exited before us */
-    (void) close (pfd[1]);
-
-    _exit (0);
-  } else {
-    gint result_code;
-
-    /* parent. Close write pipe */
-    (void) close (pfd[1]);
-
-    /* Wait for result from the pipe */
-    GST_DEBUG ("Waiting for data from child");
-    do {
-      ret = read (pfd[0], &result_code, sizeof (result_code));
-    } while (ret == -1 && errno == EINTR);
-
-    if (ret == -1) {
-      g_set_error (error, GST_CORE_ERROR, GST_CORE_ERROR_FAILED,
-          _("Error re-scanning registry %s: %s"),
-          ", read returned error", g_strerror (errno));
-      close (pfd[0]);
-      return FALSE;
-    }
-    (void) close (pfd[0]);
-
-    /* Wait to ensure the child is reaped, but ignore the result */
-    GST_DEBUG ("parent waiting on child");
-    waitpid (pid, NULL, 0);
-    GST_DEBUG ("parent done waiting on child");
-
-    if (ret == 0) {
-      GST_ERROR ("child did not exit normally, terminated by signal");
-      g_set_error (error, GST_CORE_ERROR, GST_CORE_ERROR_FAILED,
-          _("Error re-scanning registry %s"), ", child terminated by signal");
-      return FALSE;
-    }
-
-    if (result_code == REGISTRY_SCAN_AND_UPDATE_SUCCESS_UPDATED) {
-      GST_DEBUG ("Child succeeded. Parent reading registry cache");
-      _priv_gst_registry_remove_cache_plugins (default_registry);
-      gst_registry_binary_read_cache (default_registry, registry_file);
-    } else if (result_code == REGISTRY_SCAN_AND_UPDATE_FAILURE) {
-      GST_DEBUG ("Child failed. Parent re-scanning registry, ignoring errors.");
-      scan_and_update_registry (default_registry, registry_file, FALSE, NULL);
-    }
-  }
-#endif /* HAVE_FORK */
-  return TRUE;
-}
-
-static gboolean
-ensure_current_registry (GError ** error)
-{
-  gchar *registry_file;
-  GstRegistry *default_registry;
-  gboolean ret = TRUE;
-  gboolean do_fork;
-  gboolean do_update;
-  gboolean have_cache;
-
-  default_registry = gst_registry_get_default ();
-  registry_file = g_strdup (g_getenv ("GST_REGISTRY"));
-  if (registry_file == NULL) {
-    registry_file = g_build_filename (g_get_home_dir (),
-        ".gstreamer-" GST_MAJORMINOR, "registry." HOST_CPU ".bin", NULL);
-  }
-
-  GST_INFO ("reading registry cache: %s", registry_file);
-  have_cache = gst_registry_binary_read_cache (default_registry, registry_file);
-
-  if (have_cache) {
-    do_update = !_gst_disable_registry_update;
-    if (do_update) {
-      const gchar *update_env;
-
-      if ((update_env = g_getenv ("GST_REGISTRY_UPDATE"))) {
-        /* do update for any value different from "no" */
-        do_update = (strcmp (update_env, "no") != 0);
-      }
-    }
-  } else {
-    do_update = TRUE;
-  }
-
-  if (do_update) {
-    /* first see if forking is enabled */
-    do_fork = _gst_enable_registry_fork;
-    if (do_fork) {
-      const gchar *fork_env;
-
-      /* forking enabled, see if it is disabled with an env var */
-      if ((fork_env = g_getenv ("GST_REGISTRY_FORK"))) {
-        /* fork enabled for any value different from "no" */
-        do_fork = strcmp (fork_env, "no") != 0;
-      }
-    }
-
-    /* now check registry with or without forking */
-    if (do_fork) {
-      GST_DEBUG ("forking for registry rebuild");
-      ret = ensure_current_registry_forking (default_registry, registry_file,
-          error);
-    } else {
-      GST_DEBUG ("requested not to fork for registry rebuild");
-      ret = ensure_current_registry_nonforking (default_registry, registry_file,
-          error);
-    }
-  }
-
-  g_free (registry_file);
-  GST_INFO ("registry reading and updating done, result = %d", ret);
-
-  return ret;
-}
-#endif /* GST_DISABLE_REGISTRY */
-
 /*
  * this bit handles:
  * - initalization of threads if we use them
@@ -988,10 +563,6 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
 {
   GLogLevelFlags llf;
 
-#ifndef GST_DISABLE_TRACE
-  GstTrace *gst_trace;
-#endif /* GST_DISABLE_TRACE */
-
   if (gst_initialized) {
     GST_DEBUG ("already initialized");
     return TRUE;
@@ -1000,9 +571,22 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   llf = G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_ERROR | G_LOG_FLAG_FATAL;
   g_log_set_handler (g_log_domain_gstreamer, llf, debug_log_handler, NULL);
 
+#ifndef GST_DISABLE_TRACE
+  _priv_gst_alloc_trace_initialize ();
+#endif
+
+  _priv_gst_mini_object_initialize ();
   _priv_gst_quarks_initialize ();
-  _gst_format_initialize ();
-  _gst_query_initialize ();
+  _priv_gst_allocator_initialize ();
+  _priv_gst_memory_initialize ();
+  _priv_gst_format_initialize ();
+  _priv_gst_query_initialize ();
+  _priv_gst_structure_initialize ();
+  _priv_gst_caps_initialize ();
+  _priv_gst_caps_features_initialize ();
+  _priv_gst_meta_initialize ();
+  _priv_gst_message_initialize ();
+
   g_type_class_ref (gst_object_get_type ());
   g_type_class_ref (gst_pad_get_type ());
   g_type_class_ref (gst_element_factory_get_type ());
@@ -1012,15 +596,14 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   g_type_class_ref (gst_bus_get_type ());
   g_type_class_ref (gst_task_get_type ());
   g_type_class_ref (gst_clock_get_type ());
+  g_type_class_ref (gst_debug_color_mode_get_type ());
 
-  g_type_class_ref (gst_index_factory_get_type ());
   gst_uri_handler_get_type ();
 
   g_type_class_ref (gst_object_flags_get_type ());
   g_type_class_ref (gst_bin_flags_get_type ());
-  g_type_class_ref (gst_buffer_flag_get_type ());
+  g_type_class_ref (gst_buffer_flags_get_type ());
   g_type_class_ref (gst_buffer_copy_flags_get_type ());
-  g_type_class_ref (gst_buffer_list_item_get_type ());
   g_type_class_ref (gst_bus_flags_get_type ());
   g_type_class_ref (gst_bus_sync_reply_get_type ());
   g_type_class_ref (gst_caps_flags_get_type ());
@@ -1041,13 +624,8 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   g_type_class_ref (gst_event_type_get_type ());
   g_type_class_ref (gst_seek_type_get_type ());
   g_type_class_ref (gst_seek_flags_get_type ());
+  g_type_class_ref (gst_qos_type_get_type ());
   g_type_class_ref (gst_format_get_type ());
-  g_type_class_ref (gst_index_certainty_get_type ());
-  g_type_class_ref (gst_index_entry_type_get_type ());
-  g_type_class_ref (gst_index_lookup_method_get_type ());
-  g_type_class_ref (gst_assoc_flags_get_type ());
-  g_type_class_ref (gst_index_resolver_method_get_type ());
-  g_type_class_ref (gst_index_flags_get_type ());
   g_type_class_ref (gst_debug_level_get_type ());
   g_type_class_ref (gst_debug_color_flags_get_type ());
   g_type_class_ref (gst_iterator_result_get_type ());
@@ -1055,8 +633,9 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   g_type_class_ref (gst_message_type_get_type ());
   g_type_class_ref (gst_mini_object_flags_get_type ());
   g_type_class_ref (gst_pad_link_return_get_type ());
+  g_type_class_ref (gst_pad_link_check_get_type ());
   g_type_class_ref (gst_flow_return_get_type ());
-  g_type_class_ref (gst_activate_mode_get_type ());
+  g_type_class_ref (gst_pad_mode_get_type ());
   g_type_class_ref (gst_pad_direction_get_type ());
   g_type_class_ref (gst_pad_flags_get_type ());
   g_type_class_ref (gst_pad_presence_get_type ());
@@ -1066,34 +645,56 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
   g_type_class_ref (gst_plugin_flags_get_type ());
   g_type_class_ref (gst_plugin_dependency_flags_get_type ());
   g_type_class_ref (gst_rank_get_type ());
+  g_type_class_ref (gst_query_type_flags_get_type ());
   g_type_class_ref (gst_query_type_get_type ());
   g_type_class_ref (gst_buffering_mode_get_type ());
   g_type_class_ref (gst_stream_status_type_get_type ());
   g_type_class_ref (gst_structure_change_type_get_type ());
   g_type_class_ref (gst_tag_merge_mode_get_type ());
   g_type_class_ref (gst_tag_flag_get_type ());
+  g_type_class_ref (gst_tag_scope_get_type ());
   g_type_class_ref (gst_task_pool_get_type ());
   g_type_class_ref (gst_task_state_get_type ());
-  g_type_class_ref (gst_alloc_trace_flags_get_type ());
+  g_type_class_ref (gst_toc_entry_type_get_type ());
   g_type_class_ref (gst_type_find_probability_get_type ());
+  g_type_class_ref (gst_uri_error_get_type ());
   g_type_class_ref (gst_uri_type_get_type ());
   g_type_class_ref (gst_parse_error_get_type ());
   g_type_class_ref (gst_parse_flags_get_type ());
   g_type_class_ref (gst_search_mode_get_type ());
+  g_type_class_ref (gst_progress_type_get_type ());
+  g_type_class_ref (gst_buffer_pool_acquire_flags_get_type ());
+  g_type_class_ref (gst_memory_flags_get_type ());
+  g_type_class_ref (gst_map_flags_get_type ());
+  g_type_class_ref (gst_caps_intersect_mode_get_type ());
+  g_type_class_ref (gst_pad_probe_type_get_type ());
+  g_type_class_ref (gst_pad_probe_return_get_type ());
+  g_type_class_ref (gst_segment_flags_get_type ());
+  g_type_class_ref (gst_scheduling_flags_get_type ());
+  g_type_class_ref (gst_meta_flags_get_type ());
+  g_type_class_ref (gst_toc_entry_type_get_type ());
+  g_type_class_ref (gst_toc_scope_get_type ());
+  g_type_class_ref (gst_toc_loop_type_get_type ());
+  g_type_class_ref (gst_control_binding_get_type ());
+  g_type_class_ref (gst_control_source_get_type ());
+  g_type_class_ref (gst_lock_flags_get_type ());
+  g_type_class_ref (gst_allocator_flags_get_type ());
+  g_type_class_ref (gst_stream_flags_get_type ());
 
-  gst_structure_get_type ();
-  _gst_value_initialize ();
+  _priv_gst_event_initialize ();
+  _priv_gst_buffer_initialize ();
+  _priv_gst_buffer_list_initialize ();
+  _priv_gst_sample_initialize ();
+  _priv_gst_context_initialize ();
+  _priv_gst_date_time_initialize ();
+  _priv_gst_tag_initialize ();
+  _priv_gst_toc_initialize ();
+  _priv_gst_value_initialize ();
+
   g_type_class_ref (gst_param_spec_fraction_get_type ());
-  gst_caps_get_type ();
-  _gst_event_initialize ();
-  _gst_buffer_initialize ();
-  _gst_buffer_list_initialize ();
-  _gst_message_initialize ();
-  _gst_tag_initialize ();
+  gst_parse_context_get_type ();
 
-  _gst_plugin_initialize ();
-
-  gst_g_error_get_type ();
+  _priv_gst_plugin_initialize ();
 
   /* register core plugins */
   gst_plugin_register_static (GST_VERSION_MAJOR, GST_VERSION_MINOR,
@@ -1106,28 +707,20 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
    * gstreamer as being initialized, since it is the case from a plugin point of
    * view.
    *
-   * If anything fails, it will be put back to FALSE in gst_init_check().
+   * If anything fails, it will be put back to %FALSE in gst_init_check().
    * This allows some special plugins that would call gst_init() to not cause a
    * looping effect (i.e. initializing GStreamer twice).
    */
   gst_initialized = TRUE;
 
-#ifndef GST_DISABLE_REGISTRY
-  if (!ensure_current_registry (error))
+  if (!gst_update_registry ())
     return FALSE;
-#endif /* GST_DISABLE_REGISTRY */
 
-  /* if we need to preload plugins, do so now */
-  g_slist_foreach (preload_plugins, load_plugin_func, NULL);
-  /* keep preload_plugins around in case a re-scan is forced later on */
-
-#ifndef GST_DISABLE_TRACE
-  _gst_trace_on = 0;
-  if (_gst_trace_on) {
-    gst_trace = gst_trace_new ("gst.trace", 1024);
-    gst_trace_set_default (gst_trace);
-  }
-#endif /* GST_DISABLE_TRACE */
+  GST_INFO ("GLib runtime version: %d.%d.%d", glib_major_version,
+      glib_minor_version, glib_micro_version);
+  GST_INFO ("GLib headers version: %d.%d.%d", GLIB_MAJOR_VERSION,
+      GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
+  GST_INFO ("initialized GStreamer successfully");
 
   return TRUE;
 }
@@ -1156,7 +749,7 @@ gst_debug_help (void)
   if (!init_post (NULL, NULL, NULL, NULL))
     exit (1);
 
-  list2 = gst_registry_plugin_filter (gst_registry_get_default (),
+  list2 = gst_registry_plugin_filter (gst_registry_get (),
       select_all, FALSE, NULL);
 
   /* FIXME this is gross.  why don't debug have categories PluginFeatures? */
@@ -1175,9 +768,27 @@ gst_debug_help (void)
   g_print ("---------------------+--------+--------------------------------\n");
 
   while (walk) {
+    gboolean on_unix;
     GstDebugCategory *cat = (GstDebugCategory *) walk->data;
+    GstDebugColorMode coloring = gst_debug_get_color_mode ();
+#ifdef G_OS_UNIX
+    on_unix = TRUE;
+#else
+    on_unix = FALSE;
+#endif
 
-    if (gst_debug_is_colored ()) {
+    if (GST_DEBUG_COLOR_MODE_UNIX == coloring
+        || (on_unix && GST_DEBUG_COLOR_MODE_ON == coloring)) {
+      gchar *color = gst_debug_construct_term_color (cat->color);
+
+      g_print ("%s%-20s\033[00m  %1d %s  %s%s\033[00m\n",
+          color,
+          gst_debug_category_get_name (cat),
+          gst_debug_category_get_threshold (cat),
+          gst_debug_level_get_name (gst_debug_category_get_threshold (cat)),
+          color, gst_debug_category_get_description (cat));
+      g_free (color);
+    } else if (GST_DEBUG_COLOR_MODE_ON == coloring && !on_unix) {
 #ifdef G_OS_WIN32
       gint color = gst_debug_construct_win_color (cat->color);
       const gint clear = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
@@ -1191,16 +802,6 @@ gst_debug_help (void)
       g_print ("%s", gst_debug_category_get_description (cat));
       SetConsoleTextAttribute (GetStdHandle (STD_OUTPUT_HANDLE), clear);
       g_print ("\n");
-#else /* G_OS_WIN32 */
-      gchar *color = gst_debug_construct_term_color (cat->color);
-
-      g_print ("%s%-20s\033[00m  %1d %s  %s%s\033[00m\n",
-          color,
-          gst_debug_category_get_name (cat),
-          gst_debug_category_get_threshold (cat),
-          gst_debug_level_get_name (gst_debug_category_get_threshold (cat)),
-          color, gst_debug_category_get_description (cat));
-      g_free (color);
 #endif /* G_OS_WIN32 */
     } else {
       g_print ("%-20s  %1d %s  %s\n", gst_debug_category_get_name (cat),
@@ -1233,19 +834,22 @@ parse_one_option (gint opt, const gchar * arg, GError ** err)
     }
 #ifndef GST_DISABLE_GST_DEBUG
     case ARG_DEBUG_LEVEL:{
-      gint tmp = 0;
+      GstDebugLevel tmp = GST_LEVEL_NONE;
 
-      tmp = strtol (arg, NULL, 0);
-      if (tmp >= 0 && tmp < GST_LEVEL_COUNT) {
+      tmp = (GstDebugLevel) strtol (arg, NULL, 0);
+      if (((guint) tmp) < GST_LEVEL_COUNT) {
         gst_debug_set_default_threshold (tmp);
       }
       break;
     }
     case ARG_DEBUG:
-      parse_debug_list (arg);
+      gst_debug_set_threshold_from_string (arg, FALSE);
       break;
     case ARG_DEBUG_NO_COLOR:
       gst_debug_set_colored (FALSE);
+      break;
+    case ARG_DEBUG_COLOR_MODE:
+      gst_debug_set_color_mode_from_string (arg);
       break;
     case ARG_DEBUG_DISABLE:
       gst_debug_set_active (FALSE);
@@ -1268,10 +872,12 @@ parse_one_option (gint opt, const gchar * arg, GError ** err)
       _gst_disable_segtrap = TRUE;
       break;
     case ARG_REGISTRY_UPDATE_DISABLE:
-      _gst_disable_registry_update = TRUE;
+#ifndef GST_DISABLE_REGISTRY
+      _priv_gst_disable_registry_update = TRUE;
+#endif
       break;
     case ARG_REGISTRY_FORK_DISABLE:
-      _gst_enable_registry_fork = FALSE;
+      gst_registry_fork_set_enabled (FALSE);
       break;
     default:
       g_set_error (err, G_OPTION_ERROR, G_OPTION_ERROR_UNKNOWN_OPTION,
@@ -1288,7 +894,7 @@ parse_goption_arg (const gchar * opt,
 {
   static const struct
   {
-    gchar *opt;
+    const gchar *opt;
     int val;
   } options[] = {
     {
@@ -1300,6 +906,7 @@ parse_goption_arg (const gchar * opt,
     "--gst-debug", ARG_DEBUG}, {
     "--gst-debug-disable", ARG_DEBUG_DISABLE}, {
     "--gst-debug-no-color", ARG_DEBUG_NO_COLOR}, {
+    "--gst-debug-color-mode", ARG_DEBUG_COLOR_MODE}, {
     "--gst-debug-help", ARG_DEBUG_HELP},
 #endif
     {
@@ -1324,8 +931,6 @@ parse_goption_arg (const gchar * opt,
 }
 #endif
 
-extern GstRegistry *_gst_registry_default;
-
 /**
  * gst_deinit:
  *
@@ -1341,6 +946,7 @@ extern GstRegistry *_gst_registry_default;
 void
 gst_deinit (void)
 {
+  GstBinClass *bin_class;
   GstClock *clock;
 
   GST_INFO ("deinitializing GStreamer");
@@ -1350,14 +956,22 @@ gst_deinit (void)
     return;
   }
 
-  g_slist_foreach (preload_plugins, (GFunc) g_free, NULL);
-  g_slist_free (preload_plugins);
-  preload_plugins = NULL;
+  g_thread_pool_set_max_unused_threads (0);
+  bin_class = GST_BIN_CLASS (g_type_class_peek (gst_bin_get_type ()));
+  if (bin_class->pool != NULL) {
+    g_thread_pool_free (bin_class->pool, FALSE, TRUE);
+    bin_class->pool = NULL;
+  }
+  gst_task_cleanup_all ();
+
+  g_slist_foreach (_priv_gst_preload_plugins, (GFunc) g_free, NULL);
+  g_slist_free (_priv_gst_preload_plugins);
+  _priv_gst_preload_plugins = NULL;
 
 #ifndef GST_DISABLE_REGISTRY
-  g_list_foreach (plugin_paths, (GFunc) g_free, NULL);
-  g_list_free (plugin_paths);
-  plugin_paths = NULL;
+  g_list_foreach (_priv_gst_plugin_paths, (GFunc) g_free, NULL);
+  g_list_free (_priv_gst_plugin_paths);
+  _priv_gst_plugin_paths = NULL;
 #endif
 
   clock = gst_system_clock_obtain ();
@@ -1365,6 +979,10 @@ gst_deinit (void)
   gst_object_unref (clock);
 
   _priv_gst_registry_cleanup ();
+
+#ifndef GST_DISABLE_TRACE
+  _priv_gst_alloc_trace_deinit ();
+#endif
 
   g_type_class_unref (g_type_class_peek (gst_object_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_pad_get_type ()));
@@ -1374,12 +992,10 @@ gst_deinit (void)
   g_type_class_unref (g_type_class_peek (gst_bin_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_bus_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_task_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_index_factory_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_object_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_bin_flags_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_buffer_flag_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_buffer_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_buffer_copy_flags_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_buffer_list_item_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_bus_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_bus_sync_reply_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_caps_flags_get_type ()));
@@ -1407,23 +1023,19 @@ gst_deinit (void)
   g_type_class_unref (g_type_class_peek (gst_event_type_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_seek_type_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_seek_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_qos_type_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_format_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_index_certainty_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_index_entry_type_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_index_lookup_method_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_assoc_flags_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_index_resolver_method_get_type
-          ()));
-  g_type_class_unref (g_type_class_peek (gst_index_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_debug_level_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_debug_color_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_iterator_result_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_iterator_item_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_message_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_meta_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_mini_object_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_pad_link_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_link_check_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_flow_return_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_activate_mode_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_mode_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_pad_direction_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_pad_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_pad_presence_get_type ()));
@@ -1432,17 +1044,40 @@ gst_deinit (void)
   g_type_class_unref (g_type_class_peek (gst_plugin_error_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_plugin_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_rank_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_query_type_flags_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_query_type_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_buffering_mode_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_tag_merge_mode_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_tag_flag_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_tag_scope_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_task_state_get_type ()));
-  g_type_class_unref (g_type_class_peek (gst_alloc_trace_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_toc_entry_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_toc_scope_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_type_find_probability_get_type
           ()));
   g_type_class_unref (g_type_class_peek (gst_uri_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_uri_error_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_parse_error_get_type ()));
   g_type_class_unref (g_type_class_peek (gst_param_spec_fraction_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_progress_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_buffer_pool_acquire_flags_get_type
+          ()));
+  g_type_class_unref (g_type_class_peek (gst_memory_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_map_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_caps_intersect_mode_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_probe_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_pad_probe_return_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_segment_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_scheduling_flags_get_type ()));
+
+  g_type_class_unref (g_type_class_peek (gst_control_binding_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_control_source_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_toc_entry_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_toc_loop_type_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_lock_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_allocator_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_stream_flags_get_type ()));
+  g_type_class_unref (g_type_class_peek (gst_debug_color_mode_get_type ()));
 
   gst_deinitialized = TRUE;
   GST_INFO ("deinitialized GStreamer");
@@ -1450,10 +1085,10 @@ gst_deinit (void)
 
 /**
  * gst_version:
- * @major: pointer to a guint to store the major version number
- * @minor: pointer to a guint to store the minor version number
- * @micro: pointer to a guint to store the micro version number
- * @nano:  pointer to a guint to store the nano version number
+ * @major: (out): pointer to a guint to store the major version number
+ * @minor: (out): pointer to a guint to store the minor version number
+ * @micro: (out): pointer to a guint to store the micro version number
+ * @nano:  (out): pointer to a guint to store the nano version number
  *
  * Gets the version number of the GStreamer library.
  */
@@ -1477,11 +1112,12 @@ gst_version (guint * major, guint * minor, guint * micro, guint * nano)
  * This function returns a string that is useful for describing this version
  * of GStreamer to the outside world: user agent strings, logging, ...
  *
- * Returns: a newly allocated string describing this version of GStreamer.
+ * Returns: (transfer full): a newly allocated string describing this version
+ *     of GStreamer.
  */
 
 gchar *
-gst_version_string ()
+gst_version_string (void)
 {
   guint major, minor, micro, nano;
 
@@ -1507,8 +1143,6 @@ gst_version_string ()
  * wants to install its own handler without GStreamer interfering.
  *
  * Returns: %TRUE if GStreamer is allowed to install a custom SIGSEGV handler.
- *
- * Since: 0.10.10
  */
 gboolean
 gst_segtrap_is_enabled (void)
@@ -1523,103 +1157,9 @@ gst_segtrap_is_enabled (void)
  *
  * Applications might want to disable/enable the SIGSEGV handling of
  * the GStreamer core. See gst_segtrap_is_enabled() for more information.
- *
- * Since: 0.10.10
  */
 void
 gst_segtrap_set_enabled (gboolean enabled)
 {
   _gst_disable_segtrap = !enabled;
-}
-
-/**
- * gst_registry_fork_is_enabled:
- *
- * By default GStreamer will perform a fork() when scanning and rebuilding the
- * registry file. 
- *
- * Applications might want to disable this behaviour with the
- * gst_registry_fork_set_enabled() function. 
- *
- * Returns: %TRUE if GStreamer will use fork() when rebuilding the registry. On
- * platforms without fork(), this function will always return %FALSE.
- *
- * Since: 0.10.10
- */
-gboolean
-gst_registry_fork_is_enabled (void)
-{
-  return _gst_enable_registry_fork;
-}
-
-/**
- * gst_registry_fork_set_enabled:
- * @enabled: whether rebuilding the registry may fork
- *
- * Applications might want to disable/enable the usage of fork() when rebuilding
- * the registry. See gst_registry_fork_is_enabled() for more information.
- *
- * On platforms without fork(), this function will have no effect on the return
- * value of gst_registry_fork_is_enabled().
- *
- * Since: 0.10.10
- */
-void
-gst_registry_fork_set_enabled (gboolean enabled)
-{
-#ifdef HAVE_FORK
-  _gst_enable_registry_fork = enabled;
-#endif /* HAVE_FORK */
-}
-
-
-/**
- * gst_update_registry:
- *
- * Forces GStreamer to re-scan its plugin paths and update the default
- * plugin registry.
- *
- * Applications will almost never need to call this function, it is only
- * useful if the application knows new plugins have been installed (or old
- * ones removed) since the start of the application (or, to be precise, the
- * first call to gst_init()) and the application wants to make use of any
- * newly-installed plugins without restarting the application.
- *
- * Applications should assume that the registry update is neither atomic nor
- * thread-safe and should therefore not have any dynamic pipelines running
- * (including the playbin and decodebin elements) and should also not create
- * any elements or access the GStreamer registry while the update is in
- * progress.
- *
- * Note that this function may block for a significant amount of time.
- *
- * Returns: %TRUE if the registry has been updated successfully (does not
- *          imply that there were changes), otherwise %FALSE.
- *
- * Since: 0.10.12
- */
-gboolean
-gst_update_registry (void)
-{
-  gboolean res = FALSE;
-
-#ifndef GST_DISABLE_REGISTRY
-  GError *err = NULL;
-
-  res = ensure_current_registry (&err);
-  if (err) {
-    GST_WARNING ("registry update failed: %s", err->message);
-    g_error_free (err);
-  } else {
-    GST_LOG ("registry update succeeded");
-  }
-
-  if (preload_plugins) {
-    g_slist_foreach (preload_plugins, load_plugin_func, NULL);
-  }
-#else
-  GST_WARNING ("registry update failed: %s", "registry disabled");
-#endif /* GST_DISABLE_REGISTRY */
-
-  return res;
 }

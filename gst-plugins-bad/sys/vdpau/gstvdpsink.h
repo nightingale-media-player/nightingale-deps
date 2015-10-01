@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_VDP_SINK_H__
@@ -99,6 +99,7 @@ struct _VdpSink {
   char *display_name;
 
   GstVdpDevice *device;
+  GstBufferPool *bpool;
   GstCaps *caps;
   
   GstVdpWindow *window;
@@ -111,6 +112,7 @@ struct _VdpSink {
   gint fps_n;
   gint fps_d;
 
+  GMutex *device_lock;
   GMutex *x_lock;
   GMutex *flow_lock;
   

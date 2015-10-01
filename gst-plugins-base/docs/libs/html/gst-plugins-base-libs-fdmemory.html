@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>fdmemory: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-allocators.html" title="Allocators Library">
+<link rel="prev" href="gst-plugins-base-libs-dmabuf.html" title="dmabuf">
+<link rel="next" href="gstreamer-app.html" title="App Library">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-fdmemory.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-allocators.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-dmabuf.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-app.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-fdmemory"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-fdmemory.top_of_page"></a>fdmemory</span></h2>
+<p>fdmemory — Memory wrapper for fd backed memory</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="returnvalue">GstMemory</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-fd-allocator-alloc" title="gst_fd_allocator_alloc ()">gst_fd_allocator_alloc</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-fd-allocator-get-type" title="gst_fd_allocator_get_type ()">gst_fd_allocator_get_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="returnvalue">GstAllocator</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-fd-allocator-new" title="gst_fd_allocator_new ()">gst_fd_allocator_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-fd-memory-get-fd" title="gst_fd_memory_get_fd ()">gst_fd_memory_get_fd</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-is-fd-memory" title="gst_is_fd_memory ()">gst_is_fd_memory</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-fdmemory.html#GstFdMemoryFlags" title="enum GstFdMemoryFlags">GstFdMemoryFlags</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/allocators/gstfdmemory.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-fd-allocator-alloc"></a><h3>gst_fd_allocator_alloc ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="returnvalue">GstMemory</span></a> *
+gst_fd_allocator_alloc (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a> *allocator</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> fd</code></em>,
+                        <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                        <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-fdmemory.html#GstFdMemoryFlags" title="enum GstFdMemoryFlags"><span class="type">GstFdMemoryFlags</span></a> flags</code></em>);</pre>
+<p>Return a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><code class="literal">GstMemory</code></a> that wraps a generic file descriptor.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>allocator</p></td>
+<td class="parameter_description"><p>allocator to be used for this memory</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fd</p></td>
+<td class="parameter_description"><p>file descriptor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>memory size</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flags</p></td>
+<td class="parameter_description"><p>extra <a class="link" href="gst-plugins-base-libs-fdmemory.html#GstFdMemoryFlags" title="enum GstFdMemoryFlags"><span class="type">GstFdMemoryFlags</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.2.6"></a><h4>Returns</h4>
+<p> a GstMemory based on <em class="parameter"><code>allocator</code></em>
+.
+When the buffer will be released the allocator will close the <em class="parameter"><code>fd</code></em>
+.
+The memory is only mmapped on <code class="function">gst_buffer_mmap()</code> request. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-fd-allocator-get-type"></a><h3>gst_fd_allocator_get_type ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#GType"><span class="returnvalue">GType</span></a>
+gst_fd_allocator_get_type (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-fd-allocator-new"></a><h3>gst_fd_allocator_new ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="returnvalue">GstAllocator</span></a> *
+gst_fd_allocator_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Return a new fd allocator.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.4.5"></a><h4>Returns</h4>
+<p> a new fd allocator, or NULL if the allocator
+isn't available. Use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html#gst-object-unref"><code class="function">gst_object_unref()</code></a> to release the allocator after
+usage. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-fd-memory-get-fd"></a><h3>gst_fd_memory_get_fd ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+gst_fd_memory_get_fd (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="type">GstMemory</span></a> *mem</code></em>);</pre>
+<p>Get the fd from <em class="parameter"><code>mem</code></em>
+. Call <a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-is-fd-memory" title="gst_is_fd_memory ()"><code class="function">gst_is_fd_memory()</code></a> to check if <em class="parameter"><code>mem</code></em>
+ has
+an fd.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>mem</p></td>
+<td class="parameter_description"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="type">GstMemory</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.5.6"></a><h4>Returns</h4>
+<p> the fd of <em class="parameter"><code>mem</code></em>
+or -1 when there is no fd on <em class="parameter"><code>mem</code></em>
+</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-is-fd-memory"></a><h3>gst_is_fd_memory ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_is_fd_memory (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="type">GstMemory</span></a> *mem</code></em>);</pre>
+<p>Check if <em class="parameter"><code>mem</code></em>
+ is memory backed by an fd</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>mem</p></td>
+<td class="parameter_description"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="type">GstMemory</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.6.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when <em class="parameter"><code>mem</code></em>
+has an fd that can be retrieved with
+<a class="link" href="gst-plugins-base-libs-fdmemory.html#gst-fd-memory-get-fd" title="gst_fd_memory_get_fd ()"><code class="function">gst_fd_memory_get_fd()</code></a>.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstFdMemoryFlags"></a><h3>enum GstFdMemoryFlags</h3>
+<p>Various flags to control the operation of the fd backed memory.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.2.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-FD-MEMORY-FLAG-NONE:CAPS"></a>GST_FD_MEMORY_FLAG_NONE</p></td>
+<td class="enum_member_description">
+<p>no flag</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-FD-MEMORY-FLAG-KEEP-MAPPED:CAPS"></a>GST_FD_MEMORY_FLAG_KEEP_MAPPED</p></td>
+<td class="enum_member_description">
+<p>once the memory is mapped,
+       keep it mapped until the memory is destroyed.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-FD-MEMORY-FLAG-MAP-PRIVATE:CAPS"></a>GST_FD_MEMORY_FLAG_MAP_PRIVATE</p></td>
+<td class="enum_member_description">
+<p>do a private mapping instead of
+       the default shared mapping.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-fdmemory.see-also"></a><h2>See Also</h2>
+<p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMemory.html"><span class="type">GstMemory</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

@@ -13,12 +13,12 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GST_XIMAGESINK_H__
-#define __GST_XIMAGESINK_H__
+#ifndef __GST_X_IMAGE_SINK_H__
+#define __GST_X_IMAGE_SINK_H__
 
 #include <gst/video/gstvideosink.h>
 
@@ -38,27 +38,28 @@
 #include <string.h>
 #include <math.h>
 
-G_BEGIN_DECLS
+/* Helper functions */
+#include <gst/video/video.h>
 
-#define GST_TYPE_XIMAGESINK \
-  (gst_ximagesink_get_type())
-#define GST_XIMAGESINK(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj), GST_TYPE_XIMAGESINK, GstXImageSink))
-#define GST_XIMAGESINK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass), GST_TYPE_XIMAGESINK, GstXImageSinkClass))
-#define GST_IS_XIMAGESINK(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj), GST_TYPE_XIMAGESINK))
-#define GST_IS_XIMAGESINK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_XIMAGESINK))
+G_BEGIN_DECLS
+#define GST_TYPE_X_IMAGE_SINK \
+  (gst_x_image_sink_get_type())
+#define GST_X_IMAGE_SINK(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), GST_TYPE_X_IMAGE_SINK, GstXImageSink))
+#define GST_X_IMAGE_SINK_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), GST_TYPE_X_IMAGE_SINK, GstXImageSinkClass))
+#define GST_IS_X_IMAGE_SINK(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), GST_TYPE_X_IMAGE_SINK))
+#define GST_IS_X_IMAGE_SINK_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_X_IMAGE_SINK))
 
 typedef struct _GstXContext GstXContext;
 typedef struct _GstXWindow GstXWindow;
 
-typedef struct _GstXImageBuffer GstXImageBuffer;
-typedef struct _GstXImageBufferClass GstXImageBufferClass;
-
 typedef struct _GstXImageSink GstXImageSink;
 typedef struct _GstXImageSinkClass GstXImageSinkClass;
+
+#include "ximagepool.h"
 
 /*
  * GstXContext:
@@ -85,7 +86,8 @@ typedef struct _GstXImageSinkClass GstXImageSinkClass;
  * Structure used to store various informations collected/calculated for a
  * Display.
  */
-struct _GstXContext {
+struct _GstXContext
+{
   Display *disp;
 
   Screen *screen;
@@ -99,7 +101,6 @@ struct _GstXContext {
 
   gint depth;
   gint bpp;
-  gint endianness;
 
   gint width, height;
   gint widthmm, heightmm;
@@ -108,6 +109,7 @@ struct _GstXContext {
   gboolean use_xshm;
 
   GstCaps *caps;
+  GstCaps *last_caps;
 };
 
 /*
@@ -116,42 +118,17 @@ struct _GstXContext {
  * @width: the width in pixels of Window @win
  * @height: the height in pixels of Window @win
  * @internal: used to remember if Window @win was created internally or passed
- * through the #GstXOverlay interface
+ * through the #GstVideoOverlay interface
  * @gc: the Graphical Context of Window @win
  *
  * Structure used to store informations about a Window.
  */
-struct _GstXWindow {
+struct _GstXWindow
+{
   Window win;
   gint width, height;
   gboolean internal;
   GC gc;
-};
-
-/**
- * GstXImageBuffer:
- * @ximagesink: a reference to our #GstXImageSink
- * @ximage: the XImage of this buffer
- * @width: the width in pixels of XImage @ximage
- * @height: the height in pixels of XImage @ximage
- * @size: the size in bytes of XImage @ximage
- *
- * Subclass of #GstBuffer containing additional information about an XImage.
- */
-struct _GstXImageBuffer {
-  GstBuffer buffer;
-
-  /* Reference to the ximagesink we belong to */
-  GstXImageSink *ximagesink;
-
-  XImage *ximage;
-
-#ifdef HAVE_XSHM
-  XShmSegmentInfo SHMInfo;
-#endif /* HAVE_XSHM */
-
-  gint width, height;
-  size_t size;
 };
 
 /**
@@ -170,7 +147,7 @@ struct _GstXImageBuffer {
  * @x_lock: used to protect X calls as we are not using the XLib in threaded
  * mode
  * @flow_lock: used to protect data flow routines from external calls such as
- * events from @event_thread or methods from the #GstXOverlay interface
+ * events from @event_thread or methods from the #GstVideoOverlay interface
  * @par: used to override calculated pixel aspect ratio from @xcontext
  * @pool_lock: used to protect the buffer pool
  * @buffer_pool: a list of #GstXImageBuffer that could be reused at next buffer
@@ -183,7 +160,8 @@ struct _GstXImageBuffer {
  *
  * The #GstXImageSink data structure.
  */
-struct _GstXImageSink {
+struct _GstXImageSink
+{
   /* Our element stuff */
   GstVideoSink videosink;
 
@@ -191,41 +169,42 @@ struct _GstXImageSink {
 
   GstXContext *xcontext;
   GstXWindow *xwindow;
-  GstXImageBuffer *ximage;
-  GstXImageBuffer *cur_image;
-  
+  GstBuffer *cur_image;
+
   GThread *event_thread;
   gboolean running;
+
+  GstVideoInfo info;
 
   /* Framerate numerator and denominator */
   gint fps_n;
   gint fps_d;
 
-  GMutex *x_lock;
-  GMutex *flow_lock;
-  
+  GMutex x_lock;
+  GMutex flow_lock;
+
   /* object-set pixel aspect ratio */
   GValue *par;
 
-  GMutex *pool_lock;
-  GSList *buffer_pool;
+  /* the buffer pool */
+  GstBufferPool *pool;
 
   gboolean synchronous;
   gboolean keep_aspect;
   gboolean handle_events;
   gboolean handle_expose;
   gboolean draw_border;
-  
+
   /* stream metadata */
   gchar *media_title;
 };
 
-struct _GstXImageSinkClass {
+struct _GstXImageSinkClass
+{
   GstVideoSinkClass parent_class;
 };
 
-GType gst_ximagesink_get_type(void);
+GType gst_x_image_sink_get_type (void);
 
 G_END_DECLS
-
-#endif /* __GST_XIMAGESINK_H__ */
+#endif /* __GST_X_IMAGE_SINK_H__ */

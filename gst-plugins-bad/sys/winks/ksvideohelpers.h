@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __KSVIDEOHELPERS_H__
@@ -50,6 +50,24 @@ struct _KsVideoMediaType
 
   GstCaps * translated_caps;
 };
+
+typedef struct DVINFO {
+  DWORD dwDVAAuxSrc;
+  DWORD dwDVAAuxCtl;
+  DWORD dwDVAAuxSrc1;
+  DWORD dwDVAAuxCtl1;
+  DWORD dwDVVAuxSrc;
+  DWORD dwDVVAuxCtl;
+  DWORD dwDVReserved[2];
+} DVINFO;
+
+typedef struct KS_DATARANGE_DVVIDEO {
+  KSDATARANGE DataRange;
+  DVINFO DVVideoInfo;
+} KS_DATARANGE_DVVIDEO,*PKS_DATARANGE_DVVIDEO;
+
+
+GList * ks_video_device_list_sort_cameras_first (GList * devices);
 
 KsVideoMediaType * ks_video_media_type_dup (KsVideoMediaType * media_type);
 void ks_video_media_type_free (KsVideoMediaType * media_type);

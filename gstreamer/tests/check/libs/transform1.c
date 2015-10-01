@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,23 +28,6 @@
 #include <gst/base/gstbasetransform.h>
 
 #include "test_transform.c"
-
-static gboolean buffer_alloc_pt1_called;
-
-static GstFlowReturn
-buffer_alloc_pt1 (GstPad * pad, guint64 offset, guint size, GstCaps * caps,
-    GstBuffer ** buf)
-{
-  GST_DEBUG_OBJECT (pad, "buffer_alloc called %" G_GUINT64_FORMAT ", %u, %"
-      GST_PTR_FORMAT, offset, size, caps);
-
-  buffer_alloc_pt1_called = TRUE;
-
-  *buf = gst_buffer_new_and_alloc (size);
-  gst_buffer_set_caps (*buf, caps);
-
-  return GST_FLOW_OK;
-}
 
 static gboolean set_caps_pt1_called;
 
@@ -69,80 +52,48 @@ GST_START_TEST (basetransform_chain_pt1)
 
   klass_set_caps = set_caps_pt1;
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_pt1;
+
+  gst_test_trans_push_segment (trans);
 
   GST_DEBUG_OBJECT (trans, "buffer without caps, size 20");
 
   buffer = gst_buffer_new_and_alloc (20);
 
-  buffer_alloc_pt1_called = FALSE;
   set_caps_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
-  /* FIXME, passthough without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   fail_unless (set_caps_pt1_called == FALSE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  /* caps should not have been set */
-  fail_unless (GST_BUFFER_CAPS (buffer) == NULL);
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   gst_buffer_unref (buffer);
 
   GST_DEBUG_OBJECT (trans, "buffer without caps, size 10");
 
   buffer = gst_buffer_new_and_alloc (10);
-  buffer_alloc_pt1_called = FALSE;
   set_caps_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
-  /* FIXME, passthough without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   fail_unless (set_caps_pt1_called == FALSE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-  /* caps should not have been set */
-  fail_unless (GST_BUFFER_CAPS (buffer) == NULL);
+  fail_unless (gst_buffer_get_size (buffer) == 10);
 
   gst_buffer_unref (buffer);
 
-  /* proxy buffer-alloc without caps */
-  GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_start ());
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_stop (TRUE));
 
-  buffer_alloc_pt1_called = FALSE;
+  caps = gst_caps_new_empty_simple ("foo/x-bar");
   set_caps_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt1_called == FALSE);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 10");
-
-  caps = gst_caps_new_simple ("foo/x-bar", NULL);
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt1_called == FALSE);
-  gst_buffer_unref (buffer);
-
-  /* once more */
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt1_called == FALSE);
-  gst_buffer_unref (buffer);
-
+  gst_test_trans_setcaps (trans, caps);
+  fail_unless (set_caps_pt1_called == TRUE);
   gst_caps_unref (caps);
+
+  gst_test_trans_push_segment (trans);
 
   gst_test_trans_free (trans);
 }
@@ -174,99 +125,67 @@ GST_START_TEST (basetransform_chain_pt2)
 
   klass_set_caps = set_caps_pt2;
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_pt1;
 
   /* first buffer */
-  caps = gst_caps_new_simple ("foo/x-bar", NULL);
+  set_caps_pt2_called = FALSE;
+  caps = gst_caps_new_empty_simple ("foo/x-bar");
+  gst_test_trans_setcaps (trans, caps);
+  gst_test_trans_push_segment (trans);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps, size 20");
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, caps);
 
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
-  /* FIXME, passthough without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   fail_unless (set_caps_pt2_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-#if OPTIMIZED
-  fail_unless (GST_BUFFER_CAPS (buffer) == caps);
-#else
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), caps));
-#endif
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt2_called == FALSE);
   gst_buffer_unref (buffer);
 
   gst_caps_unref (caps);
 
   /* second buffer, renegotiates, keeps extra type arg in caps */
   caps = gst_caps_new_simple ("foo/x-bar", "type", G_TYPE_INT, 1, NULL);
+  set_caps_pt2_called = FALSE;
+  gst_test_trans_setcaps (trans, caps);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps, size 10");
 
   buffer = gst_buffer_new_and_alloc (10);
-  gst_buffer_set_caps (buffer, caps);
 
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
-  /* FIXME, passthough without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   fail_unless (set_caps_pt2_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-#if OPTIMIZED
-  fail_unless (GST_BUFFER_CAPS (buffer) == caps);
-#else
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), caps));
-#endif
+  fail_unless (gst_buffer_get_size (buffer) == 10);
 
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  set_caps_pt2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt2_called == FALSE);
   gst_buffer_unref (buffer);
 
   gst_caps_unref (caps);
 
   /* with caps that is a superset */
-  caps = gst_caps_new_simple ("foo/x-bar", NULL);
-
-  GST_DEBUG_OBJECT (trans, "alloc with superset caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
+  caps = gst_caps_new_empty_simple ("foo/x-bar");
   set_caps_pt2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
+  gst_test_trans_setcaps (trans, caps);
+
+  GST_DEBUG_OBJECT (trans, "buffer with caps, size 10");
+
+  buffer = gst_buffer_new_and_alloc (10);
+
+  res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (set_caps_pt2_called == FALSE);
+  fail_unless (set_caps_pt2_called == TRUE);
+
+  buffer = gst_test_trans_pop (trans);
+  fail_unless (buffer != NULL);
+  fail_unless (gst_buffer_get_size (buffer) == 10);
+
   gst_buffer_unref (buffer);
 
   gst_caps_unref (caps);
@@ -302,7 +221,8 @@ GST_START_TEST (basetransform_chain_ip1)
 
   klass_transform_ip = transform_ip_1;
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_pt1;
+
+  gst_test_trans_push_segment (trans);
 
   GST_DEBUG_OBJECT (trans, "buffer without caps, size 20");
 
@@ -310,17 +230,14 @@ GST_START_TEST (basetransform_chain_ip1)
 
   transform_ip_1_called = FALSE;
   transform_ip_1_writable = TRUE;
-  buffer_alloc_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ip_1_called == TRUE);
   fail_unless (transform_ip_1_writable == TRUE);
-  /* FIXME, in-place without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
+  fail_unless (gst_buffer_get_size (buffer) == 20);
   gst_buffer_unref (buffer);
 
   GST_DEBUG_OBJECT (trans, "buffer without caps extra ref, size 20");
@@ -333,19 +250,17 @@ GST_START_TEST (basetransform_chain_ip1)
 
   transform_ip_1_called = FALSE;
   transform_ip_1_writable = FALSE;
-  buffer_alloc_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ip_1_called == TRUE);
   /* copy should have been taken with pad-alloc */
   fail_unless (transform_ip_1_writable == TRUE);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   /* after push, get rid of the final ref we had */
   gst_buffer_unref (buffer);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
@@ -353,12 +268,6 @@ GST_START_TEST (basetransform_chain_ip1)
 
   /* with caps buffer */
   GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  gst_buffer_unref (buffer);
 
   gst_test_trans_free (trans);
 }
@@ -376,7 +285,7 @@ set_caps_1 (GstBaseTransform * trans, GstCaps * incaps, GstCaps * outcaps)
 
   set_caps_1_called = TRUE;
 
-  caps = gst_caps_new_simple ("foo/x-bar", NULL);
+  caps = gst_caps_new_empty_simple ("foo/x-bar");
 
   fail_unless (gst_caps_is_equal (incaps, caps));
   fail_unless (gst_caps_is_equal (outcaps, caps));
@@ -399,31 +308,9 @@ GST_START_TEST (basetransform_chain_ip2)
   klass_set_caps = set_caps_1;
 
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_pt1;
 
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (GST_BUFFER_CAPS (buffer) == NULL);
-  gst_buffer_unref (buffer);
-
-  caps = gst_caps_new_simple ("foo/x-bar", NULL);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (GST_BUFFER_CAPS (buffer) == caps);
-  gst_buffer_unref (buffer);
+  caps = gst_caps_new_empty_simple ("foo/x-bar");
+  gst_test_trans_push_segment (trans);
 
   /* first try to push a buffer without caps, this should fail */
   buffer = gst_buffer_new_and_alloc (20);
@@ -432,56 +319,41 @@ GST_START_TEST (basetransform_chain_ip2)
 
   transform_ip_1_called = FALSE;
   transform_ip_1_writable = FALSE;
-  buffer_alloc_pt1_called = FALSE;
   set_caps_1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
   fail_unless (transform_ip_1_called == FALSE);
   fail_unless (transform_ip_1_writable == FALSE);
   fail_unless (set_caps_1_called == FALSE);
-  fail_unless (buffer_alloc_pt1_called == FALSE);
 
   /* try to push a buffer with caps */
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_start ());
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_stop (TRUE));
+
+  set_caps_1_called = FALSE;
+  gst_test_trans_setcaps (trans, caps);
+  gst_test_trans_push_segment (trans);
+
   GST_DEBUG_OBJECT (trans, "buffer with caps, size 20");
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, caps);
 
   transform_ip_1_called = FALSE;
   transform_ip_1_writable = FALSE;
-  set_caps_1_called = FALSE;
-  buffer_alloc_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ip_1_called == TRUE);
   fail_unless (transform_ip_1_writable == TRUE);
   fail_unless (set_caps_1_called == TRUE);
-  /* FIXME, in-place without pad-alloc, do pad-alloc on the srcpad */
-  fail_unless (buffer_alloc_pt1_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-#if OPTIMIZED
-  fail_unless (GST_BUFFER_CAPS (buffer) == caps);
-#else
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), caps));
-#endif
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
+  fail_unless (gst_buffer_get_size (buffer) == 20);
   gst_buffer_unref (buffer);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps extra ref, size 20");
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, caps);
   /* take additional ref to make it non-writable */
   gst_buffer_ref (buffer);
 
@@ -489,35 +361,19 @@ GST_START_TEST (basetransform_chain_ip2)
 
   transform_ip_1_called = FALSE;
   transform_ip_1_writable = FALSE;
-  buffer_alloc_pt1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ip_1_called == TRUE);
   fail_unless (transform_ip_1_writable == TRUE);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   /* after push, get rid of the final ref we had */
   gst_buffer_unref (buffer);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-#if OPTIMIZED
-  fail_unless (GST_BUFFER_CAPS (buffer) == caps);
-#else
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), caps));
-#endif
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_pt1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, caps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_pt1_called == TRUE);
   gst_buffer_unref (buffer);
 
   gst_caps_unref (caps);
@@ -542,8 +398,8 @@ set_caps_ct1 (GstBaseTransform * trans, GstCaps * incaps, GstCaps * outcaps)
 
   GST_DEBUG_OBJECT (trans, "set_caps called");
 
-  caps1 = gst_caps_new_simple ("baz/x-foo", NULL);
-  caps2 = gst_caps_new_simple ("foo/x-bar", NULL);
+  caps1 = gst_caps_new_empty_simple ("baz/x-foo");
+  caps2 = gst_caps_new_empty_simple ("foo/x-bar");
 
   fail_unless (gst_caps_is_equal (incaps, caps1));
   fail_unless (gst_caps_is_equal (outcaps, caps2));
@@ -572,21 +428,29 @@ transform_ct1 (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
 
 static GstCaps *
 transform_caps_ct1 (GstBaseTransform * trans, GstPadDirection dir,
-    GstCaps * caps)
+    GstCaps * caps, GstCaps * filter)
 {
   GstCaps *res;
 
   if (dir == GST_PAD_SINK) {
-    res = gst_caps_new_simple ("foo/x-bar", NULL);
+    res = gst_caps_new_empty_simple ("foo/x-bar");
   } else {
-    res = gst_caps_new_simple ("baz/x-foo", NULL);
+    res = gst_caps_new_empty_simple ("baz/x-foo");
   }
+
+  if (filter) {
+    GstCaps *temp =
+        gst_caps_intersect_full (filter, res, GST_CAPS_INTERSECT_FIRST);
+    gst_caps_unref (res);
+    res = temp;
+  }
+
   return res;
 }
 
 static gboolean
 transform_size_ct1 (GstBaseTransform * trans, GstPadDirection direction,
-    GstCaps * caps, guint size, GstCaps * othercaps, guint * othersize)
+    GstCaps * caps, gsize size, GstCaps * othercaps, gsize * othersize)
 {
   if (direction == GST_PAD_SINK) {
     *othersize = size * 2;
@@ -595,29 +459,6 @@ transform_size_ct1 (GstBaseTransform * trans, GstPadDirection direction,
   }
 
   return TRUE;
-}
-
-gboolean buffer_alloc_ct1_called;
-
-static GstFlowReturn
-buffer_alloc_ct1 (GstPad * pad, guint64 offset, guint size, GstCaps * caps,
-    GstBuffer ** buf)
-{
-  GstCaps *outcaps;
-
-  GST_DEBUG_OBJECT (pad, "buffer_alloc called %" G_GUINT64_FORMAT ", %u, %"
-      GST_PTR_FORMAT, offset, size, caps);
-
-  buffer_alloc_ct1_called = TRUE;
-
-  outcaps = gst_caps_new_simple ("foo/x-bar", NULL);
-  fail_unless (gst_caps_is_equal (outcaps, caps));
-  gst_caps_unref (outcaps);
-
-  *buf = gst_buffer_new_and_alloc (size);
-  gst_buffer_set_caps (*buf, caps);
-
-  return GST_FLOW_OK;
 }
 
 /* basic copy-transform, check if the transform function is called,
@@ -637,41 +478,10 @@ GST_START_TEST (basetransform_chain_ct1)
   klass_transform_size = transform_size_ct1;
 
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_ct1;
 
-  incaps = gst_caps_new_simple ("baz/x-foo", NULL);
-  outcaps = gst_caps_new_simple ("foo/x-bar", NULL);
-
-#if 0
-  /* without caps buffer, I think this should fail */
-  GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
-
-  buffer_alloc_ct1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct1_called == FALSE);
-#endif
-
-  /* with wrong (unsupported) caps */
-  GST_DEBUG_OBJECT (trans, "alloc with wrong caps, size 20");
-
-  buffer_alloc_ct1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* FIXME, why would this call the alloc function? we try to alloc something
-   * with caps that are not supported on the sinkpad */
-  fail_unless (buffer_alloc_ct1_called == FALSE);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 20");
-
-  buffer_alloc_ct1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct1_called == FALSE);
-  gst_buffer_unref (buffer);
+  incaps = gst_caps_new_empty_simple ("baz/x-foo");
+  outcaps = gst_caps_new_empty_simple ("foo/x-bar");
+  gst_test_trans_push_segment (trans);
 
   /* first try to push a buffer without caps, this should fail */
   buffer = gst_buffer_new_and_alloc (20);
@@ -681,39 +491,38 @@ GST_START_TEST (basetransform_chain_ct1)
   transform_ct1_called = FALSE;
   transform_ct1_writable = FALSE;
   set_caps_ct1_called = FALSE;
-  buffer_alloc_ct1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
   fail_unless (transform_ct1_called == FALSE);
   fail_unless (transform_ct1_writable == FALSE);
   fail_unless (set_caps_ct1_called == FALSE);
-  fail_unless (buffer_alloc_ct1_called == FALSE);
 
   /* try to push a buffer with caps */
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_start ());
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_stop (TRUE));
+
+  set_caps_ct1_called = FALSE;
+  gst_test_trans_setcaps (trans, incaps);
+  gst_test_trans_push_segment (trans);
+
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps %" GST_PTR_FORMAT, incaps);
 
   transform_ct1_called = FALSE;
   transform_ct1_writable = FALSE;
-  set_caps_ct1_called = FALSE;
-  buffer_alloc_ct1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct1_called == TRUE);
   fail_unless (transform_ct1_writable == TRUE);
   fail_unless (set_caps_ct1_called == TRUE);
-  fail_unless (buffer_alloc_ct1_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 40);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), outcaps));
+  fail_unless (gst_buffer_get_size (buffer) == 40);
   gst_buffer_unref (buffer);
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
   /* take additional ref to make it non-writable */
   gst_buffer_ref (buffer);
 
@@ -723,45 +532,20 @@ GST_START_TEST (basetransform_chain_ct1)
 
   transform_ct1_called = FALSE;
   transform_ct1_writable = FALSE;
-  buffer_alloc_ct1_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct1_called == TRUE);
   fail_unless (transform_ct1_writable == TRUE);
-  fail_unless (buffer_alloc_ct1_called == TRUE);
   /* after push, get rid of the final ref we had */
   gst_buffer_unref (buffer);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 40);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), outcaps));
+  fail_unless (gst_buffer_get_size (buffer) == 40);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
   gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 10");
-
-  buffer_alloc_ct1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  /* should not call pad-alloc because the caps and sizes are different, it
-   * currently still calls the pad alloc for no reason and then throws away the
-   * buffer. */
-  fail_unless (buffer_alloc_ct1_called == FALSE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with wrong caps, size 10");
-
-  buffer_alloc_ct1_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call the pad-alloc function */
-  fail_unless (buffer_alloc_ct1_called == FALSE);
 
   gst_caps_unref (incaps);
   gst_caps_unref (outcaps);
@@ -787,12 +571,12 @@ set_caps_ct2 (GstBaseTransform * trans, GstCaps * incaps, GstCaps * outcaps)
 
   GST_DEBUG_OBJECT (trans, "set_caps called");
 
-  caps1 = gst_caps_new_simple ("foo/x-bar", NULL);
+  caps1 = gst_caps_new_empty_simple ("foo/x-bar");
 
   if (set_caps_ct2_case == 1)
     caps2 = gst_caps_copy (caps1);
   else
-    caps2 = gst_caps_new_simple ("baz/x-foo", NULL);
+    caps2 = gst_caps_new_empty_simple ("baz/x-foo");
 
   fail_unless (gst_caps_is_equal (incaps, caps1));
   fail_unless (gst_caps_is_equal (outcaps, caps2));
@@ -821,23 +605,34 @@ transform_ct2 (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
 
 static GstCaps *
 transform_caps_ct2 (GstBaseTransform * trans, GstPadDirection dir,
-    GstCaps * caps)
+    GstCaps * caps, GstCaps * filter)
 {
   GstCaps *res;
 
   if (dir == GST_PAD_SINK) {
     /* everything on the sinkpad can be transformed to the output formats */
-    res = gst_caps_from_string ("foo/x-bar;baz/x-foo");
+    if (set_caps_ct2_case == 1)
+      res = gst_caps_new_empty_simple ("foo/x-bar");
+    else
+      res = gst_caps_new_empty_simple ("baz/x-foo");
   } else {
     /* all on the srcpad can be transformed to the format of the sinkpad */
-    res = gst_caps_new_simple ("foo/x-bar", NULL);
+    res = gst_caps_new_empty_simple ("foo/x-bar");
   }
+
+  if (filter) {
+    GstCaps *temp =
+        gst_caps_intersect_full (filter, res, GST_CAPS_INTERSECT_FIRST);
+    gst_caps_unref (res);
+    res = temp;
+  }
+
   return res;
 }
 
 static gboolean
 transform_size_ct2 (GstBaseTransform * trans, GstPadDirection direction,
-    GstCaps * caps, guint size, GstCaps * othercaps, guint * othersize)
+    GstCaps * caps, gsize size, GstCaps * othercaps, gsize * othersize)
 {
   if (gst_caps_is_equal (caps, othercaps)) {
     *othersize = size;
@@ -850,52 +645,6 @@ transform_size_ct2 (GstBaseTransform * trans, GstPadDirection direction,
   }
 
   return TRUE;
-}
-
-static gint buffer_alloc_ct2_case;
-static gboolean buffer_alloc_ct2_called;
-static gboolean buffer_alloc_ct2_suggest;
-
-static GstFlowReturn
-buffer_alloc_ct2 (GstPad * pad, guint64 offset, guint size, GstCaps * caps,
-    GstBuffer ** buf)
-{
-  GstCaps *incaps, *outcaps;
-
-  GST_DEBUG_OBJECT (pad, "buffer_alloc called %" G_GUINT64_FORMAT ", %u, %"
-      GST_PTR_FORMAT, offset, size, caps);
-
-  buffer_alloc_ct2_called = TRUE;
-
-  if (buffer_alloc_ct2_case == 1) {
-    incaps = gst_caps_new_simple ("foo/x-bar", NULL);
-    if (buffer_alloc_ct2_suggest) {
-      outcaps = gst_caps_new_simple ("baz/x-foo", NULL);
-      size *= 2;
-    } else
-      outcaps = gst_caps_ref (incaps);
-  } else {
-    incaps = gst_caps_new_simple ("baz/x-foo", NULL);
-    if (buffer_alloc_ct2_suggest) {
-      outcaps = gst_caps_new_simple ("foo/x-bar", NULL);
-      size /= 2;
-    } else
-      outcaps = gst_caps_ref (incaps);
-  }
-  GST_DEBUG_OBJECT (pad, "expect %" GST_PTR_FORMAT, incaps);
-
-  fail_unless (gst_caps_is_equal (caps, incaps));
-
-  *buf = gst_buffer_new_and_alloc (size);
-  gst_buffer_set_caps (*buf, outcaps);
-
-  GST_DEBUG_OBJECT (pad, "return buffer of size %u, caps %" GST_PTR_FORMAT,
-      size, outcaps);
-
-  gst_caps_unref (outcaps);
-  gst_caps_unref (incaps);
-
-  return GST_FLOW_OK;
 }
 
 /* basic copy-transform, check if the transform function is called,
@@ -915,43 +664,11 @@ GST_START_TEST (basetransform_chain_ct2)
   klass_transform_size = transform_size_ct2;
 
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_ct2;
 
-  incaps = gst_caps_new_simple ("foo/x-bar", NULL);
-  outcaps = gst_caps_new_simple ("baz/x-foo", NULL);
+  incaps = gst_caps_new_empty_simple ("foo/x-bar");
+  outcaps = gst_caps_new_empty_simple ("baz/x-foo");
 
-#if 0
-  /* without caps buffer, I think this should fail */
-  GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
-
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
-#endif
-
-  /* with passthrough caps */
-  GST_DEBUG_OBJECT (trans, "alloc size 20, with passthrough caps %"
-      GST_PTR_FORMAT, incaps);
-
-  buffer_alloc_ct2_case = 1;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc size 20, with wrong caps %" GST_PTR_FORMAT,
-      outcaps);
-
-  buffer_alloc_ct2_case = 2;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
+  gst_test_trans_push_segment (trans);
 
   /* first try to push a buffer without caps, this should fail */
   buffer = gst_buffer_new_and_alloc (20);
@@ -961,41 +678,40 @@ GST_START_TEST (basetransform_chain_ct2)
   transform_ct2_called = FALSE;
   transform_ct2_writable = FALSE;
   set_caps_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
   fail_unless (transform_ct2_called == FALSE);
   fail_unless (transform_ct2_writable == FALSE);
   fail_unless (set_caps_ct2_called == FALSE);
-  fail_unless (buffer_alloc_ct2_called == FALSE);
+
 
   /* try to push a buffer with caps */
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_start ());
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_stop (TRUE));
+
+  set_caps_ct2_case = 1;
+  set_caps_ct2_called = FALSE;
+  gst_test_trans_setcaps (trans, incaps);
+  gst_test_trans_push_segment (trans);
+
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps %" GST_PTR_FORMAT, incaps);
 
-  buffer_alloc_ct2_case = 1;
-  set_caps_ct2_case = 1;
   transform_ct2_called = FALSE;
   transform_ct2_writable = FALSE;
-  set_caps_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == TRUE);
   fail_unless (transform_ct2_writable == TRUE);
   fail_unless (set_caps_ct2_called == TRUE);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), incaps));
+  fail_unless (gst_buffer_get_size (buffer) == 20);
   gst_buffer_unref (buffer);
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
   /* take additional ref to make it non-writable */
   gst_buffer_ref (buffer);
 
@@ -1005,44 +721,20 @@ GST_START_TEST (basetransform_chain_ct2)
 
   transform_ct2_called = FALSE;
   transform_ct2_writable = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == TRUE);
   fail_unless (transform_ct2_writable == TRUE);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
   /* after push, get rid of the final ref we had */
   gst_buffer_unref (buffer);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), incaps));
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
   gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 10");
-
-  buffer_alloc_ct2_case = 1;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with wrong caps, size 10");
-
-  buffer_alloc_ct2_case = 2;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call the pad-alloc function */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
 
   gst_caps_unref (incaps);
   gst_caps_unref (outcaps);
@@ -1068,43 +760,14 @@ GST_START_TEST (basetransform_chain_ct3)
   klass_transform_size = transform_size_ct2;
 
   trans = gst_test_trans_new ();
-  trans->buffer_alloc = buffer_alloc_ct2;
 
-  incaps = gst_caps_new_simple ("foo/x-bar", NULL);
-  outcaps = gst_caps_new_simple ("baz/x-foo", NULL);
-
-#if 0
-  /* without caps buffer, I think this should fail */
-  GST_DEBUG_OBJECT (trans, "alloc without caps, size 20");
-
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, NULL, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
-#endif
+  incaps = gst_caps_new_empty_simple ("foo/x-bar");
+  outcaps = gst_caps_new_empty_simple ("baz/x-foo");
 
   /* with passthrough caps */
+  gst_test_trans_push_segment (trans);
   GST_DEBUG_OBJECT (trans, "alloc size 20, with passthrough caps %"
       GST_PTR_FORMAT, incaps);
-
-  buffer_alloc_ct2_case = 1;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc size 20, with wrong caps %" GST_PTR_FORMAT,
-      outcaps);
-
-  buffer_alloc_ct2_case = 2;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 20, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* should not call pad-alloc because the caps and sizes are different */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
 
   /* first try to push a buffer without caps, this should fail */
   buffer = gst_buffer_new_and_alloc (20);
@@ -1114,39 +777,37 @@ GST_START_TEST (basetransform_chain_ct3)
   transform_ct2_called = FALSE;
   transform_ct2_writable = FALSE;
   set_caps_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
   fail_unless (transform_ct2_called == FALSE);
   fail_unless (transform_ct2_writable == FALSE);
   fail_unless (set_caps_ct2_called == FALSE);
-  fail_unless (buffer_alloc_ct2_called == FALSE);
 
   /* try to push a buffer with caps */
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
 
   GST_DEBUG_OBJECT (trans, "buffer with caps %" GST_PTR_FORMAT, incaps);
 
-  buffer_alloc_ct2_case = 1;
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_start ());
+  gst_pad_push_event (trans->srcpad, gst_event_new_flush_stop (TRUE));
+
   set_caps_ct2_case = 1;
-  transform_ct2_called = FALSE;
   set_caps_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
+  gst_test_trans_setcaps (trans, incaps);
+  gst_test_trans_push_segment (trans);
+
+  transform_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == FALSE);
   fail_unless (set_caps_ct2_called == TRUE);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), incaps));
+  fail_unless (gst_buffer_get_size (buffer) == 20);
   gst_buffer_unref (buffer);
 
   buffer = gst_buffer_new_and_alloc (20);
-  gst_buffer_set_caps (buffer, incaps);
   /* take additional ref to make it non-writable */
   gst_buffer_ref (buffer);
 
@@ -1155,114 +816,56 @@ GST_START_TEST (basetransform_chain_ct3)
   GST_DEBUG_OBJECT (trans, "buffer with caps %" GST_PTR_FORMAT, incaps);
 
   transform_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == FALSE);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
   /* after push, get rid of the final ref we had */
   gst_buffer_unref (buffer);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), incaps));
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
   gst_buffer_unref (buffer);
 
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 10");
-
-  buffer_alloc_ct2_case = 1;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-  gst_buffer_unref (buffer);
-
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with wrong caps, size 10");
-
-  buffer_alloc_ct2_case = 2;
-  buffer_alloc_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, outcaps, &buffer);
-  fail_unless (res == GST_FLOW_NOT_NEGOTIATED);
-  /* FIXME should not call the pad-alloc function but it currently does */
-  fail_unless (buffer_alloc_ct2_called == FALSE);
-
   /* change the return value of the buffer-alloc function */
   GST_DEBUG_OBJECT (trans, "switching transform output");
-  buffer_alloc_ct2_suggest = TRUE;
 
   GST_DEBUG_OBJECT (trans,
       "buffer with in passthrough with caps %" GST_PTR_FORMAT, incaps);
   buffer = gst_buffer_new_and_alloc (10);
-  gst_buffer_set_caps (buffer, incaps);
 
   /* don't suggest anything else */
-  buffer_alloc_ct2_case = 1;
   set_caps_ct2_case = 2;
+  gst_pad_push_event (trans->sinkpad, gst_event_new_reconfigure ());
   transform_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == TRUE);
-  /* FIXME, pad alloc must be called to get the new caps, because we don't call
-   * pad alloc */
-  fail_unless (buffer_alloc_ct2_called == TRUE);
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  /* FIXME changing src caps should produce converted buffer */
-  GST_DEBUG_OBJECT (trans, "received caps %" GST_PTR_FORMAT,
-      GST_BUFFER_CAPS (buffer));
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), outcaps));
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
   gst_buffer_unref (buffer);
 
-  /* with caps buffer */
-  GST_DEBUG_OBJECT (trans, "alloc with caps, size 10");
-
-  set_caps_ct2_case = 0;
-  buffer_alloc_ct2_case = 1;
-  buffer_alloc_ct2_called = FALSE;
-  set_caps_ct2_called = FALSE;
-  res = gst_pad_alloc_buffer (trans->srcpad, 0, 10, incaps, &buffer);
-  fail_unless (res == GST_FLOW_OK);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
-  /* FIXME a buffer alloc should never set caps */
-  fail_unless (set_caps_ct2_called == FALSE);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 10);
-  /* FIXME, ideally we want to reuse these caps */
-  fail_unless (GST_BUFFER_CAPS (buffer) == incaps);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), incaps));
-  gst_buffer_unref (buffer);
-
   GST_DEBUG_OBJECT (trans, "buffer with caps %" GST_PTR_FORMAT, incaps);
   buffer = gst_buffer_new_and_alloc (10);
-  gst_buffer_set_caps (buffer, incaps);
 
   /* don't suggest anything else */
-  buffer_alloc_ct2_suggest = FALSE;
-  buffer_alloc_ct2_case = 0;
   transform_ct2_called = FALSE;
-  buffer_alloc_ct2_called = FALSE;
   res = gst_test_trans_push (trans, buffer);
   fail_unless (res == GST_FLOW_OK);
   fail_unless (transform_ct2_called == TRUE);
-  fail_unless (buffer_alloc_ct2_called == TRUE);
   /* after push, get rid of the final ref we had */
 
   buffer = gst_test_trans_pop (trans);
   fail_unless (buffer != NULL);
-  fail_unless (GST_BUFFER_SIZE (buffer) == 20);
-  fail_unless (gst_caps_is_equal (GST_BUFFER_CAPS (buffer), outcaps));
+  fail_unless (gst_buffer_get_size (buffer) == 20);
 
   /* output buffer has refcount 1 */
   fail_unless (GST_MINI_OBJECT_REFCOUNT_VALUE (buffer) == 1);
@@ -1276,6 +879,7 @@ GST_START_TEST (basetransform_chain_ct3)
 
 GST_END_TEST;
 
+
 static Suite *
 gst_basetransform_suite (void)
 {
@@ -1283,10 +887,13 @@ gst_basetransform_suite (void)
   TCase *tc = tcase_create ("general");
 
   suite_add_tcase (s, tc);
+  /* pass through */
   tcase_add_test (tc, basetransform_chain_pt1);
   tcase_add_test (tc, basetransform_chain_pt2);
+  /* in place */
   tcase_add_test (tc, basetransform_chain_ip1);
   tcase_add_test (tc, basetransform_chain_ip2);
+  /* copy transform */
   tcase_add_test (tc, basetransform_chain_ct1);
   tcase_add_test (tc, basetransform_chain_ct2);
   tcase_add_test (tc, basetransform_chain_ct3);

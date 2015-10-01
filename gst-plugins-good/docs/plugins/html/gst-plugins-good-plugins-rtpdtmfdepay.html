@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>rtpdtmfdepay: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-rtpdec.html" title="rtpdec">
+<link rel="next" href="gst-plugins-good-plugins-rtpdtmfmux.html" title="rtpdtmfmux">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpdtmfdepay.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpdtmfdepay.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpdtmfdepay.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-rtpdec.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpdtmfmux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-rtpdtmfdepay.top_of_page"></a>rtpdtmfdepay</span></h2>
+<p>rtpdtmfdepay</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpdtmfdepay.html#GstRtpDTMFDepay--max-duration" title="The “max-duration” property">max-duration</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpdtmfdepay.html#GstRtpDTMFDepay--unit-time" title="The “unit-time” property">unit-time</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstRtpDTMFDepay"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-rtpdtmfdepay.html#GstRtpDTMFDepay-struct" title="struct GstRtpDTMFDepay">GstRtpDTMFDepay</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload">GstRTPBaseDepayload</a>
+                    <span class="lineart">╰──</span> GstRtpDTMFDepay
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.description"></a><h2>Description</h2>
+<p>This element takes RTP DTMF packets and produces sound. It also emits a
+message on the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBus.html"><span class="type">GstBus</span></a>.</p>
+<p>The message is called "dtmf-event" and has the following fields</p>
+<div class="informaltable"><table border="1">
+<colgroup>
+<col class="Name">
+<col class="Type">
+<col class="Possible values">
+<col class="Purpose">
+</colgroup>
+<thead><tr>
+<th>Name</th>
+<th>GType</th>
+<th>Possible values</th>
+<th>Purpose</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>G_TYPE_INT</td>
+<td>0-1</td>
+<td>Which of the two methods
+specified in RFC 2833 to use. The value should be 0 for tones and 1 for
+named events. Tones are specified by their frequencies and events are specied
+by their number. This element currently only recognizes events.
+Do not confuse with "method" which specified the output.
+</td>
+</tr>
+<tr>
+<td>number</td>
+<td>G_TYPE_INT</td>
+<td>0-16</td>
+<td>The event number.</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>G_TYPE_INT</td>
+<td>0-36</td>
+<td>This field describes the power level of the tone, expressed in dBm0
+after dropping the sign. Power levels range from 0 to -63 dBm0. The range of
+valid DTMF is from 0 to -36 dBm0.
+</td>
+</tr>
+<tr>
+<td>method</td>
+<td>G_TYPE_INT</td>
+<td>1</td>
+<td>This field will always been 1 (ie RTP event) from this element.
+</td>
+</tr>
+</tbody>
+</table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.131.7.5.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-dtmf.html#plugin-dtmf">dtmf</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Youness Alaoui &lt;youness.alaoui@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Depayloader/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.131.7.5.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp, media=(string)audio, payload=(int)[ 96, 127 ], clock-rate=(int)[ 0, 2147483647 ], encoding-name=(string)TELEPHONE-EVENT</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw, format=(string)S16LE, rate=(int)[ 1, 2147483647 ], channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstRtpDTMFDepay-struct"></a><h3>struct GstRtpDTMFDepay</h3>
+<pre class="programlisting">struct GstRtpDTMFDepay;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstRtpDTMFDepay--max-duration"></a><h3>The <code class="literal">“max-duration”</code> property</h3>
+<pre class="programlisting">  “max-duration”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The maxumimum duration (ms) of the outgoing soundpacket. (0 = no limit).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpDTMFDepay--unit-time"></a><h3>The <code class="literal">“unit-time”</code> property</h3>
+<pre class="programlisting">  “unit-time”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The smallest unit (ms) the duration must be a multiple of (0 disables it).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 1000</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpdtmfdepay.see-also"></a><h2>See Also</h2>
+<p>rtpdtmfsrc, rtpdtmfmux</p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

@@ -13,33 +13,31 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
-
-#include "gstwasapisrc.h"
-#include "gstwasapisink.h"
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+#include "gstwasapisink.h"
+#include "gstwasapisrc.h"
+
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  gboolean ret;
+  gst_element_register (plugin, "wasapisink", GST_RANK_NONE,
+      GST_TYPE_WASAPI_SINK);
+  gst_element_register (plugin, "wasapisrc", GST_RANK_NONE,
+      GST_TYPE_WASAPI_SRC);
 
-  ret = gst_element_register (plugin, "wasapisrc",
-      GST_RANK_NONE, GST_TYPE_WASAPI_SRC);
-  if (!ret)
-    return ret;
 
-  return gst_element_register (plugin, "wasapisink",
-      GST_RANK_NONE, GST_TYPE_WASAPI_SINK);
+  return TRUE;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "wasapi",
+    wasapi,
     "Windows audio session API plugin",
-    plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
+    plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

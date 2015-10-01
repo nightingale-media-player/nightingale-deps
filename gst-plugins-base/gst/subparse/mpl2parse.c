@@ -13,12 +13,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "mpl2parse.h"
 
+#include <stdio.h>
 #include <string.h>
 
 /* From http://lists.mplayerhq.hu/pipermail/mplayer-users/2003-February/030222.html
@@ -55,9 +56,9 @@ mpl2_parse_line (ParserState * state, const gchar * line, guint line_num)
   markup = g_string_new (NULL);
 
   while (1) {
-    const gchar *format_string;
     const gchar *sep;
     gchar *line_chunk_escaped;
+    gboolean italics;
 
     /* skip leading white spaces */
     while (*line == ' ' || *line == '\t')
@@ -65,10 +66,11 @@ mpl2_parse_line (ParserState * state, const gchar * line, guint line_num)
 
     /* a '/' at the beginning indicates italics */
     if (*line == '/') {
-      format_string = "<i>%s</i>";
+      italics = TRUE;
+      g_string_append (markup, "<i>");
       ++line;
     } else {
-      format_string = "%s";
+      italics = FALSE;
     }
 
     if ((sep = strchr (line, '|')))
@@ -77,10 +79,12 @@ mpl2_parse_line (ParserState * state, const gchar * line, guint line_num)
       line_chunk_escaped = g_markup_escape_text (line, -1);
 
     GST_LOG ("escaped line: %s", line_chunk_escaped);
-    g_string_append_printf (markup, format_string, line_chunk_escaped);
+    g_string_append (markup, line_chunk_escaped);
 
     g_free (line_chunk_escaped);
 
+    if (italics)
+      g_string_append (markup, "</i>");
     if (sep == NULL)
       break;
 

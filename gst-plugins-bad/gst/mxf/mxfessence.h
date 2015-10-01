@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __MXF_ESSENCE_H__
@@ -26,14 +26,21 @@
 #include "mxftypes.h"
 #include "mxfmetadata.h"
 
+typedef enum {
+  MXF_ESSENCE_WRAPPING_FRAME_WRAPPING,
+  MXF_ESSENCE_WRAPPING_CLIP_WRAPPING,
+  MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING
+} MXFEssenceWrapping;
+
 typedef GstFlowReturn (*MXFEssenceElementHandleFunc) (const MXFUL *key, GstBuffer *buffer, GstCaps *caps, MXFMetadataTimelineTrack *track, gpointer mapping_data, GstBuffer **outbuf);
 
 typedef struct {
   gboolean (*handles_track) (const MXFMetadataTimelineTrack *track);
+  MXFEssenceWrapping (*get_track_wrapping) (const MXFMetadataTimelineTrack *track);
   GstCaps * (*create_caps) (MXFMetadataTimelineTrack *track, GstTagList **tags, MXFEssenceElementHandleFunc *handler, gpointer *mapping_data);
 } MXFEssenceElementHandler;
 
-typedef GstFlowReturn (*MXFEssenceElementWriteFunc) (GstBuffer *buffer, GstCaps *caps, gpointer mapping_data, GstAdapter *adapter, GstBuffer **outbuf, gboolean flush);
+typedef GstFlowReturn (*MXFEssenceElementWriteFunc) (GstBuffer *buffer, gpointer mapping_data, GstAdapter *adapter, GstBuffer **outbuf, gboolean flush);
 
 typedef struct {
    MXFMetadataFileDescriptor * (*get_descriptor) (GstPadTemplate *tmpl, GstCaps *caps, MXFEssenceElementWriteFunc *handler, gpointer *mapping_data);

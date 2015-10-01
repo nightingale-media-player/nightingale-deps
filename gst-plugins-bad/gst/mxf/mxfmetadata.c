@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,11 +31,10 @@
 GST_DEBUG_CATEGORY_EXTERN (mxf_debug);
 #define GST_CAT_DEFAULT mxf_debug
 
-G_DEFINE_ABSTRACT_TYPE (MXFMetadataBase, mxf_metadata_base,
-    GST_TYPE_MINI_OBJECT);
+G_DEFINE_ABSTRACT_TYPE (MXFMetadataBase, mxf_metadata_base, G_TYPE_OBJECT);
 
 static void
-mxf_metadata_base_finalize (GstMiniObject * object)
+mxf_metadata_base_finalize (GObject * object)
 {
   MXFMetadataBase *self = MXF_METADATA_BASE (object);
 
@@ -44,7 +43,7 @@ mxf_metadata_base_finalize (GstMiniObject * object)
     self->other_tags = NULL;
   }
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_base_parent_class)->finalize (object);
+  G_OBJECT_CLASS (mxf_metadata_base_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -71,7 +70,7 @@ mxf_metadata_base_to_structure_default (MXFMetadataBase * self)
 
   g_return_val_if_fail (klass->name_quark != 0, NULL);
 
-  ret = gst_structure_id_empty_new (klass->name_quark);
+  ret = gst_structure_new_id_empty (klass->name_quark);
 
   if (!mxf_uuid_is_zero (&self->instance_uid)) {
     mxf_uuid_to_string (&self->instance_uid, str);
@@ -91,6 +90,7 @@ mxf_metadata_base_to_structure_default (MXFMetadataBase * self)
     GValue v = { 0, };
     GstStructure *s;
     GstBuffer *buf;
+    GstMapInfo map;
     GHashTableIter iter;
 
     g_hash_table_iter_init (&iter, self->other_tags);
@@ -98,12 +98,14 @@ mxf_metadata_base_to_structure_default (MXFMetadataBase * self)
 
     while (g_hash_table_iter_next (&iter, NULL, (gpointer) & tag)) {
       g_value_init (&v, GST_TYPE_STRUCTURE);
-      s = gst_structure_id_empty_new (MXF_QUARK (TAG));
+      s = gst_structure_new_id_empty (MXF_QUARK (TAG));
 
       mxf_ul_to_string (&tag->ul, str);
 
       buf = gst_buffer_new_and_alloc (tag->size);
-      memcpy (GST_BUFFER_DATA (buf), tag->data, tag->size);
+      gst_buffer_map (buf, &map, GST_MAP_WRITE);
+      memcpy (map.data, tag->data, tag->size);
+      gst_buffer_unmap (buf, &map);
 
       gst_structure_id_set (s, MXF_QUARK (NAME), G_TYPE_STRING, str,
           MXF_QUARK (DATA), GST_TYPE_BUFFER, buf, NULL);
@@ -131,9 +133,9 @@ mxf_metadata_base_init (MXFMetadataBase * self)
 static void
 mxf_metadata_base_class_init (MXFMetadataBaseClass * klass)
 {
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_base_finalize;
+  object_class->finalize = mxf_metadata_base_finalize;
   klass->handle_tag = mxf_metadata_base_handle_tag;
   klass->resolve = mxf_metadata_base_resolve_default;
   klass->to_structure = mxf_metadata_base_to_structure_default;
@@ -216,6 +218,7 @@ mxf_metadata_base_to_buffer (MXFMetadataBase * self, MXFPrimerPack * primer)
 {
   MXFMetadataBaseClass *klass;
   GstBuffer *ret;
+  GstMapInfo map;
   GList *tags, *l;
   guint size = 0, slen;
   guint8 ber[9];
@@ -267,13 +270,14 @@ mxf_metadata_base_to_buffer (MXFMetadataBase * self, MXFPrimerPack * primer)
   size += 16 + slen;
 
   ret = gst_buffer_new_and_alloc (size);
+  gst_buffer_map (ret, &map, GST_MAP_WRITE);
 
-  memcpy (GST_BUFFER_DATA (ret), &last->ul, 16);
+  memcpy (map.data, &last->ul, 16);
   mxf_local_tag_free (last);
   last = NULL;
-  memcpy (GST_BUFFER_DATA (ret) + 16, ber, slen);
+  memcpy (map.data + 16, ber, slen);
 
-  data = GST_BUFFER_DATA (ret) + 16 + slen;
+  data = map.data + 16 + slen;
   size -= 16 + slen;
 
   for (l = tags; l; l = l->next) {
@@ -301,6 +305,8 @@ mxf_metadata_base_to_buffer (MXFMetadataBase * self, MXFPrimerPack * primer)
   }
 
   g_list_free (tags);
+
+  gst_buffer_unmap (ret, &map);
 
   return ret;
 }
@@ -428,6 +434,7 @@ mxf_metadata_init_types (void)
   _add_metadata_type (MXF_TYPE_METADATA_STATIC_TRACK);
   _add_metadata_type (MXF_TYPE_METADATA_SEQUENCE);
   _add_metadata_type (MXF_TYPE_METADATA_SOURCE_CLIP);
+  _add_metadata_type (MXF_TYPE_METADATA_FILLER);
   _add_metadata_type (MXF_TYPE_METADATA_TIMECODE_COMPONENT);
   _add_metadata_type (MXF_TYPE_METADATA_DM_SEGMENT);
   _add_metadata_type (MXF_TYPE_METADATA_DM_SOURCE_CLIP);
@@ -484,13 +491,13 @@ mxf_metadata_new (guint16 type, MXFPrimerPack * primer, guint64 offset,
   }
 
 
-  GST_DEBUG ("Metadata type 0x%06x is handled by type %s", type,
+  GST_DEBUG ("Metadata type 0x%04x is handled by type %s", type,
       g_type_name (t));
 
   ret = (MXFMetadata *) g_type_create_instance (t);
   if (!mxf_metadata_base_parse (MXF_METADATA_BASE (ret), primer, data, size)) {
     GST_ERROR ("Parsing metadata failed");
-    gst_mini_object_unref ((GstMiniObject *) ret);
+    g_object_unref (ret);
     return NULL;
   }
 
@@ -501,7 +508,7 @@ mxf_metadata_new (guint16 type, MXFPrimerPack * primer, guint64 offset,
 G_DEFINE_TYPE (MXFMetadataPreface, mxf_metadata_preface, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_preface_finalize (GstMiniObject * object)
+mxf_metadata_preface_finalize (GObject * object)
 {
   MXFMetadataPreface *self = MXF_METADATA_PREFACE (object);
 
@@ -517,7 +524,7 @@ mxf_metadata_preface_finalize (GstMiniObject * object)
   g_free (self->dm_schemes);
   self->dm_schemes = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_preface_parent_class)->finalize (object);
+  G_OBJECT_CLASS (mxf_metadata_preface_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -644,11 +651,15 @@ mxf_metadata_preface_resolve (MXFMetadataBase * m, GHashTable * metadata)
   MXFMetadataPreface *self = MXF_METADATA_PREFACE (m);
   MXFMetadataBase *current = NULL;
   guint i;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (!mxf_uuid_is_zero (&self->primary_package_uid)) {
     current = g_hash_table_lookup (metadata, &self->primary_package_uid);
     if (!current || !MXF_IS_METADATA_GENERIC_PACKAGE (current)) {
-      GST_ERROR ("Primary package not found");
+      GST_ERROR ("Primary package %s not found",
+          mxf_uuid_to_string (&self->primary_package_uid, str));
     } else {
       if (mxf_metadata_base_resolve (current, metadata)) {
         self->primary_package = MXF_METADATA_GENERIC_PACKAGE (current);
@@ -659,13 +670,15 @@ mxf_metadata_preface_resolve (MXFMetadataBase * m, GHashTable * metadata)
 
   current = g_hash_table_lookup (metadata, &self->content_storage_uid);
   if (!current || !MXF_IS_METADATA_CONTENT_STORAGE (current)) {
-    GST_ERROR ("Content storage not found");
+    GST_ERROR ("Content storage %s not found",
+        mxf_uuid_to_string (&self->content_storage_uid, str));
     return FALSE;
   } else {
     if (mxf_metadata_base_resolve (current, metadata)) {
       self->content_storage = MXF_METADATA_CONTENT_STORAGE (current);
     } else {
-      GST_ERROR ("Couldn't resolve content storage");
+      GST_ERROR ("Couldn't resolve content storage %s",
+          mxf_uuid_to_string (&self->content_storage_uid, str));
       return FALSE;
     }
   }
@@ -947,10 +960,10 @@ static void
 mxf_metadata_preface_class_init (MXFMetadataPrefaceClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_preface_finalize;
+  object_class->finalize = mxf_metadata_preface_finalize;
   metadata_base_class->handle_tag = mxf_metadata_preface_handle_tag;
   metadata_base_class->resolve = mxf_metadata_preface_resolve;
   metadata_base_class->to_structure = mxf_metadata_preface_to_structure;
@@ -963,7 +976,7 @@ G_DEFINE_TYPE (MXFMetadataIdentification, mxf_metadata_identification,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_identification_finalize (GstMiniObject * object)
+mxf_metadata_identification_finalize (GObject * object)
 {
   MXFMetadataIdentification *self = MXF_METADATA_IDENTIFICATION (object);
 
@@ -979,8 +992,7 @@ mxf_metadata_identification_finalize (GstMiniObject * object)
   g_free (self->platform);
   self->platform = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_identification_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_identification_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -1237,10 +1249,10 @@ static void
 mxf_metadata_identification_class_init (MXFMetadataIdentificationClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_identification_finalize;
+  object_class->finalize = mxf_metadata_identification_finalize;
   metadata_base_class->handle_tag = mxf_metadata_identification_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (IDENTIFICATION);
   metadata_base_class->to_structure = mxf_metadata_identification_to_structure;
@@ -1252,7 +1264,7 @@ G_DEFINE_TYPE (MXFMetadataContentStorage, mxf_metadata_content_storage,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_content_storage_finalize (GstMiniObject * object)
+mxf_metadata_content_storage_finalize (GObject * object)
 {
   MXFMetadataContentStorage *self = MXF_METADATA_CONTENT_STORAGE (object);
 
@@ -1265,8 +1277,7 @@ mxf_metadata_content_storage_finalize (GstMiniObject * object)
   g_free (self->essence_container_data_uids);
   self->essence_container_data_uids = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_content_storage_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_content_storage_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -1340,6 +1351,9 @@ mxf_metadata_content_storage_resolve (MXFMetadataBase * m,
   guint i;
   gboolean have_package = FALSE;
   gboolean have_ecd = FALSE;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (self->packages)
     memset (self->packages, 0, sizeof (gpointer) * self->n_packages);
@@ -1353,10 +1367,12 @@ mxf_metadata_content_storage_resolve (MXFMetadataBase * m,
         self->packages[i] = MXF_METADATA_GENERIC_PACKAGE (current);
         have_package = TRUE;
       } else {
-        GST_ERROR ("Couldn't resolve package");
+        GST_ERROR ("Couldn't resolve package %s",
+            mxf_uuid_to_string (&self->packages_uids[i], str));
       }
     } else {
-      GST_ERROR ("Package not found");
+      GST_ERROR ("Package %s not found",
+          mxf_uuid_to_string (&self->packages_uids[i], str));
     }
   }
 
@@ -1376,10 +1392,12 @@ mxf_metadata_content_storage_resolve (MXFMetadataBase * m,
             MXF_METADATA_ESSENCE_CONTAINER_DATA (current);
         have_ecd = TRUE;
       } else {
-        GST_ERROR ("Couldn't resolve essence container data");
+        GST_ERROR ("Couldn't resolve essence container data %s",
+            mxf_uuid_to_string (&self->essence_container_data_uids[i], str));
       }
     } else {
-      GST_ERROR ("Essence container data not found");
+      GST_ERROR ("Essence container data %s not found",
+          mxf_uuid_to_string (&self->essence_container_data_uids[i], str));
     }
   }
 
@@ -1532,10 +1550,10 @@ static void
 mxf_metadata_content_storage_class_init (MXFMetadataContentStorageClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_content_storage_finalize;
+  object_class->finalize = mxf_metadata_content_storage_finalize;
   metadata_base_class->handle_tag = mxf_metadata_content_storage_handle_tag;
   metadata_base_class->resolve = mxf_metadata_content_storage_resolve;
   metadata_base_class->name_quark = MXF_QUARK (CONTENT_STORAGE);
@@ -1605,6 +1623,9 @@ mxf_metadata_essence_container_data_resolve (MXFMetadataBase * m,
       MXF_METADATA_ESSENCE_CONTAINER_DATA (m);
   MXFMetadataBase *current = NULL;
   GHashTableIter iter;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[96];
+#endif
 
   g_hash_table_iter_init (&iter, metadata);
 
@@ -1616,6 +1637,9 @@ mxf_metadata_essence_container_data_resolve (MXFMetadataBase * m,
               &self->linked_package_uid)) {
         if (mxf_metadata_base_resolve (current, metadata)) {
           self->linked_package = package;
+        } else {
+          GST_ERROR ("Couldn't resolve linked package %s",
+              mxf_umid_to_string (&self->linked_package_uid, str));
         }
         break;
       }
@@ -1623,7 +1647,8 @@ mxf_metadata_essence_container_data_resolve (MXFMetadataBase * m,
   }
 
   if (!self->linked_package) {
-    GST_ERROR ("Couldn't resolve a package");
+    GST_ERROR ("Couldn't resolve or find linked package %s",
+        mxf_umid_to_string (&self->linked_package_uid, str));
     return FALSE;
   }
 
@@ -1729,7 +1754,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataGenericPackage, mxf_metadata_generic_package,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_generic_package_finalize (GstMiniObject * object)
+mxf_metadata_generic_package_finalize (GObject * object)
 {
   MXFMetadataGenericPackage *self = MXF_METADATA_GENERIC_PACKAGE (object);
 
@@ -1741,8 +1766,7 @@ mxf_metadata_generic_package_finalize (GstMiniObject * object)
   g_free (self->tracks);
   self->tracks = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_generic_package_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_generic_package_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -1823,6 +1847,9 @@ mxf_metadata_generic_package_resolve (MXFMetadataBase * m,
   MXFMetadataBase *current = NULL;
   guint i;
   gboolean have_track = FALSE;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (self->tracks)
     memset (self->tracks, 0, sizeof (gpointer) * self->n_tracks);
@@ -1845,10 +1872,12 @@ mxf_metadata_generic_package_resolve (MXFMetadataBase * m,
         else if ((track->type & 0xf0) == 0x40)
           self->n_other_tracks++;
       } else {
-        GST_ERROR ("Track couldn't be resolved");
+        GST_ERROR ("Track %s couldn't be resolved",
+            mxf_uuid_to_string (&self->tracks_uids[i], str));
       }
     } else {
-      GST_ERROR ("Track not found");
+      GST_ERROR ("Track %s not found",
+          mxf_uuid_to_string (&self->tracks_uids[i], str));
     }
   }
 
@@ -2001,9 +2030,9 @@ static void
 mxf_metadata_generic_package_class_init (MXFMetadataGenericPackageClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_generic_package_finalize;
+  object_class->finalize = mxf_metadata_generic_package_finalize;
   metadata_base_class->handle_tag = mxf_metadata_generic_package_handle_tag;
   metadata_base_class->resolve = mxf_metadata_generic_package_resolve;
   metadata_base_class->to_structure = mxf_metadata_generic_package_to_structure;
@@ -2172,6 +2201,9 @@ mxf_metadata_source_package_resolve (MXFMetadataBase * m, GHashTable * metadata)
   guint i;
   gboolean ret;
   MXFMetadataFileDescriptor *d;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (mxf_uuid_is_zero (&self->descriptor_uid))
     return
@@ -2180,12 +2212,14 @@ mxf_metadata_source_package_resolve (MXFMetadataBase * m, GHashTable * metadata)
 
   current = g_hash_table_lookup (metadata, &self->descriptor_uid);
   if (!current) {
-    GST_ERROR ("Descriptor not found");
+    GST_ERROR ("Descriptor %s not found",
+        mxf_uuid_to_string (&self->descriptor_uid, str));
     return FALSE;
   }
 
   if (!mxf_metadata_base_resolve (MXF_METADATA_BASE (current), metadata)) {
-    GST_ERROR ("Couldn't resolve descriptor");
+    GST_ERROR ("Couldn't resolve descriptor %s",
+        mxf_uuid_to_string (&self->descriptor_uid, str));
     return FALSE;
   }
 
@@ -2205,6 +2239,7 @@ mxf_metadata_source_package_resolve (MXFMetadataBase * m, GHashTable * metadata)
       if (d->linked_track_id == package->tracks[i]->track_id ||
           (d->linked_track_id == 0 && package->n_essence_tracks == 1 &&
               (package->tracks[i]->type & 0xf0) == 0x30)) {
+        g_free (package->tracks[i]->descriptor);
         package->tracks[i]->descriptor =
             g_new0 (MXFMetadataFileDescriptor *, 1);
         package->tracks[i]->descriptor[0] = d;
@@ -2230,6 +2265,7 @@ mxf_metadata_source_package_resolve (MXFMetadataBase * m, GHashTable * metadata)
           n_descriptor++;
       }
 
+      g_free (package->tracks[i]->descriptor);
       package->tracks[i]->descriptor =
           g_new0 (MXFMetadataFileDescriptor *, n_descriptor);
       package->tracks[i]->n_descriptor = n_descriptor;
@@ -2324,7 +2360,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataTrack, mxf_metadata_track,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_track_finalize (GstMiniObject * object)
+mxf_metadata_track_finalize (GObject * object)
 {
   MXFMetadataTrack *self = MXF_METADATA_TRACK (object);
 
@@ -2333,7 +2369,7 @@ mxf_metadata_track_finalize (GstMiniObject * object)
   g_free (self->descriptor);
   self->descriptor = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_track_parent_class)->finalize (object);
+  G_OBJECT_CLASS (mxf_metadata_track_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -2393,17 +2429,22 @@ mxf_metadata_track_resolve (MXFMetadataBase * m, GHashTable * metadata)
   MXFMetadataTrack *self = MXF_METADATA_TRACK (m);
   MXFMetadataBase *current = NULL;
   guint i;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   current = g_hash_table_lookup (metadata, &self->sequence_uid);
   if (current && MXF_IS_METADATA_SEQUENCE (current)) {
     if (mxf_metadata_base_resolve (current, metadata)) {
       self->sequence = MXF_METADATA_SEQUENCE (current);
     } else {
-      GST_ERROR ("Couldn't resolve sequence");
+      GST_ERROR ("Couldn't resolve sequence %s",
+          mxf_uuid_to_string (&self->sequence_uid, str));
       return FALSE;
     }
   } else {
-    GST_ERROR ("Couldn't find sequence");
+    GST_ERROR ("Couldn't find sequence %s",
+        mxf_uuid_to_string (&self->sequence_uid, str));
     return FALSE;
   }
 
@@ -2515,9 +2556,9 @@ static void
 mxf_metadata_track_class_init (MXFMetadataTrackClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_track_finalize;
+  object_class->finalize = mxf_metadata_track_finalize;
   metadata_base_class->handle_tag = mxf_metadata_track_handle_tag;
   metadata_base_class->resolve = mxf_metadata_track_resolve;
   metadata_base_class->to_structure = mxf_metadata_track_to_structure;
@@ -2805,7 +2846,7 @@ mxf_metadata_static_track_class_init (MXFMetadataStaticTrackClass * klass)
 G_DEFINE_TYPE (MXFMetadataSequence, mxf_metadata_sequence, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_sequence_finalize (GstMiniObject * object)
+mxf_metadata_sequence_finalize (GObject * object)
 {
   MXFMetadataSequence *self = MXF_METADATA_SEQUENCE (object);
 
@@ -2814,7 +2855,7 @@ mxf_metadata_sequence_finalize (GstMiniObject * object)
   g_free (self->structural_components);
   self->structural_components = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_sequence_parent_class)->finalize (object);
+  G_OBJECT_CLASS (mxf_metadata_sequence_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -2882,6 +2923,9 @@ mxf_metadata_sequence_resolve (MXFMetadataBase * m, GHashTable * metadata)
   MXFMetadataSequence *self = MXF_METADATA_SEQUENCE (m);
   MXFMetadataBase *current = NULL;
   guint i;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (self->structural_components)
     memset (self->structural_components, 0,
@@ -2898,11 +2942,13 @@ mxf_metadata_sequence_resolve (MXFMetadataBase * m, GHashTable * metadata)
         self->structural_components[i] =
             MXF_METADATA_STRUCTURAL_COMPONENT (current);
       } else {
-        GST_ERROR ("Couldn't resolve structural component");
+        GST_ERROR ("Couldn't resolve structural component %s",
+            mxf_uuid_to_string (&self->structural_components_uids[i], str));
         return FALSE;
       }
     } else {
-      GST_ERROR ("Structural component not found");
+      GST_ERROR ("Structural component %s not found",
+          mxf_uuid_to_string (&self->structural_components_uids[i], str));
       return FALSE;
     }
   }
@@ -3022,10 +3068,10 @@ static void
 mxf_metadata_sequence_class_init (MXFMetadataSequenceClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_sequence_finalize;
+  object_class->finalize = mxf_metadata_sequence_finalize;
   metadata_base_class->handle_tag = mxf_metadata_sequence_handle_tag;
   metadata_base_class->resolve = mxf_metadata_sequence_resolve;
   metadata_base_class->name_quark = MXF_QUARK (SEQUENCE);
@@ -3334,6 +3380,9 @@ mxf_metadata_source_clip_resolve (MXFMetadataBase * m, GHashTable * metadata)
   MXFMetadataSourceClip *self = MXF_METADATA_SOURCE_CLIP (m);
   MXFMetadataBase *current = NULL;
   GHashTableIter iter;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[96];
+#endif
 
   g_hash_table_iter_init (&iter, metadata);
 
@@ -3346,6 +3395,11 @@ mxf_metadata_source_clip_resolve (MXFMetadataBase * m, GHashTable * metadata)
         break;
       }
     }
+  }
+
+  if (!self->source_package) {
+    GST_ERROR ("Couldn't find source package %s",
+        mxf_umid_to_string (&self->source_package_id, str));
   }
 
   return
@@ -3430,19 +3484,38 @@ mxf_metadata_source_clip_class_init (MXFMetadataSourceClipClass * klass)
   metadata_class->type = 0x0111;
 }
 
+
+G_DEFINE_TYPE (MXFMetadataFiller, mxf_metadata_filler,
+    MXF_TYPE_METADATA_STRUCTURAL_COMPONENT);
+
+static void
+mxf_metadata_filler_init (MXFMetadataFiller * self)
+{
+
+}
+
+static void
+mxf_metadata_filler_class_init (MXFMetadataFillerClass * klass)
+{
+  MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
+  MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
+
+  metadata_base_class->name_quark = MXF_QUARK (FILLER);
+  metadata_class->type = 0x0109;
+}
+
 G_DEFINE_TYPE (MXFMetadataDMSourceClip, mxf_metadata_dm_source_clip,
     MXF_TYPE_METADATA_SOURCE_CLIP);
 
 static void
-mxf_metadata_dm_source_clip_finalize (GstMiniObject * object)
+mxf_metadata_dm_source_clip_finalize (GObject * object)
 {
   MXFMetadataDMSourceClip *self = MXF_METADATA_DM_SOURCE_CLIP (object);
 
   g_free (self->track_ids);
   self->track_ids = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_dm_source_clip_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_dm_source_clip_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -3577,10 +3650,10 @@ static void
 mxf_metadata_dm_source_clip_class_init (MXFMetadataDMSourceClipClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_dm_source_clip_finalize;
+  object_class->finalize = mxf_metadata_dm_source_clip_finalize;
   metadata_base_class->handle_tag = mxf_metadata_dm_source_clip_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (DM_SOURCE_CLIP);
   metadata_base_class->to_structure = mxf_metadata_dm_source_clip_to_structure;
@@ -3592,7 +3665,7 @@ G_DEFINE_TYPE (MXFMetadataDMSegment, mxf_metadata_dm_segment,
     MXF_TYPE_METADATA_STRUCTURAL_COMPONENT);
 
 static void
-mxf_metadata_dm_segment_finalize (GstMiniObject * object)
+mxf_metadata_dm_segment_finalize (GObject * object)
 {
   MXFMetadataDMSegment *self = MXF_METADATA_DM_SEGMENT (object);
 
@@ -3602,8 +3675,7 @@ mxf_metadata_dm_segment_finalize (GstMiniObject * object)
   g_free (self->event_comment);
   self->event_comment = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_dm_segment_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_dm_segment_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -3691,17 +3763,22 @@ mxf_metadata_dm_segment_resolve (MXFMetadataBase * m, GHashTable * metadata)
 {
   MXFMetadataDMSegment *self = MXF_METADATA_DM_SEGMENT (m);
   MXFMetadataBase *current = NULL;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   current = g_hash_table_lookup (metadata, &self->dm_framework_uid);
   if (current && MXF_IS_DESCRIPTIVE_METADATA_FRAMEWORK (current)) {
     if (mxf_metadata_base_resolve (current, metadata)) {
       self->dm_framework = MXF_DESCRIPTIVE_METADATA_FRAMEWORK (current);
     } else {
-      GST_ERROR ("Couldn't resolve DM framework");
+      GST_ERROR ("Couldn't resolve DM framework %s",
+          mxf_uuid_to_string (&self->dm_framework_uid, str));
       return FALSE;
     }
   } else {
-    GST_ERROR ("Couldn't find DM framework");
+    GST_ERROR ("Couldn't find DM framework %s",
+        mxf_uuid_to_string (&self->dm_framework_uid, str));
     return FALSE;
   }
 
@@ -3830,10 +3907,10 @@ static void
 mxf_metadata_dm_segment_class_init (MXFMetadataDMSegmentClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_dm_segment_finalize;
+  object_class->finalize = mxf_metadata_dm_segment_finalize;
   metadata_base_class->handle_tag = mxf_metadata_dm_segment_handle_tag;
   metadata_base_class->resolve = mxf_metadata_dm_segment_resolve;
   metadata_base_class->name_quark = MXF_QUARK (DM_SEGMENT);
@@ -3846,7 +3923,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataGenericDescriptor,
     mxf_metadata_generic_descriptor, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_generic_descriptor_finalize (GstMiniObject * object)
+mxf_metadata_generic_descriptor_finalize (GObject * object)
 {
   MXFMetadataGenericDescriptor *self = MXF_METADATA_GENERIC_DESCRIPTOR (object);
 
@@ -3856,7 +3933,7 @@ mxf_metadata_generic_descriptor_finalize (GstMiniObject * object)
   g_free (self->locators);
   self->locators = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_generic_descriptor_parent_class)->finalize
+  G_OBJECT_CLASS (mxf_metadata_generic_descriptor_parent_class)->finalize
       (object);
 }
 
@@ -3915,6 +3992,9 @@ mxf_metadata_generic_descriptor_resolve (MXFMetadataBase * m,
   MXFMetadataBase *current = NULL;
   guint i;
   gboolean have_locator = FALSE;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (self->locators)
     memset (self->locators, 0, sizeof (gpointer) * self->n_locators);
@@ -3927,10 +4007,12 @@ mxf_metadata_generic_descriptor_resolve (MXFMetadataBase * m,
         self->locators[i] = MXF_METADATA_LOCATOR (current);
         have_locator = TRUE;
       } else {
-        GST_ERROR ("Couldn't resolve locator");
+        GST_ERROR ("Couldn't resolve locator %s",
+            mxf_uuid_to_string (&self->locators_uids[i], str));
       }
     } else {
-      GST_ERROR ("Locator not found");
+      GST_ERROR ("Locator %s not found",
+          mxf_uuid_to_string (&self->locators_uids[i], str));
     }
   }
 
@@ -4000,7 +4082,7 @@ mxf_metadata_generic_descriptor_write_tags (MXFMetadataBase * m,
 
     t = g_slice_new0 (MXFLocalTag);
     memcpy (&t->ul, MXF_UL (LOCATORS), 16);
-    t->size = 8 + 16 * self->n_locators;;
+    t->size = 8 + 16 * self->n_locators;
     t->data = g_slice_alloc0 (t->size);
     t->g_slice = TRUE;
     GST_WRITE_UINT32_BE (t->data, self->n_locators);
@@ -4029,9 +4111,9 @@ mxf_metadata_generic_descriptor_class_init (MXFMetadataGenericDescriptorClass *
     klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_generic_descriptor_finalize;
+  object_class->finalize = mxf_metadata_generic_descriptor_finalize;
   metadata_base_class->handle_tag = mxf_metadata_generic_descriptor_handle_tag;
   metadata_base_class->resolve = mxf_metadata_generic_descriptor_resolve;
   metadata_base_class->to_structure =
@@ -5215,10 +5297,9 @@ void mxf_metadata_generic_sound_essence_descriptor_set_caps
   if (self->audio_sampling_rate.n == 0 || self->audio_sampling_rate.d == 0) {
     GST_ERROR ("Invalid audio sampling rate");
   } else {
-    gst_caps_set_simple (caps,
-        "rate", G_TYPE_INT,
-        (gint) (mxf_fraction_to_double (&self->audio_sampling_rate)
-            + 0.5), NULL);
+    gst_caps_set_simple (caps, "rate", G_TYPE_INT,
+        (gint) (mxf_fraction_to_double (&self->audio_sampling_rate) + 0.5),
+        NULL);
   }
 
   if (self->channel_count == 0) {
@@ -5227,6 +5308,36 @@ void mxf_metadata_generic_sound_essence_descriptor_set_caps
     gst_caps_set_simple (caps, "channels", G_TYPE_INT, self->channel_count,
         NULL);
   }
+}
+
+GstCaps *mxf_metadata_generic_sound_essence_descriptor_create_caps
+    (MXFMetadataGenericSoundEssenceDescriptor * self, GstAudioFormat * format)
+{
+  GstAudioInfo info;
+  gint rate = 0;
+  gint channels = 0;
+
+  g_return_val_if_fail (MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (self),
+      NULL);
+
+  gst_audio_info_init (&info);
+
+  if (self->audio_sampling_rate.n == 0 || self->audio_sampling_rate.d == 0) {
+    GST_ERROR ("Invalid audio sampling rate");
+  } else {
+    rate = (gint) (mxf_fraction_to_double (&self->audio_sampling_rate)
+        + 0.5);
+  }
+
+  if (self->channel_count == 0) {
+    GST_ERROR ("Invalid number of channels (0)");
+  } else {
+    channels = self->channel_count;
+  }
+
+  gst_audio_info_set_format (&info, *format, rate, channels, NULL);
+
+  return gst_audio_info_to_caps (&info);
 }
 
 gboolean
@@ -5561,7 +5672,7 @@ G_DEFINE_TYPE (MXFMetadataRGBAPictureEssenceDescriptor,
     MXF_TYPE_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR);
 
 static void
-mxf_metadata_rgba_picture_essence_descriptor_finalize (GstMiniObject * object)
+mxf_metadata_rgba_picture_essence_descriptor_finalize (GObject * object)
 {
   MXFMetadataRGBAPictureEssenceDescriptor *self =
       MXF_METADATA_RGBA_PICTURE_ESSENCE_DESCRIPTOR (object);
@@ -5569,7 +5680,7 @@ mxf_metadata_rgba_picture_essence_descriptor_finalize (GstMiniObject * object)
   g_free (self->pixel_layout);
   self->pixel_layout = NULL;
 
-  GST_MINI_OBJECT_CLASS
+  G_OBJECT_CLASS
       (mxf_metadata_rgba_picture_essence_descriptor_parent_class)->finalize
       (object);
 }
@@ -5804,10 +5915,10 @@ static void
     (MXFMetadataRGBAPictureEssenceDescriptorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize =
+  object_class->finalize =
       mxf_metadata_rgba_picture_essence_descriptor_finalize;
   metadata_base_class->handle_tag =
       mxf_metadata_rgba_picture_essence_descriptor_handle_tag;
@@ -5936,7 +6047,7 @@ G_DEFINE_TYPE (MXFMetadataMultipleDescriptor, mxf_metadata_multiple_descriptor,
     MXF_TYPE_METADATA_FILE_DESCRIPTOR);
 
 static void
-mxf_metadata_multiple_descriptor_finalize (GstMiniObject * object)
+mxf_metadata_multiple_descriptor_finalize (GObject * object)
 {
   MXFMetadataMultipleDescriptor *self =
       MXF_METADATA_MULTIPLE_DESCRIPTOR (object);
@@ -5946,7 +6057,7 @@ mxf_metadata_multiple_descriptor_finalize (GstMiniObject * object)
   g_free (self->sub_descriptors);
   self->sub_descriptors = NULL;
 
-  GST_MINI_OBJECT_CLASS
+  G_OBJECT_CLASS
       (mxf_metadata_multiple_descriptor_parent_class)->finalize (object);
 }
 
@@ -6005,6 +6116,9 @@ mxf_metadata_multiple_descriptor_resolve (MXFMetadataBase * m,
   MXFMetadataMultipleDescriptor *self = MXF_METADATA_MULTIPLE_DESCRIPTOR (m);
   MXFMetadataBase *current = NULL;
   guint i, have_subdescriptors = 0;
+#ifndef GST_DISABLE_GST_DEBUG
+  gchar str[48];
+#endif
 
   if (self->sub_descriptors)
     memset (self->sub_descriptors, 0,
@@ -6019,12 +6133,13 @@ mxf_metadata_multiple_descriptor_resolve (MXFMetadataBase * m,
         self->sub_descriptors[i] = MXF_METADATA_GENERIC_DESCRIPTOR (current);
         have_subdescriptors++;
       } else {
-        GST_ERROR ("Couldn't resolve descriptor");
+        GST_ERROR ("Couldn't resolve descriptor %s",
+            mxf_uuid_to_string (&self->sub_descriptors_uids[i], str));
         return FALSE;
       }
     } else {
-      GST_ERROR ("Descriptor not found");
-      return FALSE;
+      GST_ERROR ("Descriptor %s not found",
+          mxf_uuid_to_string (&self->sub_descriptors_uids[i], str));
     }
   }
 
@@ -6119,10 +6234,10 @@ mxf_metadata_multiple_descriptor_class_init (MXFMetadataMultipleDescriptorClass
     * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_multiple_descriptor_finalize;
+  object_class->finalize = mxf_metadata_multiple_descriptor_finalize;
   metadata_base_class->handle_tag = mxf_metadata_multiple_descriptor_handle_tag;
   metadata_base_class->resolve = mxf_metadata_multiple_descriptor_resolve;
   metadata_base_class->name_quark = MXF_QUARK (MULTIPLE_DESCRIPTOR);
@@ -6149,15 +6264,14 @@ G_DEFINE_TYPE (MXFMetadataTextLocator, mxf_metadata_text_locator,
     MXF_TYPE_METADATA_LOCATOR);
 
 static void
-mxf_metadata_text_locator_finalize (GstMiniObject * object)
+mxf_metadata_text_locator_finalize (GObject * object)
 {
   MXFMetadataTextLocator *self = MXF_METADATA_TEXT_LOCATOR (object);
 
   g_free (self->locator_name);
   self->locator_name = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_text_locator_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_text_locator_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -6229,10 +6343,10 @@ static void
 mxf_metadata_text_locator_class_init (MXFMetadataTextLocatorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_text_locator_finalize;
+  object_class->finalize = mxf_metadata_text_locator_finalize;
   metadata_base_class->handle_tag = mxf_metadata_text_locator_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (TEXT_LOCATOR);
   metadata_base_class->to_structure = mxf_metadata_text_locator_to_structure;
@@ -6244,15 +6358,14 @@ G_DEFINE_TYPE (MXFMetadataNetworkLocator, mxf_metadata_network_locator,
     MXF_TYPE_METADATA_LOCATOR);
 
 static void
-mxf_metadata_network_locator_finalize (GstMiniObject * object)
+mxf_metadata_network_locator_finalize (GObject * object)
 {
   MXFMetadataNetworkLocator *self = MXF_METADATA_NETWORK_LOCATOR (object);
 
   g_free (self->url_string);
   self->url_string = NULL;
 
-  GST_MINI_OBJECT_CLASS (mxf_metadata_network_locator_parent_class)->finalize
-      (object);
+  G_OBJECT_CLASS (mxf_metadata_network_locator_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -6323,10 +6436,10 @@ static void
 mxf_metadata_network_locator_class_init (MXFMetadataNetworkLocatorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  miniobject_class->finalize = mxf_metadata_network_locator_finalize;
+  object_class->finalize = mxf_metadata_network_locator_finalize;
   metadata_base_class->handle_tag = mxf_metadata_network_locator_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (NETWORK_LOCATOR);
   metadata_base_class->to_structure = mxf_metadata_network_locator_to_structure;
@@ -6379,8 +6492,12 @@ mxf_descriptive_metadata_new (guint8 scheme, guint32 type,
   _MXFDescriptiveMetadataScheme *s = NULL;
   MXFDescriptiveMetadata *ret = NULL;
 
-  g_return_val_if_fail (type != 0, NULL);
   g_return_val_if_fail (primer != NULL, NULL);
+
+  if (G_UNLIKELY (type == 0)) {
+    GST_WARNING ("Type 0 is invalid");
+    return NULL;
+  }
 
   for (i = 0; i < _dm_schemes->len; i++) {
     _MXFDescriptiveMetadataScheme *data =
@@ -6425,7 +6542,7 @@ mxf_descriptive_metadata_new (guint8 scheme, guint32 type,
   ret = (MXFDescriptiveMetadata *) g_type_create_instance (t);
   if (!mxf_metadata_base_parse (MXF_METADATA_BASE (ret), primer, data, size)) {
     GST_ERROR ("Parsing metadata failed");
-    gst_mini_object_unref ((GstMiniObject *) ret);
+    g_object_unref (ret);
     return NULL;
   }
 
@@ -6467,5 +6584,5 @@ mxf_metadata_hash_table_new (void)
 {
   return g_hash_table_new_full ((GHashFunc) mxf_uuid_hash,
       (GEqualFunc) mxf_uuid_is_equal, (GDestroyNotify) NULL,
-      (GDestroyNotify) gst_mini_object_unref);
+      (GDestroyNotify) g_object_unref);
 }

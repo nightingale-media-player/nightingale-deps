@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,11 +36,7 @@
 
 #include "vcdsrc.h"
 
-static const GstElementDetails gst_vcdsrc_details =
-GST_ELEMENT_DETAILS ("VCD Source",
-    "Source/File",
-    "Asynchronous read from VCD disk",
-    "Erik Walthinsen <omega@cse.ogi.edu>");
+#define DEFAULT_DEVICE "/dev/cdrom"
 
 /* VCDSrc signals and args */
 enum
@@ -66,22 +62,9 @@ GST_DEBUG_CATEGORY_STATIC (gst_vcdsrc_debug);
 #define GST_CAT_DEFAULT gst_vcdsrc_debug
 
 static void gst_vcdsrc_uri_handler_init (gpointer g_iface, gpointer iface_data);
-
-static void
-gst_vcdsrc_setup_interfaces (GType type)
-{
-  static const GInterfaceInfo urihandler_info = {
-    gst_vcdsrc_uri_handler_init,
-    NULL,
-    NULL,
-  };
-
-  g_type_add_interface_static (type, GST_TYPE_URI_HANDLER, &urihandler_info);
-}
-
-
-GST_BOILERPLATE_FULL (GstVCDSrc, gst_vcdsrc, GstPushSrc, GST_TYPE_PUSH_SRC,
-    gst_vcdsrc_setup_interfaces);
+#define gst_vcdsrc_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstVCDSrc, gst_vcdsrc, GST_TYPE_PUSH_SRC,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_vcdsrc_uri_handler_init));
 
 static void gst_vcdsrc_finalize (GObject * object);
 
@@ -94,27 +77,19 @@ static gboolean gst_vcdsrc_start (GstBaseSrc * src);
 static gboolean gst_vcdsrc_stop (GstBaseSrc * src);
 static GstFlowReturn gst_vcdsrc_create (GstPushSrc * src, GstBuffer ** out);
 
-static void
-gst_vcdsrc_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details (element_class, &gst_vcdsrc_details);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&srctemplate));
-}
 
 static void
 gst_vcdsrc_class_init (GstVCDSrcClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *element_class;
   GstBaseSrcClass *basesrc_class;
   GstPushSrcClass *pushsrc_class;
 
   gobject_class = (GObjectClass *) klass;
   basesrc_class = (GstBaseSrcClass *) klass;
   pushsrc_class = (GstPushSrcClass *) klass;
+  element_class = (GstElementClass *) klass;
 
   gobject_class->set_property = gst_vcdsrc_set_property;
   gobject_class->get_property = gst_vcdsrc_get_property;
@@ -138,12 +113,19 @@ gst_vcdsrc_class_init (GstVCDSrcClass * klass)
 
   GST_DEBUG_CATEGORY_INIT (gst_vcdsrc_debug, "vcdsrc", 0,
       "VideoCD Source element");
+
+  gst_element_class_set_static_metadata (element_class, "VCD Source",
+      "Source/File",
+      "Asynchronous read from VCD disk", "Erik Walthinsen <omega@cse.ogi.edu>");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&srctemplate));
 }
 
 static void
-gst_vcdsrc_init (GstVCDSrc * vcdsrc, GstVCDSrcClass * klass)
+gst_vcdsrc_init (GstVCDSrc * vcdsrc)
 {
-  vcdsrc->device = g_strdup ("/dev/cdrom");
+  vcdsrc->device = g_strdup (DEFAULT_DEVICE);
   vcdsrc->track = 1;
   vcdsrc->fd = 0;
   vcdsrc->trackoffset = 0;
@@ -319,6 +301,7 @@ gst_vcdsrc_create (GstPushSrc * src, GstBuffer ** buf)
 {
   GstVCDSrc *vcdsrc;
   GstBuffer *outbuf;
+  GstMapInfo map_info;
   gulong offset;
   struct cdrom_msf *msf;
   gint error_count = 0;
@@ -330,8 +313,15 @@ gst_vcdsrc_create (GstPushSrc * src, GstBuffer ** buf)
     goto eos;
 
   /* create the buffer */
-  outbuf = gst_buffer_new_and_alloc (vcdsrc->bytes_per_read);
-  msf = (struct cdrom_msf *) GST_BUFFER_DATA (outbuf);
+  outbuf = gst_buffer_new_allocate (NULL, vcdsrc->bytes_per_read, NULL);
+  if (!outbuf)
+    goto error_unmapped;
+
+  if (!gst_buffer_map (outbuf, &map_info, GST_MAP_READWRITE))
+    goto error_unmapped;
+
+  msf = (struct cdrom_msf *) map_info.data;
+
 
 read:
   /* read it in from the device */
@@ -353,21 +343,26 @@ read:
         ("Read from cdrom at %d:%d:%d failed: %s",
             msf->cdmsf_min0, msf->cdmsf_sec0, msf->cdmsf_frame0,
             strerror (errno)));
-    return GST_FLOW_ERROR;
+    goto error_mapped;
   }
 
-  GST_BUFFER_SIZE (outbuf) = vcdsrc->bytes_per_read;
+  gst_buffer_unmap (outbuf, &map_info);
   vcdsrc->curoffset += 1;
 
   *buf = outbuf;
-
   return GST_FLOW_OK;
 
   /* ERRORS */
+error_mapped:
+  gst_buffer_unmap (outbuf, &map_info);
+error_unmapped:
+  if (outbuf)
+    gst_buffer_unref (outbuf);
+  return GST_FLOW_ERROR;
 eos:
   {
     GST_DEBUG_OBJECT (vcdsrc, "got eos");
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 }
 
@@ -377,11 +372,23 @@ gst_vcdsrc_start (GstBaseSrc * bsrc)
 {
   int i;
   GstVCDSrc *src = GST_VCDSRC (bsrc);
+  struct stat buf;
 
   /* open the device */
   src->fd = open (src->device, O_RDONLY);
   if (src->fd < 0)
     goto open_failed;
+
+  if (fstat (src->fd, &buf) < 0)
+    goto toc_failed;
+  /* If it's not a block device, then we need to try and
+   * parse the cue file if there is one
+   * FIXME implement */
+  if (!S_ISBLK (buf.st_mode)) {
+    GST_DEBUG ("Reading CUE files not handled yet, cannot process %s",
+        GST_STR_NULL (src->device));
+    goto toc_failed;
+  }
 
   /* read the table of contents */
   if (ioctl (src->fd, CDROMREADTOCHDR, &src->tochdr))
@@ -453,21 +460,21 @@ gst_vcdsrc_stop (GstBaseSrc * bsrc)
  * URI interface.
  */
 
-static guint
-gst_vcdsrc_uri_get_type (void)
+static GstURIType
+gst_vcdsrc_uri_get_type (GType type)
 {
   return GST_URI_SRC;
 }
 
-static gchar **
-gst_vcdsrc_uri_get_protocols (void)
+static const gchar *const *
+gst_vcdsrc_uri_get_protocols (GType type)
 {
-  static gchar *protocols[] = { "vcd", NULL };
+  static const gchar *protocols[] = { "vcd", NULL };
 
   return protocols;
 }
 
-static const gchar *
+static gchar *
 gst_vcdsrc_uri_get_uri (GstURIHandler * handler)
 {
   GstVCDSrc *src = GST_VCDSRC (handler);
@@ -481,22 +488,17 @@ gst_vcdsrc_uri_get_uri (GstURIHandler * handler)
 }
 
 static gboolean
-gst_vcdsrc_uri_set_uri (GstURIHandler * handler, const gchar * uri)
+gst_vcdsrc_uri_set_uri (GstURIHandler * handler, const gchar * uri,
+    GError ** error)
 {
   GstVCDSrc *src = GST_VCDSRC (handler);
-  gchar *protocol;
   gchar *location = NULL;
   gint tracknr;
 
   GST_DEBUG_OBJECT (src, "setting uri '%s'", uri);
 
-  protocol = gst_uri_get_protocol (uri);
-
-  if (protocol == NULL || strcmp (protocol, "vcd"))
+  if (!gst_uri_has_protocol (uri, "vcd"))
     goto wrong_protocol;
-
-  GST_DEBUG_OBJECT (src, "have protocol '%s'", protocol);
-  g_free (protocol);
 
   /* parse out the track in the location */
   if (!(location = gst_uri_get_location (uri)))
@@ -504,16 +506,32 @@ gst_vcdsrc_uri_set_uri (GstURIHandler * handler, const gchar * uri)
 
   GST_DEBUG_OBJECT (src, "have location '%s'", location);
 
-  if (*location == '\0') {
-    /* empty location selects track 1 */
-    tracknr = 1;
-  } else {
-    /* scan the track number */
-    if (sscanf (location, "%d", &tracknr) != 1)
-      goto invalid_location;
+  /*
+   * URI structure: vcd:///path/to/device,track-num
+   */
+  if (g_str_has_prefix (uri, "vcd://")) {
+    GST_OBJECT_LOCK (src);
+    g_free (src->device);
+    if (strlen (uri) > 6)
+      src->device = g_strdup (uri + 6);
+    else
+      src->device = g_strdup (DEFAULT_DEVICE);
+    GST_DEBUG_OBJECT (src, "configured device %s", src->device);
+    GST_OBJECT_UNLOCK (src);
+  }
 
-    if (tracknr < 1)
+  /* Parse the track number */
+  {
+    char **split;
+
+    split = g_strsplit (location, ",", 2);
+    if (split == NULL || *split == NULL || split[1] == NULL) {
+      tracknr = 1;
+    } else if (sscanf (split[1], "%d", &tracknr) != 1 || tracknr < 1) {
+      g_strfreev (split);
       goto invalid_location;
+    }
+    g_strfreev (split);
   }
 
   GST_OBJECT_LOCK (src);
@@ -528,19 +546,23 @@ gst_vcdsrc_uri_set_uri (GstURIHandler * handler, const gchar * uri)
   /* ERRORS */
 wrong_protocol:
   {
-    GST_ERROR_OBJECT (src, "wrong protocol %s specified",
-        GST_STR_NULL (protocol));
-    g_free (protocol);
+    GST_ERROR_OBJECT (src, "Wrong protocol, uri = %s", uri);
+    g_set_error (error, GST_URI_ERROR, GST_URI_ERROR_UNSUPPORTED_PROTOCOL,
+        "Wrong protocol, uri = %s", uri);
     return FALSE;
   }
 no_location:
   {
-    GST_ERROR_OBJECT (src, "no location specified");
+    GST_ERROR_OBJECT (src, "No location specified");
+    g_set_error_literal (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI,
+        "No location specified");
     return FALSE;
   }
 invalid_location:
   {
-    GST_ERROR_OBJECT (src, "Invalid location %s in URI '%s'", location, uri);
+    GST_ERROR_OBJECT (src, "Invalid location '%s' in URI '%s'", location, uri);
+    g_set_error (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI,
+        "Invalid location '%s' in URI '%s'", location, uri);
     g_free (location);
     return FALSE;
   }
@@ -560,12 +582,12 @@ gst_vcdsrc_uri_handler_init (gpointer g_iface, gpointer iface_data)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  return gst_element_register (plugin, "vcdsrc", GST_RANK_NONE,
+  return gst_element_register (plugin, "vcdsrc", GST_RANK_SECONDARY,
       GST_TYPE_VCDSRC);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "vcdsrc",
+    vcdsrc,
     "Asynchronous read from VCD disk",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

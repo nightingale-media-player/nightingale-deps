@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -100,7 +100,7 @@ extern float step_size_inverse[8];
 
 
 
-extern void siren_init();
+extern void siren_init(void);
 extern int categorize_regions(int number_of_regions, int number_of_available_bits, int *absolute_region_power_index, int *power_categories, int *category_balance);
 extern int GetSirenCodecInfo(int flag, int sample_rate, int *number_of_coefs, int *sample_rate_bits, int *rate_control_bits, int *rate_control_possibilities, int *checksum_bits, int *esf_adjustment, int *scale_factor, int *number_of_regions, int *sample_rate_code, int *bits_per_frame );
 

@@ -1,0 +1,504 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstDeviceMonitor: GStreamer 1.0 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="gstreamer-device-probing.html" title="GStreamer Device Discovery and Device Probing">
+<link rel="prev" href="gstreamer-device-probing.html" title="GStreamer Device Discovery and Device Probing">
+<link rel="next" href="gstreamer-GstDevice.html" title="GstDevice">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-GstDeviceMonitor.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-device-probing.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-device-probing.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-GstDevice.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gstreamer-GstDeviceMonitor"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-GstDeviceMonitor.top_of_page"></a>GstDeviceMonitor</span></h2>
+<p>GstDeviceMonitor — A device monitor and prober</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="returnvalue">GstDeviceMonitor</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-new" title="gst_device_monitor_new ()">gst_device_monitor_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstBus.html" title="GstBus"><span class="returnvalue">GstBus</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-get-bus" title="gst_device_monitor_get_bus ()">gst_device_monitor_get_bus</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-add-filter" title="gst_device_monitor_add_filter ()">gst_device_monitor_add_filter</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-remove-filter" title="gst_device_monitor_remove_filter ()">gst_device_monitor_remove_filter</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-start" title="gst_device_monitor_start ()">gst_device_monitor_start</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-stop" title="gst_device_monitor_stop ()">gst_device_monitor_stop</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-get-devices" title="gst_device_monitor_get_devices ()">gst_device_monitor_get_devices</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor">GstDeviceMonitor</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitorClass" title="struct GstDeviceMonitorClass">GstDeviceMonitorClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.description"></a><h2>Description</h2>
+<p>Applications should create a <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> when they want
+to probe, list and monitor devices of a specific type. The
+<a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> will create the appropriate
+<a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> objects and manage them. It will then post
+messages on its <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> for devices that have been added and
+removed.</p>
+<p>The device monitor will monitor all devices matching the filters that
+the application has set.</p>
+<p>The basic use pattern of a device monitor is as follows:</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> gboolean
+<span class="function">my_bus_func</span> <span class="gtkdoc opt">(</span>GstBus <span class="gtkdoc opt">*</span> bus<span class="gtkdoc opt">,</span> GstMessage <span class="gtkdoc opt">*</span> message<span class="gtkdoc opt">,</span> gpointer user_data<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+   GstDevice <span class="gtkdoc opt">*</span>device<span class="gtkdoc opt">;</span>
+   gchar <span class="gtkdoc opt">*</span>name<span class="gtkdoc opt">;</span>
+
+   <span class="keyword">switch</span> <span class="gtkdoc opt">(</span><span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#GST-MESSAGE-TYPE:CAPS">GST_MESSAGE_TYPE</a></span> <span class="gtkdoc opt">(</span>message<span class="gtkdoc opt">)) {</span>
+     <span class="keyword">case</span> GST_MESSAGE_DEVICE_ADDED<span class="gtkdoc opt">:</span>
+       <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-parse-device-added">gst_message_parse_device_added</a></span> <span class="gtkdoc opt">(</span>message<span class="gtkdoc opt">, &amp;</span>device<span class="gtkdoc opt">);</span>
+       name <span class="gtkdoc opt">=</span> <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDevice.html#gst-device-get-display-name">gst_device_get_display_name</a></span> <span class="gtkdoc opt">(</span>device<span class="gtkdoc opt">);</span>
+       <span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="gtkdoc opt">(</span><span class="string">&quot;Device added: %s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> name<span class="gtkdoc opt">);</span>
+       <span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>name<span class="gtkdoc opt">);</span>
+       <span class="keyword">break</span><span class="gtkdoc opt">;</span>
+     <span class="keyword">case</span> GST_MESSAGE_DEVICE_REMOVED<span class="gtkdoc opt">:</span>
+       <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-parse-device-removed">gst_message_parse_device_removed</a></span> <span class="gtkdoc opt">(</span>message<span class="gtkdoc opt">, &amp;</span>device<span class="gtkdoc opt">);</span>
+       name <span class="gtkdoc opt">=</span> <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDevice.html#gst-device-get-display-name">gst_device_get_display_name</a></span> <span class="gtkdoc opt">(</span>device<span class="gtkdoc opt">);</span>
+       <span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="gtkdoc opt">(</span><span class="string">&quot;Device removed: %s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> name<span class="gtkdoc opt">);</span>
+       <span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>name<span class="gtkdoc opt">);</span>
+       <span class="keyword">break</span><span class="gtkdoc opt">;</span>
+     <span class="keyword">default</span><span class="gtkdoc opt">:</span>
+       <span class="keyword">break</span><span class="gtkdoc opt">;</span>
+   <span class="gtkdoc opt">}</span>
+
+   <span class="keyword">return</span> G_SOURCE_CONTINUE<span class="gtkdoc opt">;</span>
+<span class="gtkdoc opt">}</span>
+
+GstDeviceMonitor <span class="gtkdoc opt">*</span>
+<span class="function">setup_raw_video_source_device_monitor</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">) {</span>
+   GstDeviceMonitor <span class="gtkdoc opt">*</span>monitor<span class="gtkdoc opt">;</span>
+   GstBus <span class="gtkdoc opt">*</span>bus<span class="gtkdoc opt">;</span>
+   GstCaps <span class="gtkdoc opt">*</span>caps<span class="gtkdoc opt">;</span>
+
+   monitor <span class="gtkdoc opt">=</span> <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDeviceMonitor.html#gst-device-monitor-new">gst_device_monitor_new</a></span> <span class="gtkdoc opt">();</span>
+
+   bus <span class="gtkdoc opt">=</span> <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDeviceMonitor.html#gst-device-monitor-get-bus">gst_device_monitor_get_bus</a></span> <span class="gtkdoc opt">(</span>monitor<span class="gtkdoc opt">);</span>
+   <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBus.html#gst-bus-add-watch">gst_bus_add_watch</a></span> <span class="gtkdoc opt">(</span>bus<span class="gtkdoc opt">,</span> my_bus_func<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
+   <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html#gst-object-unref">gst_object_unref</a></span> <span class="gtkdoc opt">(</span>bus<span class="gtkdoc opt">);</span>
+
+   caps <span class="gtkdoc opt">=</span> <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html#gst-caps-new-empty-simple">gst_caps_new_empty_simple</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;video/x-raw&quot;</span><span class="gtkdoc opt">);</span>
+   <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDeviceMonitor.html#gst-device-monitor-add-filter">gst_device_monitor_add_filter</a></span> <span class="gtkdoc opt">(</span>monitor<span class="gtkdoc opt">,</span> <span class="string">&quot;Video/Source&quot;</span><span class="gtkdoc opt">,</span> caps<span class="gtkdoc opt">);</span>
+   <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html#gst-caps-unref">gst_caps_unref</a></span> <span class="gtkdoc opt">(</span>caps<span class="gtkdoc opt">);</span>
+
+   <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstDeviceMonitor.html#gst-device-monitor-start">gst_device_monitor_start</a></span> <span class="gtkdoc opt">(</span>monitor<span class="gtkdoc opt">);</span>
+
+   <span class="keyword">return</span> monitor<span class="gtkdoc opt">;</span>
+<span class="gtkdoc opt">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-device-monitor-new"></a><h3>gst_device_monitor_new ()</h3>
+<pre class="programlisting"><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="returnvalue">GstDeviceMonitor</span></a> *
+gst_device_monitor_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Create a new <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a></p>
+<div class="refsect3">
+<a name="id-1.4.2.7.2.5"></a><h4>Returns</h4>
+<p> a new device monitor. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-get-bus"></a><h3>gst_device_monitor_get_bus ()</h3>
+<pre class="programlisting"><a class="link" href="GstBus.html" title="GstBus"><span class="returnvalue">GstBus</span></a> *
+gst_device_monitor_get_bus (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>);</pre>
+<p>Gets the <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> of this <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a></p>
+<div class="refsect3">
+<a name="id-1.4.2.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.2.7.3.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-add-filter"></a><h3>gst_device_monitor_add_filter ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_device_monitor_add_filter (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *classes</code></em>,
+                               <em class="parameter"><code><a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>);</pre>
+<p>Adds a filter for which <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> will be monitored, any device that matches
+all classes and the <a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> will be returned.</p>
+<p>Filters must be added before the <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> is started.</p>
+<div class="refsect3">
+<a name="id-1.4.2.7.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>a device monitor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>classes</p></td>
+<td class="parameter_description"><p> device classes to use as filter or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for any class. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p> the <a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a> to filter or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for ANY. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.2.7.4.7"></a><h4>Returns</h4>
+<p> The id of the new filter or 0 if no provider matched the filter's
+classes.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-remove-filter"></a><h3>gst_device_monitor_remove_filter ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_device_monitor_remove_filter (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>,
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> filter_id</code></em>);</pre>
+<p>Removes a filter from the <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> using the id that was returned
+by <a class="link" href="gstreamer-GstDeviceMonitor.html#gst-device-monitor-add-filter" title="gst_device_monitor_add_filter ()"><code class="function">gst_device_monitor_add_filter()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.4.2.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>a device monitor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>filter_id</p></td>
+<td class="parameter_description"><p>the id of the filter</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.2.7.5.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> of the filter id was valid, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-start"></a><h3>gst_device_monitor_start ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_device_monitor_start (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>);</pre>
+<p>Starts monitoring the devices, one this has succeeded, the
+<a class="link" href="GstMessage.html#GST-MESSAGE-DEVICE-ADDED:CAPS"><code class="literal">GST_MESSAGE_DEVICE_ADDED</code></a> and <a class="link" href="GstMessage.html#GST-MESSAGE-DEVICE-REMOVED:CAPS"><code class="literal">GST_MESSAGE_DEVICE_REMOVED</code></a> messages
+will be emitted on the bus when the list of devices changes.</p>
+<div class="refsect3">
+<a name="id-1.4.2.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.2.7.6.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the device monitoring could be started</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-stop"></a><h3>gst_device_monitor_stop ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_monitor_stop (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>);</pre>
+<p>Stops monitoring the devices.</p>
+<div class="refsect3">
+<a name="id-1.4.2.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-monitor-get-devices"></a><h3>gst_device_monitor_get_devices ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+gst_device_monitor_get_devices (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> *monitor</code></em>);</pre>
+<p>Gets a list of devices from all of the relevant monitors. This may actually
+probe the hardware if the monitor is not currently started.</p>
+<div class="refsect3">
+<a name="id-1.4.2.7.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>monitor</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.2.7.8.6"></a><h4>Returns</h4>
+<p> a <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of
+<a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstDevice]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstDeviceMonitor"></a><h3>struct GstDeviceMonitor</h3>
+<pre class="programlisting">struct GstDeviceMonitor {
+  GstObject                parent;
+};
+</pre>
+<p>Opaque device monitor object structure.</p>
+<div class="refsect3">
+<a name="id-1.4.2.8.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody><tr>
+<td class="struct_member_name"><p><a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> <em class="structfield"><code><a name="GstDeviceMonitor.parent"></a>parent</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent <a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> structure</p></td>
+<td class="struct_member_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstDeviceMonitorClass"></a><h3>struct GstDeviceMonitorClass</h3>
+<pre class="programlisting">struct GstDeviceMonitorClass {
+  GstObjectClass           parent_class;
+};
+</pre>
+<p>Opaque device monitor class structure.</p>
+<div class="refsect3">
+<a name="id-1.4.2.8.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody><tr>
+<td class="struct_member_name"><p><a class="link" href="GstObject.html#GstObjectClass" title="struct GstObjectClass"><span class="type">GstObjectClass</span></a> <em class="structfield"><code><a name="GstDeviceMonitorClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent <a class="link" href="GstObject.html#GstObjectClass" title="struct GstObjectClass"><span class="type">GstObjectClass</span></a> structure</p></td>
+<td class="struct_member_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceMonitor.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>, <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

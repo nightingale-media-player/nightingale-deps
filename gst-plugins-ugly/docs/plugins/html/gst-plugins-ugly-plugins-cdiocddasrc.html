@@ -2,154 +2,95 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>cdiocddasrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<title>cdiocddasrc: GStreamer Ugly Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="gst-plugins-ugly-plugins-amrwbdec.html" title="amrwbdec">
-<link rel="next" href="gst-plugins-ugly-plugins-lame.html" title="lame">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-ugly-plugins-lamemp3enc.html" title="lamemp3enc">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-ugly-plugins-amrwbdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-ugly-plugins-lame.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-ugly-plugins-cdiocddasrc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-cdiocddasrc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-cdiocddasrc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-amrwbdec.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-lamemp3enc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-cdiocddasrc.top_of_page"></a>cdiocddasrc</span></h2>
-<p>cdiocddasrc — Reads raw audio from an Audio CD</p>
+<p>cdiocddasrc</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-ugly-plugins-cdiocddasrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstCdioCddaSrc"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc-struct" title="GstCdioCddaSrc">GstCdioCddaSrc</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-cdiocddasrc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed" title="The “read-speed” property">read-speed</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<a name="GstCdioCddaSrc"></a><div class="refsect1">
+<a name="gst-plugins-ugly-plugins-cdiocddasrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc-struct" title="struct GstCdioCddaSrc">GstCdioCddaSrc</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-libs-0.10/GstBaseSrc.html"
->GstBaseSrc</a>
-                     +----<a
-href="../gstreamer-libs-0.10/GstPushSrc.html"
->GstPushSrc</a>
-                           +----<a
-href="../gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstcddabasesrc.html#GstCddaBaseSrc"
->GstCddaBaseSrc</a>
-                                 +----GstCdioCddaSrc
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiocdsrc.html#GstAudioCdSrc">GstAudioCdSrc</a>
+                            <span class="lineart">╰──</span> GstCdioCddaSrc
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstCdioCddaSrc implements
- <a
-href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
->GstURIHandler</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>.</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-ugly-plugins-cdiocddasrc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed" title='The "read-speed" property'>read-speed</a>"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2961201"></a><h3>Example launch line</h3>
-<p>
-cdiocddasrc reads and extracts raw audio from Audio CDs. It can operate
-in one of two modes:
-</p>
-<div class="itemizedlist"><ul type="disc">
-<li><p>
-   treat each track as a separate stream, counting time from the start
-   of the track to the end of the track and posting EOS at the end of
-   a track, or
- </p></li>
-<li><p>
-   treat the entire disc as one stream, counting time from the start of
-   the first track to the end of the last track, posting EOS only at
-   the end of the last track.
- </p></li>
-</ul></div>
-<p>
-</p>
-<p>
-With a recent-enough version of libcdio, the element will extract
-CD-TEXT if this is supported by the CD-drive and CD-TEXT information
-is available on the CD. The information will be posted on the bus in
-form of a tag message.
-</p>
-<p>
-When opened, the element will also calculate a CDDB disc ID and a
-MusicBrainz disc ID, which applications can use to query online
-databases for artist/title information. These disc IDs will also be
-posted on the bus as part of the tag messages.
-</p>
-<p>
-cdiocddasrc supports the GstUriHandler interface, so applications can use
-playbin with cdda://&lt;track-number&gt; URIs for playback (they will have
-to connect to playbin's notify::source signal and set the device on the
-cd source in the notify callback if they want to set the device property).
-Applications should use seeks in "track" format to switch between different
-tracks of the same CD (passing a new cdda:// URI to playbin involves opening
-and closing the CD device, which is much slower).
-</p>
-<p>
-</p>
-<pre class="programlisting">
-gst-launch cdiocddasrc track=5 device=/dev/cdrom ! audioconvert ! vorbisenc ! oggmux ! filesink location=track5.ogg
-</pre>
-<p>
-This pipeline extracts track 5 of the audio CD and encodes it into an
-Ogg/Vorbis file.
-</p>
-</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2961276"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.6.8.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -169,10 +110,13 @@ Ogg/Vorbis file.
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2954647"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.6.8.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -188,43 +132,37 @@ Ogg/Vorbis file.
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)44100, channels=(int)2</td>
+<td>audio/x-raw, format=(string)S16LE, layout=(string)interleaved, rate=(int)44100, channels=(int)2</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-ugly-plugins-cdiocddasrc.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstCdioCddaSrc-struct"></a><h3>GstCdioCddaSrc</h3>
-<pre class="programlisting">typedef struct _GstCdioCddaSrc GstCdioCddaSrc;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-cdiocddasrc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-cdiocddasrc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstCdioCddaSrc-struct"></a><h3>struct GstCdioCddaSrc</h3>
+<pre class="programlisting">struct GstCdioCddaSrc;</pre>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-cdiocddasrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstCdioCddaSrc--read-speed"></a><h3>The <code class="literal">"read-speed"</code> property</h3>
-<pre class="programlisting">  "read-speed"               <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstCdioCddaSrc--read-speed"></a><h3>The <code class="literal">“read-speed”</code> property</h3>
+<pre class="programlisting">  “read-speed”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Read from device at the specified speed (-1 = default).</p>
-<p>Allowed values: [-1,100]</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [G_MAXULONG,100]</p>
 <p>Default value: -1</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-ugly-plugins-cdiocddasrc.see-also"></a><h2>See Also</h2>
-GstCdParanoiaSrc, GstCddaBaseSrc
-</div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

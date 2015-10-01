@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ismlmux: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-interleave.html" title="interleave">
+<link rel="next" href="gst-plugins-good-plugins-jackaudiosink.html" title="jackaudiosink">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ismlmux.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ismlmux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ismlmux.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ismlmux.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-interleave.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-jackaudiosink.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-ismlmux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-ismlmux.top_of_page"></a>ismlmux</span></h2>
+<p>ismlmux — Muxer for ISML smooth streaming (.isml) files</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">GstQTMuxDtsMethods</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--dts-method" title="The “dts-method” property">dts-method</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--faststart" title="The “faststart” property">faststart</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--faststart-file" title="The “faststart-file” property">faststart-file</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--fragment-duration" title="The “fragment-duration” property">fragment-duration</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--moov-recovery-file" title="The “moov-recovery-file” property">moov-recovery-file</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--movie-timescale" title="The “movie-timescale” property">movie-timescale</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--presentation-time" title="The “presentation-time” property">presentation-time</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--streamable" title="The “streamable” property">streamable</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--trak-timescale" title="The “trak-timescale” property">trak-timescale</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--reserved-bytes-per-sec" title="The “reserved-bytes-per-sec” property">reserved-bytes-per-sec</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--reserved-duration-remaining" title="The “reserved-duration-remaining” property">reserved-duration-remaining</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--reserved-max-duration" title="The “reserved-max-duration” property">reserved-max-duration</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--reserved-moov-update-period" title="The “reserved-moov-update-period” property">reserved-moov-update-period</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstISMLMux"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux-struct" title="GstISMLMux">GstISMLMux</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstISMLMux
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstISMLMux implements
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagSetter.html">GstTagSetter</a> and  GstTagXmpWriter.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.description"></a><h2>Description</h2>
+<p>This element merges streams (audio and video) into MJ2 (.mj2) files.</p>
+<p>The following background intends to explain why various similar muxers
+are present in this plugin.</p>
+<p>The <a class="ulink" href="http://www.apple.com/quicktime/resources/qtfileformat.pdf" target="_top">
+QuickTime file format specification</a> served as basis for the MP4 file
+format specification (mp4mux), and as such the QuickTime file structure is
+nearly identical to the so-called ISO Base Media file format defined in
+ISO 14496-12 (except for some media specific parts).
+In turn, the latter ISO Base Media format was further specialized as a
+Motion JPEG-2000 file format in ISO 15444-3 (mj2mux)
+and in various 3GPP(2) specs (3gppmux).
+The fragmented file features defined (only) in ISO Base Media are used by
+ISMV files making up (a.o.) Smooth Streaming (ismlmux).</p>
+<p>A few properties (<a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--movie-timescale" title="The “movie-timescale” property"><span class="type">“movie-timescale”</span></a>, <a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--trak-timescale" title="The “trak-timescale” property"><span class="type">“trak-timescale”</span></a>)
+allow adjusting some technical parameters, which might be useful in (rare)
+cases to resolve compatibility issues in some situations.</p>
+<p>Some other properties influence the result more fundamentally.
+A typical mov/mp4 file's metadata (aka moov) is located at the end of the file,
+somewhat contrary to this usually being called "the header". However, a
+<a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--faststart" title="The “faststart” property"><span class="type">“faststart”</span></a> file will (with some effort) arrange this to be located
+near start of the file, which then allows it e.g. to be played while
+downloading. Alternatively, rather than having one chunk of metadata at start
+(or end), there can be some metadata at start and most of the other data can
+be spread out into fragments of <a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--fragment-duration" title="The “fragment-duration” property"><span class="type">“fragment-duration”</span></a>. If such
+fragmented layout is intended for streaming purposes, then
+<a class="link" href="gst-plugins-good-plugins-ismlmux.html#GstISMLMux--streamable" title="The “streamable” property"><span class="type">“streamable”</span></a> allows foregoing to add index metadata (at the end of
+file).</p>
+<div class="refsect2">
+<a name="id-1.2.71.8.7"></a><h3>Example pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> v4l2src num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">50</span> <span class="gtkdoc opt">!</span> queue <span class="gtkdoc opt">!</span> jp2kenc <span class="gtkdoc opt">!</span> mj2mux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>video<span class="gtkdoc opt">.</span>mj2</pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Records a video stream captured from a v4l2 device, encodes it into JPEG-2000
+and muxes it into an mj2 file.
+</div>
+<p>Documentation last reviewed on 2011-04-21</p>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.71.8.9.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-isomp4.html#plugin-isomp4">isomp4</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Thiago Sousa Santos &lt;thiagoss@embedded.ufcg.edu.br&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Muxer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.71.8.9.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/mpeg, mpegversion=(int)1, layer=(int)3, channels=(int)[ 1, 2 ], rate=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)4, stream-format=(string)raw, channels=(int)[ 1, 8 ], rate=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpeg, mpegversion=(int)4, systemstream=(boolean)false, width=(int)[ 16, 2147483647 ], height=(int)[ 16, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-divx, divxversion=(int)5, width=(int)[ 16, 2147483647 ], height=(int)[ 16, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-h264, stream-format=(string)avc, alignment=(string)au, width=(int)[ 16, 2147483647 ], height=(int)[ 16, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/quicktime, variant=(string)iso-fragmented</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstISMLMux-struct"></a><h3>GstISMLMux</h3>
+<pre class="programlisting">typedef struct _GstISMLMux GstISMLMux;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ismlmux.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstISMLMux--dts-method"></a><h3>The <code class="literal">“dts-method”</code> property</h3>
+<pre class="programlisting">  “dts-method”               <span class="type">GstQTMuxDtsMethods</span></pre>
+<p>Method to determine DTS time (DEPRECATED).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: reorder</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--faststart"></a><h3>The <code class="literal">“faststart”</code> property</h3>
+<pre class="programlisting">  “faststart”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>If the file should be formatted for faststart (headers first).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--faststart-file"></a><h3>The <code class="literal">“faststart-file”</code> property</h3>
+<pre class="programlisting">  “faststart-file”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>File that will be used temporarily to store data from the stream when creating a faststart file. If null a filepath will be created automatically.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--fragment-duration"></a><h3>The <code class="literal">“fragment-duration”</code> property</h3>
+<pre class="programlisting">  “fragment-duration”        <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Fragment durations in ms (produce a fragmented file if &gt; 0).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: 2000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--moov-recovery-file"></a><h3>The <code class="literal">“moov-recovery-file”</code> property</h3>
+<pre class="programlisting">  “moov-recovery-file”       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>File to be used to store data for moov atom making movie file recovery possible in case of a crash during muxing. Null for disabled. (Experimental).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--movie-timescale"></a><h3>The <code class="literal">“movie-timescale”</code> property</h3>
+<pre class="programlisting">  “movie-timescale”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Timescale to use in the movie (units per second).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Allowed values: &gt;= 1</p>
+<p>Default value: 1800</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--presentation-time"></a><h3>The <code class="literal">“presentation-time”</code> property</h3>
+<pre class="programlisting">  “presentation-time”        <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Calculate and include presentation/composition time (in addition to decoding time).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--streamable"></a><h3>The <code class="literal">“streamable”</code> property</h3>
+<pre class="programlisting">  “streamable”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>If set to true, the output should be as if it is to be streamed and hence no indexes written or duration written.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--trak-timescale"></a><h3>The <code class="literal">“trak-timescale”</code> property</h3>
+<pre class="programlisting">  “trak-timescale”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Timescale to use for the tracks (units per second, 0 is automatic).</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--reserved-bytes-per-sec"></a><h3>The <code class="literal">“reserved-bytes-per-sec”</code> property</h3>
+<pre class="programlisting">  “reserved-bytes-per-sec”   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Multiplier for converting reserved-max-duration into bytes of header to reserve, per second, per track.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Allowed values: &lt;= 10000</p>
+<p>Default value: 550</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--reserved-duration-remaining"></a><h3>The <code class="literal">“reserved-duration-remaining”</code> property</h3>
+<pre class="programlisting">  “reserved-duration-remaining” <span class="type">guint64</span></pre>
+<p>Reports the approximate amount of remaining moov header space reserved using reserved-max-duration.</p>
+<p>Flags: Read</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--reserved-max-duration"></a><h3>The <code class="literal">“reserved-max-duration”</code> property</h3>
+<pre class="programlisting">  “reserved-max-duration”    <span class="type">guint64</span></pre>
+<p>When set to a value &gt; 0, reserves space for index tables at the beginning of the file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 18446744073709551615</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstISMLMux--reserved-moov-update-period"></a><h3>The <code class="literal">“reserved-moov-update-period”</code> property</h3>
+<pre class="programlisting">  “reserved-moov-update-period” <span class="type">guint64</span></pre>
+<p>When used with reserved-max-duration, periodically updates the index tables with information muxed so far.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 18446744073709551615</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

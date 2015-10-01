@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_MP4G_DEPAY_H__
@@ -22,7 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,13 +42,14 @@ typedef struct _GstRtpMP4GDepayClass GstRtpMP4GDepayClass;
 
 struct _GstRtpMP4GDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 
   gint profile_level_id;
   gint streamtype;
 
   gint constantSize;
   gint constantDuration;
+  gint maxDisplacement;
 
   gint sizelength;
   gint indexlength;
@@ -64,6 +65,7 @@ struct _GstRtpMP4GDepay
   guint last_AU_index;
   guint next_AU_index;
   guint32 prev_rtptime;
+  guint prev_AU_num;
 
   GQueue *packets;
   
@@ -72,8 +74,10 @@ struct _GstRtpMP4GDepay
 
 struct _GstRtpMP4GDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_mp4g_depay_get_type (void);
 
 gboolean gst_rtp_mp4g_depay_plugin_init (GstPlugin * plugin);
 

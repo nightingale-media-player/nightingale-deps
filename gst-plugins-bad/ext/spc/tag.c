@@ -12,19 +12,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
-
-#include <glib/gstring.h>
-#include <glib/gtypes.h>
-#include <glib/gmem.h>
-#include <glib/gprintf.h>
 
 #include <tag.h>
 #include <string.h>
 #include <stdlib.h>
-
 
 #define EXTENDED_OFFSET 0x10200
 #define EXTENDED_MAGIC ((guint32) ('x' << 0 | 'i' << 8 | 'd' << 16 | '6' << 24))

@@ -1,6 +1,7 @@
 /* GStreamer
  * Copyright (C) 2005 Andy Wingo <wingo@pobox.com>
  *               2006 Joni Valtanen <joni.valtanen@movial.fi>
+ * Copyright (C) 2012 Collabora Ltd. <tim.muller@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -14,35 +15,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_NET_TIME_PROVIDER_H__
 #define __GST_NET_TIME_PROVIDER_H__
 
-/* to determinate os */
-#include <glib.h>
-
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-
-#ifdef G_OS_WIN32
-#include <winsock2.h>
-#else
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#endif
-
-#include <fcntl.h>
 
 #define GST_TYPE_NET_TIME_PROVIDER \
   (gst_net_time_provider_get_type())
@@ -59,10 +42,8 @@ typedef struct _GstNetTimeProvider GstNetTimeProvider;
 typedef struct _GstNetTimeProviderClass GstNetTimeProviderClass;
 typedef struct _GstNetTimeProviderPrivate GstNetTimeProviderPrivate;
 
-
 /**
  * GstNetTimeProvider:
- * @parent: the parent object structure.
  *
  * Opaque #GstNetTimeProvider structure.
  */
@@ -70,34 +51,20 @@ struct _GstNetTimeProvider {
   GstObject parent;
 
   /*< private >*/
-  gchar *address;
-  int port;
-
-  int sock;
-  int control_sock[2];
-
-  GThread *thread;
-
-  GstClock *clock;
-
-  union {
-    gpointer _gst_reserved1;
-    /* has to be a gint, we use atomic ops here */
-    gint active;
-  } active;
-
-  /*< private >*/
   GstNetTimeProviderPrivate *priv;
 
-  gpointer _gst_reserved[GST_PADDING - 2];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstNetTimeProviderClass {
   GstObjectClass parent_class;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
-GType			gst_net_time_provider_get_type	(void);
-GstNetTimeProvider*	gst_net_time_provider_new 	(GstClock *clock,
+GType                   gst_net_time_provider_get_type  (void);
+
+GstNetTimeProvider*     gst_net_time_provider_new       (GstClock *clock,
                                                          const gchar *address,
                                                          gint port);
 

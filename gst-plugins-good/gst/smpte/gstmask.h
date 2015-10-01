@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -56,7 +56,9 @@ void                    _gst_mask_register              (const GstMaskDefinition
 void                    _gst_mask_default_destroy       (GstMask *mask);
 
 const GList*            gst_mask_get_definitions        (void);
-GstMask*                gst_mask_factory_new            (gint type, gint bpp, gint width, gint height);
+GstMask*                gst_mask_factory_new            (gint type, gboolean invert, gint bpp, gint width, gint height);
 void                    gst_mask_destroy                (GstMask *mask);
+
+void _gst_barboxwipes_register (void);
 
 #endif /* __GST_MASK_H__ */

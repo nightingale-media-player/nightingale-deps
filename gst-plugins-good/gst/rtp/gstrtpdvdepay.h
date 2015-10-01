@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GSTRTPDVDEPAY_H__
 #define __GSTRTPDVDEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -41,13 +41,12 @@ typedef struct _GstRTPDVDepayClass GstRTPDVDepayClass;
 
 struct _GstRTPDVDepay
 {
-  GstBaseRTPDepayload parent;
+  GstRTPBaseDepayload parent;
 
   GstBuffer *acc;
   guint frame_size;
-  guint frame_nr;
   guint32 prev_ts;
-  gboolean have_header;
+  guint8 header_mask;
 
   gint width, height;
   gint rate_num, rate_denom;
@@ -55,10 +54,11 @@ struct _GstRTPDVDepay
 
 struct _GstRTPDVDepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
 
 GType gst_rtp_dv_depay_get_type (void);
+
 gboolean gst_rtp_dv_depay_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS

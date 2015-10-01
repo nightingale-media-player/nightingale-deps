@@ -14,11 +14,9 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
-
-/* TODO: liboil-ise code, esp. use _splat() family of functions */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -28,18 +26,23 @@
 #include "gstdvdsubparse.h"
 #include <string.h>
 
-GST_BOILERPLATE (GstDvdSubDec, gst_dvd_sub_dec, GstElement, GST_TYPE_ELEMENT);
+#define gst_dvd_sub_dec_parent_class parent_class
+G_DEFINE_TYPE (GstDvdSubDec, gst_dvd_sub_dec, GST_TYPE_ELEMENT);
 
-static gboolean gst_dvd_sub_dec_src_event (GstPad * srcpad, GstEvent * event);
-static GstFlowReturn gst_dvd_sub_dec_chain (GstPad * pad, GstBuffer * buf);
+static gboolean gst_dvd_sub_dec_src_event (GstPad * srcpad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_dvd_sub_dec_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
 
 static gboolean gst_dvd_sub_dec_handle_dvd_event (GstDvdSubDec * dec,
     GstEvent * event);
 static void gst_dvd_sub_dec_finalize (GObject * gobject);
 static void gst_setup_palette (GstDvdSubDec * dec);
-static void gst_dvd_sub_dec_merge_title (GstDvdSubDec * dec, GstBuffer * buf);
+static void gst_dvd_sub_dec_merge_title (GstDvdSubDec * dec,
+    GstVideoFrame * frame);
 static GstClockTime gst_dvd_sub_dec_get_event_delay (GstDvdSubDec * dec);
-static gboolean gst_dvd_sub_dec_sink_event (GstPad * pad, GstEvent * event);
+static gboolean gst_dvd_sub_dec_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 static gboolean gst_dvd_sub_dec_sink_setcaps (GstPad * pad, GstCaps * caps);
 
 static GstFlowReturn gst_send_subtitle_frame (GstDvdSubDec * dec,
@@ -48,19 +51,14 @@ static GstFlowReturn gst_send_subtitle_frame (GstDvdSubDec * dec,
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw-yuv, format = (fourcc) AYUV, "
-        "width = (int) 720, height = (int) 576, framerate = (fraction) 0/1; "
-        "video/x-raw-rgb, "
-        "width = (int) 720, height = (int) 576, framerate = (fraction) 0/1, "
-        "bpp = (int) 32, endianness = (int) 4321, red_mask = (int) 16711680, "
-        "green_mask = (int) 65280, blue_mask = (int) 255, "
-        " alpha_mask = (int) -16777216, depth = (int) 32")
+    GST_STATIC_CAPS ("video/x-raw, format = (string) { AYUV, ARGB },"
+        "width = (int) 720, height = (int) 576, framerate = (fraction) 0/1")
     );
 
 static GstStaticPadTemplate subtitle_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-dvd-subpicture")
+    GST_STATIC_CAPS ("subpicture/x-dvd")
     );
 
 GST_DEBUG_CATEGORY_STATIC (gst_dvd_sub_dec_debug);
@@ -101,33 +99,30 @@ typedef struct RLE_state
 RLE_state;
 
 static void
-gst_dvd_sub_dec_base_init (gpointer klass)
+gst_dvd_sub_dec_class_init (GstDvdSubDecClass * klass)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
 
-  gst_element_class_add_pad_template (element_class,
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+
+  gobject_class->finalize = gst_dvd_sub_dec_finalize;
+
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&subtitle_template));
 
-  gst_element_class_set_details_simple (element_class, "DVD subtitle decoder",
-      "Codec/Decoder/Video", "Decodes DVD subtitles into AYUV video frames",
+  gst_element_class_set_static_metadata (gstelement_class,
+      "DVD subtitle decoder", "Codec/Decoder/Video",
+      "Decodes DVD subtitles into AYUV video frames",
       "Wim Taymans <wim.taymans@gmail.com>, "
       "Jan Schmidt <thaytan@mad.scientist.com>");
 }
 
 static void
-gst_dvd_sub_dec_class_init (GstDvdSubDecClass * klass)
-{
-  GObjectClass *gobject_class;
-
-  gobject_class = (GObjectClass *) klass;
-
-  gobject_class->finalize = gst_dvd_sub_dec_finalize;
-}
-
-static void
-gst_dvd_sub_dec_init (GstDvdSubDec * dec, GstDvdSubDecClass * klass)
+gst_dvd_sub_dec_init (GstDvdSubDec * dec)
 {
   GstPadTemplate *tmpl;
 
@@ -137,7 +132,6 @@ gst_dvd_sub_dec_init (GstDvdSubDec * dec, GstDvdSubDecClass * klass)
   gst_pad_set_event_function (dec->sinkpad,
       GST_DEBUG_FUNCPTR (gst_dvd_sub_dec_sink_event));
   gst_element_add_pad (GST_ELEMENT (dec), dec->sinkpad);
-  gst_pad_set_setcaps_function (dec->sinkpad, gst_dvd_sub_dec_sink_setcaps);
 
   tmpl = gst_static_pad_template_get (&src_template);
   dec->srcpad = gst_pad_new_from_template (tmpl, "src");
@@ -164,7 +158,6 @@ gst_dvd_sub_dec_init (GstDvdSubDec * dec, GstDvdSubDecClass * klass)
   dec->next_ts = 0;
   dec->next_event_ts = GST_CLOCK_TIME_NONE;
 
-  dec->out_buffer = NULL;
   dec->buf_dirty = TRUE;
   dec->use_ARGB = FALSE;
 }
@@ -175,6 +168,7 @@ gst_dvd_sub_dec_finalize (GObject * gobject)
   GstDvdSubDec *dec = GST_DVD_SUB_DEC (gobject);
 
   if (dec->partialbuf) {
+    gst_buffer_unmap (dec->partialbuf, &dec->partialmap);
     gst_buffer_unref (dec->partialbuf);
     dec->partialbuf = NULL;
   }
@@ -183,31 +177,28 @@ gst_dvd_sub_dec_finalize (GObject * gobject)
 }
 
 static gboolean
-gst_dvd_sub_dec_src_event (GstPad * pad, GstEvent * event)
+gst_dvd_sub_dec_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstDvdSubDec *dec = GST_DVD_SUB_DEC (gst_pad_get_parent (pad));
   gboolean res = FALSE;
 
   switch (GST_EVENT_TYPE (event)) {
     default:
-      res = gst_pad_event_default (pad, event);
+      res = gst_pad_event_default (pad, parent, event);
       break;
   }
 
-  gst_object_unref (dec);
   return res;
 }
 
 static GstClockTime
 gst_dvd_sub_dec_get_event_delay (GstDvdSubDec * dec)
 {
-  guchar *start = GST_BUFFER_DATA (dec->partialbuf);
   guchar *buf;
   guint16 ticks;
   GstClockTime event_delay;
 
   /* If starting a new buffer, follow the first DCSQ ptr */
-  if (dec->parse_pos == start) {
+  if (dec->parse_pos == dec->partialmap.data) {
     buf = dec->parse_pos + dec->data_size;
   } else {
     buf = dec->parse_pos;
@@ -233,7 +224,7 @@ gst_dvd_sub_dec_parse_subpic (GstDvdSubDec * dec)
   { GST_WARNING("Subtitle stream broken parsing %c", *buf); \
     broken = TRUE; break; }
 
-  guchar *start = GST_BUFFER_DATA (dec->partialbuf);
+  guchar *start = dec->partialmap.data;
   guchar *buf;
   guchar *end;
   gboolean broken = FALSE;
@@ -317,16 +308,10 @@ gst_dvd_sub_dec_parse_subpic (GstDvdSubDec * dec)
       case SPU_SET_SIZE:       /* image coordinates */
         PARSE_BYTES_NEEDED (7);
 
-        dec->left =
-            CLAMP ((((guint) buf[1]) << 4) | (buf[2] >> 4), 0,
-            (dec->in_width - 1));
-        dec->top =
-            CLAMP ((((guint) buf[4]) << 4) | (buf[5] >> 4), 0,
-            (dec->in_height - 1));
-        dec->right =
-            CLAMP ((((buf[2] & 0x0f) << 8) | buf[3]), 0, (dec->in_width - 1));
-        dec->bottom =
-            CLAMP ((((buf[5] & 0x0f) << 8) | buf[6]), 0, (dec->in_height - 1));
+        dec->top = ((buf[4] & 0x3f) << 4) | ((buf[5] & 0xe0) >> 4);
+        dec->left = ((buf[1] & 0x3f) << 4) | ((buf[2] & 0xf0) >> 4);
+        dec->right = ((buf[2] & 0x03) << 8) | buf[3];
+        dec->bottom = ((buf[5] & 0x03) << 8) | buf[6];
 
         GST_DEBUG_OBJECT (dec, "SPU SET_SIZE left %d, top %d, right %d, "
             "bottom %d", dec->left, dec->top, dec->right, dec->bottom);
@@ -369,8 +354,8 @@ gst_dvd_sub_dec_parse_subpic (GstDvdSubDec * dec)
           event_time = gst_util_uint64_scale (ticks, 1024 * GST_SECOND, 90000);
 
           GST_DEBUG_OBJECT (dec,
-              "Next DCSQ at offset %" G_GINT64_FORMAT
-              ", delay %g secs (%d ticks)", buf - start,
+              "Next DCSQ at offset %u, delay %g secs (%d ticks)",
+              (guint) (buf - start),
               gst_util_guint64_to_gdouble (event_time / GST_SECOND), ticks);
 
           dec->parse_pos = buf;
@@ -382,6 +367,7 @@ gst_dvd_sub_dec_parse_subpic (GstDvdSubDec * dec)
                 gst_guint64_to_gdouble (GST_SECOND));
             return;
           }
+          break;
         } else {
           dec->parse_pos = NULL;
           dec->next_event_ts = GST_CLOCK_TIME_NONE;
@@ -575,24 +561,70 @@ gst_draw_rle_line (GstDvdSubDec * dec, guchar * buffer, RLE_state * state)
  * frame buffer.
  */
 static void
-gst_dvd_sub_dec_merge_title (GstDvdSubDec * dec, GstBuffer * buf)
+gst_dvd_sub_dec_merge_title (GstDvdSubDec * dec, GstVideoFrame * frame)
 {
   gint y;
-  gint Y_stride = 4 * dec->in_width;
-  guchar *buffer = GST_BUFFER_DATA (dec->partialbuf);
-
+  gint Y_stride;
+  guchar *buffer = dec->partialmap.data;
   gint hl_top, hl_bottom;
   gint last_y;
   RLE_state state;
+  guint8 *Y_data;
 
-  GST_DEBUG_OBJECT (dec, "Merging subtitle on frame at time %" GST_TIME_FORMAT,
-      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
+  GST_DEBUG_OBJECT (dec, "Merging subtitle on frame");
+
+  Y_data = GST_VIDEO_FRAME_PLANE_DATA (frame, 0);
+  Y_stride = GST_VIDEO_FRAME_PLANE_STRIDE (frame, 0);
 
   state.id = 0;
   state.aligned = 1;
   state.next = 0;
   state.offset[0] = dec->offset[0];
   state.offset[1] = dec->offset[1];
+
+  /* center the image when display rectangle exceeds the video width */
+  if (dec->in_width <= dec->right) {
+    gint left, disp_width;
+
+    disp_width = dec->right - dec->left + 1;
+    left = (dec->in_width - disp_width) / 2;
+    dec->left = left;
+    dec->right = left + disp_width - 1;
+
+    /* if it clips to the right, shift it left, but only till zero */
+    if (dec->right >= dec->in_width) {
+      gint shift = dec->right - dec->in_width - 1;
+      if (shift > dec->left)
+        shift = dec->left;
+      dec->left -= shift;
+      dec->right -= shift;
+    }
+
+    GST_DEBUG_OBJECT (dec, "clipping width to %d,%d",
+        dec->left, dec->in_width - 1);
+  }
+
+  /* for the height, bring it up till it fits as well as it can. We
+   * assume the picture is in the lower part. We should better check where it
+   * is and do something more clever. */
+  if (dec->in_height <= dec->bottom) {
+
+    /* shift it up, but only till zero */
+    gint shift = dec->bottom - dec->in_height - 1;
+    if (shift > dec->top)
+      shift = dec->top;
+    dec->top -= shift;
+    dec->bottom -= shift;
+
+    /* start on even line */
+    if (dec->top & 1) {
+      dec->top--;
+      dec->bottom--;
+    }
+
+    GST_DEBUG_OBJECT (dec, "clipping height to %d,%d",
+        dec->top, dec->in_height - 1);
+  }
 
   if (dec->current_button) {
     hl_top = dec->hl_top;
@@ -604,7 +636,7 @@ gst_dvd_sub_dec_merge_title (GstDvdSubDec * dec, GstBuffer * buf)
   last_y = MIN (dec->bottom, dec->in_height);
 
   y = dec->top;
-  state.target = GST_BUFFER_DATA (buf) + 4 * dec->left + (y * Y_stride);
+  state.target = Y_data + 4 * dec->left + (y * Y_stride);
 
   /* Now draw scanlines until we hit last_y or end of RLE data */
   for (; ((state.offset[1] < dec->data_size + 2) && (y <= last_y)); y++) {
@@ -631,11 +663,11 @@ static void
 gst_send_empty_fill (GstDvdSubDec * dec, GstClockTime ts)
 {
   if (dec->next_ts < ts) {
-    GST_LOG_OBJECT (dec, "Sending newsegment update to advance time to %"
+    GST_LOG_OBJECT (dec, "Sending GAP event update to advance time to %"
         GST_TIME_FORMAT, GST_TIME_ARGS (ts));
 
     gst_pad_push_event (dec->srcpad,
-        gst_event_new_new_segment (TRUE, 1.0, GST_FORMAT_TIME, ts, -1, ts));
+        gst_event_new_gap (dec->next_ts, ts - dec->next_ts));
   }
   dec->next_ts = ts;
 }
@@ -645,76 +677,73 @@ gst_send_subtitle_frame (GstDvdSubDec * dec, GstClockTime end_ts)
 {
   GstFlowReturn flow;
   GstBuffer *out_buf;
+  GstVideoFrame frame;
+  guint8 *data;
   gint x, y;
+  static GstAllocationParams params = { 0, 3, 0, 0, };
 
   g_assert (dec->have_title);
   g_assert (dec->next_ts <= end_ts);
 
   /* Check if we need to redraw the output buffer */
-  if (dec->buf_dirty) {
-    if (dec->out_buffer) {
-      gst_buffer_unref (dec->out_buffer);
-      dec->out_buffer = NULL;
-    }
-
-    flow = gst_pad_alloc_buffer_and_set_caps (dec->srcpad, 0,
-        4 * dec->in_width * dec->in_height, GST_PAD_CAPS (dec->srcpad),
-        &out_buf);
-
-    if (flow != GST_FLOW_OK) {
-      GST_DEBUG_OBJECT (dec, "alloc buffer failed: flow = %s",
-          gst_flow_get_name (flow));
-      goto out;
-    }
-
-    /* Clear the buffer */
-    /* FIXME - move this into the buffer rendering code */
-    for (y = 0; y < dec->in_height; y++) {
-      guchar *line = GST_BUFFER_DATA (out_buf) + 4 * dec->in_width * y;
-
-      for (x = 0; x < dec->in_width; x++) {
-        line[0] = 0;            /* A */
-        if (!dec->use_ARGB) {
-          line[1] = 16;         /* Y */
-          line[2] = 128;        /* U */
-          line[3] = 128;        /* V */
-        } else {
-          line[1] = 0;          /* R */
-          line[2] = 0;          /* G */
-          line[3] = 0;          /* B */
-        }
-
-        line += 4;
-      }
-    }
-
-    /* FIXME: do we really want to honour the forced_display flag
-     * for subtitles streans? */
-    if (dec->visible || dec->forced_display) {
-      gst_dvd_sub_dec_merge_title (dec, out_buf);
-    }
-
-    dec->out_buffer = out_buf;
-    dec->buf_dirty = FALSE;
+  if (!dec->buf_dirty) {
+    flow = GST_FLOW_OK;
+    goto out;
   }
 
-  out_buf = gst_buffer_create_sub (dec->out_buffer, 0,
-      GST_BUFFER_SIZE (dec->out_buffer));
+  out_buf =
+      gst_buffer_new_allocate (NULL, GST_VIDEO_INFO_SIZE (&dec->info), &params);
+  gst_video_frame_map (&frame, &dec->info, out_buf, GST_MAP_READWRITE);
+
+  data = GST_VIDEO_FRAME_PLANE_DATA (&frame, 0);
+
+  /* Clear the buffer */
+  /* FIXME - move this into the buffer rendering code */
+  for (y = 0; y < dec->in_height; y++) {
+    guchar *line = data + 4 * dec->in_width * y;
+
+    for (x = 0; x < dec->in_width; x++) {
+      line[0] = 0;              /* A */
+      if (!dec->use_ARGB) {
+        line[1] = 16;           /* Y */
+        line[2] = 128;          /* U */
+        line[3] = 128;          /* V */
+      } else {
+        line[1] = 0;            /* R */
+        line[2] = 0;            /* G */
+        line[3] = 0;            /* B */
+      }
+
+      line += 4;
+    }
+  }
+
+  /* FIXME: do we really want to honour the forced_display flag
+   * for subtitles streans? */
+  if (dec->visible || dec->forced_display) {
+    gst_dvd_sub_dec_merge_title (dec, &frame);
+  }
+
+  gst_video_frame_unmap (&frame);
+
+  dec->buf_dirty = FALSE;
 
   GST_BUFFER_TIMESTAMP (out_buf) = dec->next_ts;
-  GST_BUFFER_DURATION (out_buf) = GST_CLOCK_DIFF (dec->next_ts, end_ts);
+  if (GST_CLOCK_TIME_IS_VALID (dec->next_event_ts)) {
+    GST_BUFFER_DURATION (out_buf) = GST_CLOCK_DIFF (dec->next_ts,
+        dec->next_event_ts);
+  } else {
+    GST_BUFFER_DURATION (out_buf) = GST_CLOCK_TIME_NONE;
+  }
 
   GST_DEBUG_OBJECT (dec, "Sending subtitle buffer with ts %"
       GST_TIME_FORMAT ", dur %" G_GINT64_FORMAT,
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (out_buf)),
       GST_BUFFER_DURATION (out_buf));
 
-  gst_buffer_set_caps (out_buf, GST_PAD_CAPS (dec->srcpad));
-
   flow = gst_pad_push (dec->srcpad, out_buf);
 
 out:
-
   dec->next_ts = end_ts;
   return flow;
 }
@@ -763,17 +792,17 @@ gst_dvd_sub_dec_advance_time (GstDvdSubDec * dec, GstClockTime new_ts)
 }
 
 static GstFlowReturn
-gst_dvd_sub_dec_chain (GstPad * pad, GstBuffer * buf)
+gst_dvd_sub_dec_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   GstDvdSubDec *dec;
   guint8 *data;
   glong size = 0;
 
-  dec = GST_DVD_SUB_DEC (GST_PAD_PARENT (pad));
+  dec = GST_DVD_SUB_DEC (parent);
 
-  GST_DEBUG_OBJECT (dec, "Have buffer of size %d, ts %"
-      GST_TIME_FORMAT ", dur %" G_GINT64_FORMAT, GST_BUFFER_SIZE (buf),
+  GST_DEBUG_OBJECT (dec, "Have buffer of size %" G_GSIZE_FORMAT ", ts %"
+      GST_TIME_FORMAT ", dur %" G_GINT64_FORMAT, gst_buffer_get_size (buf),
       GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)), GST_BUFFER_DURATION (buf));
 
   if (GST_BUFFER_TIMESTAMP_IS_VALID (buf)) {
@@ -786,6 +815,7 @@ gst_dvd_sub_dec_chain (GstPad * pad, GstBuffer * buf)
   }
 
   if (dec->have_title) {
+    gst_buffer_unmap (dec->partialbuf, &dec->partialmap);
     gst_buffer_unref (dec->partialbuf);
     dec->partialbuf = NULL;
     dec->have_title = FALSE;
@@ -796,16 +826,16 @@ gst_dvd_sub_dec_chain (GstPad * pad, GstBuffer * buf)
 
   /* deal with partial frame from previous buffer */
   if (dec->partialbuf) {
-    GstBuffer *merge;
-
-    merge = gst_buffer_join (dec->partialbuf, buf);
-    dec->partialbuf = merge;
+    gst_buffer_unmap (dec->partialbuf, &dec->partialmap);
+    dec->partialbuf = gst_buffer_append (dec->partialbuf, buf);
   } else {
     dec->partialbuf = buf;
   }
 
-  data = GST_BUFFER_DATA (dec->partialbuf);
-  size = GST_BUFFER_SIZE (dec->partialbuf);
+  gst_buffer_map (dec->partialbuf, &dec->partialmap, GST_MAP_READ);
+
+  data = dec->partialmap.data;
+  size = dec->partialmap.size;
 
   if (size > 4) {
     dec->packet_size = GST_READ_UINT16_BE (data);
@@ -839,21 +869,20 @@ gst_dvd_sub_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstDvdSubDec *dec = GST_DVD_SUB_DEC (gst_pad_get_parent (pad));
   gboolean ret = FALSE;
-  guint32 fourcc = GST_MAKE_FOURCC ('A', 'Y', 'U', 'V');
   GstCaps *out_caps = NULL, *peer_caps = NULL;
 
   GST_DEBUG_OBJECT (dec, "setcaps called with %" GST_PTR_FORMAT, caps);
 
-  dec->out_fourcc = fourcc;
-  out_caps = gst_caps_new_simple ("video/x-raw-yuv",
+  out_caps = gst_caps_new_simple ("video/x-raw",
+      "format", G_TYPE_STRING, "AYUV",
       "width", G_TYPE_INT, dec->in_width,
       "height", G_TYPE_INT, dec->in_height,
-      "format", GST_TYPE_FOURCC, dec->out_fourcc,
       "framerate", GST_TYPE_FRACTION, 0, 1, NULL);
 
   peer_caps = gst_pad_get_allowed_caps (dec->srcpad);
   if (G_LIKELY (peer_caps)) {
     guint i = 0, n = 0;
+
     n = gst_caps_get_size (peer_caps);
     GST_DEBUG_OBJECT (dec, "peer allowed caps (%u structure(s)) are %"
         GST_PTR_FORMAT, n, peer_caps);
@@ -861,25 +890,18 @@ gst_dvd_sub_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
     for (i = 0; i < n; i++) {
       GstStructure *s = gst_caps_get_structure (peer_caps, i);
       /* Check if the peer pad support ARGB format, if yes change caps */
-      if (gst_structure_has_name (s, "video/x-raw-rgb") &&
-          gst_structure_has_field (s, "alpha_mask")) {
+      if (gst_structure_has_name (s, "video/x-raw")) {
         gst_caps_unref (out_caps);
-        GST_DEBUG_OBJECT (dec, "trying with fourcc %" GST_FOURCC_FORMAT,
-            GST_FOURCC_ARGS (fourcc));
-        out_caps = gst_caps_new_simple ("video/x-raw-rgb",
+        GST_DEBUG_OBJECT (dec, "trying with ARGB");
+
+        out_caps = gst_caps_new_simple ("video/x-raw",
+            "format", G_TYPE_STRING, "ARGB",
             "width", G_TYPE_INT, dec->in_width,
             "height", G_TYPE_INT, dec->in_height,
-            "framerate", GST_TYPE_FRACTION, 0, 1,
-            "bpp", G_TYPE_INT, 32,
-            "depth", G_TYPE_INT, 32,
-            "red_mask", G_TYPE_INT, 16711680,
-            "green_mask", G_TYPE_INT, 65280,
-            "blue_mask", G_TYPE_INT, 255,
-            "alpha_mask", G_TYPE_INT, -16777216,
-            "endianness", G_TYPE_INT, G_BIG_ENDIAN, NULL);
-        if (gst_pad_peer_accept_caps (dec->srcpad, out_caps)) {
-          GST_DEBUG_OBJECT (dec, "peer accepted format %" GST_FOURCC_FORMAT,
-              GST_FOURCC_ARGS (fourcc));
+            "framerate", GST_TYPE_FRACTION, 0, 1, NULL);
+
+        if (gst_pad_peer_query_accept_caps (dec->srcpad, out_caps)) {
+          GST_DEBUG_OBJECT (dec, "peer accepted ARGB");
           /* If ARGB format then set the flag */
           dec->use_ARGB = TRUE;
           break;
@@ -891,7 +913,7 @@ gst_dvd_sub_dec_sink_setcaps (GstPad * pad, GstCaps * caps)
   GST_DEBUG_OBJECT (dec, "setting caps downstream to %" GST_PTR_FORMAT,
       out_caps);
   if (gst_pad_set_caps (dec->srcpad, out_caps)) {
-    dec->out_fourcc = fourcc;
+    gst_video_info_from_caps (&dec->info, out_caps);
   } else {
     GST_WARNING_OBJECT (dec, "failed setting downstream caps");
     gst_caps_unref (out_caps);
@@ -907,20 +929,27 @@ beach:
 }
 
 static gboolean
-gst_dvd_sub_dec_sink_event (GstPad * pad, GstEvent * event)
+gst_dvd_sub_dec_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstDvdSubDec *dec = GST_DVD_SUB_DEC (gst_pad_get_parent (pad));
+  GstDvdSubDec *dec = GST_DVD_SUB_DEC (parent);
   gboolean ret = FALSE;
 
   GST_LOG_OBJECT (dec, "%s event", GST_EVENT_TYPE_NAME (event));
 
   switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      ret = gst_dvd_sub_dec_sink_setcaps (pad, caps);
+      gst_event_unref (event);
+      break;
+    }
     case GST_EVENT_CUSTOM_DOWNSTREAM:{
       GstClockTime ts = GST_EVENT_TIMESTAMP (event);
 
-      if (event->structure != NULL &&
-          gst_structure_has_name (event->structure, "application/x-gst-dvd")) {
-
+      if (gst_event_has_name (event, "application/x-gst-dvd")) {
         if (GST_CLOCK_TIME_IS_VALID (ts))
           gst_dvd_sub_dec_advance_time (dec, ts);
 
@@ -932,51 +961,60 @@ gst_dvd_sub_dec_sink_event (GstPad * pad, GstEvent * event)
         }
       }
 
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
     }
-    case GST_EVENT_NEWSEGMENT:{
-      gboolean update;
-      GstFormat format;
-      gint64 start, stop, pos;
+    case GST_EVENT_GAP:
+    {
+      GstClockTime start, duration;
 
-      gst_event_parse_new_segment (event, &update, NULL, &format, &start,
-          &stop, &pos);
+      gst_event_parse_gap (event, &start, &duration);
+      if (GST_CLOCK_TIME_IS_VALID (start)) {
+        if (GST_CLOCK_TIME_IS_VALID (duration))
+          start += duration;
+        /* we do not expect another buffer until after gap,
+         * so that is our position now */
+        GST_DEBUG_OBJECT (dec, "Got GAP event, advancing time from %"
+            GST_TIME_FORMAT " to %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (dec->next_ts), GST_TIME_ARGS (start));
 
-      if (update) {
-        /* update ... advance time */
-        if (GST_CLOCK_TIME_IS_VALID (pos)) {
-          GST_DEBUG_OBJECT (dec, "Got segment update, advancing time from %"
-              GST_TIME_FORMAT " to %" GST_TIME_FORMAT,
-              GST_TIME_ARGS (dec->next_ts), GST_TIME_ARGS (pos));
-
-          gst_dvd_sub_dec_advance_time (dec, pos);
-        } else {
-          GST_WARNING_OBJECT (dec, "Got segment update with invalid position");
-        }
-        gst_event_unref (event);
-        ret = TRUE;
+        gst_dvd_sub_dec_advance_time (dec, start);
       } else {
-        /* not just an update ... */
+        GST_WARNING_OBJECT (dec, "Got GAP event with invalid position");
+      }
 
+      gst_event_unref (event);
+      ret = TRUE;
+      break;
+    }
+    case GST_EVENT_SEGMENT:
+    {
+      GstSegment seg;
+
+      gst_event_copy_segment (event, &seg);
+
+      {
+#if 0
         /* Turn off forced highlight display */
-        // dec->forced_display = 0;
-        // dec->current_button = 0;
+        dec->forced_display = 0;
+        dec->current_button = 0;
+#endif
         if (dec->partialbuf) {
+          gst_buffer_unmap (dec->partialbuf, &dec->partialmap);
           gst_buffer_unref (dec->partialbuf);
           dec->partialbuf = NULL;
           dec->have_title = FALSE;
         }
 
-        if (GST_CLOCK_TIME_IS_VALID (pos))
-          dec->next_ts = pos;
+        if (GST_CLOCK_TIME_IS_VALID (seg.time))
+          dec->next_ts = seg.time;
         else
           dec->next_ts = GST_CLOCK_TIME_NONE;
 
         GST_DEBUG_OBJECT (dec, "Got newsegment, new time = %"
             GST_TIME_FORMAT, GST_TIME_ARGS (dec->next_ts));
 
-        ret = gst_pad_event_default (pad, event);
+        ret = gst_pad_event_default (pad, parent, event);
       }
       break;
     }
@@ -986,20 +1024,20 @@ gst_dvd_sub_dec_sink_event (GstPad * pad, GstEvent * event)
       dec->current_button = 0;
 
       if (dec->partialbuf) {
+        gst_buffer_unmap (dec->partialbuf, &dec->partialmap);
         gst_buffer_unref (dec->partialbuf);
         dec->partialbuf = NULL;
         dec->have_title = FALSE;
       }
 
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
     }
     default:{
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
     }
   }
-  gst_object_unref (dec);
   return ret;
 }
 
@@ -1116,6 +1154,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "dvdsub",
+    dvdsub,
     "DVD subtitle parser and decoder", plugin_init,
     VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

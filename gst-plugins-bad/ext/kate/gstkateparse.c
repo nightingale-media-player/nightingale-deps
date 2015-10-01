@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -69,12 +69,6 @@
 GST_DEBUG_CATEGORY_EXTERN (gst_kateparse_debug);
 #define GST_CAT_DEFAULT gst_kateparse_debug
 
-static const GstElementDetails gst_kate_parse_details =
-GST_ELEMENT_DETAILS ("Kate stream parser",
-    "Codec/Parser/Subtitle",
-    "parse raw kate streams",
-    "Vincent Penquerc'h <ogg.k.ogg.k at googlemail dot com>");
-
 static GstStaticPadTemplate gst_kate_parse_sink_factory =
     GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -89,13 +83,17 @@ static GstStaticPadTemplate gst_kate_parse_src_factory =
     GST_STATIC_CAPS ("subtitle/x-kate; application/x-kate")
     );
 
-GST_BOILERPLATE (GstKateParse, gst_kate_parse, GstElement, GST_TYPE_ELEMENT);
+#define gst_kate_parse_parent_class parent_class
+G_DEFINE_TYPE (GstKateParse, gst_kate_parse, GST_TYPE_ELEMENT);
 
-static GstFlowReturn gst_kate_parse_chain (GstPad * pad, GstBuffer * buffer);
+static GstFlowReturn gst_kate_parse_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 static GstStateChangeReturn gst_kate_parse_change_state (GstElement * element,
     GstStateChange transition);
-static gboolean gst_kate_parse_sink_event (GstPad * pad, GstEvent * event);
-static gboolean gst_kate_parse_src_query (GstPad * pad, GstQuery * query);
+static gboolean gst_kate_parse_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_kate_parse_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
 #if 0
 static gboolean gst_kate_parse_convert (GstPad * pad,
     GstFormat src_format, gint64 src_value,
@@ -105,29 +103,27 @@ static GstFlowReturn gst_kate_parse_parse_packet (GstKateParse * parse,
     GstBuffer * buf);
 
 static void
-gst_kate_parse_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_kate_parse_src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_kate_parse_sink_factory));
-  gst_element_class_set_details (element_class, &gst_kate_parse_details);
-}
-
-static void
 gst_kate_parse_class_init (GstKateParseClass * klass)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
 
   gstelement_class->change_state = gst_kate_parse_change_state;
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_kate_parse_src_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_kate_parse_sink_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class, "Kate stream parser",
+      "Codec/Parser/Subtitle",
+      "parse raw kate streams",
+      "Vincent Penquerc'h <ogg.k.ogg.k at googlemail dot com>");
+
   klass->parse_packet = GST_DEBUG_FUNCPTR (gst_kate_parse_parse_packet);
 }
 
 static void
-gst_kate_parse_init (GstKateParse * parse, GstKateParseClass * g_class)
+gst_kate_parse_init (GstKateParse * parse)
 {
   parse->sinkpad =
       gst_pad_new_from_static_template (&gst_kate_parse_sink_factory, "sink");
@@ -151,7 +147,7 @@ gst_kate_parse_drain_event_queue (GstKateParse * parse)
     GstEvent *event;
 
     event = GST_EVENT_CAST (g_queue_pop_head (parse->event_queue));
-    gst_pad_event_default (parse->sinkpad, event);
+    gst_pad_event_default (parse->sinkpad, NULL, event);
   }
 }
 
@@ -169,7 +165,7 @@ gst_kate_parse_push_headers (GstKateParse * parse)
   /* get the headers into the caps, passing them to kate as we go */
   caps =
       gst_kate_util_set_header_on_caps (&parse->element,
-      gst_pad_get_negotiated_caps (parse->sinkpad), parse->streamheader);
+      gst_pad_get_current_caps (parse->sinkpad), parse->streamheader);
 
   if (G_UNLIKELY (!caps)) {
     GST_ELEMENT_ERROR (parse, STREAM, DECODE, (NULL),
@@ -187,14 +183,24 @@ gst_kate_parse_push_headers (GstKateParse * parse)
 
   headers = parse->streamheader;
   while (headers) {
+    GstMapInfo info;
+
     outbuf = GST_BUFFER_CAST (headers->data);
-    kate_packet_wrap (&packet, GST_BUFFER_SIZE (outbuf),
-        GST_BUFFER_DATA (outbuf));
+
+    if (!gst_buffer_map (outbuf, &info, GST_MAP_READ)) {
+      GST_WARNING_OBJECT (outbuf, "Failed to map buffer");
+      continue;
+    }
+
+    kate_packet_wrap (&packet, info.size, info.data);
     ret = kate_decode_headerin (&parse->ki, &parse->kc, &packet);
     if (G_UNLIKELY (ret < 0)) {
-      GST_WARNING_OBJECT (parse, "kate_decode_headerin returned %d", ret);
+      GST_WARNING_OBJECT (parse, "Failed to decode header: %s",
+          gst_kate_util_get_error_message (ret));
     }
+    gst_buffer_unmap (outbuf, &info);
     /* takes ownership of outbuf, which was previously in parse->streamheader */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_HEADER);
     outbuf_list = g_list_append (outbuf_list, outbuf);
     headers = headers->next;
   }
@@ -206,7 +212,6 @@ gst_kate_parse_push_headers (GstKateParse * parse)
   headers = outbuf_list;
   while (headers) {
     outbuf = GST_BUFFER_CAST (headers->data);
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (parse->srcpad));
     gst_pad_push (parse->srcpad, outbuf);
     headers = headers->next;
   }
@@ -257,13 +262,6 @@ gst_kate_parse_push_buffer (GstKateParse * parse, GstBuffer * buf,
       kate_granule_time (&parse->ki, granulepos) * GST_SECOND;
   GST_BUFFER_OFFSET_END (buf) = granulepos;
   GST_BUFFER_TIMESTAMP (buf) = GST_BUFFER_OFFSET (buf);
-
-  /* Hack to flush each packet on its own page - taken off the CMML encoder element */
-  /* TODO: this is shite and needs to go once I find a way to tell Ogg to flush
-     as it messes up Matroska's track duration */
-  GST_BUFFER_DURATION (buf) = G_MAXINT64;
-
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (parse->srcpad));
 
   return gst_pad_push (parse->srcpad, buf);
 }
@@ -326,7 +324,7 @@ gst_kate_parse_queue_buffer (GstKateParse * parse, GstBuffer * buf)
   GstFlowReturn ret = GST_FLOW_OK;
   gint64 granpos;
 
-  buf = gst_buffer_make_metadata_writable (buf);
+  buf = gst_buffer_make_writable (buf);
 
   /* oggdemux stores the granule pos in the offset end */
   granpos = GST_BUFFER_OFFSET_END (buf);
@@ -355,17 +353,20 @@ static GstFlowReturn
 gst_kate_parse_parse_packet (GstKateParse * parse, GstBuffer * buf)
 {
   GstFlowReturn ret = GST_FLOW_OK;
+  guint8 header[1];
+  gsize size;
 
   g_assert (parse);
 
   parse->packetno++;
 
-  GST_LOG_OBJECT (parse, "Got packet %02x, %u bytes",
-      GST_BUFFER_SIZE (buf) ? GST_BUFFER_DATA (buf)[0] : -1,
-      GST_BUFFER_SIZE (buf));
+  size = gst_buffer_extract (buf, 0, header, 1);
 
-  if (GST_BUFFER_SIZE (buf) > 0 && GST_BUFFER_DATA (buf)[0] & 0x80) {
-    GST_DEBUG_OBJECT (parse, "Found header %02x", GST_BUFFER_DATA (buf)[0]);
+  GST_LOG_OBJECT (parse, "Got packet %02x, %" G_GSIZE_FORMAT " bytes",
+      size ? header[0] : -1, gst_buffer_get_size (buf));
+
+  if (size > 0 && header[0] & 0x80) {
+    GST_DEBUG_OBJECT (parse, "Found header %02x", header[0]);
     /* if 0x80 is set, it's streamheader,
      * so put it on the streamheader list and return */
     parse->streamheader = g_list_append (parse->streamheader, buf);
@@ -385,17 +386,17 @@ gst_kate_parse_parse_packet (GstKateParse * parse, GstBuffer * buf)
 }
 
 static GstFlowReturn
-gst_kate_parse_chain (GstPad * pad, GstBuffer * buffer)
+gst_kate_parse_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstKateParseClass *klass;
   GstKateParse *parse;
 
-  parse = GST_KATE_PARSE (GST_PAD_PARENT (pad));
+  parse = GST_KATE_PARSE (parent);
   klass = GST_KATE_PARSE_CLASS (G_OBJECT_GET_CLASS (parse));
 
   g_assert (klass->parse_packet != NULL);
 
-  if (G_UNLIKELY (GST_PAD_CAPS (pad) == NULL))
+  if (G_UNLIKELY (!gst_pad_has_current_caps (pad)))
     return GST_FLOW_NOT_NEGOTIATED;
 
   return klass->parse_packet (parse, buffer);
@@ -412,38 +413,36 @@ gst_kate_parse_queue_event (GstKateParse * parse, GstEvent * event)
 }
 
 static gboolean
-gst_kate_parse_sink_event (GstPad * pad, GstEvent * event)
+gst_kate_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   gboolean ret;
   GstKateParse *parse;
 
-  parse = GST_KATE_PARSE (gst_pad_get_parent (pad));
+  parse = GST_KATE_PARSE (parent);
 
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_FLUSH_START:
+    case GST_EVENT_FLUSH_STOP:
       gst_kate_parse_clear_queue (parse);
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
     case GST_EVENT_EOS:
       if (!parse->streamheader_sent) {
         GST_DEBUG_OBJECT (parse, "Got EOS, pushing headers seen so far");
         ret = gst_kate_parse_push_headers (parse);
         if (ret != GST_FLOW_OK)
-          goto done;
+          break;
       }
       gst_kate_parse_drain_queue_prematurely (parse);
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
     default:
-      if (!parse->streamheader_sent && GST_EVENT_IS_SERIALIZED (event))
+      if (!parse->streamheader_sent && GST_EVENT_IS_SERIALIZED (event)
+          && GST_EVENT_TYPE (event) > GST_EVENT_CAPS)
         ret = gst_kate_parse_queue_event (parse, event);
       else
-        ret = gst_pad_event_default (pad, event);
+        ret = gst_pad_event_default (pad, parent, event);
       break;
   }
-
-done:
-  gst_object_unref (parse);
 
   return ret;
 }
@@ -499,7 +498,7 @@ gst_kate_parse_convert (GstPad * pad,
 #endif
 
 static gboolean
-gst_kate_parse_src_query (GstPad * pad, GstQuery * query)
+gst_kate_parse_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
 #if 1
   // TODO
@@ -510,7 +509,7 @@ gst_kate_parse_src_query (GstPad * pad, GstQuery * query)
   GstKateParse *parse;
   gboolean res = FALSE;
 
-  parse = GST_KATE_PARSE (GST_PAD_PARENT (pad));
+  parse = GST_KATE_PARSE (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:
@@ -610,7 +609,7 @@ gst_kate_parse_change_state (GstElement * element, GstStateChange transition)
       break;
   }
 
-  ret = parent_class->change_state (element, transition);
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
 
   switch (transition) {
     case GST_STATE_CHANGE_PAUSED_TO_READY:

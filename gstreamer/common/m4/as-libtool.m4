@@ -41,5 +41,6 @@ AC_DEFUN([AS_LIBTOOL],
   fi
   AC_SUBST([$1]_LT_LDFLAGS)
 
-  AC_LIBTOOL_DLOPEN
+  LT_PREREQ([2.2.6])
+  LT_INIT([dlopen win32-dll disable-static])
 ])

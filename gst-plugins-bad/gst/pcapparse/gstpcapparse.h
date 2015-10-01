@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PCAP_PARSE_H__
@@ -45,6 +45,13 @@ typedef enum
   PCAP_PARSE_STATE_PARSING,
 } GstPcapParseState;
 
+typedef enum
+{
+  LINKTYPE_ETHER  = 1,
+  LINKTYPE_RAW = 101,
+  LINKTYPE_SLL = 113
+} GstPcapParseLinktype;
+
 /**
  * GstPcapParse:
  *
@@ -64,6 +71,8 @@ struct _GstPcapParse
   gint64 dst_ip;
   gint32 src_port;
   gint32 dst_port;
+  GstCaps *caps;
+  gint64 offset;
 
   /* state */
   GstAdapter * adapter;
@@ -71,10 +80,10 @@ struct _GstPcapParse
   gboolean swap_endian;
   gint64 cur_packet_size;
   GstClockTime cur_ts;
+  GstClockTime base_ts;
+  GstPcapParseLinktype linktype;
 
   gboolean newsegment_sent;
-
-  gint64 buffer_offset;
 };
 
 struct _GstPcapParseClass

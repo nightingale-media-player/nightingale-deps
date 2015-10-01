@@ -1,0 +1,978 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jpegparser: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="codecparsers.html" title="Bitstream parsing Library">
+<link rel="prev" href="gst-plugins-bad-libs-h264parser.html" title="h264parser">
+<link rel="next" href="gst-plugins-bad-libs-mpegvideoparser.html" title="mpegvideoparser">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-jpegparser.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="codecparsers.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-h264parser.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-mpegvideoparser.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-jpegparser"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-jpegparser.top_of_page"></a>jpegparser</span></h2>
+<p>jpegparser — Convenience library for JPEG bitstream parsing.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-parse" title="gst_jpeg_parse ()">gst_jpeg_parse</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-segment-parse-frame-header" title="gst_jpeg_segment_parse_frame_header ()">gst_jpeg_segment_parse_frame_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-segment-parse-scan-header" title="gst_jpeg_segment_parse_scan_header ()">gst_jpeg_segment_parse_scan_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-segment-parse-huffman-table" title="gst_jpeg_segment_parse_huffman_table ()">gst_jpeg_segment_parse_huffman_table</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-segment-parse-quantization-table" title="gst_jpeg_segment_parse_quantization_table ()">gst_jpeg_segment_parse_quantization_table</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-segment-parse-restart-interval" title="gst_jpeg_segment_parse_restart_interval ()">gst_jpeg_segment_parse_restart_interval</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-get-default-quantization-tables" title="gst_jpeg_get_default_quantization_tables ()">gst_jpeg_get_default_quantization_tables</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-jpegparser.html#gst-jpeg-get-default-huffman-tables" title="gst_jpeg_get_default_huffman_tables ()">gst_jpeg_get_default_huffman_tables</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MAX-FRAME-COMPONENTS:CAPS" title="GST_JPEG_MAX_FRAME_COMPONENTS">GST_JPEG_MAX_FRAME_COMPONENTS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MAX-SCAN-COMPONENTS:CAPS" title="GST_JPEG_MAX_SCAN_COMPONENTS">GST_JPEG_MAX_SCAN_COMPONENTS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MAX-QUANT-ELEMENTS:CAPS" title="GST_JPEG_MAX_QUANT_ELEMENTS">GST_JPEG_MAX_QUANT_ELEMENTS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-SOF-MIN:CAPS" title="GST_JPEG_MARKER_SOF_MIN">GST_JPEG_MARKER_SOF_MIN</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-SOF-MAX:CAPS" title="GST_JPEG_MARKER_SOF_MAX">GST_JPEG_MARKER_SOF_MAX</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-APP-MIN:CAPS" title="GST_JPEG_MARKER_APP_MIN">GST_JPEG_MARKER_APP_MIN</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-APP-MAX:CAPS" title="GST_JPEG_MARKER_APP_MAX">GST_JPEG_MARKER_APP_MAX</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-RST-MIN:CAPS" title="GST_JPEG_MARKER_RST_MIN">GST_JPEG_MARKER_RST_MIN</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GST-JPEG-MARKER-RST-MAX:CAPS" title="GST_JPEG_MARKER_RST_MAX">GST_JPEG_MARKER_RST_MAX</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegEntropyCodingMode" title="enum GstJpegEntropyCodingMode">GstJpegEntropyCodingMode</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegProfile" title="enum GstJpegProfile">GstJpegProfile</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment">GstJpegSegment</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegFrameHdr" title="struct GstJpegFrameHdr">GstJpegFrameHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegFrameComponent" title="struct GstJpegFrameComponent">GstJpegFrameComponent</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegScanHdr" title="struct GstJpegScanHdr">GstJpegScanHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegScanComponent" title="struct GstJpegScanComponent">GstJpegScanComponent</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTables" title="struct GstJpegHuffmanTables">GstJpegHuffmanTables</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTable" title="struct GstJpegHuffmanTable">GstJpegHuffmanTable</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegQuantTable" title="struct GstJpegQuantTable">GstJpegQuantTable</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/codecparsers/gstjpegparser.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.description"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="id-1.2.4.4.6.2"></a><p>
+Provides useful functions for parsing JPEG images
+</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-jpeg-parse"></a><h3>gst_jpeg_parse ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_parse (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *seg</code></em>,
+                <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> offset</code></em>);</pre>
+<p>Parses the JPEG bitstream contained in <em class="parameter"><code>data</code></em>
+, and returns the
+detected segment as a <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a>.</p>
+<p>Note that a valid segment may be returned with a length that exceeds
+the available data. It is up to the caller to make sure there's enough
+data available when parsing the segment.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.2.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p> pointer to a <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> structure to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>The size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>offset</p></td>
+<td class="parameter_description"><p>The offset from which to start parsing</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.2.7"></a><h4>Returns</h4>
+<p> TRUE if a packet start code was found.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-segment-parse-frame-header"></a><h3>gst_jpeg_segment_parse_frame_header ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_segment_parse_frame_header (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *segment</code></em>,
+                                     <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegFrameHdr" title="struct GstJpegFrameHdr"><span class="type">GstJpegFrameHdr</span></a> *frame_hdr</code></em>);</pre>
+<p>Parses the <em class="parameter"><code>frame_hdr</code></em>
+ JPEG frame header structure members from <em class="parameter"><code>segment</code></em>
+.</p>
+<p>The caller must make sure there is enough data for the whole segment
+available.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.3.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the JPEG segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame_hdr</p></td>
+<td class="parameter_description"><p> The <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegFrameHdr" title="struct GstJpegFrameHdr"><span class="type">GstJpegFrameHdr</span></a> structure to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.3.7"></a><h4>Returns</h4>
+<p> TRUE if the frame header was correctly parsed.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-segment-parse-scan-header"></a><h3>gst_jpeg_segment_parse_scan_header ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_segment_parse_scan_header (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *segment</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegScanHdr" title="struct GstJpegScanHdr"><span class="type">GstJpegScanHdr</span></a> *scan_hdr</code></em>);</pre>
+<p>Parses the <em class="parameter"><code>scan_hdr</code></em>
+ JPEG scan header structure members from <em class="parameter"><code>segment</code></em>
+.</p>
+<p>The caller must make sure there is enough data for the whole segment
+available.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the JPEG segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>scan_hdr</p></td>
+<td class="parameter_description"><p> The <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegScanHdr" title="struct GstJpegScanHdr"><span class="type">GstJpegScanHdr</span></a> structure to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.4.7"></a><h4>Returns</h4>
+<p> TRUE if the scan header was correctly parsed</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-segment-parse-huffman-table"></a><h3>gst_jpeg_segment_parse_huffman_table ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_segment_parse_huffman_table (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *segment</code></em>,
+                                      <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTables" title="struct GstJpegHuffmanTables"><span class="type">GstJpegHuffmanTables</span></a> *huff_tables</code></em>);</pre>
+<p>Parses the JPEG Huffman table structure members from <em class="parameter"><code>segment</code></em>
+.</p>
+<p>The caller must make sure there is enough data for the whole segment
+available.</p>
+<p>Note: <em class="parameter"><code>huf_tables</code></em>
+ represents the complete set of possible Huffman
+tables. However, the parser will only write to the Huffman table
+specified by the table destination identifier (Th). While doing so,
+the <em class="parameter"><code>valid</code></em>
+ flag of the specified Huffman table will also be set to
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>;</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.5.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the JPEG segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>huff_tables</p></td>
+<td class="parameter_description"><p> The <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTables" title="struct GstJpegHuffmanTables"><span class="type">GstJpegHuffmanTables</span></a> structure to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.5.8"></a><h4>Returns</h4>
+<p> TRUE if the Huffman table was correctly parsed.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-segment-parse-quantization-table"></a><h3>gst_jpeg_segment_parse_quantization_table ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_segment_parse_quantization_table
+                               (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *segment</code></em>,
+                                <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-jpegparser.html#GstJpegQuantTable"><span class="type">GstJpegQuantTables</span></a> *quant_tables</code></em>);</pre>
+<p>Parses the JPEG quantization table structure members from <em class="parameter"><code>segment</code></em>
+.</p>
+<p>The caller must make sure there is enough data for the whole segment
+available.</p>
+<p>Note: <em class="parameter"><code>quant_tables</code></em>
+ represents the complete set of possible
+quantization tables. However, the parser will only write to the
+quantization table specified by the table destination identifier
+(Tq). While doing so, the <em class="parameter"><code>valid</code></em>
+ flag of the specified quantization
+table will also be set to <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.6.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the JPEG segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>quant_tables</p></td>
+<td class="parameter_description"><p> The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-jpegparser.html#GstJpegQuantTable"><span class="type">GstJpegQuantTables</span></a> structure to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.6.8"></a><h4>Returns</h4>
+<p> TRUE if the quantization table was correctly parsed.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-segment-parse-restart-interval"></a><h3>gst_jpeg_segment_parse_restart_interval ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_jpeg_segment_parse_restart_interval
+                               (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegSegment" title="struct GstJpegSegment"><span class="type">GstJpegSegment</span></a> *segment</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *interval</code></em>);</pre>
+<p>The caller must make sure there is enough data for the whole segment
+available.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the JPEG segment</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>interval</p></td>
+<td class="parameter_description"><p> The parsed restart interval value. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.7.6"></a><h4>Returns</h4>
+<p> TRUE if the restart interval value was correctly parsed.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-get-default-quantization-tables"></a><h3>gst_jpeg_get_default_quantization_tables ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_jpeg_get_default_quantization_tables
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-jpegparser.html#GstJpegQuantTable"><span class="type">GstJpegQuantTables</span></a> *quant_tables</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-jpeg-get-default-huffman-tables"></a><h3>gst_jpeg_get_default_huffman_tables ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_jpeg_get_default_huffman_tables (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTables" title="struct GstJpegHuffmanTables"><span class="type">GstJpegHuffmanTables</span></a> *huff_tables</code></em>);</pre>
+<p>Fills in <em class="parameter"><code>huf_tables</code></em>
+ with the default AC/DC Huffman tables, as
+specified by the JPEG standard.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.7.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>huf_tables</p></td>
+<td class="parameter_description"><p> The default DC/AC Huffman tables to fill in. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-jpegparser.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GST-JPEG-MAX-FRAME-COMPONENTS:CAPS"></a><h3>GST_JPEG_MAX_FRAME_COMPONENTS</h3>
+<pre class="programlisting">#define GST_JPEG_MAX_FRAME_COMPONENTS   256
+</pre>
+<p>Maximum number of image components in a frame (Nf).</p>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MAX-SCAN-COMPONENTS:CAPS"></a><h3>GST_JPEG_MAX_SCAN_COMPONENTS</h3>
+<pre class="programlisting">#define GST_JPEG_MAX_SCAN_COMPONENTS    4
+</pre>
+<p>Maximum number of image components in a scan (Ns).</p>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MAX-QUANT-ELEMENTS:CAPS"></a><h3>GST_JPEG_MAX_QUANT_ELEMENTS</h3>
+<pre class="programlisting">#define GST_JPEG_MAX_QUANT_ELEMENTS     64
+</pre>
+<p>Number of elements in the quantization table.</p>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-SOF-MIN:CAPS"></a><h3>GST_JPEG_MARKER_SOF_MIN</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_SOF_MIN GST_JPEG_MARKER_SOF0
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-SOF-MAX:CAPS"></a><h3>GST_JPEG_MARKER_SOF_MAX</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_SOF_MAX GST_JPEG_MARKER_SOF15
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-APP-MIN:CAPS"></a><h3>GST_JPEG_MARKER_APP_MIN</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_APP_MIN GST_JPEG_MARKER_APP0
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-APP-MAX:CAPS"></a><h3>GST_JPEG_MARKER_APP_MAX</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_APP_MAX GST_JPEG_MARKER_APP15
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-RST-MIN:CAPS"></a><h3>GST_JPEG_MARKER_RST_MIN</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_RST_MIN GST_JPEG_MARKER_RST0
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-JPEG-MARKER-RST-MAX:CAPS"></a><h3>GST_JPEG_MARKER_RST_MAX</h3>
+<pre class="programlisting">#define GST_JPEG_MARKER_RST_MAX GST_JPEG_MARKER_RST7
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegEntropyCodingMode"></a><h3>enum GstJpegEntropyCodingMode</h3>
+<p>JPEG entropy coding mode.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.11.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-ENTROPY-CODING-HUFFMAN:CAPS"></a>GST_JPEG_ENTROPY_CODING_HUFFMAN</p></td>
+<td class="enum_member_description">
+<p>Huffman coding</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-ENTROPY-CODING-ARITHMETIC:CAPS"></a>GST_JPEG_ENTROPY_CODING_ARITHMETIC</p></td>
+<td class="enum_member_description">
+<p>arithmetic coding</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegProfile"></a><h3>enum GstJpegProfile</h3>
+<p>JPEG encoding processes.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.12.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-PROFILE-BASELINE:CAPS"></a>GST_JPEG_PROFILE_BASELINE</p></td>
+<td class="enum_member_description">
+<p>Baseline DCT</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-PROFILE-EXTENDED:CAPS"></a>GST_JPEG_PROFILE_EXTENDED</p></td>
+<td class="enum_member_description">
+<p>Extended sequential DCT</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-PROFILE-PROGRESSIVE:CAPS"></a>GST_JPEG_PROFILE_PROGRESSIVE</p></td>
+<td class="enum_member_description">
+<p>Progressive DCT</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-JPEG-PROFILE-LOSSLESS:CAPS"></a>GST_JPEG_PROFILE_LOSSLESS</p></td>
+<td class="enum_member_description">
+<p>Lossless (sequential)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegSegment"></a><h3>struct GstJpegSegment</h3>
+<pre class="programlisting">struct GstJpegSegment {
+  GstJpegMarker marker;
+  const guint8 *data;
+  guint offset;
+  gssize size;
+};
+</pre>
+<p>A structure that contains the type of a segment, its offset and its size.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.13.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">GstJpegMarker</span> <em class="structfield"><code><a name="GstJpegSegment.marker"></a>marker</code></em>;</p></td>
+<td class="struct_member_description"><p>The type of the segment that starts at <em class="parameter"><code>offset</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p>const <span class="type">guint8</span> *<em class="structfield"><code><a name="GstJpegSegment.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p>the data containing the jpeg segment starting at <em class="parameter"><code>offset</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstJpegSegment.offset"></a>offset</code></em>;</p></td>
+<td class="struct_member_description"><p>The offset to the segment start in bytes. This is the
+exact start of the segment, no marker code included</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gssize</span> <em class="structfield"><code><a name="GstJpegSegment.size"></a>size</code></em>;</p></td>
+<td class="struct_member_description"><p>The size of the segment in bytes, or -1 if the end was not
+found. It is the exact size of the segment, without the sync byte and
+marker code but including any length bytes.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegFrameHdr"></a><h3>struct GstJpegFrameHdr</h3>
+<pre class="programlisting">struct GstJpegFrameHdr {
+  guint8 sample_precision;              /* 2 .. 16      */
+  guint16 width;                        /* 1 .. 65535   */
+  guint16 height;                       /* 0 .. 65535   */
+  guint8 num_components;                /* 1 .. 255     */
+  GstJpegFrameComponent components[GST_JPEG_MAX_FRAME_COMPONENTS];
+};
+</pre>
+<p>Frame header.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.14.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameHdr.sample-precision"></a>sample_precision</code></em>;</p></td>
+<td class="struct_member_description"><p>Sample precision (P)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstJpegFrameHdr.width"></a>width</code></em>;</p></td>
+<td class="struct_member_description"><p>Number of samples per line (X)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstJpegFrameHdr.height"></a>height</code></em>;</p></td>
+<td class="struct_member_description"><p>Number of lines (Y)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameHdr.num-components"></a>num_components</code></em>;</p></td>
+<td class="struct_member_description"><p>Number of image components in frame (Nf)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegFrameComponent" title="struct GstJpegFrameComponent"><span class="type">GstJpegFrameComponent</span></a> <em class="structfield"><code><a name="GstJpegFrameHdr.components"></a>components</code></em>[GST_JPEG_MAX_FRAME_COMPONENTS];</p></td>
+<td class="struct_member_description"><p>Image components</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegFrameComponent"></a><h3>struct GstJpegFrameComponent</h3>
+<pre class="programlisting">struct GstJpegFrameComponent {
+  guint8 identifier;                    /* 0 .. 255     */
+  guint8 horizontal_factor;             /* 1 .. 4       */
+  guint8 vertical_factor;               /* 1 .. 4       */
+  guint8 quant_table_selector;          /* 0 .. 3       */
+};
+</pre>
+<p>Component-specification parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.15.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameComponent.identifier"></a>identifier</code></em>;</p></td>
+<td class="struct_member_description"><p>Component identifier (Ci)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameComponent.horizontal-factor"></a>horizontal_factor</code></em>;</p></td>
+<td class="struct_member_description"><p>Horizontal sampling factor (Hi)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameComponent.vertical-factor"></a>vertical_factor</code></em>;</p></td>
+<td class="struct_member_description"><p>Vertical sampling factor (Vi)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegFrameComponent.quant-table-selector"></a>quant_table_selector</code></em>;</p></td>
+<td class="struct_member_description"><p>Quantization table destination selector (Tqi)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegScanHdr"></a><h3>struct GstJpegScanHdr</h3>
+<pre class="programlisting">struct GstJpegScanHdr {
+  guint8 num_components;                /* 1 .. 4       */
+  GstJpegScanComponent components[GST_JPEG_MAX_SCAN_COMPONENTS];
+};
+</pre>
+<p>Scan header.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.16.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegScanHdr.num-components"></a>num_components</code></em>;</p></td>
+<td class="struct_member_description"><p>Number of image components in scan (Ns)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegScanComponent" title="struct GstJpegScanComponent"><span class="type">GstJpegScanComponent</span></a> <em class="structfield"><code><a name="GstJpegScanHdr.components"></a>components</code></em>[GST_JPEG_MAX_SCAN_COMPONENTS];</p></td>
+<td class="struct_member_description"><p>Image components</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegScanComponent"></a><h3>struct GstJpegScanComponent</h3>
+<pre class="programlisting">struct GstJpegScanComponent {
+    guint8 component_selector;          /* 0 .. 255     */
+    guint8 dc_selector;                 /* 0 .. 3       */
+    guint8 ac_selector;                 /* 0 .. 3       */
+};
+</pre>
+<p>Component-specification parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.17.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegScanComponent.component-selector"></a>component_selector</code></em>;</p></td>
+<td class="struct_member_description"><p>Scan component selector (Csj)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegScanComponent.dc-selector"></a>dc_selector</code></em>;</p></td>
+<td class="struct_member_description"><p>DC entropy coding table destination selector (Tdj)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegScanComponent.ac-selector"></a>ac_selector</code></em>;</p></td>
+<td class="struct_member_description"><p>AC entropy coding table destination selector (Taj)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegHuffmanTables"></a><h3>struct GstJpegHuffmanTables</h3>
+<pre class="programlisting">struct GstJpegHuffmanTables {
+  GstJpegHuffmanTable dc_tables[GST_JPEG_MAX_SCAN_COMPONENTS];
+  GstJpegHuffmanTable ac_tables[GST_JPEG_MAX_SCAN_COMPONENTS];
+};
+</pre>
+<p>Helper data structure that holds all AC/DC Huffman tables used to
+decode an image.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.18.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTable" title="struct GstJpegHuffmanTable"><span class="type">GstJpegHuffmanTable</span></a> <em class="structfield"><code><a name="GstJpegHuffmanTables.dc-tables"></a>dc_tables</code></em>[GST_JPEG_MAX_SCAN_COMPONENTS];</p></td>
+<td class="struct_member_description"><p>DC Huffman tables</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-jpegparser.html#GstJpegHuffmanTable" title="struct GstJpegHuffmanTable"><span class="type">GstJpegHuffmanTable</span></a> <em class="structfield"><code><a name="GstJpegHuffmanTables.ac-tables"></a>ac_tables</code></em>[GST_JPEG_MAX_SCAN_COMPONENTS];</p></td>
+<td class="struct_member_description"><p>AC Huffman tables</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegHuffmanTable"></a><h3>struct GstJpegHuffmanTable</h3>
+<pre class="programlisting">struct GstJpegHuffmanTable {
+  guint8 huf_bits[16];
+  guint8 huf_values[256];
+  gboolean valid;
+};
+</pre>
+<p>Huffman table.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.19.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegHuffmanTable.huf-bits"></a>huf_bits</code></em>[16];</p></td>
+<td class="struct_member_description"><p>Number of Huffman codes of length i + 1 (Li)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegHuffmanTable.huf-values"></a>huf_values</code></em>[256];</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstJpegHuffmanTable.valid"></a>valid</code></em>;</p></td>
+<td class="struct_member_description"><p>If the Huffman table is valid, which means it has already
+been parsed</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstJpegQuantTable"></a><h3>struct GstJpegQuantTable</h3>
+<pre class="programlisting">struct GstJpegQuantTable {
+  guint8 quant_precision;
+  guint16 quant_table[GST_JPEG_MAX_QUANT_ELEMENTS];
+  gboolean valid;
+};
+</pre>
+<p>Quantization table.</p>
+<div class="refsect3">
+<a name="id-1.2.4.4.8.20.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstJpegQuantTable.quant-precision"></a>quant_precision</code></em>;</p></td>
+<td class="struct_member_description"><p>Quantization table element precision (Pq)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstJpegQuantTable.quant-table"></a>quant_table</code></em>[GST_JPEG_MAX_QUANT_ELEMENTS];</p></td>
+<td class="struct_member_description"><p>Quantization table elements (Qk)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstJpegQuantTable.valid"></a>valid</code></em>;</p></td>
+<td class="struct_member_description"><p>If the quantization table is valid, which means it has
+already been parsed</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

@@ -1,45 +1,83 @@
 # Danish translation of gst-plugins-good.
-# Copyright (C) 2008 gst.
+# Copyright (C) 2014 gst.
 # This file is distributed under the same license as the gst-plugins-good package.
-#
 # Mogens Jaeger <mogens@jaeger.tf>, 2007.
-# Joe Hansen <joedalton2@yahoo.dk>, 2008, 2009.
+# Joe Hansen <joedalton2@yahoo.dk>, 2008, 2009, 2010, 2011, 2012, 2013, 2014.
+#
+# gain -> forhøjelse
+# boost -> øgning?
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-good-0.10.15.2\n"
+"Project-Id-Version: gst-plugins-good-1.3.90\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-08-28 23:17+0100\n"
-"PO-Revision-Date: 2009-08-12 23:54+0200\n"
+"POT-Creation-Date: 2015-09-25 22:54+0200\n"
+"PO-Revision-Date: 2014-06-29 23:54+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Could not establish connection to sound server"
-msgstr "Kunne ikke skabe kontakt til lyd-serveren"
-
-msgid "Failed to query sound server capabilities"
-msgstr "Listning af lydservers egenskaber fejlede"
-
-msgid "Internal data stream error."
-msgstr "Intern datastrømsfejl."
+msgid "Jack server not found"
+msgstr "Jack-server blev ikke fundet"
 
 msgid "Failed to decode JPEG image"
 msgstr "Mislykkedes i at afkode JPEG-billede"
 
+#. TRANSLATORS: 'song title' by 'artist name'
+#, c-format
+msgid "'%s' by '%s'"
+msgstr "»%s« af »%s«"
+
 msgid "Could not connect to server"
 msgstr "Kunne ikke forbinde til server"
+
+msgid "No URL set."
+msgstr "Ingen adresse angivet."
+
+msgid "Server does not support seeking."
+msgstr "Server understøtter ikke søgning."
+
+msgid "Could not resolve server name."
+msgstr "Kunne ikke slå servernavn op."
+
+msgid "Could not establish connection to server."
+msgstr "Kunne ikke skabe kontakt til serveren."
+
+msgid "Secure connection setup failed."
+msgstr "Opsætning af sikker forbindelse mislykkedes."
+
+#, fuzzy
+msgid ""
+"A network error occurred, or the server closed the connection unexpectedly."
+msgstr ""
+"Der opstod en netværksfejl, eller serveren lukkede uventet forbindelsen."
+
+msgid "Server sent bad data."
+msgstr "Server sendte ugyldige data."
+
+msgid "Internal data stream error."
+msgstr "Intern datastrømsfejl."
 
 msgid "No or invalid input audio, AVI stream will be corrupt."
 msgstr "Ingen eller defekt inddatalyd, AVI-sekvens vil blive ødelagt."
 
+msgid "This file contains no playable streams."
+msgstr "Denne fil indeholder ingen spilbar strøm."
+
 msgid "This file is invalid and cannot be played."
 msgstr "Denne fil er ufuldstændig og kan ikke afspilles."
 
-msgid "This file contains no playable streams."
-msgstr "Denne fil indeholder ingen spilbar strøm."
+msgid "Cannot play stream because it is encrypted with PlayReady DRM."
+msgstr "Kan ikke afspille strøm, da den er krypteret med PlayReady DRM."
+
+msgid "This file is corrupt and cannot be played."
+msgstr "Denne fil er ødelagt og kan ikke afspilles."
+
+msgid "Invalid atom size."
+msgstr "Ugyldig atomstørrelse."
 
 msgid "This file is incomplete and cannot be played."
 msgstr "Denne fil er ufuldstændig og kan ikke afspilles."
@@ -54,8 +92,8 @@ msgstr "Videoen i denne fil afspilles måske ikke korrekt."
 msgid "This file contains too many streams. Only playing first %d"
 msgstr "Denne fil indeholder for mange strømme. Afspil først kun %d"
 
-msgid "This file is corrupt and cannot be played."
-msgstr "Denne fil er ødelagt og kan ikke afspilles."
+msgid "Internal data flow error."
+msgstr "Intern datastrømsfejl."
 
 msgid ""
 "No supported stream was found. You might need to install a GStreamer RTSP "
@@ -65,91 +103,13 @@ msgstr ""
 "udvidelsesmodul for GStreamer RTSP til Real media-strømme."
 
 msgid ""
-"No supported stream was found. You might be missing the right GStreamer RTSP "
-"extension plugin."
+"No supported stream was found. You might need to allow more transport "
+"protocols or may otherwise be missing the right GStreamer RTSP extension "
+"plugin."
 msgstr ""
-"Ingen understøttet strøm blev fundet. Du mangler måske det korrekte "
-"udvidelsesmodul for GStreamer RTSP."
-
-msgid "Internal data flow error."
-msgstr "Intern datastrømsfejl."
-
-msgid "Volume"
-msgstr "Lydstyrke"
-
-msgid "Bass"
-msgstr "Bas"
-
-msgid "Treble"
-msgstr "Diskant"
-
-msgid "Synth"
-msgstr "Synth"
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Speaker"
-msgstr "Højtaler"
-
-msgid "Line-in"
-msgstr "Linje-ind"
-
-msgid "Microphone"
-msgstr "Mikrofon"
-
-msgid "CD"
-msgstr "Cd"
-
-msgid "Mixer"
-msgstr "Mikser"
-
-msgid "PCM-2"
-msgstr "PCM-2"
-
-msgid "Record"
-msgstr "Optag"
-
-msgid "In-gain"
-msgstr "Ind-forhøjelse"
-
-msgid "Out-gain"
-msgstr "Ud-forhøjelse"
-
-msgid "Line-1"
-msgstr "Linje-1"
-
-msgid "Line-2"
-msgstr "Linje-2"
-
-msgid "Line-3"
-msgstr "Linje-3"
-
-msgid "Digital-1"
-msgstr "Digital-1"
-
-msgid "Digital-2"
-msgstr "Digital-2"
-
-msgid "Digital-3"
-msgstr "Digital-3"
-
-# Eller Phono-ind 
-msgid "Phone-in"
-msgstr "Lyd-ind"
-
-# Eller Phono-ud
-msgid "Phone-out"
-msgstr "Lyd-ud"
-
-msgid "Video"
-msgstr "Video"
-
-msgid "Radio"
-msgstr "Radio"
-
-msgid "Monitor"
-msgstr "Monitor"
+"Ingen understøttet strøm blev fundet. Du mangler måske at tillade yderligere "
+"transportprotokoller eller mangler måske det korrekte udvidelsesmodul til "
+"GStreamer RTSP."
 
 msgid ""
 "Could not open audio device for playback. Device is being used by another "
@@ -169,6 +129,25 @@ msgid "Could not open audio device for playback."
 msgstr "Kunne ikke åbne enhed til afspilning."
 
 msgid ""
+"Could not open audio device for playback. This version of the Open Sound "
+"System is not supported by this element."
+msgstr ""
+"Kunne ikke åbne lydenhed til afspilning. Denne version af Open Sound System "
+"er ikke understøttet af dette element."
+
+msgid "Playback is not supported by this audio device."
+msgstr "Afspilning er ikke understøttet af denne lydenhed."
+
+msgid "Audio playback error."
+msgstr "Fejl ved lydafspilning."
+
+msgid "Recording is not supported by this audio device."
+msgstr "Optagelse er ikke understøttet af denne lydenhed."
+
+msgid "Error recording from audio device."
+msgstr "Fejl ved optagelse fra lydenhed."
+
+msgid ""
 "Could not open audio device for recording. You don't have permission to open "
 "the device."
 msgstr ""
@@ -178,8 +157,41 @@ msgstr ""
 msgid "Could not open audio device for recording."
 msgstr "Kunne ikke åbne lydenhed til optagelse."
 
+msgid "Record Source"
+msgstr "Optagelseskilde"
+
+msgid "Microphone"
+msgstr "Mikrofon"
+
+msgid "Line In"
+msgstr "Linje ind"
+
+msgid "Internal CD"
+msgstr "Intern cd"
+
+msgid "SPDIF In"
+msgstr "SPDIF ind"
+
+msgid "AUX 1 In"
+msgstr "AUX 1 ind"
+
+msgid "AUX 2 In"
+msgstr "AUX 2 ind"
+
+msgid "Codec Loopback"
+msgstr "Codec-loopback"
+
+msgid "SunVTS Loopback"
+msgstr "SunVTS-loopback"
+
+msgid "Volume"
+msgstr "Lydstyrke"
+
 msgid "Gain"
 msgstr "Forhøjelse"
+
+msgid "Monitor"
+msgstr "Monitor"
 
 msgid "Built-in Speaker"
 msgstr "Indbygget højtaler"
@@ -201,24 +213,129 @@ msgstr "AUX 2 ud"
 
 #, c-format
 msgid "Error reading %d bytes from device '%s'."
-msgstr "Fejl ved læsning af %d byte på enhed '%s'."
-
-# Er rammestørrelse ikke mere passende? Jeg er dog ikke helt sikker på
-# konteksten her. 
-#, c-format
-msgid "Got unexpected frame size of %u instead of %u."
-msgstr "Fik uventet billedstørrelse på %u i steden for %u."
+msgstr "Fejl ved læsning af %d byte på enhed »%s«."
 
 #, c-format
-msgid "Error reading %d bytes on device '%s'."
-msgstr "Fejl ved læsning af %d byte på enhed '%s'."
+msgid "Failed to enumerate possible video formats device '%s' can work with"
+msgstr ""
+"Kunne ikke nummerere mulig videoformater som enhed »%s« kan fungere med"
+
+#, c-format
+msgid "Could not map buffers from device '%s'"
+msgstr "Kunne ikke afbilde mellemlager fra enhed »%s«"
+
+#, c-format
+msgid "The driver of device '%s' does not support the IO method %d"
+msgstr "Driveren til enhed »%s« understøtter ikke IO-metoden %d"
+
+#, c-format
+msgid "The driver of device '%s' does not support any known IO method."
+msgstr "Driveren til enhed »%s« understøtter ingen kendt IO-metode."
+
+#, c-format
+msgid "Device '%s' is busy"
+msgstr "Enheden »%s« er optaget"
+
+#, c-format
+msgid "Device '%s' cannot capture at %dx%d"
+msgstr "Enheden »%s« kan ikke optage med %dx%d"
+
+#, c-format
+msgid "Device '%s' cannot capture in the specified format"
+msgstr "Enheden »%s« kan ikke optage i det angivne format"
+
+#, c-format
+msgid "Device '%s' does support non-contiguous planes"
+msgstr "Enheden »%s« understøtter ikke planer, der ikke hænger sammen"
+
+#, c-format
+msgid "Could not get parameters on device '%s'"
+msgstr "Kunne ikke hente parametre fra enhed »%s«"
+
+msgid "Video device did not accept new frame rate setting."
+msgstr "Videoenheden accepterede ikke ny indstilling for billedrate."
+
+msgid "Video device did not provide output format."
+msgstr "Videoenheden angav ikke uddataformat."
+
+msgid "Video device returned invalid dimensions."
+msgstr "Videoenhed returnerede ugyldige dimensioner."
+
+# http://en.wikipedia.org/wiki/Interlaced_video
+msgid "Video devices uses an unsupported interlacing method."
+msgstr "Videoenheder bruger en interlace-metode, der ikke er understøttet."
+
+msgid "Video devices uses an unsupported pixel format."
+msgstr "Videoenheder bruger et billedpunktsformat, der ikke er understøttet."
+
+msgid "Failed to configure internal buffer pool."
+msgstr "Kunne ikke konfigurere intern mellemlagerkø."
+
+msgid "Video device did not suggest any buffer size."
+msgstr "Videoenhed foreslog ikke en mellemlagerstørrelse."
+
+msgid "No downstream pool to import from."
+msgstr "Ingen nedstrømskø at importere fra."
+
+#, c-format
+msgid "Failed to get settings of tuner %d on device '%s'."
+msgstr "Hentning af indstillinger for tuner %d på enhed »%s« fejlede."
+
+#, c-format
+msgid "Error getting capabilities for device '%s'."
+msgstr "Fejl under hentning af kapaciteter for enhed »%s«."
+
+#, c-format
+msgid "Device '%s' is not a tuner."
+msgstr "Enhed »%s« er ikke en tuner."
+
+#, c-format
+msgid "Failed to get radio input on device '%s'. "
+msgstr "Kunne ikke hente radioinddata for enhed »%s«."
+
+#, c-format
+msgid "Failed to set input %d on device %s."
+msgstr "Kunne ikke sætte inddata %d for enhed %s."
+
+#, c-format
+msgid "Failed to change mute state for device '%s'."
+msgstr "Kunne ikke ændre tilstand for tænk/slut for enhed »%s«."
+
+msgid "Failed to allocated required memory."
+msgstr "Kunne ikke allokere den krævede hukommelse."
+
+msgid "Failed to allocate required memory."
+msgstr "Kunne ikke allokere den krævede hukommelse."
+
+#, c-format
+msgid "Converter on device %s has no supported input format"
+msgstr ""
+"Konverteringsprogram på enhed %s har ikke et understøttet inddataformat"
+
+#, c-format
+msgid "Converter on device %s has no supported output format"
+msgstr "Konverteringsprogram på enhed %s har ikke et understøttet uddataformat"
+
+#, c-format
+msgid "Encoder on device %s has no supported input format"
+msgstr "Koder på enhed %s har ikke et understøttet inddataformat"
+
+#, c-format
+msgid "Encoder on device %s has no supported output format"
+msgstr "Koder på enhed %s har ikke et understøttet uddataformat"
+
+msgid "Failed to start decoding thread."
+msgstr "Kunne ikke starte afkodning af tråd."
+
+msgid "Failed to process frame."
+msgstr "Kunne ikke behandle billed."
 
 #, c-format
 msgid ""
 "Error getting capabilities for device '%s': It isn't a v4l2 driver. Check if "
 "it is a v4l1 driver."
 msgstr ""
-"Fejl ved hentning af egenskaber for enhed '%s': Det er ikke en v412 driver. "
+"Fejl ved hentning af egenskaber for enhed »%s«: Det er ikke en v412 driver. "
 "Kontroller om det er en v411 driver."
 
 #, c-format
@@ -227,96 +344,82 @@ msgstr "Listning af inddata-attributter for %d i enhed %s fejlede"
 
 #, c-format
 msgid "Failed to get setting of tuner %d on device '%s'."
-msgstr "Hentning af indstillinger for tuner %d på enhed '%s' fejlede."
+msgstr "Hentning af indstillinger for tuner %d på enhed »%s« fejlede."
 
 #, c-format
 msgid "Failed to query norm on device '%s'."
-msgstr "Listning af standard på enhed '%s' fejlede."
+msgstr "Listning af standard på enhed »%s« fejlede."
 
 #, c-format
 msgid "Failed getting controls attributes on device '%s'."
-msgstr "Hentning af kontrolattributter for enhed '%s' fejlede."
+msgstr "Hentning af kontrolattributter for enhed »%s« fejlede."
 
 #, c-format
 msgid "Cannot identify device '%s'."
-msgstr "Kan ikke identificere enhed '%s'."
+msgstr "Kan ikke identificere enhed »%s«."
 
 #, c-format
 msgid "This isn't a device '%s'."
-msgstr "Dette er ikke en enheds '%s'."
+msgstr "Dette er ikke en enheds »%s«."
 
 #, c-format
 msgid "Could not open device '%s' for reading and writing."
-msgstr "Kunne ikke tilgå enhed '%s'."
+msgstr "Kunne ikke tilgå enhed »%s«."
 
 #, c-format
 msgid "Device '%s' is not a capture device."
-msgstr "Enhed '%s' er ikke en optageenhed."
+msgstr "Enhed »%s« er ikke en optageenhed."
 
 #, c-format
 msgid "Device '%s' is not a output device."
-msgstr "Enhed '%s' er ikke en uddataenhed."
+msgstr "Enhed »%s« er ikke en uddataenhed."
+
+#, c-format
+msgid "Device '%s' is not a M2M device."
+msgstr "Enhed »%s« er ikke en M2M-enhed."
+
+#, c-format
+msgid "Could not dup device '%s' for reading and writing."
+msgstr "Kunne ikke dup enhed »%s« for læsning og skrivning."
 
 #, c-format
 msgid "Failed to set norm for device '%s'."
-msgstr "Indstilling af standard for enhed '%s' fejlede."
+msgstr "Indstilling af standard for enhed »%s« fejlede."
 
 #, c-format
 msgid "Failed to get current tuner frequency for device '%s'."
-msgstr "Kunne ikke hente nuværende tuner-frekvens for enhed '%s'."
+msgstr "Kunne ikke hente nuværende tuner-frekvens for enhed »%s«."
 
 #, c-format
 msgid "Failed to set current tuner frequency for device '%s' to %lu Hz."
-msgstr "Kunne ikke sætte nuværende tuner-frekvens for enhed '%s' til %lu Hz."
+msgstr "Kunne ikke sætte nuværende tuner-frekvens for enhed »%s« til %lu Hz."
 
 #, c-format
 msgid "Failed to get signal strength for device '%s'."
-msgstr "Kunne ikke hente signalstyrke for enhed '%s'."
+msgstr "Kunne ikke hente signalstyrke for enhed »%s«."
 
 #, c-format
 msgid "Failed to get value for control %d on device '%s'."
-msgstr "Kunne ikke hente værdi af kontrol %d for enhed '%s'."
+msgstr "Kunne ikke hente værdi af kontrol %d for enhed »%s«."
 
 #, c-format
 msgid "Failed to set value %d for control %d on device '%s'."
-msgstr "Kunne ikke sætte værdi %d på kontrol %d for enhed '%s'."
+msgstr "Kunne ikke sætte værdi %d på kontrol %d for enhed »%s«."
 
 #, c-format
 msgid "Failed to get current input on device '%s'. May be it is a radio device"
 msgstr ""
-"Kunne ikke hente nuværende inddata for enhed '%s'. Måske er det en radioenhed"
+"Kunne ikke hente nuværende inddata for enhed »%s«. Måske er det en radioenhed"
 
 #, c-format
-msgid "Failed to set input %d on device %s."
-msgstr "Kunne ikke sætte inddata %d for enhed %s."
-
-#, c-format
-msgid "Could not enqueue buffers in device '%s'."
-msgstr "Kunne ikke sætte mellemlager fra enhed '%s' i kø."
-
-#, c-format
-msgid "Failed trying to get video frames from device '%s'."
-msgstr "Forsøg på at hente videorammer fra enhed '%s' mislykkedes."
-
-#, c-format
-msgid "Failed after %d tries. device %s. system error: %s"
-msgstr "Fejlede efter %d forsøg. enhed %s. systemfejl: %s"
-
-#, c-format
-msgid "Could not get parameters on device '%s'"
-msgstr "Kunne ikke hente parametre fra enhed '%s'"
-
-msgid "Video input device did not accept new frame rate setting."
+msgid ""
+"Failed to get current output on device '%s'. May be it is a radio device"
 msgstr ""
-"Enheden til videoinddata accepterede ikke ny indstilling for billedrate."
+"Kunne ikke hente nuværende uddata for enhed »%s«. Måske er det en radioenhed"
 
 #, c-format
-msgid "Could not map buffers from device '%s'"
-msgstr "Kunne ikke afbilde mellemlager fra enhed '%s'"
-
-#, c-format
-msgid "The driver of device '%s' does not support any known capture method."
-msgstr "Driveren til enhed '%s' understøtter ingen kendt optagemetode."
+msgid "Failed to set output %d on device %s."
+msgstr "Kunne ikke sætte uddata %d for enhed %s."
 
 msgid "Changing resolution at runtime is not yet supported."
 msgstr "Ændring af opløsning under kørsel er endnu ikke understøttet."
@@ -324,80 +427,5 @@ msgstr "Ændring af opløsning under kørsel er endnu ikke understøttet."
 msgid "Cannot operate without a clock"
 msgstr "Kan ikke fungere uden et ur"
 
-#~ msgid "Failed to enumerate possible video formats device '%s' can work with"
-#~ msgstr ""
-#~ "Kunne ikke liste mulige videoformater, som '%s' enheden kan arbejde med"
-
-#~ msgid ""
-#~ "The buffer type is not supported, or the index is out of bounds, or no "
-#~ "buffers have been allocated yet, or the userptr or length are invalid. "
-#~ "device %s"
-#~ msgstr ""
-#~ "Buffertypen er ikke understøttet, eller indeks er udenfor grænser, eller "
-#~ "der er ikke blevet tildelt buffere endnu, eller userptr eller længde er "
-#~ "defekt. enhed %s"
-
-#~ msgid ""
-#~ "Failed trying to get video frames from device '%s'. Not enough memory."
-#~ msgstr ""
-#~ "Forsøg på at hente videorammer fra enhed '%s' mislykkedes. Ikke "
-#~ "tilstrækkeligt hukommelse."
-
-#~ msgid "insufficient memory to enqueue a user pointer buffer. device %s."
-#~ msgstr ""
-#~ "ikke tilstrækkeligt med hukommelse til at indrangere en "
-#~ "brugerviserbuffer. enhed %s."
-
-#~ msgid "No free buffers found in the pool at index %d."
-#~ msgstr "Intet ledigt mellemlager fundet i puljen ved indeks %d."
-
 #~ msgid "Device '%s' does not support video capture"
-#~ msgstr "Enhed '%s' understøtter ikke videooptagelse"
-
-#~ msgid "Device '%s' cannot capture at %dx%d"
-#~ msgstr "Enhed '%s' kan ikke optage ved %dx%d"
-
-#~ msgid "Device '%s' cannot capture in the specified format"
-#~ msgstr "Enhed '%s' kan ikke optage i det angivet format"
-
-#~ msgid "Could not get buffers from device '%s'."
-#~ msgstr "Kunne ikke hente buffere fra enhed '%s'."
-
-#~ msgid "Could not get enough buffers from device '%s'."
-#~ msgstr "Kunne ikke hente tilstrækkeligt med buffere fra enhed '%s'."
-
-#~ msgid "Error starting streaming capture from device '%s'."
-#~ msgstr "Kunne ikke starte strømningsoptagelse fra enhed '%s'."
-
-#~ msgid "Error stopping streaming capture from device '%s'."
-#~ msgstr "Kunne ikke stoppe strømningsoptagelse fra enhed '%s'."
-
-#~ msgid "Failed getting controls attributes on device '%s.'"
-#~ msgstr "Hentning af kontrolattributter for enhed '%s' fejlede."
-
-#~ msgid "Error reading from device '%s'"
-#~ msgstr "Fejl ved læsning fra enhed '%s'"
-
-#~ msgid "Could not exchange data with device '%s'."
-#~ msgstr "Kunne ikke udveksle data med enheden '%s'."
-
-#~ msgid "Failed querying in which video format device '%s' is working with"
-#~ msgstr "Kunne ikke liste i hvilke formater, enhed '%s' kan arbejde med"
-
-#~ msgid ""
-#~ "The closest size from %dx%d is %dx%d, for video format %s on device '%s'"
-#~ msgstr ""
-#~ "Den nærmeste størrelse fra %dx%d er %dx%d, for videoformat %s for enhed '%"
-#~ "s'"
-
-#~ msgid "The closest framerate from %u/%u is %u/%u, on device '%s'"
-#~ msgstr "Den nærmeste framerate fra %u/%u er %u/%u, på enhed '%s'"
-
-#~ msgid "Failed setting the video format for device '%s'"
-#~ msgstr "Kunne ikke indstille videoformat for enhed '%s'"
-
-#~ msgid "Could not get properties of data comming from device '%s'"
-#~ msgstr "Kunne ikke få egenskaberne for de data der kommer fra enhed '%s'"
-
-#~ msgid "Could not map memory in device '%s'."
-#~ msgstr "Kunne ikke afbilde hukommelse i enhed '%s'."
+#~ msgstr "Enheden »%s« understøtter ikke videooptagelse"

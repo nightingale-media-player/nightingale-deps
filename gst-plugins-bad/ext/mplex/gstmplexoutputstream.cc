@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -103,11 +103,10 @@ GstMplexOutputStream::Write (guint8 * data, guint len)
   GstBuffer *buf;
 
   buf = gst_buffer_new_and_alloc (len);
-  memcpy (GST_BUFFER_DATA (buf), data, len);
+  gst_buffer_fill (buf, 0, data, len);
 
   size += len;
   GST_MPLEX_MUTEX_LOCK (mplex);
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (pad));
   mplex->srcresult = gst_pad_push (pad, buf);
   GST_MPLEX_MUTEX_UNLOCK (mplex);
 }

@@ -6,13 +6,109 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad 0.10.7.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
+"POT-Creation-Date: 2015-09-25 22:59+0200\n"
 "PO-Revision-Date: 2008-08-15 16:07+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <translation-team-sq@lists.sourceforge.net>\n"
+"Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
+
+msgid "default GStreamer sound events audiosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play audio using any number of output elements. Some possible "
+"choices are osssink, pulsesink and alsasink. The audiosink can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer sound events audiosink"
+msgstr ""
+
+msgid "Describes the selected audiosink element."
+msgstr ""
+
+msgid "default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid ""
+"description for default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid "default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "description for default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "default GStreamer videosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play video using any number of output elements. Some possible "
+"choices are xvimagesink, ximagesink, sdlvideosink and aasink. The videosink "
+"can be a partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosink"
+msgstr ""
+
+msgid "Describes the selected videosink element."
+msgstr ""
+
+msgid "default GStreamer audiosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record audio using any number of input elements. Some possible "
+"choices are osssrc, pulsesrc and alsasrc. The audio source can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer audiosrc"
+msgstr ""
+
+msgid "Describes the selected audiosrc element."
+msgstr ""
+
+msgid "default GStreamer videosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record video from any number of input elements. Some possible "
+"choices are v4lsrc, v4l2src and videotestsrc. The video source can be a "
+"partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosrc"
+msgstr ""
+
+msgid "Describes the selected videosrc element."
+msgstr ""
+
+msgid "default GStreamer visualization"
+msgstr ""
+
+msgid ""
+"GStreamer can put visualization plugins in a pipeline to transform audio "
+"streams in video frames. Some possible choices are goom, goom2k1 and "
+"synaesthesia. The visualization plugin can be a partial pipeline instead of "
+"just one element."
+msgstr ""
+
+msgid "description for default GStreamer visualization"
+msgstr ""
+
+msgid "Describes the selected visualization element."
+msgstr ""
+
+msgid "OpenCV failed to load template image"
+msgstr ""
 
 #, fuzzy
 msgid "Could not read title information for DVD."
@@ -25,27 +121,75 @@ msgstr "E pamundur hapja e dispozitivit frontend \"%s\"."
 msgid "Failed to set PGC based seeking."
 msgstr ""
 
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+
 #, fuzzy
-msgid "Internal clock error."
-msgstr "Gabim i brendshëm tek stream i të dhënave."
+msgid "Could not read DVD."
+msgstr "I pamundur shkrimi tek file \"%s\"."
+
+msgid "This file contains no playable streams."
+msgstr ""
+
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "E pamundur hapja e file \"%s\" për lexim."
+
+msgid "Could not establish connection to sndio"
+msgstr ""
+
+msgid "Failed to query sndio capabilities"
+msgstr ""
+
+#, fuzzy
+msgid "Could not configure sndio"
+msgstr "I pamundur konfigurimi i dispozitivit të zërit \"%s\"."
+
+#, fuzzy
+msgid "Could not start sndio"
+msgstr "I pamundur shkrimi tek file \"%s\"."
 
 #, fuzzy
 msgid "Internal data flow error."
 msgstr "Gabim i brendshëm tek stream i të dhënave."
 
-msgid "No file name specified for writing."
-msgstr "Asnjë emër file specifikuar për shkrim."
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
 
 #, c-format
-msgid "Could not open file \"%s\" for writing."
-msgstr "E pamundur hapja e file \"%s\" në shkrim."
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr ""
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+
+msgid "Digitalzoom element couldn't be created"
+msgstr ""
+
+msgid "Subpicture format was not configured before data flow"
+msgstr ""
+
+msgid "Failed to get fragment URL."
+msgstr ""
 
 msgid "Internal data stream error."
 msgstr "Gabim i brendshëm tek stream i të dhënave."
 
+msgid "Couldn't download fragments"
+msgstr ""
+
+msgid "No file name specified for writing."
+msgstr "Asnjë emër file specifikuar për shkrim."
+
 #, c-format
-msgid "Could not write to file \"%s\"."
-msgstr "I pamundur shkrimi tek file \"%s\"."
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
+
+#, c-format
+msgid "Could not open file \"%s\" for writing."
+msgstr "E pamundur hapja e file \"%s\" në shkrim."
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -59,372 +203,34 @@ msgstr "E pamundur hapja e dispozitivit frontend \"%s\"."
 msgid "Could not get settings from frontend device \"%s\"."
 msgstr "E pamundur marrja e rregullimeve nga dispozitivi frontend \"%s\"."
 
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr "E pamundur marrja e rregullimeve nga dispozitivi frontend \"%s\"."
+
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "E pamundur hapja e file \"%s\" për lexim."
 
-#, fuzzy
-msgid "Could not open audio device for mixer control handling."
-msgstr "E pamundur hapja e dispozitivit të zërit \"%s\" për shkrim."
-
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr ""
-
-msgid "Volume"
-msgstr "Volumi"
-
-msgid "Master"
-msgstr ""
-
-msgid "Front"
-msgstr ""
-
-#, fuzzy
-msgid "Rear"
-msgstr "Regjistrimi"
-
-msgid "Headphones"
-msgstr ""
-
-msgid "Center"
-msgstr ""
-
-msgid "LFE"
-msgstr ""
-
-msgid "Surround"
-msgstr ""
-
-#, fuzzy
-msgid "Side"
-msgstr "Video"
-
-#, fuzzy
-msgid "Built-in Speaker"
-msgstr "Zë folës"
-
-msgid "AUX 1 Out"
-msgstr ""
-
-msgid "AUX 2 Out"
-msgstr ""
-
-msgid "AUX Out"
-msgstr ""
-
-msgid "Bass"
-msgstr "Bas"
-
-msgid "Treble"
-msgstr "Treble"
-
-msgid "3D Depth"
-msgstr ""
-
-msgid "3D Center"
-msgstr ""
-
-msgid "3D Enhance"
-msgstr ""
-
-msgid "Telephone"
-msgstr ""
-
-msgid "Microphone"
-msgstr "Mikrofoni"
-
-msgid "Line Out"
-msgstr ""
-
-#, fuzzy
-msgid "Line In"
-msgstr "Linja-hyrje"
-
-msgid "Internal CD"
-msgstr ""
-
-#, fuzzy
-msgid "Video In"
-msgstr "Video"
-
-msgid "AUX 1 In"
-msgstr ""
-
-msgid "AUX 2 In"
-msgstr ""
-
-msgid "AUX In"
-msgstr ""
-
-msgid "PCM"
-msgstr "PCM"
-
-#, fuzzy
-msgid "Record Gain"
-msgstr "Regjistrimi"
-
-#, fuzzy
-msgid "Output Gain"
-msgstr "Out-gain"
-
-#, fuzzy
-msgid "Microphone Boost"
-msgstr "Mikrofoni"
-
-msgid "Loopback"
-msgstr ""
-
-msgid "Diagnostic"
-msgstr ""
-
-msgid "Bass Boost"
-msgstr ""
-
-msgid "Playback Ports"
-msgstr ""
-
-msgid "Input"
-msgstr ""
-
-#, fuzzy
-msgid "Record Source"
-msgstr "Regjistrimi"
-
-#, fuzzy
-msgid "Monitor Source"
-msgstr "Ekrani"
-
-msgid "Keyboard Beep"
-msgstr ""
-
-msgid "Monitor"
-msgstr "Ekrani"
-
-msgid "Simulate Stereo"
-msgstr ""
-
-msgid "Stereo"
-msgstr ""
-
-msgid "Surround Sound"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone Gain"
-msgstr "Mikrofoni"
-
-#, fuzzy
-msgid "Speaker Source"
-msgstr "Zë folës"
-
-#, fuzzy
-msgid "Microphone Source"
-msgstr "Mikrofoni"
-
-msgid "Jack"
-msgstr ""
-
-msgid "Center / LFE"
-msgstr ""
-
-msgid "Stereo Mix"
-msgstr ""
-
-msgid "Mono Mix"
-msgstr ""
-
-msgid "Input Mix"
-msgstr ""
-
-msgid "SPDIF In"
-msgstr ""
-
-msgid "SPDIF Out"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone 1"
-msgstr "Mikrofoni"
-
-#, fuzzy
-msgid "Microphone 2"
-msgstr "Mikrofoni"
-
-#, fuzzy
-msgid "Digital Out"
-msgstr "Dixhitale-1"
-
-#, fuzzy
-msgid "Digital In"
-msgstr "Dixhitale-1"
-
-msgid "HDMI"
-msgstr ""
-
-msgid "Modem"
-msgstr ""
-
-msgid "Handset"
-msgstr ""
-
-msgid "Other"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "On"
-msgstr ""
-
-msgid "Off"
-msgstr ""
-
-msgid "Mute"
-msgstr ""
-
-msgid "Fast"
-msgstr ""
-
-msgid "Very Low"
-msgstr ""
-
-msgid "Low"
-msgstr ""
-
-msgid "Medium"
-msgstr ""
-
-msgid "High"
-msgstr ""
-
-msgid "Very High"
-msgstr ""
-
-msgid "Production"
-msgstr ""
-
-#, fuzzy
-msgid "Front Panel Microphone"
-msgstr "Mikrofoni"
-
-msgid "Front Panel Line In"
-msgstr ""
-
-msgid "Front Panel Headphones"
-msgstr ""
-
-msgid "Front Panel Line Out"
-msgstr ""
-
-msgid "Green Connector"
-msgstr ""
-
-msgid "Pink Connector"
-msgstr ""
-
-msgid "Blue Connector"
-msgstr ""
-
-msgid "White Connector"
-msgstr ""
-
-msgid "Black Connector"
-msgstr ""
-
-msgid "Gray Connector"
-msgstr ""
-
-msgid "Orange Connector"
-msgstr ""
-
-msgid "Red Connector"
-msgstr ""
-
-msgid "Yellow Connector"
-msgstr ""
-
-msgid "Green Front Panel Connector"
-msgstr ""
-
-msgid "Pink Front Panel Connector"
-msgstr ""
-
-msgid "Blue Front Panel Connector"
-msgstr ""
-
-msgid "White Front Panel Connector"
-msgstr ""
-
-msgid "Black Front Panel Connector"
-msgstr ""
-
-msgid "Gray Front Panel Connector"
-msgstr ""
-
-msgid "Orange Front Panel Connector"
-msgstr ""
-
-msgid "Red Front Panel Connector"
-msgstr ""
-
-msgid "Yellow Front Panel Connector"
-msgstr ""
-
-msgid "Spread Output"
-msgstr ""
-
-msgid "Downmix"
-msgstr ""
-
-msgid "Virtual Mixer Input"
-msgstr ""
-
-msgid "Virtual Mixer Output"
-msgstr ""
-
-msgid "Virtual Mixer Channels"
+msgid "Couldn't find DVB channel configuration file"
 msgstr ""
 
 #, c-format
-msgid "%s Function"
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr ""
+
+msgid "DVB channel configuration file doesn't contain any channels"
 msgstr ""
 
 #, c-format
-msgid "%s %d"
+msgid "Couldn't find details for DVB channel %s"
 msgstr ""
 
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr ""
+#~ msgid "Could not write to file \"%s\"."
+#~ msgstr "I pamundur shkrimi tek file \"%s\"."
 
 #, fuzzy
-msgid "Could not open audio device for playback."
-msgstr "E pamundur hapja e dispozitivit të zërit \"%s\" për shkrim."
-
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-
-msgid "Playback is not supported by this audio device."
-msgstr ""
-
-msgid "Audio playback error."
-msgstr ""
-
-msgid "Recording is not supported by this audio device."
-msgstr ""
-
-msgid "Error recording from audio device."
-msgstr ""
+#~ msgid "Internal clock error."
+#~ msgstr "Gabim i brendshëm tek stream i të dhënave."
 
 #~ msgid "Could not open device \"%s\" for reading and writing."
 #~ msgstr "E pamundur hapja e dispozitivit \"%s\" për lexim dhe shkrim."
@@ -440,9 +246,6 @@ msgstr ""
 
 #~ msgid "Could not open control device \"%s\" for writing."
 #~ msgstr "E pamundur hapja e dispozitivit të kontrollit \"%s\" për shkrim."
-
-#~ msgid "Could not configure audio device \"%s\"."
-#~ msgstr "I pamundur konfigurimi i dispozitivit të zërit \"%s\"."
 
 #~ msgid "Could not set audio device \"%s\" to %d Hz."
 #~ msgstr "I pamundur rregullimi i dispozitivit audio \"%s\" në %d Hz."

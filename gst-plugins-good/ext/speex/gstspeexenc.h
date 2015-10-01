@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,7 +23,7 @@
 
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudioencoder.h>
 
 #include <speex/speex.h>
 #include <speex/speex_header.h>
@@ -41,9 +41,6 @@ G_BEGIN_DECLS
 #define GST_IS_SPEEX_ENC_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SPEEX_ENC))
 
-#define MAX_FRAME_SIZE 2000*2
-#define MAX_FRAME_BYTES 2000
-
 typedef enum
 {
   GST_SPEEX_ENC_MODE_AUTO,
@@ -56,26 +53,15 @@ typedef struct _GstSpeexEnc GstSpeexEnc;
 typedef struct _GstSpeexEncClass GstSpeexEncClass;
 
 struct _GstSpeexEnc {
-  GstElement            element;
-
-  /* pads */
-  GstPad                *sinkpad,
-                        *srcpad;
-
-  gint                  packet_count;
-  gint                  n_packets;
+  GstAudioEncoder   element;
 
   SpeexBits             bits;
   SpeexHeader           header;
-#if SPEEX_1_0
-  SpeexMode             *speex_mode;
-#else
   const SpeexMode       *speex_mode;
-#endif
   void                  *state;
-  GstSpeexMode          mode;
-  GstAdapter            *adapter;
 
+  /* properties */
+  GstSpeexMode          mode;
   gfloat                quality;
   gint                  bitrate;
   gboolean              vbr;
@@ -84,40 +70,25 @@ struct _GstSpeexEnc {
   gboolean              dtx;
   gint                  complexity;
   gint                  nframes;
-
-  gint                  lookahead;
+  gchar                 *last_message;
 
   gint                  channels;
   gint                  rate;
 
-  gboolean              setup;
   gboolean              header_sent;
-
-  guint64               samples_in;
-  guint64               bytes_out;
+  guint64               encoded_samples;
 
   GstTagList            *tags;
 
-  gchar                 *last_message;
-
   gint                  frame_size;
-  guint64               frameno;
-  guint64               frameno_out;
+  gint                  lookahead;
 
   guint8                *comments;
   gint                  comment_len;
-
-  /* Timestamp and granulepos tracking */
-  GstClockTime     start_ts;
-  GstClockTime     next_ts;
-  guint64          granulepos_offset;
 };
 
 struct _GstSpeexEncClass {
-  GstElementClass parent_class;
-
-  /* signals */
-  void (*frame_encoded) (GstElement *element);
+  GstAudioEncoderClass parent_class;
 };
 
 GType gst_speex_enc_get_type (void);

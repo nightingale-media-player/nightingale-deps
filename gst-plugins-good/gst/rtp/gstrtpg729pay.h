@@ -14,15 +14,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_G729_PAY_H__
 #define __GST_RTP_G729_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpaudiopayload.h>
+#include <gst/rtp/gstrtpbaseaudiopayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,13 +42,22 @@ typedef struct _GstRTPG729PayClass GstRTPG729PayClass;
 
 struct _GstRTPG729Pay
 {
-  GstBaseRTPAudioPayload audiopayload;
+  GstRTPBasePayload payload;
+
+  GstAdapter *adapter;
+  GstClockTime next_ts;
+  guint32 next_rtp_time;
+  GstClockTime first_ts;
+  guint32 first_rtp_time;
+  gboolean discont;
 };
 
 struct _GstRTPG729PayClass
 {
-  GstBaseRTPAudioPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_g729_pay_get_type (void);
 
 gboolean gst_rtp_g729_pay_plugin_init (GstPlugin * plugin);
 

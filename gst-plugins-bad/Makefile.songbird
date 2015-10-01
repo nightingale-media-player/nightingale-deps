@@ -1,12 +1,12 @@
 ################################################################################
 ################################################################################
 #
-# BEGIN SONGBIRD GPL
+# BEGIN NIGHTINGALE GPL
 # 
-# This file is part of the Songbird web player.
+# This file is part of the Nightingale Media Player.
 #
-# Copyright(c) 2007 POTI, Inc.
-# http://www.songbirdnest.com
+# Copyright(c) 2014
+# http://www.getnightingale.com
 # 
 # This file may be licensed under the terms of of the
 # GNU General Public License Version 2 (the "GPL").
@@ -21,17 +21,17 @@
 # or write to the Free Software Foundation, Inc., 
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # 
-# END SONGBIRD GPL
+# END NIGHTINGALE GPL
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: gstreamer (core)
+# Makefile for building Nightingale vendor: gstreamer (core)
 #
 ################################################################################
 ################################################################################
 
 SB_VENDOR_TARGET = gst-plugins-bad
-SB_VENDOR_TARGET_VERSION = 0.10.20
+SB_VENDOR_TARGET_VERSION = 1.6.0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -41,7 +41,6 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-tests \
         --disable-gtk-doc \
         --disable-liboil \
-        --with-mozilla=$(MOZSDK_DIR) \
         --disable-app --disable-bayer --disable-cdxaparse  \
         --disable-deinterlace --disable-dvdspu --disable-festival \
         --disable-filter --disable-flv --disable-freeze \
@@ -67,6 +66,12 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-wininet  --disable-x264 --disable-xvid \
         --disable-dccp --disable-legacyresample --disable-frei0r
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+    SB_VENDOR_TARGET_CONFIGURE_OPTS += --disable-yadif \
+                                       --disable-apple_media
+    SB_CFLAGS += -std=c99
+endif
+
 DIRECTSHOW_LIBS_ROOT = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/DirectShowBaseClasses
 
 ifeq (debug,$(SB_BUILD_TYPE))
@@ -86,12 +91,14 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
   SB_CC = $(CURDIR)/../clwrapper.py
   SB_CXX = $(CURDIR)/../clwrapper.py
-  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
+  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE -Dinline=__inline
   SB_CXXFLAGS += $(SB_CFLAGS)
   SB_USE_MOZCRT = 1
 
   # autoconf hackery; see bug 16052
   export ac_cv_header_streams_h = yes
+  export DIRECTX_FLAGS = "-I/c/SDKs/Windows-SDK/v7.0/Include"
+  export DIRECTX_LDFLAGS = "-L/c/SDKs/Windows-SDK/v7.0/Lib -ld3d9 -lgdi32 -L/c/Windows/System -luser32"
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
@@ -101,7 +108,7 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
-  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+  $(addsuffix -1.0, $(sort $(GST_BASE_DYLIBS))))
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
@@ -115,13 +122,17 @@ directshow-libs:
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DIRECTSHOW_LIBS_ROOT)
 	$(MSYS_CP) $(WINDOWS_SDK_ROOT)/Samples/MultiMedia/DirectShow/BaseClasses $(DIRECTSHOW_LIBS_ROOT)
-	patch -d $(DIRECTSHOW_LIBS_ROOT) -p0 < $(CURDIR)/sb-directshow-baseclasses.patch
+	dos2unix $(DIRECTSHOW_LIBS_ROOT)/baseclasses.vcproj
+	patch -d $(DIRECTSHOW_LIBS_ROOT) -p0 < $(CURDIR)/ng-directshow-baseclasses.patch
+	unix2dos $(DIRECTSHOW_LIBS_ROOT)/baseclasses.vcproj
 ifeq (debug,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Upgrade && \
          devenv baseclasses.sln -Build "Debug" -Project baseclasses
 endif
 ifeq (release,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Upgrade && \
          devenv baseclasses.sln -Build "Release" -Project baseclasses
 endif
 endif

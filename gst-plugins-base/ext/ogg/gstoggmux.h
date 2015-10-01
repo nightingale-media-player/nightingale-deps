@@ -14,16 +14,18 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_OGG_MUX_H__
-#define __GST_OGGEMUX_H__
+#define __GST_OGG_MUX_H__
 
 #include <ogg/ogg.h>
 
 #include <gst/gst.h>
+#include <gst/base/gstcollectpads.h>
+#include "gstoggstream.h"
 
 G_BEGIN_DECLS
 
@@ -48,13 +50,13 @@ typedef struct
 {
   GstCollectData collect;       /* we extend the CollectData */
 
-  /* These two buffers make a very simple queue - they enter as 'next_buffer'
-   * and (usually) leave as 'buffer', except at EOS, when buffer will be NULL */
-  GstBuffer *buffer;            /* the first waiting buffer for the pad */
-  GstBuffer *next_buffer;       /* the second waiting buffer for the pad */
+  GstOggStream map;
+  gboolean have_type;
 
-  gint serial;
-  ogg_stream_state stream;
+  GstSegment segment;
+
+  GstBuffer *buffer;            /* the first waiting buffer for the pad */
+
   gint64 packetno;              /* number of next packet */
   gint64 pageno;                /* number of next page */
   guint64 duration;             /* duration of current page */
@@ -70,19 +72,19 @@ typedef struct
 
   GstOggPadState state;         /* state of the pad */
 
-  GList *headers;
-
   GQueue *pagebuffers;          /* List of pages in buffers ready for pushing */
 
   gboolean new_page;            /* starting a new page */
   gboolean first_delta;         /* was the first packet in the page a delta */
   gboolean prev_delta;          /* was the previous buffer a delta frame */
+  gboolean data_pushed;         /* whether we pushed data already */
 
-  GstPadEventFunction collect_event;
+  gint64  next_granule;         /* expected granule of next buffer ts */
+  gint64  keyframe_granule;     /* granule of last preceding keyframe */
 
-  gboolean always_flush_page;
+  GstTagList *tags;
 }
-GstOggPad;
+GstOggPadData;
 
 /**
  * GstOggMux:
@@ -103,7 +105,7 @@ struct _GstOggMux
   gint active_pads;
 
   /* the pad we are currently using to fill a page */
-  GstOggPad *pulling;
+  GstOggPadData *pulling;
 
   /* next timestamp for the page */
   GstClockTime next_ts;
@@ -116,14 +118,19 @@ struct _GstOggMux
 
   /* need_headers */
   gboolean need_headers;
+  gboolean need_start_events;
 
   guint64 max_delay;
   guint64 max_page_delay;
+  guint64 max_tolerance;
 
-  GstOggPad *delta_pad;         /* when a delta frame is detected on a stream, we mark
+  GstOggPadData *delta_pad;     /* when a delta frame is detected on a stream, we mark
                                    pages as delta frames up to the page that has the
                                    keyframe */
 
+
+  /* whether to create a skeleton track */
+  gboolean use_skeleton;
 };
 
 struct _GstOggMuxClass
@@ -132,6 +139,8 @@ struct _GstOggMuxClass
 };
 
 GType gst_ogg_mux_get_type (void);
+
+gboolean gst_ogg_mux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

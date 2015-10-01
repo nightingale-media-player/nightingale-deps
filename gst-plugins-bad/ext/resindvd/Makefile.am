@@ -1,44 +1,37 @@
 # plugindir is set in configure
 
-plugin_LTLIBRARIES = libresindvd.la
+plugin_LTLIBRARIES = libgstresindvd.la
 
-libresindvd_la_SOURCES = \
+libgstresindvd_la_SOURCES = \
         plugin.c \
         resindvdbin.c \
-	rsnaudiomunge.c \
-	rsndec.c \
-	rsnbasesrc.c \
-	rsnpushsrc.c \
-	rsnstreamselector.c \
         resindvdsrc.c  \
+	rsndec.c \
         gstmpegdesc.c   \
         gstmpegdemux.c  \
         gstpesfilter.c \
-	rsnparsetter.c \
-	rsnwrappedbuffer.c
+	rsninputselector.c \
+	rsnparsetter.c
 
-libresindvd_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
+libgstresindvd_la_CFLAGS = $(GST_PLUGINS_BAD_CFLAGS) \
+$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
 $(GST_CFLAGS) $(DVDNAV_CFLAGS)
-libresindvd_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
--lgstinterfaces-$(GST_MAJORMINOR) -lgstvideo-$(GST_MAJORMINOR) \
--lgstpbutils-$(GST_MAJORMINOR) \
-$(GST_BASE_LIBS) $(GST_LIBS) $(DVDNAV_LIBS)
-libresindvd_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libresindvd_la_LIBTOOLFLAGS = --tag=disable-static
+libgstresindvd_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
+-lgstvideo-$(GST_API_VERSION) -lgstpbutils-$(GST_API_VERSION) \
+-lgsttag-$(GST_API_VERSION) \
+$(GST_BASE_LIBS) $(GST_LIBS) $(GMODULE_NO_EXPORT_LIBS) $(DVDNAV_LIBS)
+libgstresindvd_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstresindvd_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = resindvdbin.h \
-	rsnaudiomunge.h \
 	rsndec.h \
-	rsnbasesrc.h \
-	rsnpushsrc.h \
-	rsnstreamselector.h \
+	rsninputselector.h \
         resindvdsrc.h \
         gstmpegdefs.h \
         gstmpegdesc.h \
         gstmpegdemux.h \
         gstpesfilter.h \
-	rsnparsetter.h \
-	rsnwrappedbuffer.h
+	rsnparsetter.h
 
 EXTRA_DIST = resin-play resin-play2
 

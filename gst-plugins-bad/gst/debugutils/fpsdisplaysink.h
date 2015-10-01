@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef __FPS_DISPLAY_SINK_H__
@@ -48,20 +48,26 @@ struct _GstFPSDisplaySink
   /* gstreamer components */
   GstElement *text_overlay;
   GstElement *video_sink;
-  GstQuery *query;
   GstPad *ghost_pad;
 
   /* statistics */
-  guint64 frames_rendered, last_frames_rendered;
-  guint64 frames_dropped, last_frames_dropped;
-  GstClockTime last_ts;
-  GstClockTime next_ts;
+  gint frames_rendered, frames_dropped;  /* ATOMIC */
+  guint64 last_frames_rendered, last_frames_dropped;
 
-  guint timeout_id;
+  GstClockTime start_ts;
+  GstClockTime last_ts;
+  GstClockTime interval_ts;
+  guint data_probe_id;
 
   /* properties */
   gboolean sync;
   gboolean use_text_overlay;
+  gboolean signal_measurements;
+  GstClockTime fps_update_interval;
+  gdouble max_fps;
+  gdouble min_fps;
+  gboolean silent;
+  gchar *last_message;
 };
 
 struct _GstFPSDisplaySinkClass

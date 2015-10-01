@@ -14,14 +14,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef GST_ID3V2_MUX_H
 #define GST_ID3V2_MUX_H
 
-#include "gsttaglibmux.h"
+#include <gst/tag/gsttagmux.h>
 
 G_BEGIN_DECLS
 
@@ -29,11 +29,11 @@ typedef struct _GstId3v2Mux GstId3v2Mux;
 typedef struct _GstId3v2MuxClass GstId3v2MuxClass;
 
 struct _GstId3v2Mux {
-  GstTagLibMux  taglibmux;
+  GstTagMux  tagmux;
 };
 
 struct _GstId3v2MuxClass {
-  GstTagLibMuxClass  taglibmux_class;
+  GstTagMuxClass  tagmux_class;
 };
 
 #define GST_TYPE_ID3V2_MUX \

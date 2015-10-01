@@ -20,8 +20,8 @@
  * 
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -33,7 +33,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v videotestsrc ! edgetv ! ffmpegcolorspace ! autovideosink
+ * gst-launch-1.0 -v videotestsrc ! edgetv ! videoconvert ! autovideosink
  * ]| This pipeline shows the effect of edgetv on a test stream.
  * </refsect2>
  */
@@ -46,14 +46,13 @@
 
 #include "gstedge.h"
 
-#include <gst/video/video.h>
-
-GST_BOILERPLATE (GstEdgeTV, gst_edgetv, GstVideoFilter, GST_TYPE_VIDEO_FILTER);
+#define gst_edgetv_parent_class parent_class
+G_DEFINE_TYPE (GstEdgeTV, gst_edgetv, GST_TYPE_VIDEO_FILTER);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define CAPS_STR GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_RGBx
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{  BGRx, RGBx }")
 #else
-#define CAPS_STR GST_VIDEO_CAPS_xBGR ";" GST_VIDEO_CAPS_xRGB
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{  xBGR, xRGB }")
 #endif
 
 static GstStaticPadTemplate gst_edgetv_src_template =
@@ -71,55 +70,61 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     );
 
 static gboolean
-gst_edgetv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
-    GstCaps * outcaps)
+gst_edgetv_set_info (GstVideoFilter * filter, GstCaps * incaps,
+    GstVideoInfo * in_info, GstCaps * outcaps, GstVideoInfo * out_info)
 {
-  GstEdgeTV *edgetv = GST_EDGETV (btrans);
-  GstStructure *structure;
-  gboolean ret = FALSE;
+  GstEdgeTV *edgetv = GST_EDGETV (filter);
+  guint map_size;
+  gint width, height;
 
-  structure = gst_caps_get_structure (incaps, 0);
+  width = GST_VIDEO_INFO_WIDTH (in_info);
+  height = GST_VIDEO_INFO_HEIGHT (in_info);
 
-  if (gst_structure_get_int (structure, "width", &edgetv->width) &&
-      gst_structure_get_int (structure, "height", &edgetv->height)) {
-    guint map_size;
+  edgetv->map_width = width / 4;
+  edgetv->map_height = height / 4;
+  edgetv->video_width_margin = width % 4;
 
-    edgetv->map_width = edgetv->width / 4;
-    edgetv->map_height = edgetv->height / 4;
-    edgetv->video_width_margin = edgetv->width % 4;
+  map_size = edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2;
 
-    map_size = edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2;
+  g_free (edgetv->map);
+  edgetv->map = (guint32 *) g_malloc0 (map_size);
 
-    g_free (edgetv->map);
-    edgetv->map = (guint32 *) g_malloc0 (map_size);
-    ret = TRUE;
-  }
-
-  return ret;
+  return TRUE;
 }
 
 static GstFlowReturn
-gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
+gst_edgetv_transform_frame (GstVideoFilter * vfilter, GstVideoFrame * in_frame,
+    GstVideoFrame * out_frame)
 {
-  GstEdgeTV *filter = GST_EDGETV (trans);
+  GstEdgeTV *filter = GST_EDGETV (vfilter);
   gint x, y, r, g, b;
   guint32 *src, *dest;
   guint32 p, q;
   guint32 v0, v1, v2, v3;
+  gint width, map_height, map_width;
+  gint video_width_margin;
+  guint32 *map;
   GstFlowReturn ret = GST_FLOW_OK;
 
-  src = (guint32 *) GST_BUFFER_DATA (in);
-  dest = (guint32 *) GST_BUFFER_DATA (out);
+  map = filter->map;
+  map_height = filter->map_height;
+  map_width = filter->map_width;
+  video_width_margin = filter->video_width_margin;
 
-  src += filter->width * 4 + 4;
-  dest += filter->width * 4 + 4;
+  src = GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
+  dest = GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
 
-  for (y = 1; y < filter->map_height - 1; y++) {
-    for (x = 1; x < filter->map_width - 1; x++) {
+  width = GST_VIDEO_FRAME_WIDTH (in_frame);
+
+  src += width * 4 + 4;
+  dest += width * 4 + 4;
+
+  for (y = 1; y < map_height - 1; y++) {
+    for (x = 1; x < map_width - 1; x++) {
       p = *src;
       q = *(src - 4);
 
-      /* difference between the current pixel and right neighbor. */
+      /* difference between the current pixel and left neighbor. */
       r = ((p & 0xff0000) - (q & 0xff0000)) >> 16;
       g = ((p & 0xff00) - (q & 0xff00)) >> 8;
       b = (p & 0xff) - (q & 0xff);
@@ -138,7 +143,7 @@ gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
       v2 = (r << 17) | (g << 9) | b;
 
       /* difference between the current pixel and upper neighbor. */
-      q = *(src - filter->width * 4);
+      q = *(src - width * 4);
       r = ((p & 0xff0000) - (q & 0xff0000)) >> 16;
       g = ((p & 0xff00) - (q & 0xff00)) >> 8;
       b = (p & 0xff) - (q & 0xff);
@@ -156,10 +161,10 @@ gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
         b = 255;
       v3 = (r << 17) | (g << 9) | b;
 
-      v0 = filter->map[(y - 1) * filter->map_width * 2 + x * 2];
-      v1 = filter->map[y * filter->map_width * 2 + (x - 1) * 2 + 1];
-      filter->map[y * filter->map_width * 2 + x * 2] = v2;
-      filter->map[y * filter->map_width * 2 + x * 2 + 1] = v3;
+      v0 = map[(y - 1) * map_width * 2 + x * 2];
+      v1 = map[y * map_width * 2 + (x - 1) * 2 + 1];
+      map[y * map_width * 2 + x * 2] = v2;
+      map[y * map_width * 2 + x * 2 + 1] = v3;
       r = v0 + v1;
       g = r & 0x01010100;
       dest[0] = r | (g - (g >> 8));
@@ -170,22 +175,26 @@ gst_edgetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
       dest[3] = v3;
       r = v2 + v1;
       g = r & 0x01010100;
-      dest[filter->width] = r | (g - (g >> 8));
+      dest[width] = r | (g - (g >> 8));
       r = v2 + v3;
       g = r & 0x01010100;
-      dest[filter->width + 1] = r | (g - (g >> 8));
-      dest[filter->width + 2] = v3;
-      dest[filter->width + 3] = v3;
-      dest[filter->width * 2] = v2;
-      dest[filter->width * 2 + 1] = v2;
-      dest[filter->width * 3] = v2;
-      dest[filter->width * 3 + 1] = v2;
+      dest[width + 1] = r | (g - (g >> 8));
+      dest[width + 2] = v3;
+      dest[width + 3] = v3;
+      dest[width * 2] = v2;
+      dest[width * 2 + 1] = v2;
+      dest[width * 2 + 2] = 0;
+      dest[width * 2 + 3] = 0;
+      dest[width * 3] = v2;
+      dest[width * 3 + 1] = v2;
+      dest[width * 3 + 2] = 0;
+      dest[width * 3 + 3] = 0;
 
       src += 4;
       dest += 4;
     }
-    src += filter->width * 3 + 8 + filter->video_width_margin;
-    dest += filter->width * 3 + 8 + filter->video_width_margin;
+    src += width * 3 + 8 + video_width_margin;
+    dest += width * 3 + 8 + video_width_margin;
   }
 
   return ret;
@@ -214,34 +223,32 @@ gst_edgetv_finalize (GObject * object)
 }
 
 static void
-gst_edgetv_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (element_class, "EdgeTV effect",
-      "Filter/Effect/Video",
-      "Apply edge detect on video", "Wim Taymans <wim.taymans@chello.be>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_edgetv_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_edgetv_src_template));
-}
-
-static void
 gst_edgetv_class_init (GstEdgeTVClass * klass)
 {
-  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
   GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
+  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->finalize = gst_edgetv_finalize;
 
-  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_edgetv_set_caps);
-  trans_class->transform = GST_DEBUG_FUNCPTR (gst_edgetv_transform);
+  gst_element_class_set_static_metadata (gstelement_class, "EdgeTV effect",
+      "Filter/Effect/Video",
+      "Apply edge detect on video", "Wim Taymans <wim.taymans@chello.be>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_edgetv_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_edgetv_src_template));
+
   trans_class->start = GST_DEBUG_FUNCPTR (gst_edgetv_start);
+
+  vfilter_class->set_info = GST_DEBUG_FUNCPTR (gst_edgetv_set_info);
+  vfilter_class->transform_frame =
+      GST_DEBUG_FUNCPTR (gst_edgetv_transform_frame);
 }
 
 static void
-gst_edgetv_init (GstEdgeTV * edgetv, GstEdgeTVClass * klass)
+gst_edgetv_init (GstEdgeTV * edgetv)
 {
 }

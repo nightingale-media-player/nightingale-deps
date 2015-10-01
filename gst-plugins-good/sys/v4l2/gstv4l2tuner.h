@@ -17,16 +17,16 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_V4L2_TUNER_H__
 #define __GST_V4L2_TUNER_H__
 
 #include <gst/gst.h>
-#include <gst/interfaces/tuner.h>
 
+#include "tuner.h"
 #include "gstv4l2object.h"
 
 G_BEGIN_DECLS
@@ -94,6 +94,11 @@ void              gst_v4l2_tuner_set_norm_and_notify      (GstV4l2Object * v4l2o
 GstTunerNorm*     gst_v4l2_tuner_get_norm                 (GstV4l2Object * v4l2object);
 gboolean          gst_v4l2_tuner_set_norm                 (GstV4l2Object * v4l2object,
 		                                           GstTunerNorm * norm);
+GstTunerNorm*     gst_v4l2_tuner_get_norm_by_std_id       (GstV4l2Object * v4l2object,
+                                               v4l2_std_id norm);
+v4l2_std_id       gst_v4l2_tuner_get_std_id_by_norm       (GstV4l2Object * v4l2object,
+                                               GstTunerNorm * norm);
+
 /* frequency */
 void              gst_v4l2_tuner_set_frequency_and_notify (GstV4l2Object * v4l2object,
                                                            GstTunerChannel * channel, 
@@ -173,21 +178,23 @@ interface_as_function ## _tuner_signal_strength (GstTuner * mixer,              
   return gst_v4l2_tuner_signal_strength (this->v4l2object, channel);                  \
 }                                                                                     \
                                                                                       \
-void                                                                                  \
-interface_as_function ## _tuner_interface_init (GstTunerClass * klass)                \
+static void                                                                           \
+interface_as_function ## _tuner_interface_init (GstTunerInterface * iface)                \
 {                                                                                     \
   /* default virtual functions */                                                     \
-  klass->list_channels = interface_as_function ## _tuner_list_channels;               \
-  klass->set_channel = interface_as_function ## _tuner_set_channel;                   \
-  klass->get_channel = interface_as_function ## _tuner_get_channel;                   \
+  iface->list_channels = interface_as_function ## _tuner_list_channels;               \
+  iface->set_channel = interface_as_function ## _tuner_set_channel;                   \
+  iface->get_channel = interface_as_function ## _tuner_get_channel;                   \
                                                                                       \
-  klass->list_norms = interface_as_function ## _tuner_list_norms;                     \
-  klass->set_norm = interface_as_function ## _tuner_set_norm_and_notify;              \
-  klass->get_norm = interface_as_function ## _tuner_get_norm;                         \
+  iface->list_norms = interface_as_function ## _tuner_list_norms;                     \
+  iface->set_norm = interface_as_function ## _tuner_set_norm_and_notify;              \
+  iface->get_norm = interface_as_function ## _tuner_get_norm;                         \
                                                                                       \
-  klass->set_frequency = interface_as_function ## _tuner_set_frequency_and_notify;    \
-  klass->get_frequency = interface_as_function ## _tuner_get_frequency;               \
-  klass->signal_strength = interface_as_function ## _tuner_signal_strength;           \
+  iface->set_frequency = interface_as_function ## _tuner_set_frequency_and_notify;    \
+  iface->get_frequency = interface_as_function ## _tuner_get_frequency;               \
+  iface->signal_strength = interface_as_function ## _tuner_signal_strength;           \
 }                                                                                     \
+
+G_END_DECLS
 
 #endif /* __GST_V4L2_TUNER_H__ */

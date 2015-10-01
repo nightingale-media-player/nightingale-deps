@@ -60,13 +60,14 @@
     <para>
       If you need a new format that has not yet been defined in our <xref
       linkend="section-types-definitions"/>, you will want to have some general
-      guidelines on mimetype naming, properties and such. A mimetype would
-      ideally be one defined by IANA; else, it should be in the form
-      type/x-name, where type is the sort of data this mimetype handles (audio,
-      video, ...) and name should be something specific for this specific type.
-      Audio and video mimetypes should try to support the general audio/video
-      properties (see the list), and can use their own properties, too. To get
-      an idea of what properties we think are useful, see (again) the list.
+      guidelines on media type naming, properties and such. A media type would
+      ideally be equivalent to the Mime-type defined by IANA; else, it should
+      be in the form type/x-name, where type is the sort of data this media type
+      handles (audio, video, ...) and name should be something specific for
+      this specific type.  Audio and video media types should try to support the
+      general audio/video properties (see the list), and can use their own
+      properties, too. To get an idea of what properties we think are useful,
+      see (again) the list.
     </para>
     <para>
       Take your time to find the right set of properties for your type. There
@@ -89,7 +90,7 @@
       In order for a random data file to be recognized and played back as
       such, we need a way of recognizing their type out of the blue. For this
       purpose, <quote>typefinding</quote> was introduced. Typefinding is the
-      process of detecting the type of a datastream. Typefinding consists of
+      process of detecting the type of a data stream. Typefinding consists of
       two separate parts: first, there's an unlimited number of functions
       that we call <emphasis>typefind functions</emphasis>, which are each
       able to recognize one or more types from an input stream. Then,
@@ -127,9 +128,8 @@ gst_my_typefind_function (GstTypeFind *tf,
 static gboolean
 plugin_init (GstPlugin *plugin)
 {
-  static gchar *exts[] = { "avi", NULL };
   if (!gst_type_find_register (plugin, "", GST_RANK_PRIMARY,
-			       gst_my_typefind_function, exts,
+			       gst_my_typefind_function, "avi",
 			       gst_caps_new_simple ("video/x-msvideo",
 						    NULL), NULL))
     return FALSE;
@@ -206,7 +206,7 @@ plugin_init (GstPlugin *plugin)
 
         <thead>
           <row>
-            <entry>Mime Type</entry>
+            <entry>Media Type</entry>
             <entry>Description</entry>
             <entry>Property</entry>
             <entry>Property Type</entry>
@@ -228,8 +228,8 @@ plugin_init (GstPlugin *plugin)
           <!-- ############ type ############# -->
 
           <row>
-            <entry morerows="1">audio/*</entry>
-            <entry morerows="1">
+            <entry morerows="4">audio/*</entry>
+            <entry morerows="4">
               <emphasis>All audio types</emphasis>
             </entry>
             <entry>rate</entry>
@@ -247,6 +247,34 @@ plugin_init (GstPlugin *plugin)
               The number of channels of audio data.
             </entry>
           </row>
+          <row>
+            <entry>channel-mask</entry>
+            <entry>bitmask</entry>
+            <entry></entry>
+            <entry>
+              Channel positions present. See <quote>GstAudioChannelPosition</quote>.
+              0 means unpositioned.
+            </entry>
+          </row>
+          <row>
+            <entry>format</entry>
+            <entry>string</entry>
+            <entry>
+              S8 U8 S16LE S16BE U16LE U16BE S24_32LE S24_32BE U24_32LE U24_32BE S32LE S32BE U32LE U32BE
+              S24LE S24BE U24LE U24BE S20LE S20BE U20LE U20BE S18LE S18BE U18LE U18BE F32LE F32BE F64LE F64BE
+            </entry>
+            <entry>
+              The format of the sample data.
+            </entry>
+          </row>
+          <row>
+            <entry>layout</entry>
+            <entry>string</entry>
+            <entry>"interleaved" or "non-interleaved"</entry>
+            <entry>
+              Layout of channels within a buffer.
+            </entry>
+          </row>
 
           <!-- ############ subtitle ############# -->
 
@@ -259,76 +287,15 @@ plugin_init (GstPlugin *plugin)
           <!-- ############ type ############# -->
 
           <row>
-            <entry morerows="3">audio/x-raw-int</entry>
-            <entry morerows="3">
-              Unstructured and uncompressed raw fixed-integer audio data.
-            </entry>
-            <entry>endianness</entry>
-            <entry>integer</entry>
-            <entry>G_BIG_ENDIAN (4321) or G_LITTLE_ENDIAN (1234)</entry>
+            <entry>audio/x-raw</entry>
             <entry>
-              The order of bytes in a sample. The value G_LITTLE_ENDIAN (1234)
-              means <quote>little-endian</quote> (byte-order is <quote>least
-              significant byte first</quote>). The value G_BIG_ENDIAN (4321)
-              means <quote>big-endian</quote> (byte order is <quote>most
-              significant byte first</quote>).
+              Unstructured and uncompressed raw audio data.
             </entry>
-          </row>
-          <row>
-            <entry>signed</entry>
-            <entry>boolean</entry>
-            <entry>TRUE or FALSE</entry>
+            <entry></entry>
+            <entry></entry>
+            <entry></entry>
             <entry>
-              Whether the values of the integer samples are signed or not.
-              Signed samples use one bit to indicate sign (negative or
-              positive) of the value. Unsigned samples are always positive.
-            </entry>
-          </row>
-          <row>
-            <entry>width</entry>
-            <entry>integer</entry>
-            <entry>greater than 0</entry>
-            <entry>
-              Number of bits allocated per sample.
-            </entry>
-          </row>
-          <row>
-            <entry>depth</entry>
-            <entry>integer</entry>
-            <entry>greater than 0</entry>
-            <entry>
-              The number of bits used per sample. This must be less than or
-              equal to the width: If the depth is less than the width, the
-              low bits are assumed to be the ones used. For example, a width
-              of 32 and a depth of 24 means that each sample is stored in a
-              32 bit word, but only the low 24 bits are actually used.
-            </entry>
-          </row>
-
-          <!-- ############ type ############# -->
-
-          <row>
-            <entry morerows="1">audio/x-raw-float</entry>
-            <entry>
-              Unstructured and uncompressed raw floating-point audio data.
-            </entry>
-            <entry>endianness</entry>
-            <entry>integer</entry>
-            <entry>G_BIG_ENDIAN (4321) or G_LITTLE_ENDIAN (1234)</entry>
-            <entry>
-              The order of bytes in a sample. The value G_LITTLE_ENDIAN (1234)
-              means <quote>little-endian</quote> (byte-order is <quote>least
-              significant byte first</quote>). The value G_BIG_ENDIAN (4321)
-              means <quote>big-endian</quote> (byte order is <quote>most
-              significant byte first</quote>).
-            </entry>
-          </row>
-          <row>
-            <entry>width</entry>
-            <entry>integer</entry>
-            <entry>greater than 0</entry>
-            <entry>
-              The amount of bits used and allocated per sample.
+              All properties (except channel-mask, in the mono and stereo cases) are mandatory.
             </entry>
           </row>
 
@@ -486,7 +453,7 @@ plugin_init (GstPlugin *plugin)
           <row>
             <entry morerows="3">audio/mpeg</entry>
             <entry morerows="3">
-              Audio data compressed using the MPEG audio encoding scehem.
+              Audio data compressed using the MPEG audio encoding scheme.
             </entry>
             <entry>mpegversion</entry>
             <entry>integer</entry>
@@ -692,7 +659,7 @@ plugin_init (GstPlugin *plugin)
 
         <thead>
           <row>
-            <entry>Mime Type</entry>
+            <entry>Media Type</entry>
             <entry>Description</entry>
             <entry>Property</entry>
             <entry>Property Type</entry>
@@ -714,8 +681,8 @@ plugin_init (GstPlugin *plugin)
           <!-- ############ type ############# -->
 
           <row>
-            <entry morerows="2">video/*</entry>
-            <entry morerows="2">
+            <entry morerows="9">video/*</entry>
+            <entry morerows="9">
               <emphasis>All video types</emphasis>
             </entry>
             <entry>width</entry>
@@ -732,13 +699,83 @@ plugin_init (GstPlugin *plugin)
           <row>
             <entry>framerate</entry>
             <entry>fraction</entry>
-            <entry>greater or equal 0</entry>
+            <entry>greater or equal 0; default 0/1</entry>
             <entry>
               The (average) framerate in frames per second. Note that this
               property does not guarantee in <emphasis>any</emphasis> way that
               it will actually come close to this value. If you need a fixed
               framerate, please use an element that provides that (such as
-              <quote>videodrop</quote>). 0 means a variable framerate.
+              <quote>videorate</quote>). 0/1 means a variable framerate.
+            </entry>
+          </row>
+          <row>
+            <entry>max-framerate</entry>
+            <entry>fraction</entry>
+            <entry>greater or equal 0; default as framerate</entry>
+            <entry>
+              For variable framerates, the maximum framerate that is expected.
+              Only valid when framerate is 0/1.
+            </entry>
+          </row>
+          <row>
+            <entry>views</entry>
+            <entry>integer</entry>
+            <entry>greater than 0; default 1</entry>
+            <entry>
+              The number of views for multiview video. Each buffer contains
+              multiple <quote>GstVideoMeta</quote> buffers that describe each view. Use the
+              frame ID to get access to the different views.
+            </entry>
+          </row>
+          <row>
+            <entry>interlace-mode</entry>
+            <entry>string</entry>
+            <entry>progressive, interleaved, mixed, fields; default progressive</entry>
+            <entry>
+              The interlace mode. Extra buffer flags describe the frame and fields.
+            </entry>
+          </row>
+          <row>
+            <entry>chroma-site</entry>
+            <entry>string</entry>
+            <entry>jpeg, mpeg2, dv; default UNKNOWN</entry>
+            <entry>
+              The chroma siting of the video frames.
+            </entry>
+          </row>
+          <row>
+            <entry>colorimetry</entry>
+            <entry>string</entry>
+            <entry>bt601, bt709, smpte240m; default UNKNOWN</entry>
+            <entry>
+              The colorimetry of the video frames.
+            </entry>
+          </row>
+          <row>
+            <entry>pixel-aspect-ratio</entry>
+            <entry>fraction</entry>
+            <entry>greater than 0; default 1/1</entry>
+            <entry>
+              The pixel aspect ratio of the video.
+            </entry>
+          </row>
+          <row>
+            <entry>format</entry>
+            <entry>string</entry>
+            <entry>
+              I420 YV12 YUY2 UYVY AYUV RGBx BGRx xRGB xBGR RGBA BGRA ARGB ABGR RGB BGR Y41B Y42B
+              YVYU Y444 v210 v216 NV12 NV21 GRAY8 GRAY16_BE GRAY16_LE
+              v308 RGB16 BGR16 RGB15 BGR15 UYVP A420 RGB8P YUV9 YVU9
+              IYU1 ARGB64 AYUV64 r210 I420_10LE I420_10BE I422_10LE I422_10BE
+            </entry>
+            <entry>
+              The format of the video. See <ulink type="http"
+              url="http://www.fourcc.org/">FourCC definition site</ulink>
+              for references and definitions. YUY2, YVYU and UYVY are 4:2:2
+              packed-pixel, Y41P is 4:1:1 packed-pixel and IYU2 is 4:4:4
+              packed-pixel. Y42B is 4:2:2 planar, YV12 and I420 are 4:2:0
+              planar, Y41B is 4:1:1 planar and YUV9 and YVU9 are 4:1:0 planar.
+              Y800 contains Y-samples only (black/white).
             </entry>
           </row>
 
@@ -753,70 +790,13 @@ plugin_init (GstPlugin *plugin)
           <!-- ############ type ############# -->
 
           <row>
-            <entry>video/x-raw-yuv</entry>
-            <entry>YUV (or Y'Cb'Cr) video format.</entry>
-            <entry>format</entry>
-            <entry>fourcc</entry>
+            <entry>video/x-raw</entry>
+            <entry>Unstructured and uncompressed raw video data.</entry>
+            <entry></entry>
+            <entry></entry>
+            <entry></entry>
             <entry>
-              YUY2, YVYU, UYVY, Y41P, IYU2, Y42B, YV12, I420, Y41B, YUV9, YVU9,
-              Y800
-            </entry>
-            <entry>
-              The layout of the video. See <ulink type="http"
-              url="http://www.fourcc.org/">FourCC definition site</ulink>
-              for references and definitions. YUY2, YVYU and UYVY are 4:2:2
-              packed-pixel, Y41P is 4:1:1 packed-pixel and IYU2 is 4:4:4
-              packed-pixel. Y42B is 4:2:2 planar, YV12 and I420 are 4:2:0
-              planar, Y41B is 4:1:1 planar and YUV9 and YVU9 are 4:1:0 planar.
-              Y800 contains Y-samples only (black/white).
-            </entry>
-          </row>
-
-          <row>
-            <entry morerows="3">video/x-raw-rgb</entry>
-            <entry morerows="3">Red-Green-Blue (RBG) video.</entry>
-            <entry>bpp</entry>
-            <entry>integer</entry>
-            <entry>greater than 0</entry>
-            <entry>
-              The number of bits allocated per pixel. This is usually 16, 24
-              or 32.
-            </entry>
-          </row>
-
-          <row>
-            <entry>depth</entry>
-            <entry>integer</entry>
-            <entry>greater than 0</entry>
-            <entry>
-              The number of bits used per pixel by the R/G/B components. This
-              is usually 15, 16 or 24.
-            </entry>
-          </row>
-
-          <row>
-            <entry>endianness</entry>
-            <entry>integer</entry>
-            <entry>G_BIG_ENDIAN (4321) or G_LITTLE_ENDIAN (1234)</entry>
-            <entry>
-              The order of bytes in a sample. The value G_LITTLE_ENDIAN (1234)
-              means <quote>little-endian</quote> (byte-order is <quote>least
-              significant byte first</quote>). The value G_BIG_ENDIAN (4321)
-              means <quote>big-endian</quote> (byte order is <quote>most
-              significant byte first</quote>). For 24/32bpp, this should always
-              be big endian because the byte order can be given in both.
-            </entry>
-          </row>
-
-          <row>
-            <entry>red_mask, green_mask and blue_mask</entry>
-            <entry>integer</entry>
-            <entry>any</entry>
-            <entry>
-              The masks that cover all the bits used by each of the samples.
-              The mask should be given in the endianness specified above. This
-              means that for 24/32bpp, the masks might be opposite to host byte
-              order (if you are working on little-endian computers).
+              The properties width, height and format are mandatory.
             </entry>
           </row>
 
@@ -982,7 +962,7 @@ plugin_init (GstPlugin *plugin)
             <entry>1, 2 or 4</entry>
             <entry>
               Version of the MPEG codec that this stream was encoded with.
-              Note that we have different mimetypes for 3ivx, XviD, DivX and
+              Note that we have different media types for 3ivx, XviD, DivX and
               "standard" ISO MPEG-4. This is <emphasis>not</emphasis> a good
               thing and we're fully aware of this. However, we do not have a
               solution yet.
@@ -1060,7 +1040,7 @@ plugin_init (GstPlugin *plugin)
             <entry>integer</entry>
             <entry>1 to 64</entry>
             <entry>
-              Bitdepth of the used palette. This means that the palette
+              Bit depth of the used palette. This means that the palette
               that belongs to this format defines 2^depth colors.
             </entry>
           </row>
@@ -1125,7 +1105,7 @@ plugin_init (GstPlugin *plugin)
             <entry></entry>
             <entry>
               There are currently no specific properties defined or needed for
-              this type. Note that we have different mimetypes for VP-3 and
+              this type. Note that we have different media types for VP-3 and
               Theora, which is not necessarily a good idea. This could probably
               be improved.
             </entry>
@@ -1236,7 +1216,7 @@ plugin_init (GstPlugin *plugin)
 
         <thead>
           <row>
-            <entry>Mime Type</entry>
+            <entry>Media Type</entry>
             <entry>Description</entry>
             <entry>Property</entry>
             <entry>Property Type</entry>
@@ -1385,7 +1365,7 @@ plugin_init (GstPlugin *plugin)
 
         <thead>
           <row>
-            <entry>Mime Type</entry>
+            <entry>Media Type</entry>
             <entry>Description</entry>
             <entry>Property</entry>
             <entry>Property Type</entry>
@@ -1421,7 +1401,7 @@ plugin_init (GstPlugin *plugin)
 
         <thead>
           <row>
-            <entry>Mime Type</entry>
+            <entry>Media Type</entry>
             <entry>Description</entry>
             <entry>Property</entry>
             <entry>Property Type</entry>

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,21 +42,20 @@ static GstStaticCaps foobar_caps = GST_STATIC_CAPS ("foo/x-bar");
 /* make sure the entire data in the buffer is available for peeking */
 GST_START_TEST (test_buffer_range)
 {
-  static gchar *foobar_exts[] = { "foobar", NULL };
-
   GstStructure *s;
   GstBuffer *buf;
   GstCaps *caps;
 
   fail_unless (gst_type_find_register (NULL, "foo/x-bar",
-          GST_RANK_PRIMARY + 50, foobar_typefind, foobar_exts, FOOBAR_CAPS,
-          NULL, NULL));
+          GST_RANK_PRIMARY + 50, foobar_typefind, "foobar",
+          FOOBAR_CAPS, NULL, NULL));
 
   buf = gst_buffer_new ();
   fail_unless (buf != NULL);
-  GST_BUFFER_DATA (buf) = (guint8 *) vorbisid;
-  GST_BUFFER_SIZE (buf) = 30;
-  GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_READONLY);
+
+  gst_buffer_insert_memory (buf, -1,
+      gst_memory_new_wrapped (GST_MEMORY_FLAG_READONLY,
+          (gpointer) vorbisid, 30, 0, 30, NULL, NULL));
 
   caps = gst_type_find_helper_for_buffer (NULL, buf, NULL);
   fail_unless (caps != NULL);
@@ -90,7 +89,7 @@ GST_CHECK_MAIN (gst_typefindhelper);
 static void
 foobar_typefind (GstTypeFind * tf, gpointer unused)
 {
-  guint8 *data;
+  const guint8 *data;
 
   data = gst_type_find_peek (tf, 0, 10);
   fail_unless (data != NULL);

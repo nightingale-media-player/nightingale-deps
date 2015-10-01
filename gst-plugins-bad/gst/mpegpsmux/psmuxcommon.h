@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -48,8 +48,6 @@
 #include <glib.h>
 #include <gst/gst.h>
 #include "bits.h" /* from VLC */
-
-#undef PS_DEBUG_ON
 
 G_BEGIN_DECLS
 
@@ -150,12 +148,6 @@ psmux_put_ts (guint8 **pos, guint8 id, gint64 ts)
   /* 4, 5: TS[14..0] | marker_bit */
   psmux_put16 (pos, ((ts << 1) & 0xfffe) | 0x01);
 }
-
-#ifdef PS_DEBUG_ON
-#define PS_DEBUG(...) g_print(__VA_ARGS__); g_print ("\n")
-#else
-#define PS_DEBUG(...)
-#endif
 
 G_END_DECLS
 

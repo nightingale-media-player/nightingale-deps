@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _SIREN7_HUFFMAN_H_
@@ -30,6 +30,6 @@ extern int decode_envelope(int number_of_regions, float *decoder_standard_deviat
 extern int decode_vector(SirenDecoder decoder, int number_of_regions, int number_of_available_bits, float *decoder_standard_deviation, int *power_categories, float *coefs, int scale_factor);
 
 extern void set_bitstream(int *stream);
-extern int next_bit();
+extern int next_bit(void);
 
 #endif /* _SIREN7_HUFFMAN_H_ */

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PLAY_ENUM_H__
@@ -52,9 +52,14 @@ GType gst_autoplug_select_result_get_type (void);
  * @GST_PLAY_FLAG_NATIVE_AUDIO: only allow native audio formats, this omits
  *   configuration of audioconvert and audioresample.
  * @GST_PLAY_FLAG_NATIVE_VIDEO: only allow native video formats, this omits
- *   configuration of ffmpegcolorspace and videoscale.
+ *   configuration of videoconvert and videoscale.
  * @GST_PLAY_FLAG_DOWNLOAD: enable progressice download buffering for selected
  *   formats.
+ * @GST_PLAY_FLAG_BUFFERING: enable buffering of the demuxed or parsed data.
+ * @GST_PLAY_FLAG_DEINTERLACE: deinterlace raw video (if native not forced).
+ * @GST_PLAY_FLAG_SOFT_COLORBALANCE: Use a software filter for colour balance
+ * @GST_PLAY_FLAG_FORCE_FILTERS: force audio/video filters to be applied if
+ *   set.
  *
  * Extra flags to configure the behaviour of the sinks.
  */
@@ -66,7 +71,11 @@ typedef enum {
   GST_PLAY_FLAG_SOFT_VOLUME   = (1 << 4),
   GST_PLAY_FLAG_NATIVE_AUDIO  = (1 << 5),
   GST_PLAY_FLAG_NATIVE_VIDEO  = (1 << 6),
-  GST_PLAY_FLAG_DOWNLOAD      = (1 << 7)
+  GST_PLAY_FLAG_DOWNLOAD      = (1 << 7),
+  GST_PLAY_FLAG_BUFFERING     = (1 << 8),
+  GST_PLAY_FLAG_DEINTERLACE   = (1 << 9),
+  GST_PLAY_FLAG_SOFT_COLORBALANCE = (1 << 10),
+  GST_PLAY_FLAG_FORCE_FILTERS = (1 << 11),
 } GstPlayFlags;
 
 #define GST_TYPE_PLAY_FLAGS (gst_play_flags_get_type())

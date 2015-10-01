@@ -2,85 +2,100 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>matroskademux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>matroskademux: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-matroskamux.html" title="matroskamux">
-<link rel="next" href="gst-plugins-good-plugins-monoscope.html" title="monoscope">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="prev" href="gst-plugins-good-plugins-level.html" title="level">
+<link rel="next" href="gst-plugins-good-plugins-matroskamux.html" title="matroskamux">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-matroskamux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-monoscope.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-matroskademux.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-matroskademux.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-matroskademux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
-<div class="refentry" title="matroskademux">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-matroskademux.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-matroskademux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-matroskademux.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-level.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-matroskamux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-matroskademux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-matroskademux.top_of_page"></a>matroskademux</span></h2>
-<p>matroskademux — Demuxes a Matroska Stream into video/audio/subtitles</p>
+<p>matroskademux</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-matroskademux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstMatroskaDemux"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-matroskademux.html#GstMatroskaDemux-struct" title="GstMatroskaDemux">GstMatroskaDemux</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-matroskademux.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-matroskademux.html#GstMatroskaDemux--max-gap-time" title="The “max-gap-time” property">max-gap-time</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<a name="GstMatroskaDemux"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-matroskademux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-matroskademux.html#GstMatroskaDemux-struct" title="GstMatroskaDemux">GstMatroskaDemux</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-matroskademux.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstEbmlRead
-                     +----GstMatroskaDemux
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstMatroskaDemux
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-matroskademux.description"></a><h2>Description</h2>
-<p>
-matroskademux demuxes a Matroska file into the different contained streams.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example launch line">
-<a name="id536556"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioconvert ! audioresample ! autoaudiosink
-</pre></div> This pipeline demuxes a Matroska file and outputs the contained Vorbis audio.
+<p>matroskademux demuxes a Matroska file into the different contained streams.</p>
+<div class="refsect2">
+<a name="id-1.2.78.7.3"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v filesrc location<span class="gtkdoc opt">=/</span>path<span class="gtkdoc opt">/</span>to<span class="gtkdoc opt">/</span>mkv <span class="gtkdoc opt">!</span> matroskademux <span class="gtkdoc opt">!</span> vorbisdec <span class="gtkdoc opt">!</span> audioconvert <span class="gtkdoc opt">!</span> audioresample <span class="gtkdoc opt">!</span> autoaudiosink</pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+ This pipeline demuxes a Matroska file and outputs the contained Vorbis audio.
+</div>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id538835"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.78.7.4.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -90,7 +105,7 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+<td>GStreamer maintainers &lt;gstreamer-devel@lists.freedesktop.org&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -100,10 +115,13 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id529390"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.78.7.4.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -119,16 +137,35 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-matroska</td>
+<td>audio/x-matroska</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-matroska</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-matroska-3d</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/webm</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/webm</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>subtitle_%02d</td>
+<td>audio_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
@@ -140,7 +177,31 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>text/plain</td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>subtitle_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>text/x-raw, format=(string)pango-markup</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -156,7 +217,7 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-dvd-subpicture</td>
+<td> subpicture/x-dvd</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -172,33 +233,15 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
-<td>audio_%02d</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>sometimes</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>ANY</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>video_%02d</td>
+<td>video_%u</td>
 </tr>
 <tr>
 <td><p><span class="term">direction</span></p></td>
@@ -216,21 +259,30 @@ gst-launch -v filesrc location=/path/to/mkv ! matroskademux ! vorbisdec ! audioc
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-matroskademux.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstMatroskaDemux">
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-matroskademux.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-matroskademux.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
 <a name="GstMatroskaDemux-struct"></a><h3>GstMatroskaDemux</h3>
 <pre class="programlisting">typedef struct _GstMatroskaDemux GstMatroskaDemux;</pre>
-<p>
-</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-matroskademux.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstMatroskaDemux--max-gap-time"></a><h3>The <code class="literal">“max-gap-time”</code> property</h3>
+<pre class="programlisting">  “max-gap-time”             <span class="type">guint64</span></pre>
+<p>The demuxer sends out segment events for skipping gaps longer than this (0 = disabled).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 2000000000</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

@@ -23,11 +23,11 @@
       The pipeline design is made to have little overhead above what the
       applied filters induce. This makes &GStreamer; a good framework for
       designing even high-end audio applications which put high demands on
-      latency. 
+      latency or performance. 
     </para> 
 
     <para>
-      One of the the most obvious uses of &GStreamer; is using it to build
+      One of the most obvious uses of &GStreamer; is using it to build
       a media player. &GStreamer; already includes components for building a
       media player that can support a very wide variety of formats, including
       MP3, Ogg/Vorbis, MPEG-1/2, AVI, Quicktime, mod, and more. &GStreamer;,
@@ -40,15 +40,13 @@
     <para>
       The framework is based on plugins that will provide the various codec 
       and other functionality. The plugins can be linked and arranged in
-      a pipeline. This pipeline defines the flow of the data. Pipelines can 
-      also be edited with a GUI editor and saved as XML so that pipeline
-      libraries can be made with a minimum of effort.
+      a pipeline. This pipeline defines the flow of the data.
     </para> 
 
     <para>
       The &GStreamer; core function is to provide a framework for plugins,
-      data flow and media type handling/negotiation. It also provides an
-      API to write applications using the various plugins.
+      data flow, synchronization and media type handling/negotiation. It
+      also provides an API to write applications using the various plugins.
     </para> 
   </sect1>
 
@@ -114,7 +112,7 @@
       understanding of the C language.
       Since &GStreamer; adheres to the GObject programming model, this guide
       also assumes that you understand the basics of <ulink type="http"
-      url="http://developer.gnome.org/doc/API/2.0/gobject/index.html">GObject</ulink>
+      url="http://developer.gnome.org/gobject/stable/pt01.html">GObject</ulink>
       programming. 
       You may also want to have a look
       at Eric Harlow's book <emphasis>Developing Linux Applications with
@@ -289,7 +287,7 @@
       </listitem>
       <listitem>
         <para>
-          Adding new mime-types to the registry along with typedetect functions.
+          Adding new media types to the registry along with typedetect functions.
           This will allow your plugin to operate on a completely new media type.
         </para>
       </listitem>

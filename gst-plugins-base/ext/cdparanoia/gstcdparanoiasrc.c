@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include "gstcdparanoiasrc.h"
 #include "gst/gst-i18n-plugin.h"
@@ -56,32 +57,26 @@ enum
 GST_DEBUG_CATEGORY_STATIC (gst_cd_paranoia_src_debug);
 #define GST_CAT_DEFAULT gst_cd_paranoia_src_debug
 
-GST_BOILERPLATE (GstCdParanoiaSrc, gst_cd_paranoia_src, GstCddaBaseSrc,
-    GST_TYPE_CDDA_BASE_SRC);
+#define gst_cd_paranoia_src_parent_class parent_class
+G_DEFINE_TYPE (GstCdParanoiaSrc, gst_cd_paranoia_src, GST_TYPE_AUDIO_CD_SRC);
 
 static void gst_cd_paranoia_src_finalize (GObject * obj);
 static void gst_cd_paranoia_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 static void gst_cd_paranoia_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
-static GstBuffer *gst_cd_paranoia_src_read_sector (GstCddaBaseSrc * src,
+static GstBuffer *gst_cd_paranoia_src_read_sector (GstAudioCdSrc * src,
     gint sector);
-static gboolean gst_cd_paranoia_src_open (GstCddaBaseSrc * src,
+static gboolean gst_cd_paranoia_src_open (GstAudioCdSrc * src,
     const gchar * device);
-static void gst_cd_paranoia_src_close (GstCddaBaseSrc * src);
-
-static const GstElementDetails cdparanoia_details =
-GST_ELEMENT_DETAILS ("CD Audio (cdda) Source, Paranoia IV",
-    "Source/File",
-    "Read audio from CD in paranoid mode",
-    "Erik Walthinsen <omega@cse.ogi.edu>, " "Wim Taymans <wim@fluendo.com>");
+static void gst_cd_paranoia_src_close (GstAudioCdSrc * src);
 
 /* We use these to serialize calls to paranoia_read() among several
  * cdparanoiasrc instances. We do this because it's the only reasonably
  * easy way to find out the calling object from within the paranoia
  * callback, and we need the object instance in there to emit our signals */
 static GstCdParanoiaSrc *cur_cb_source;
-static GStaticMutex cur_cb_mutex = G_STATIC_MUTEX_INIT;
+static GMutex cur_cb_mutex;
 
 static gint cdpsrc_signals[NUM_SIGNALS];        /* all 0 */
 
@@ -109,15 +104,7 @@ gst_cd_paranoia_mode_get_type (void)
 }
 
 static void
-gst_cd_paranoia_src_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details (element_class, &cdparanoia_details);
-}
-
-static void
-gst_cd_paranoia_src_init (GstCdParanoiaSrc * src, GstCdParanoiaSrcClass * klass)
+gst_cd_paranoia_src_init (GstCdParanoiaSrc * src)
 {
   src->d = NULL;
   src->p = NULL;
@@ -133,16 +120,22 @@ gst_cd_paranoia_src_init (GstCdParanoiaSrc * src, GstCdParanoiaSrcClass * klass)
 static void
 gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
 {
-  GstCddaBaseSrcClass *cddabasesrc_class = GST_CDDA_BASE_SRC_CLASS (klass);
+  GstAudioCdSrcClass *audiocdsrc_class = GST_AUDIO_CD_SRC_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
   gobject_class->set_property = gst_cd_paranoia_src_set_property;
   gobject_class->get_property = gst_cd_paranoia_src_get_property;
   gobject_class->finalize = gst_cd_paranoia_src_finalize;
 
-  cddabasesrc_class->open = gst_cd_paranoia_src_open;
-  cddabasesrc_class->close = gst_cd_paranoia_src_close;
-  cddabasesrc_class->read_sector = gst_cd_paranoia_src_read_sector;
+  gst_element_class_set_static_metadata (element_class,
+      "CD Audio (cdda) Source, Paranoia IV", "Source/File",
+      "Read audio from CD in paranoid mode",
+      "Erik Walthinsen <omega@cse.ogi.edu>, Wim Taymans <wim@fluendo.com>");
+
+  audiocdsrc_class->open = gst_cd_paranoia_src_open;
+  audiocdsrc_class->close = gst_cd_paranoia_src_close;
+  audiocdsrc_class->read_sector = gst_cd_paranoia_src_read_sector;
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_GENERIC_DEVICE,
       g_param_spec_string ("generic-device", "Generic device",
@@ -150,8 +143,9 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_READ_SPEED,
       g_param_spec_int ("read-speed", "Read speed",
-          "Read from device at specified speed", -1, G_MAXINT,
-          DEFAULT_READ_SPEED, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Read from device at specified speed (-1 and 0 = full speed)",
+          -1, G_MAXINT, DEFAULT_READ_SPEED,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PARANOIA_MODE,
       g_param_spec_flags ("paranoia-mode", "Paranoia mode",
           "Type of checking to perform", GST_TYPE_CD_PARANOIA_MODE,
@@ -162,11 +156,9 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
           75, DEFAULT_SEARCH_OVERLAP,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstCdParanoiaSrc:cache-size
+   * GstCdParanoiaSrc:cache-size:
    *
    * Set CD cache size to n sectors (-1 = auto)
-   *
-   * Since: 0.10.24
    */
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_CACHE_SIZE,
       g_param_spec_int ("cache-size", "Cache size",
@@ -177,7 +169,7 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
   /* FIXME: we don't really want signals for this, but messages on the bus,
    * but then we can't check any longer whether anyone is interested in them */
   /**
-   * GstCdParanoiaSrc::transport-error
+   * GstCdParanoiaSrc::transport-error:
    * @cdparanoia: The CdParanoia instance
    * @sector: The sector number at which the error was encountered.
    *
@@ -190,7 +182,7 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
       G_STRUCT_OFFSET (GstCdParanoiaSrcClass, transport_error),
       NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
   /**
-   * GstCdParanoiaSrc::uncorrected-error
+   * GstCdParanoiaSrc::uncorrected-error:
    * @cdparanoia: The CdParanoia instance
    * @sector: The sector number at which the error was encountered.
    *
@@ -205,9 +197,9 @@ gst_cd_paranoia_src_class_init (GstCdParanoiaSrcClass * klass)
 }
 
 static gboolean
-gst_cd_paranoia_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
+gst_cd_paranoia_src_open (GstAudioCdSrc * audiocdsrc, const gchar * device)
 {
-  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (cddabasesrc);
+  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (audiocdsrc);
   gint i, cache_size;
 
   GST_DEBUG_OBJECT (src, "trying to open device %s (generic-device=%s) ...",
@@ -235,12 +227,11 @@ gst_cd_paranoia_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
   if (cdda_open (src->d))
     goto open_failed;
 
-  if (src->read_speed != -1) {
-    cdda_speed_set (src->d, src->read_speed);
-  }
+  GST_INFO_OBJECT (src, "set read speed to %d", src->read_speed);
+  cdda_speed_set (src->d, src->read_speed);
 
   for (i = 1; i < src->d->tracks + 1; i++) {
-    GstCddaBaseSrcTrack track = { 0, };
+    GstAudioCdSrcTrack track = { 0, };
 
     track.num = i;
     track.is_audio = IS_AUDIO (src->d, i - 1);
@@ -248,7 +239,7 @@ gst_cd_paranoia_src_open (GstCddaBaseSrc * cddabasesrc, const gchar * device)
     track.end = cdda_track_lastsector (src->d, i);
     track.tags = NULL;
 
-    gst_cdda_base_src_add_track (GST_CDDA_BASE_SRC (src), &track);
+    gst_audio_cd_src_add_track (GST_AUDIO_CD_SRC (src), &track);
   }
 
   /* create the paranoia struct and set it up */
@@ -303,9 +294,9 @@ init_failed:
 }
 
 static void
-gst_cd_paranoia_src_close (GstCddaBaseSrc * cddabasesrc)
+gst_cd_paranoia_src_close (GstAudioCdSrc * audiocdsrc)
 {
-  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (cddabasesrc);
+  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (audiocdsrc);
 
   if (src->p) {
     paranoia_free (src->p);
@@ -353,9 +344,9 @@ gst_cd_paranoia_src_signal_is_being_watched (GstCdParanoiaSrc * src, gint sig)
 }
 
 static GstBuffer *
-gst_cd_paranoia_src_read_sector (GstCddaBaseSrc * cddabasesrc, gint sector)
+gst_cd_paranoia_src_read_sector (GstAudioCdSrc * audiocdsrc, gint sector)
 {
-  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (cddabasesrc);
+  GstCdParanoiaSrc *src = GST_CD_PARANOIA_SRC (audiocdsrc);
   GstBuffer *buf;
   gboolean do_serialize;
   gint16 *cdda_buf;
@@ -386,7 +377,7 @@ gst_cd_paranoia_src_read_sector (GstCddaBaseSrc * cddabasesrc, gint sector)
 
   if (do_serialize) {
     GST_LOG_OBJECT (src, "Signal handlers connected, serialising access");
-    g_static_mutex_lock (&cur_cb_mutex);
+    g_mutex_lock (&cur_cb_mutex);
     GST_LOG_OBJECT (src, "Got lock");
     cur_cb_source = src;
 
@@ -394,7 +385,7 @@ gst_cd_paranoia_src_read_sector (GstCddaBaseSrc * cddabasesrc, gint sector)
 
     cur_cb_source = NULL;
     GST_LOG_OBJECT (src, "Releasing lock");
-    g_static_mutex_unlock (&cur_cb_mutex);
+    g_mutex_unlock (&cur_cb_mutex);
   } else {
     cdda_buf = paranoia_read (src->p, gst_cd_paranoia_dummy_callback);
   }
@@ -403,7 +394,7 @@ gst_cd_paranoia_src_read_sector (GstCddaBaseSrc * cddabasesrc, gint sector)
     goto read_failed;
 
   buf = gst_buffer_new_and_alloc (CD_FRAMESIZE_RAW);
-  memcpy (GST_BUFFER_DATA (buf), cdda_buf, CD_FRAMESIZE_RAW);
+  gst_buffer_fill (buf, 0, cdda_buf, CD_FRAMESIZE_RAW);
 
   /* cdda base class will take care of timestamping etc. */
   ++src->next_sector;
@@ -532,13 +523,12 @@ plugin_init (GstPlugin * plugin)
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-
   return TRUE;
 }
 
-
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "cdparanoia",
+    cdparanoia,
     "Read audio from CD in paranoid mode",
-    plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+    plugin_init, GST_PLUGINS_BASE_VERSION, "LGPL", GST_PACKAGE_NAME,
+    GST_PACKAGE_ORIGIN)

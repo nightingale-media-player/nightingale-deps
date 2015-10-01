@@ -39,8 +39,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_KATE_ENC_H__
@@ -48,6 +48,8 @@
 
 #include <gst/gst.h>
 #include <kate/kate.h>
+
+#include "gstkateutil.h"
 
 G_BEGIN_DECLS
 /* #defines don't like whitespacey bits */
@@ -79,6 +81,8 @@ struct _GstKateEnc
   GstClockTime last_timestamp;
   GstClockTime latest_end_time;
 
+  GstEvent *pending_segment;
+
   gboolean headers_sent;
   gboolean initialized;
   gboolean delayed_spu;
@@ -88,6 +92,8 @@ struct _GstKateEnc
   kate_region *delayed_region;
   gchar *language;
   gchar *category;
+
+  GstKateFormat format;
 
   int granule_rate_numerator;
   int granule_rate_denominator;

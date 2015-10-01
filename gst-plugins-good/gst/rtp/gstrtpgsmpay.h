@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -22,7 +22,7 @@
 #define __GST_RTP_GSM_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 
@@ -42,13 +42,15 @@ typedef struct _GstRTPGSMPayClass GstRTPGSMPayClass;
 
 struct _GstRTPGSMPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 };
 
 struct _GstRTPGSMPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_gsm_pay_get_type (void);
 
 gboolean gst_rtp_gsm_pay_plugin_init (GstPlugin * plugin);
 

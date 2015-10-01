@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CHECK_STR_H
@@ -23,13 +23,19 @@
 
 /* Return a string representation of the given TestResult.  Return
    value has been malloc'd, and must be freed by the caller */
-char *tr_str (TestResult *tr);
+char *tr_str (TestResult * tr);
+
+/* Return a string representation of the given TestResult message
+   without the test id or result type. This is suitable for separate
+   formatting of the test and the message. Return value has been 
+   malloc'd, and must be freed by the caller */
+char *tr_short_str (TestResult * tr);
 
 /* Return a string representation of the given SRunner's run
    statistics (% passed, num run, passed, errors, failures). Return
    value has been malloc'd, and must be freed by the caller
-*/ 
-char *sr_stat_str (SRunner *sr);
+*/
+char *sr_stat_str (SRunner * sr);
 
 char *ck_strdup_printf (const char *fmt, ...);
 

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -25,15 +25,9 @@
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 
+#include <gio/gio.h>
+
 G_BEGIN_DECLS
-
-#include <netdb.h>                        /* sockaddr_in */
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>                   /* sockaddr_in */
-#include <unistd.h>
-
-#include "gsttcp.h"
 
 #define GST_TYPE_TCP_CLIENT_SRC \
   (gst_tcp_client_src_get_type())
@@ -50,9 +44,9 @@ typedef struct _GstTCPClientSrc GstTCPClientSrc;
 typedef struct _GstTCPClientSrcClass GstTCPClientSrcClass;
 
 typedef enum {
-  GST_TCP_CLIENT_SRC_OPEN       = (GST_ELEMENT_FLAG_LAST << 0),
+  GST_TCP_CLIENT_SRC_OPEN       = (GST_BASE_SRC_FLAG_LAST << 0),
 
-  GST_TCP_CLIENT_SRC_FLAG_LAST  = (GST_ELEMENT_FLAG_LAST << 2)
+  GST_TCP_CLIENT_SRC_FLAG_LAST  = (GST_BASE_SRC_FLAG_LAST << 2)
 } GstTCPClientSrcFlags;
 
 struct _GstTCPClientSrc {
@@ -61,15 +55,10 @@ struct _GstTCPClientSrc {
   /* server information */
   int port;
   gchar *host;
-  struct sockaddr_in server_sin;
 
   /* socket */
-  GstPollFD sock_fd;
-  GstPoll *fdset;
-
-  GstTCPProtocol protocol; /* protocol used for reading data */
-  gboolean caps_received;      /* if we have received caps yet */
-  GstCaps *caps;
+  GSocket *socket;
+  GCancellable *cancellable;
 };
 
 struct _GstTCPClientSrcClass {

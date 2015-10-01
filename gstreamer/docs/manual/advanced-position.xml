@@ -18,7 +18,7 @@
     <title>Querying: getting the position or length of a stream</title>
 
     <para>
-      Querying is defined as requesting a specific stream-property related
+      Querying is defined as requesting a specific stream property related
       to progress tracking. This includes getting the length of a stream (if
       available) or getting the current position. Those stream properties
       can be retrieved in various formats such as time, audio samples, video
@@ -78,11 +78,10 @@ my_bus_message_cb (GstBus     *bus,
 static gboolean
 cb_print_position (GstElement *pipeline)
 {
-  GstFormat fmt = GST_FORMAT_TIME;
   gint64 pos, len;
 
-  if (gst_element_query_position (pipeline, &amp;fmt, &amp;pos)
-    &amp;&amp; gst_element_query_duration (pipeline, &amp;fmt, &amp;len)) {
+  if (gst_element_query_position (pipeline, GST_FORMAT_TIME, &amp;pos)
+    &amp;&amp; gst_element_query_duration (pipeline, GST_FORMAT_TIME, &amp;len)) {
     g_print ("Time: %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
 	     GST_TIME_ARGS (pos), GST_TIME_ARGS (len));
   }

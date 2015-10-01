@@ -15,14 +15,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef GST_APEV2_MUX_H
 #define GST_APEV2_MUX_H
 
-#include "gsttaglibmux.h"
+#include <gst/tag/gsttagmux.h>
 
 G_BEGIN_DECLS
 
@@ -30,11 +30,11 @@ typedef struct _GstApev2Mux GstApev2Mux;
 typedef struct _GstApev2MuxClass GstApev2MuxClass;
 
 struct _GstApev2Mux {
-  GstTagLibMux  taglibmux;
+  GstTagMux  tagmux;
 };
 
 struct _GstApev2MuxClass {
-  GstTagLibMuxClass  taglibmux_class;
+  GstTagMuxClass  tagmux_class;
 };
 
 #define GST_TYPE_APEV2_MUX \

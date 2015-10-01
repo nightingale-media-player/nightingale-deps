@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstVideoAggregator: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="video.html" title="Video helpers and baseclasses">
+<link rel="prev" href="video.html" title="Video helpers and baseclasses">
+<link rel="next" href="gst-plugins-bad-libs-GstVideoAggregatorPad.html" title="GstVideoAggregatorPad">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-GstVideoAggregator.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="video.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-GstVideoAggregatorPad.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-GstVideoAggregator"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-GstVideoAggregator.top_of_page"></a>GstVideoAggregator</span></h2>
+<p>GstVideoAggregator — Base class for video aggregators</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-GstVideoAggregator.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-GstVideoAggregator.html#GstVideoAggregator" title="struct GstVideoAggregator">GstVideoAggregator</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-GstVideoAggregator.html#GstVideoAggregatorClass" title="struct GstVideoAggregatorClass">GstVideoAggregatorClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-GstVideoAggregator.description"></a><h2>Description</h2>
+<p>VideoAggregator can accept AYUV, ARGB and BGRA video streams. For each of the requested
+sink pads it will compare the incoming geometry and framerate to define the
+output parameters. Indeed output video frames will have the geometry of the
+biggest incoming video stream and the framerate of the fastest incoming one.</p>
+<p>VideoAggregator will do colorspace conversion.</p>
+<p>Zorder for each input stream can be configured on the
+<a class="link" href="gst-plugins-bad-libs-GstVideoAggregatorPad.html#GstVideoAggregatorPad" title="struct GstVideoAggregatorPad"><span class="type">GstVideoAggregatorPad</span></a>.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-GstVideoAggregator.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-GstVideoAggregator.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstVideoAggregator"></a><h3>struct GstVideoAggregator</h3>
+<pre class="programlisting">struct GstVideoAggregator {
+  GstAggregator aggregator;
+
+  /* Output caps */
+  GstVideoInfo info;
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.8.2.6.2.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-GstAggregator.html#GstAggregator" title="struct GstAggregator"><span class="type">GstAggregator</span></a> <em class="structfield"><code><a name="GstVideoAggregator.aggregator"></a>aggregator</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoInfo"><span class="type">GstVideoInfo</span></a> <em class="structfield"><code><a name="GstVideoAggregator.info"></a>info</code></em>;</p></td>
+<td class="struct_member_description"><p>The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoInfo"><span class="type">GstVideoInfo</span></a> representing the currently set
+srcpad caps.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoAggregatorClass"></a><h3>struct GstVideoAggregatorClass</h3>
+<pre class="programlisting">struct GstVideoAggregatorClass {
+  GstCaps *          (*update_caps)               (GstVideoAggregator *  videoaggregator,
+                                                   GstCaps            *  caps);
+  GstFlowReturn      (*aggregate_frames)          (GstVideoAggregator *  videoaggregator,
+                                                   GstBuffer          *  outbuffer);
+  GstFlowReturn      (*get_output_buffer)         (GstVideoAggregator *  videoaggregator,
+                                                   GstBuffer          ** outbuffer);
+  gboolean           (*negotiated_caps)           (GstVideoAggregator *  videoaggregator,
+                                                   GstCaps            *  caps);
+  void               (*find_best_format)          (GstVideoAggregator *  vagg,
+                                                   GstCaps            *  downstream_caps,
+                                                   GstVideoInfo       *  best_info,
+                                                   gboolean           *  at_least_one_alpha);
+
+  gboolean           preserve_update_caps_result;
+
+  GstCaps           *sink_non_alpha_caps;
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.8.2.6.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoAggregatorClass.update-caps"></a>update_caps</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Lets subclasses update the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> representing
+the src pad caps before usage.  Return <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to indicate failure.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoAggregatorClass.aggregate-frames"></a>aggregate_frames</code></em> ()</p></td>
+<td class="struct_member_description"><p>Lets subclasses aggregate frames that are ready. Subclasses
+should iterate the GstElement.sinkpads and use the already
+mapped <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoFrame"><span class="type">GstVideoFrame</span></a> from GstVideoAggregatorPad.aggregated_frame
+or directly use the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> from GstVideoAggregatorPad.buffer
+if it needs to map the buffer in a special way. The result of the
+aggregation should land in <em class="parameter"><code>outbuffer</code></em>
+.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoAggregatorClass.get-output-buffer"></a>get_output_buffer</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Lets subclasses provide a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> to be used as <em class="parameter"><code>outbuffer</code></em>
+of
+the <span class="type">aggregate_frames</span> vmethod.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoAggregatorClass.negotiated-caps"></a>negotiated_caps</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Notifies subclasses what caps format has been negotiated</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoAggregatorClass.find-best-format"></a>find_best_format</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Lets subclasses decide of the best common format to use.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstVideoAggregatorClass.preserve-update-caps-result"></a>preserve_update_caps_result</code></em>;</p></td>
+<td class="struct_member_description"><p>Sub-classes should set this to true if the return result
+of the <code class="function">update_caps()</code> method should not be further modified
+by GstVideoAggregator by removing fields.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> *<em class="structfield"><code><a name="GstVideoAggregatorClass.sink-non-alpha-caps"></a>sink_non_alpha_caps</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

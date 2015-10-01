@@ -25,29 +25,66 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "vs_image.h"
 #include "vs_scanline.h"
 
 #include "vs_4tap.h"
 
-#include <math.h>
+#include <gst/math-compat.h>
 
 #define SHIFT 10
 
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-#define CLAMP(x,a,b) MAX(MIN((x),(b)),(a))
-
-#ifndef M_PI
-#define M_PI  3.14159265358979323846
-#endif
-
-#ifdef _MSC_VER
-#define rint(x) (floor((x)+0.5))
-#endif
-
 static int16_t vs_4tap_taps[256][4];
+
+
+static void vs_scanline_resample_4tap_Y (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_Y (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_RGBA (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_RGBA (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_RGB (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_RGB (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_YUYV (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_YUYV (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_UYVY (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_UYVY (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_RGB565 (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_RGB565 (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_RGB555 (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_RGB555 (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_Y16 (uint8_t * dest, uint8_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_Y16 (uint8_t * dest, uint8_t * src1,
+    uint8_t * src2, uint8_t * src3, uint8_t * src4, int n, int acc);
+
+static void vs_scanline_resample_4tap_AYUV64 (uint16_t * dest, uint16_t * src,
+    int n, int src_width, int *xacc, int increment);
+static void vs_scanline_merge_4tap_AYUV64 (uint16_t * dest, uint16_t * src1,
+    uint16_t * src2, uint16_t * src3, uint16_t * src4, int n, int acc);
 
 static double
 vs_4tap_func (double x)
@@ -64,12 +101,12 @@ vs_4tap_func (double x)
 #if 0
   if (x == 0)
     return 1;
-  return sin (M_PI * x) / (M_PI * x) * (1 - 0.25 * x * x);
+  return sin (G_PI * x) / (G_PI * x) * (1 - 0.25 * x * x);
 #endif
 #if 1
   if (x == 0)
     return 1;
-  return sin (M_PI * x) / (M_PI * x);
+  return sin (G_PI * x) / (G_PI * x);
 #endif
 }
 
@@ -110,7 +147,7 @@ vs_scanline_resample_4tap_Y (uint8_t * dest, uint8_t * src,
     j = acc >> 16;
     x = (acc & 0xff00) >> 8;
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * src[MAX (j - 1, 0)];
+      y = vs_4tap_taps[x][0] * src[j - 1];
       y += vs_4tap_taps[x][1] * src[j];
       y += vs_4tap_taps[x][2] * src[j + 1];
       y += vs_4tap_taps[x][3] * src[j + 2];
@@ -177,8 +214,8 @@ vs_image_scale_4tap_Y (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_Y (tmpbuf + i * dest->width,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -224,7 +261,7 @@ vs_scanline_resample_4tap_Y16 (uint8_t * dest, uint8_t * src,
     j = acc >> 16;
     x = (acc & 0xff00) >> 8;
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * s[MAX (j - 1, 0)];
+      y = vs_4tap_taps[x][0] * s[j - 1];
       y += vs_4tap_taps[x][1] * s[j];
       y += vs_4tap_taps[x][2] * s[j + 1];
       y += vs_4tap_taps[x][3] * s[j + 2];
@@ -294,8 +331,8 @@ vs_image_scale_4tap_Y16 (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_Y16 (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -343,19 +380,19 @@ vs_scanline_resample_4tap_RGBA (uint8_t * dest, uint8_t * src,
 
     for (off = 0; off < 4; off++) {
       if (j - 1 >= 0 && j + 2 < src_width) {
-        y = vs_4tap_taps[x][0] * src[MAX ((j - 1) * 4 + off, 0)];
+        y = vs_4tap_taps[x][0] * src[(j - 1) * 4 + off];
         y += vs_4tap_taps[x][1] * src[j * 4 + off];
         y += vs_4tap_taps[x][2] * src[(j + 1) * 4 + off];
         y += vs_4tap_taps[x][3] * src[(j + 2) * 4 + off];
       } else {
-        y = vs_4tap_taps[x][0] * src[CLAMP ((j - 1) * 4 + off, 0,
-                4 * (src_width - 1) + off)];
-        y += vs_4tap_taps[x][1] * src[CLAMP (j * 4 + off, 0,
-                4 * (src_width - 1) + off)];
-        y += vs_4tap_taps[x][2] * src[CLAMP ((j + 1) * 4 + off, 0,
-                4 * (src_width - 1) + off)];
-        y += vs_4tap_taps[x][3] * src[CLAMP ((j + 2) * 4 + off, 0,
-                4 * (src_width - 1) + off)];
+        y = vs_4tap_taps[x][0] *
+            src[CLAMP ((j - 1), 0, src_width - 1) * 4 + off];
+        y += vs_4tap_taps[x][1] *
+            src[CLAMP ((j + 0), 0, src_width - 1) * 4 + off];
+        y += vs_4tap_taps[x][2] *
+            src[CLAMP ((j + 1), 0, src_width - 1) * 4 + off];
+        y += vs_4tap_taps[x][3] *
+            src[CLAMP ((j + 2), 0, src_width - 1) * 4 + off];
       }
       y += (1 << (SHIFT - 1));
       dest[i * 4 + off] = CLAMP (y >> SHIFT, 0, 255);
@@ -417,8 +454,8 @@ vs_image_scale_4tap_RGBA (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_RGBA (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height) * src->stride,
+        dest->width, src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -466,7 +503,7 @@ vs_scanline_resample_4tap_RGB (uint8_t * dest, uint8_t * src,
 
     for (off = 0; off < 3; off++) {
       if (j - 1 >= 0 && j + 2 < src_width) {
-        y = vs_4tap_taps[x][0] * src[MAX ((j - 1) * 3 + off, 0)];
+        y = vs_4tap_taps[x][0] * src[(j - 1) * 3 + off];
         y += vs_4tap_taps[x][1] * src[j * 3 + off];
         y += vs_4tap_taps[x][2] * src[(j + 1) * 3 + off];
         y += vs_4tap_taps[x][3] * src[(j + 2) * 3 + off];
@@ -540,8 +577,8 @@ vs_image_scale_4tap_RGB (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_RGB (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -595,7 +632,7 @@ vs_scanline_resample_4tap_YUYV (uint8_t * dest, uint8_t * src,
     x = (acc & 0xffff) >> 8;
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * src[MAX (j * 2 + 0 - 2, 0)];
+      y = vs_4tap_taps[x][0] * src[j * 2 + 0 - 2];
       y += vs_4tap_taps[x][1] * src[j * 2 + 0];
       y += vs_4tap_taps[x][2] * src[j * 2 + 0 + 2];
       y += vs_4tap_taps[x][3] * src[j * 2 + 0 + 4];
@@ -611,7 +648,7 @@ vs_scanline_resample_4tap_YUYV (uint8_t * dest, uint8_t * src,
     j = acc >> 17;
     x = (acc & 0x1ffff) >> 9;
 
-    if (2 * (j - 1) >= 0 && 2 * (j + 4) < src_width) {
+    if (2 * j - 1 >= 0 && 2 * j + 4 < src_width) {
       y = vs_4tap_taps[x][0] * src[MAX (j * 4 + 1 - 4, 1)];
       y += vs_4tap_taps[x][1] * src[j * 4 + 1];
       y += vs_4tap_taps[x][2] * src[j * 4 + 1 + 4];
@@ -626,7 +663,7 @@ vs_scanline_resample_4tap_YUYV (uint8_t * dest, uint8_t * src,
     dest[i * 4 + 1] = CLAMP (y >> SHIFT, 0, 255);
 
     if (2 * i + 1 < n) {
-      if (2 * (j - 1) >= 0 && 2 * (j + 4) < src_width) {
+      if (2 * j - 1 >= 0 && 2 * j + 4 < src_width) {
         y = vs_4tap_taps[x][0] * src[MAX (j * 4 + 3 - 4, 3)];
         y += vs_4tap_taps[x][1] * src[j * 4 + 3];
         y += vs_4tap_taps[x][2] * src[j * 4 + 3 + 4];
@@ -647,7 +684,7 @@ vs_scanline_resample_4tap_YUYV (uint8_t * dest, uint8_t * src,
 
     if (2 * i + 1 < n) {
       if (j - 1 >= 0 && j + 2 < src_width) {
-        y = vs_4tap_taps[x][0] * src[MAX (j * 2 + 0 - 2, 0)];
+        y = vs_4tap_taps[x][0] * src[j * 2 + 0 - 2];
         y += vs_4tap_taps[x][1] * src[j * 2 + 0];
         y += vs_4tap_taps[x][2] * src[j * 2 + 0 + 2];
         y += vs_4tap_taps[x][3] * src[j * 2 + 0 + 4];
@@ -738,8 +775,8 @@ vs_image_scale_4tap_YUYV (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_YUYV (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -809,7 +846,7 @@ vs_scanline_resample_4tap_UYVY (uint8_t * dest, uint8_t * src,
     j = acc >> 17;
     x = (acc & 0x1ffff) >> 9;
 
-    if (2 * (j - 2) >= 0 && 2 * (j + 4) < src_width) {
+    if (2 * j - 2 >= 0 && 2 * j + 4 < src_width) {
       y = vs_4tap_taps[x][0] * src[MAX (j * 4 + 0 - 4, 0)];
       y += vs_4tap_taps[x][1] * src[j * 4 + 0];
       y += vs_4tap_taps[x][2] * src[j * 4 + 0 + 4];
@@ -824,7 +861,7 @@ vs_scanline_resample_4tap_UYVY (uint8_t * dest, uint8_t * src,
     dest[i * 4 + 0] = CLAMP (y >> SHIFT, 0, 255);
 
     if (2 * i + 1 < n) {
-      if (2 * (j - 1) >= 0 && 2 * (j + 4) < src_width) {
+      if (2 * j - 1 >= 0 && 2 * j + 4 < src_width) {
         y = vs_4tap_taps[x][0] * src[MAX (j * 4 + 2 - 4, 2)];
         y += vs_4tap_taps[x][1] * src[j * 4 + 2];
         y += vs_4tap_taps[x][2] * src[j * 4 + 2 + 4];
@@ -936,8 +973,8 @@ vs_image_scale_4tap_UYVY (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_UYVY (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -991,10 +1028,10 @@ vs_scanline_resample_4tap_RGB565 (uint8_t * dest_u8, uint8_t * src_u8,
   acc = *xacc;
   for (i = 0; i < n; i++) {
     j = acc >> 16;
-    x = acc & 0xffff >> 8;
+    x = (acc & 0xffff) >> 8;
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB565_R (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB565_R (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB565_R (src[j]);
       y += vs_4tap_taps[x][2] * RGB565_R (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB565_R (src[(j + 2)]);
@@ -1011,7 +1048,7 @@ vs_scanline_resample_4tap_RGB565 (uint8_t * dest_u8, uint8_t * src_u8,
     y_r = CLAMP (y >> SHIFT, 0, 255);
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB565_G (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB565_G (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB565_G (src[j]);
       y += vs_4tap_taps[x][2] * RGB565_G (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB565_G (src[(j + 2)]);
@@ -1028,7 +1065,7 @@ vs_scanline_resample_4tap_RGB565 (uint8_t * dest_u8, uint8_t * src_u8,
     y_g = CLAMP (y >> SHIFT, 0, 255);
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB565_B (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB565_B (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB565_B (src[j]);
       y += vs_4tap_taps[x][2] * RGB565_B (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB565_B (src[(j + 2)]);
@@ -1044,7 +1081,7 @@ vs_scanline_resample_4tap_RGB565 (uint8_t * dest_u8, uint8_t * src_u8,
     y += (1 << (SHIFT - 1));
     y_b = CLAMP (y >> SHIFT, 0, 255);
 
-    dest[i] = RGB565 (y_r, y_b, y_g);
+    dest[i] = RGB565 (y_r, y_g, y_b);
     acc += increment;
   }
   *xacc = acc;
@@ -1091,7 +1128,7 @@ vs_scanline_merge_4tap_RGB565 (uint8_t * dest_u8, uint8_t * src1_u8,
     y += (1 << (SHIFT - 1));
     y_b = CLAMP (y >> SHIFT, 0, 255);
 
-    dest[i] = RGB565 (y_r, y_b, y_g);
+    dest[i] = RGB565 (y_r, y_g, y_b);
   }
 }
 
@@ -1121,8 +1158,8 @@ vs_image_scale_4tap_RGB565 (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_RGB565 (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -1154,8 +1191,8 @@ vs_image_scale_4tap_RGB565 (const VSImage * dest, const VSImage * src,
 
 /* note that src and dest are uint16_t, and thus endian dependent */
 
-#define RGB555_R(x) (((x)&0x7c00)>>8 | ((x)&0x7c00)>>13)
-#define RGB555_G(x) (((x)&0x03e0)>>3 | ((x)&0x03e0)>>9)
+#define RGB555_R(x) (((x)&0x7c00)>>7 | ((x)&0x7c00)>>12)
+#define RGB555_G(x) (((x)&0x03e0)>>2 | ((x)&0x03e0)>>7)
 #define RGB555_B(x) (((x)&0x001f)<<3 | ((x)&0x001f)>>2)
 
 #define RGB555(r,g,b) \
@@ -1176,10 +1213,10 @@ vs_scanline_resample_4tap_RGB555 (uint8_t * dest_u8, uint8_t * src_u8,
   acc = *xacc;
   for (i = 0; i < n; i++) {
     j = acc >> 16;
-    x = acc & 0xffff >> 8;
+    x = (acc & 0xffff) >> 8;
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB555_R (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB555_R (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB555_R (src[j]);
       y += vs_4tap_taps[x][2] * RGB555_R (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB555_R (src[(j + 2)]);
@@ -1196,7 +1233,7 @@ vs_scanline_resample_4tap_RGB555 (uint8_t * dest_u8, uint8_t * src_u8,
     y_r = CLAMP (y >> SHIFT, 0, 255);
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB555_G (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB555_G (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB555_G (src[j]);
       y += vs_4tap_taps[x][2] * RGB555_G (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB555_G (src[(j + 2)]);
@@ -1213,7 +1250,7 @@ vs_scanline_resample_4tap_RGB555 (uint8_t * dest_u8, uint8_t * src_u8,
     y_g = CLAMP (y >> SHIFT, 0, 255);
 
     if (j - 1 >= 0 && j + 2 < src_width) {
-      y = vs_4tap_taps[x][0] * RGB555_B (src[MAX ((j - 1), 0)]);
+      y = vs_4tap_taps[x][0] * RGB555_B (src[(j - 1)]);
       y += vs_4tap_taps[x][1] * RGB555_B (src[j]);
       y += vs_4tap_taps[x][2] * RGB555_B (src[(j + 1)]);
       y += vs_4tap_taps[x][3] * RGB555_B (src[(j + 2)]);
@@ -1229,7 +1266,7 @@ vs_scanline_resample_4tap_RGB555 (uint8_t * dest_u8, uint8_t * src_u8,
     y += (1 << (SHIFT - 1));
     y_b = CLAMP (y >> SHIFT, 0, 255);
 
-    dest[i] = RGB555 (y_r, y_b, y_g);
+    dest[i] = RGB555 (y_r, y_g, y_b);
     acc += increment;
   }
   *xacc = acc;
@@ -1276,7 +1313,7 @@ vs_scanline_merge_4tap_RGB555 (uint8_t * dest_u8, uint8_t * src1_u8,
     y += (1 << (SHIFT - 1));
     y_b = CLAMP (y >> SHIFT, 0, 255);
 
-    dest[i] = RGB555 (y_r, y_b, y_g);
+    dest[i] = RGB555 (y_r, y_g, y_b);
   }
 }
 
@@ -1306,8 +1343,8 @@ vs_image_scale_4tap_RGB555 (const VSImage * dest, const VSImage * src,
   for (i = 0; i < 4; i++) {
     xacc = 0;
     vs_scanline_resample_4tap_RGB555 (tmpbuf + i * dest->stride,
-        src->pixels + i * src->stride, dest->width, src->width,
-        &xacc, x_increment);
+        src->pixels + CLAMP (i, 0, src->height - 1) * src->stride, dest->width,
+        src->width, &xacc, x_increment);
   }
 
   yacc = 0;
@@ -1332,6 +1369,133 @@ vs_image_scale_4tap_RGB555 (const VSImage * dest, const VSImage * src,
     t3 = tmpbuf + (CLAMP (j + 2, 0, src->height - 1) & 3) * dest->stride;
     vs_scanline_merge_4tap_RGB555 (dest->pixels + i * dest->stride,
         t0, t1, t2, t3, dest->width, yacc & 0xffff);
+
+    yacc += y_increment;
+  }
+}
+
+void
+vs_scanline_resample_4tap_AYUV64 (uint16_t * dest, uint16_t * src,
+    int n, int src_width, int *xacc, int increment)
+{
+  int i;
+  int j;
+  int acc;
+  int x;
+  int y;
+  int off;
+
+  acc = *xacc;
+  for (i = 0; i < n; i++) {
+    j = acc >> 16;
+    x = (acc & 0xffff) >> 8;
+
+    for (off = 0; off < 4; off++) {
+      if (j - 1 >= 0 && j + 2 < src_width) {
+        y = vs_4tap_taps[x][0] * src[(j - 1) * 4 + off];
+        y += vs_4tap_taps[x][1] * src[j * 4 + off];
+        y += vs_4tap_taps[x][2] * src[(j + 1) * 4 + off];
+        y += vs_4tap_taps[x][3] * src[(j + 2) * 4 + off];
+      } else {
+        y = vs_4tap_taps[x][0] * src[CLAMP ((j - 1) * 4 + off, 0,
+                4 * (src_width - 1) + off)];
+        y += vs_4tap_taps[x][1] * src[CLAMP (j * 4 + off, 0,
+                4 * (src_width - 1) + off)];
+        y += vs_4tap_taps[x][2] * src[CLAMP ((j + 1) * 4 + off, 0,
+                4 * (src_width - 1) + off)];
+        y += vs_4tap_taps[x][3] * src[CLAMP ((j + 2) * 4 + off, 0,
+                4 * (src_width - 1) + off)];
+      }
+      y += (1 << (SHIFT - 1));
+      dest[i * 4 + off] = CLAMP (y >> SHIFT, 0, 255);
+    }
+    acc += increment;
+  }
+  *xacc = acc;
+}
+
+void
+vs_scanline_merge_4tap_AYUV64 (uint16_t * dest, uint16_t * src1,
+    uint16_t * src2, uint16_t * src3, uint16_t * src4, int n, int acc)
+{
+  int i;
+  int y;
+  int off;
+  int a, b, c, d;
+
+  acc = (acc >> 8) & 0xff;
+  a = vs_4tap_taps[acc][0];
+  b = vs_4tap_taps[acc][1];
+  c = vs_4tap_taps[acc][2];
+  d = vs_4tap_taps[acc][3];
+  for (i = 0; i < n; i++) {
+    for (off = 0; off < 4; off++) {
+      y = a * src1[i * 4 + off];
+      y += b * src2[i * 4 + off];
+      y += c * src3[i * 4 + off];
+      y += d * src4[i * 4 + off];
+      y += (1 << (SHIFT - 1));
+      dest[i * 4 + off] = CLAMP (y >> SHIFT, 0, 65535);
+    }
+  }
+}
+
+void
+vs_image_scale_4tap_AYUV64 (const VSImage * dest, const VSImage * src,
+    uint8_t * tmpbuf8)
+{
+  int yacc;
+  int y_increment;
+  int x_increment;
+  int i;
+  int j;
+  int xacc;
+  int k;
+  guint16 *tmpbuf = (guint16 *) tmpbuf8;
+  /* destination stride in pixels for easier use with tmpbuf variable */
+  int dest_pixstride = dest->stride / sizeof (guint16);
+
+  if (dest->height == 1)
+    y_increment = 0;
+  else
+    y_increment = ((src->height - 1) << 16) / (dest->height - 1);
+
+  if (dest->width == 1)
+    x_increment = 0;
+  else
+    x_increment = ((src->width - 1) << 16) / (dest->width - 1);
+
+  k = 0;
+  for (i = 0; i < 4; i++) {
+    xacc = 0;
+    vs_scanline_resample_4tap_AYUV64 (tmpbuf + i * dest_pixstride,
+        (guint16 *) (src->pixels + CLAMP (i, 0, src->height - 1) * src->stride),
+        dest->width, src->width, &xacc, x_increment);
+  }
+
+  yacc = 0;
+  for (i = 0; i < dest->height; i++) {
+    uint16_t *t0, *t1, *t2, *t3;
+
+    j = yacc >> 16;
+
+    while (j > k) {
+      k++;
+      if (k + 3 < src->height) {
+        xacc = 0;
+        vs_scanline_resample_4tap_AYUV64 (tmpbuf + ((k +
+                    3) & 3) * dest_pixstride,
+            (guint16 *) (src->pixels + (k + 3) * src->stride), dest->width,
+            src->width, &xacc, x_increment);
+      }
+    }
+
+    t0 = tmpbuf + (CLAMP (j - 1, 0, src->height - 1) & 3) * dest_pixstride;
+    t1 = tmpbuf + (CLAMP (j, 0, src->height - 1) & 3) * dest_pixstride;
+    t2 = tmpbuf + (CLAMP (j + 1, 0, src->height - 1) & 3) * dest_pixstride;
+    t3 = tmpbuf + (CLAMP (j + 2, 0, src->height - 1) & 3) * dest_pixstride;
+    vs_scanline_merge_4tap_AYUV64 ((guint16 *) (dest->pixels +
+            i * dest->stride), t0, t1, t2, t3, dest->width, yacc & 0xffff);
 
     yacc += y_increment;
   }

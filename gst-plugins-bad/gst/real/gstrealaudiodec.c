@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,11 +30,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (real_audio_dec_debug);
 #define GST_CAT_DEFAULT real_audio_dec_debug
-
-static GstElementDetails real_audio_dec_details =
-GST_ELEMENT_DETAILS ("RealAudio decoder",
-    "Codec/Decoder/Audio", "Decoder for RealAudio streams",
-    "Lutz Mueller <lutz@topfrose.de>");
 
 static GstStaticPadTemplate snk_t =
     GST_STATIC_PAD_TEMPLATE ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
@@ -92,7 +87,7 @@ typedef struct
     guint16 (*RAOpenCodec2) (gpointer, const gchar *);
     guint16 (*RASetFlavor) (gpointer, guint16);
   void (*SetDLLAccessPath) (gchar *);
-  void (*RASetPwd) (gpointer, gchar *);
+  void (*RASetPwd) (gpointer, const gchar *);
 } GstRADecLibrary;
 
 typedef struct
@@ -205,21 +200,18 @@ close_library (GstRealAudioDec * dec, GstRADecLibrary * lib)
     if (lib->RACloseCodec)
       lib->RACloseCodec (lib->context);
     /* lib->RAFreeDecoder (lib->context); */
-    lib->context = NULL;
-    lib->module = NULL;
-    lib->RACloseCodec = NULL;
   }
   if (lib->module) {
     GST_LOG_OBJECT (dec, "closing library module");
     g_module_close (lib->module);
-    lib->module = NULL;
   }
+  memset (lib, 0, sizeof (GstRADecLibrary));
 }
 
 static gboolean
 open_library (GstRealAudioDec * dec, gint version, GstRADecLibrary * lib)
 {
-  gchar *path, *names;
+  const gchar *path, *names;
   gchar **split_names, **split_path;
   gint i, j;
   gpointer ra_close_codec, ra_decode, ra_free_decoder;
@@ -308,7 +300,7 @@ codec_search_done:
   lib->RAOpenCodec2 = (guint16 (*)(gpointer, const gchar *)) ra_open_codec2;
   lib->RAInitDecoder = (guint16 (*)(gpointer, gpointer)) ra_init_decoder;
   lib->RASetFlavor = (guint16 (*)(gpointer, guint16)) ra_set_flavor;
-  lib->RASetPwd = (void (*)(gpointer, gchar *)) ra_set_pwd;
+  lib->RASetPwd = (void (*)(gpointer, const gchar *)) ra_set_pwd;
   lib->SetDLLAccessPath = (void (*)(gchar *)) set_dll_access_path;
 
   if (lib->SetDLLAccessPath)
@@ -391,7 +383,6 @@ gst_real_audio_dec_getcaps (GstPad * pad)
     GValue version = { 0 };
 
     GST_LOG_OBJECT (dec, "constructing caps");
-    res = gst_caps_new_empty ();
 
     g_value_init (&versions, GST_TYPE_LIST);
     g_value_init (&version, G_TYPE_INT);
@@ -571,7 +562,9 @@ gst_real_audio_dec_base_init (gpointer g_class)
 
   gst_element_class_add_pad_template (ec, gst_static_pad_template_get (&snk_t));
   gst_element_class_add_pad_template (ec, gst_static_pad_template_get (&src_t));
-  gst_element_class_set_details (ec, &real_audio_dec_details);
+  gst_element_class_set_static_metadata (ec, "RealAudio decoder",
+      "Codec/Decoder/Audio", "Decoder for RealAudio streams",
+      "Lutz Mueller <lutz@topfrose.de>");
 }
 
 static GstStateChangeReturn
@@ -741,28 +734,34 @@ gst_real_audio_dec_class_init (GstRealAudioDecClass * klass)
   element_class->change_state = gst_real_audio_dec_change_state;
 
   g_object_class_install_property (object_class, PROP_REAL_CODECS_PATH,
-      g_param_spec_string ("real_codecs_path",
+      g_param_spec_string ("real-codecs-path",
           "Path where to search for RealPlayer codecs",
           "Path where to search for RealPlayer codecs",
-          DEFAULT_REAL_CODECS_PATH, G_PARAM_READWRITE));
+          DEFAULT_REAL_CODECS_PATH,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RACOOK_NAMES,
-      g_param_spec_string ("racook_names", "Names of cook driver",
-          "Names of cook driver", DEFAULT_RACOOK_NAMES, G_PARAM_READWRITE));
+      g_param_spec_string ("racook-names", "Names of cook driver",
+          "Names of cook driver", DEFAULT_RACOOK_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RAATRK_NAMES,
-      g_param_spec_string ("raatrk_names", "Names of atrk driver",
-          "Names of atrk driver", DEFAULT_RAATRK_NAMES, G_PARAM_READWRITE));
+      g_param_spec_string ("raatrk-names", "Names of atrk driver",
+          "Names of atrk driver", DEFAULT_RAATRK_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RA14_4_NAMES,
-      g_param_spec_string ("ra14_4_names", "Names of 14_4 driver",
-          "Names of 14_4 driver", DEFAULT_RA14_4_NAMES, G_PARAM_READWRITE));
+      g_param_spec_string ("ra14-4-names", "Names of 14_4 driver",
+          "Names of 14_4 driver", DEFAULT_RA14_4_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RA28_8_NAMES,
-      g_param_spec_string ("ra28_8_names", "Names of 28_8 driver",
-          "Names of 28_8 driver", DEFAULT_RA28_8_NAMES, G_PARAM_READWRITE));
+      g_param_spec_string ("ra28-8-names", "Names of 28_8 driver",
+          "Names of 28_8 driver", DEFAULT_RA28_8_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RASIPR_NAMES,
-      g_param_spec_string ("rasipr_names", "Names of sipr driver",
-          "Names of sipr driver", DEFAULT_RASIPR_NAMES, G_PARAM_READWRITE));
+      g_param_spec_string ("rasipr-names", "Names of sipr driver",
+          "Names of sipr driver", DEFAULT_RASIPR_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_PASSWORD,
-      g_param_spec_string ("password", "Password",
-          "Password", DEFAULT_PWD, G_PARAM_READWRITE));
+      g_param_spec_string ("password", "Password", "Password",
+          DEFAULT_PWD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   GST_DEBUG_CATEGORY_INIT (real_audio_dec_debug, "realaudiodec", 0,
       "RealAudio decoder");

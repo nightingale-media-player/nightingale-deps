@@ -1,20 +1,7 @@
 <SIGNAL>
-<NAME>GstQTDemux::got-redirect</NAME>
-<RETURNS>void</RETURNS>
-GstQTDemux *gstqtdemux
-gchar *arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstGSMEnc::frame-encoded</NAME>
-<RETURNS>void</RETURNS>
-GstGSMEnc *gstgsmenc
-</SIGNAL>
-
-<SIGNAL>
 <NAME>GstMultiUDPSink::add</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
+<FLAGS>la</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -23,7 +10,7 @@ gint  arg2
 <SIGNAL>
 <NAME>GstMultiUDPSink::clear</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
+<FLAGS>la</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 </SIGNAL>
 
@@ -47,8 +34,8 @@ gint  arg2
 
 <SIGNAL>
 <NAME>GstMultiUDPSink::get-stats</NAME>
-<RETURNS>GValueArray*</RETURNS>
-<FLAGS>l</FLAGS>
+<RETURNS>GstStructure*</RETURNS>
+<FLAGS>la</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -57,7 +44,7 @@ gint  arg2
 <SIGNAL>
 <NAME>GstMultiUDPSink::remove</NAME>
 <RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
+<FLAGS>la</FLAGS>
 GstMultiUDPSink *gstmultiudpsink
 gchar *arg1
 gint  arg2
@@ -65,29 +52,11 @@ gint  arg2
 
 <SIGNAL>
 <NAME>GstDynUDPSink::get-stats</NAME>
-<RETURNS>GValueArray*</RETURNS>
-<FLAGS>l</FLAGS>
+<RETURNS>GstStructure*</RETURNS>
+<FLAGS>la</FLAGS>
 GstDynUDPSink *gstdynudpsink
 gchar *arg1
 gint  arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstFdSrc::timeout</NAME>
-<RETURNS>void</RETURNS>
-GstFdSrc *gstfdsrc
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstDiceTV::reset</NAME>
-<RETURNS>void</RETURNS>
-GstDiceTV *gstdicetv
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstVertigoTV::reset-parms</NAME>
-<RETURNS>void</RETURNS>
-GstVertigoTV *gstvertigotv
 </SIGNAL>
 
 <SIGNAL>
@@ -96,163 +65,6 @@ GstVertigoTV *gstvertigotv
 <FLAGS>c</FLAGS>
 GstShout2send *gstshout2send
 gint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>DV1394Src::frame-dropped</NAME>
-<RETURNS>void</RETURNS>
-DV1394Src *dv1394src
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstJpegEnc::frame-encoded</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstJpegEnc *gstjpegenc
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAASink::frame-displayed</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAASink *gstaasink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstAASink::have-size</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstAASink *gstaasink
-guint  arg1
-guint  arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::add</NAME>
-<RETURNS>void</RETURNS>
-GstMultiFdSink *gstmultifdsink
-gint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::clear</NAME>
-<RETURNS>void</RETURNS>
-GstMultiFdSink *gstmultifdsink
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::client-added</NAME>
-<RETURNS>void</RETURNS>
-GstMultiFdSink *gstmultifdsink
-gint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::client-removed</NAME>
-<RETURNS>void</RETURNS>
-GstMultiFdSink *gstmultifdsink
-gint  arg1
-GstClientStatus  arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::get-stats</NAME>
-<RETURNS>GValueArray*</RETURNS>
-GstMultiFdSink *gstmultifdsink
-gint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstMultiFdSink::remove</NAME>
-<RETURNS>void</RETURNS>
-GstMultiFdSink *gstmultifdsink
-gint  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstDecodeBin::new-decoded-pad</NAME>
-<RETURNS>void</RETURNS>
-GstDecodeBin *gstdecodebin
-GstPad *arg1
-gboolean  arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstDecodeBin::removed-decoded-pad</NAME>
-<RETURNS>void</RETURNS>
-GstDecodeBin *gstdecodebin
-GstPad *arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstDecodeBin::unknown-type</NAME>
-<RETURNS>void</RETURNS>
-GstDecodeBin *gstdecodebin
-GstPad *arg1
-GstCaps *arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstFakeSrc::handoff</NAME>
-<RETURNS>void</RETURNS>
-GstFakeSrc *gstfakesrc
-GstBuffer  arg1
-GstPad *arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstFakeSink::handoff</NAME>
-<RETURNS>void</RETURNS>
-GstFakeSink *gstfakesink
-GstBuffer  arg1
-GstPad *arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstIdentity::handoff</NAME>
-<RETURNS>void</RETURNS>
-GstIdentity *gstidentity
-GstBuffer  arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstTypeFindElement::have-type</NAME>
-<RETURNS>void</RETURNS>
-GstTypeFindElement *gsttypefindelement
-guint  arg1
-GstCaps *arg2
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstQueue::overrun</NAME>
-<RETURNS>void</RETURNS>
-GstQueue *gstqueue
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstQueue::running</NAME>
-<RETURNS>void</RETURNS>
-GstQueue *gstqueue
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstQueue::underrun</NAME>
-<RETURNS>void</RETURNS>
-GstQueue *gstqueue
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstBin::element-added</NAME>
-<RETURNS>void</RETURNS>
-GstBin *gstbin
-GstElement *arg1
-</SIGNAL>
-
-<SIGNAL>
-<NAME>GstBin::element-removed</NAME>
-<RETURNS>void</RETURNS>
-GstBin *gstbin
-GstElement *arg1
 </SIGNAL>
 
 <SIGNAL>
@@ -470,6 +282,73 @@ GstRtpBin *gstrtpbin
 </SIGNAL>
 
 <SIGNAL>
+<NAME>GstRtpBin::payload-type-change</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::new-jitterbuffer</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+GstElement *arg1
+guint  arg2
+guint  arg3
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-aux-receiver</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-aux-sender</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-rtcp-decoder</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-rtcp-encoder</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-rtp-decoder</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpBin::request-rtp-encoder</NAME>
+<RETURNS>GstElement*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRtpBin *gstrtpbin
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
 <NAME>GstRtpJitterBuffer::clear-pt-map</NAME>
 <RETURNS>void</RETURNS>
 <FLAGS>la</FLAGS>
@@ -497,6 +376,15 @@ GstRtpJitterBuffer *gstrtpjitterbuffer
 <FLAGS>l</FLAGS>
 GstRtpJitterBuffer *gstrtpjitterbuffer
 guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRtpJitterBuffer::set-active</NAME>
+<RETURNS>guint64</RETURNS>
+<FLAGS>la</FLAGS>
+GstRtpJitterBuffer *gstrtpjitterbuffer
+gboolean  arg1
+guint64  arg2
 </SIGNAL>
 
 <SIGNAL>
@@ -642,5 +530,82 @@ GstPad *arg2
 GstRtpSsrcDemux *gstrtpssrcdemux
 guint  arg1
 GstPad *arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCairoOverlay::caps-changed</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS></FLAGS>
+GstCairoOverlay *gstcairooverlay
+GstCaps *arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstCairoOverlay::draw</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS></FLAGS>
+GstCairoOverlay *gstcairooverlay
+CairoContext *arg1
+guint64  arg2
+guint64  arg3
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstV4l2Src::prepare-format</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstV4l2Src *gstv4l2src
+gint  arg1
+GstCaps *arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRTSPSrc::handle-request</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS></FLAGS>
+GstRTSPSrc *gstrtspsrc
+gpointer  arg1
+gpointer  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRTSPSrc::on-sdp</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS></FLAGS>
+GstRTSPSrc *gstrtspsrc
+GstSDPMessage *arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRTSPSrc::select-stream</NAME>
+<RETURNS>gboolean</RETURNS>
+<FLAGS>fc</FLAGS>
+GstRTSPSrc *gstrtspsrc
+guint  arg1
+GstCaps *arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRTSPSrc::new-manager</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>fc</FLAGS>
+GstRTSPSrc *gstrtspsrc
+GstElement *arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstRTSPSrc::request-rtcp-key</NAME>
+<RETURNS>GstCaps*</RETURNS>
+<FLAGS>l</FLAGS>
+GstRTSPSrc *gstrtspsrc
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstSplitMuxSink::format-location</NAME>
+<RETURNS>gchar*</RETURNS>
+<FLAGS>l</FLAGS>
+GstSplitMuxSink *gstsplitmuxsink
+guint  arg1
 </SIGNAL>
 

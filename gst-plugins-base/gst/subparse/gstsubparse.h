@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_SUBPARSE_H__
@@ -53,7 +53,10 @@ typedef enum
   GST_SUB_PARSE_FORMAT_SAMI = 4,
   GST_SUB_PARSE_FORMAT_TMPLAYER = 5,
   GST_SUB_PARSE_FORMAT_MPL2 = 6,
-  GST_SUB_PARSE_FORMAT_SUBVIEWER = 7
+  GST_SUB_PARSE_FORMAT_SUBVIEWER = 7,
+  GST_SUB_PARSE_FORMAT_DKS = 8,
+  GST_SUB_PARSE_FORMAT_QTTEXT = 9,
+  GST_SUB_PARSE_FORMAT_LRC = 10
 } GstSubParseFormat;
 
 typedef struct {
@@ -64,7 +67,8 @@ typedef struct {
   guint64  max_duration; /* to clamp duration, 0 = no limit (used by tmplayer parser) */
   GstSegment *segment;
   gpointer user_data;
-  gdouble  fps;          /* used by microdvd parser */
+  gboolean have_internal_fps; /* If TRUE don't overwrite fps by property */
+  gint fps_n, fps_d;     /* used by frame based parsers */
 } ParserState;
 
 typedef gchar* (*Parser) (ParserState *state, const gchar *line);
@@ -88,11 +92,9 @@ struct _GstSubParse {
 
   /* seek */
   guint64 offset;
-  guint64 next_offset;
   
   /* Segment */
   GstSegment    segment;
-  GstSeekFlags  segment_flags;
   gboolean      need_segment;
   
   gboolean flushing;
@@ -101,6 +103,9 @@ struct _GstSubParse {
   gchar   *encoding;
 
   gboolean first_buffer;
+
+  /* used by frame based parsers */
+  gint fps_n, fps_d;          
 };
 
 struct _GstSubParseClass {

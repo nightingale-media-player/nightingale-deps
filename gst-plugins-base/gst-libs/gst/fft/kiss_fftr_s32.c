@@ -11,6 +11,9 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "kiss_fftr_s32.h"
 #include "_kiss_fft_guts_s32.h"
@@ -41,7 +44,7 @@ kiss_fftr_s32_alloc (int nfft, int inverse_fft, void *mem, size_t * lenmem)
   kiss_fft_s32_alloc (nfft, inverse_fft, NULL, &subsize);
   memneeded = ALIGN_STRUCT (sizeof (struct kiss_fftr_s32_state))
       + ALIGN_STRUCT (subsize)
-      + sizeof (kiss_fft_s32_cpx) * (nfft * 2);
+      + sizeof (kiss_fft_s32_cpx) * (nfft * 3 / 2);
 
   if (lenmem == NULL) {
     st = (kiss_fftr_s32_cfg) KISS_FFT_S32_MALLOC (memneeded);
@@ -59,8 +62,9 @@ kiss_fftr_s32_alloc (int nfft, int inverse_fft, void *mem, size_t * lenmem)
   st->super_twiddles = st->tmpbuf + nfft;
   kiss_fft_s32_alloc (nfft, inverse_fft, st->substate, &subsize);
 
-  for (i = 0; i < nfft; ++i) {
-    double phase = -3.14159265358979323846264338327 * ((double) i / nfft + .5);
+  for (i = 0; i < nfft / 2; ++i) {
+    double phase =
+        -3.14159265358979323846264338327 * ((double) (i + 1) / nfft + .5);
 
     if (inverse_fft)
       phase *= -1;
@@ -77,10 +81,8 @@ kiss_fftr_s32 (kiss_fftr_s32_cfg st, const kiss_fft_s32_scalar * timedata,
   int k, ncfft;
   kiss_fft_s32_cpx fpnk, fpk, f1k, f2k, tw, tdc;
 
-  if (st->substate->inverse) {
-    fprintf (stderr, "kiss fft usage error: improper alloc\n");
-    exit (1);
-  }
+  /* kiss fft usage error: improper alloc */
+  g_return_if_fail (st->substate->inverse == 0);
 
   ncfft = st->substate->nfft;
 
@@ -118,7 +120,7 @@ kiss_fftr_s32 (kiss_fftr_s32_cfg st, const kiss_fft_s32_scalar * timedata,
 
     C_ADD (f1k, fpk, fpnk);
     C_SUB (f2k, fpk, fpnk);
-    C_MUL (tw, f2k, st->super_twiddles[k]);
+    C_MUL (tw, f2k, st->super_twiddles[k - 1]);
 
     freqdata[k].r = HALF_OF (f1k.r + tw.r);
     freqdata[k].i = HALF_OF (f1k.i + tw.i);
@@ -134,10 +136,8 @@ kiss_fftri_s32 (kiss_fftr_s32_cfg st, const kiss_fft_s32_cpx * freqdata,
   /* input buffer timedata is stored row-wise */
   int k, ncfft;
 
-  if (st->substate->inverse == 0) {
-    fprintf (stderr, "kiss fft usage error: improper alloc\n");
-    exit (1);
-  }
+  /* kiss fft usage error: improper alloc */
+  g_return_if_fail (st->substate->inverse != 0);
 
   ncfft = st->substate->nfft;
 
@@ -156,7 +156,7 @@ kiss_fftri_s32 (kiss_fftr_s32_cfg st, const kiss_fft_s32_cpx * freqdata,
 
     C_ADD (fek, fk, fnkc);
     C_SUB (tmp, fk, fnkc);
-    C_MUL (fok, tmp, st->super_twiddles[k]);
+    C_MUL (fok, tmp, st->super_twiddles[k - 1]);
     C_ADD (st->tmpbuf[k], fek, fok);
     C_SUB (st->tmpbuf[ncfft - k], fek, fok);
 #ifdef USE_SIMD

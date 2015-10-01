@@ -11,12 +11,12 @@ libgstcdio_la_CFLAGS = \
 	$(CDIO_CFLAGS)
 
 libgstcdio_la_LIBADD = \
-	$(GST_PLUGINS_BASE_LIBS) -lgstcdda-$(GST_MAJORMINOR) \
+	$(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_API_VERSION) -lgsttag-$(GST_API_VERSION) \
 	$(GST_BASE_LIBS) \
 	$(CDIO_LIBS)
 
 libgstcdio_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) 
-libgstcdio_la_LIBTOOLFLAGS = --tag=disable-static
+libgstcdio_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = \
 	gstcdio.h \

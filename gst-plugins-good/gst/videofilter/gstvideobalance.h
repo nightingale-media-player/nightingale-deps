@@ -13,14 +13,16 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_VIDEO_BALANCE_H__
 #define __GST_VIDEO_BALANCE_H__
 
+#include <gst/gst.h>
+#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -47,6 +49,8 @@ typedef struct _GstVideoBalanceClass GstVideoBalanceClass;
 struct _GstVideoBalance {
   GstVideoFilter videofilter;
 
+  /* < private > */
+
   /* channels for interface */
   GList *channels;
 
@@ -56,15 +60,12 @@ struct _GstVideoBalance {
   gdouble hue;
   gdouble saturation;
 
-  gboolean passthru;
-
-  /* format */
-  gint width;
-  gint height;
-  gint size;
-
   /* tables */
-  guint8   *tabley, **tableu, **tablev;
+  guint8 tabley[256];
+  guint8 *tableu[256];
+  guint8 *tablev[256];
+
+  void (*process) (GstVideoBalance *balance, GstVideoFrame *frame);
 };
 
 struct _GstVideoBalanceClass {

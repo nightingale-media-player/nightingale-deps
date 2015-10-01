@@ -1,37 +1,105 @@
-GstBin GstChildProxy
-GstPipeline GstChildProxy
-GstCameraBin GstChildProxy GstImplementsInterface GstColorBalance GstTagSetter GstPhotography
-RsnDvdBin GstChildProxy GstURIHandler
+ADPCMEnc GstPreset
 DvbBaseBin GstChildProxy GstURIHandler
-GstAutoConvert GstChildProxy
-GstSDPDemux GstChildProxy
-GstFPSDisplaySink GstChildProxy
-GstNeonhttpSrc GstURIHandler
-GstMythtvSrc GstURIHandler
-GstMMS GstURIHandler
-GstOss4Source GstImplementsInterface GstMixer GstPropertyProbe
-GstVCDSrc GstURIHandler
-GstCDAudio GstURIHandler
-GstDfbVideoSink GstImplementsInterface GstNavigation GstColorBalance
-GstSDLVideoSink GstImplementsInterface GstNavigation GstXOverlay
+GstA2dpSink GstChildProxy
+GstAdaptiveDemux GstChildProxy
+GstAmrWbEnc GstPreset
 GstApExSink GstImplementsInterface GstMixer
-GstOss4Sink GstPropertyProbe
-GstKateEnc GstTagSetter
-GstKateTag GstTagSetter
-GstCeltEnc GstTagSetter GstPreset
-GstXvidEnc GstPreset
-GstMpeg2enc GstPreset
-GstFaac GstPreset
-GstBaseVideoEncoder GstPreset
-GstDiracEnc GstPreset
-GstMetadataMux GstTagSetter
-GstOss4Mixer GstImplementsInterface GstMixer GstPropertyProbe
 GstAsfMux GstTagSetter
-GstQTMux GstTagSetter
-GstMP4Mux GstTagSetter
-GstGPPMux GstTagSetter
-GstMJ2Mux GstTagSetter
+GstAudioEncoder GstPreset
+GstAudioInterleave GstChildProxy
+GstAudioMixer GstChildProxy
+GstAutoConvert GstChildProxy
+GstAutoVideoConvert GstChildProxy
+GstBaseCameraSrc GstChildProxy
+GstBaseVideoEncoder GstPreset
+GstBin GstChildProxy
+GstCameraBin GstChildProxy GstImplementsInterface GstColorBalance GstTagSetter
+GstCameraBin GstChildProxy GstTagSetter
+GstCameraBin2 GstChildProxy GstTagSetter
+GstCeltEnc GstPreset GstTagSetter
+GstCompositor GstChildProxy
+GstDaalaEnc GstPreset
+GstDashDemux GstChildProxy
+GstDataURISrc GstURIHandler
+GstDfbVideoSink GstImplementsInterface GstNavigation GstColorBalance
+GstDfbVideoSink GstNavigation GstColorBalance
+GstDiracEnc GstPreset
+GstDtlsSrtpBin GstChildProxy
+GstDtlsSrtpDec GstChildProxy
+GstDtlsSrtpEnc GstChildProxy
+GstEglGlesSink GstVideoOverlay
+GstFPSDisplaySink GstChildProxy
+GstFaac GstPreset
+GstFaceOverlay GstChildProxy
+GstFreeverb GstPreset
+GstGLBaseMixer GstChildProxy
+GstGLFilterBin GstChildProxy
+GstGLImageSink GstVideoOverlay
+GstGLImageSink GstVideoOverlay GstNavigation
+GstGLImageSinkBin GstChildProxy GstVideoOverlay GstNavigation
+GstGLMixer GstChildProxy
+GstGLMixerBin GstChildProxy
+GstGLMosaic GstChildProxy
+GstGLSinkBin GstChildProxy GstVideoOverlay GstNavigation
+GstGLSrcBin GstChildProxy
+GstGLStereoMix GstChildProxy
+GstGLVideoMixer GstChildProxy
+GstGLVideoMixerBin GstChildProxy
+GstGSMEnc GstPreset
+GstGSettingsAudioSink GstChildProxy
+GstGSettingsAudioSrc GstChildProxy
+GstGSettingsSwitchSink GstChildProxy
+GstGSettingsSwitchSrc GstChildProxy
+GstGSettingsVideoSink GstChildProxy
+GstGSettingsVideoSrc GstChildProxy
+GstGtkBaseSink GstNavigation
+GstGtkGLSink GstNavigation
+GstGtkSink GstNavigation
+GstHLSDemux GstChildProxy
+GstHanddetect GstNavigation
+GstHlsSink GstChildProxy
 GstId3BaseMux GstTagSetter
 GstId3Mux GstTagSetter
-GstFlvMux GstTagSetter
-GstDeinterlace2 GstChildProxy
+GstJifMux GstTagSetter GstTagXmpWriter
+GstKateEnc GstTagSetter
+GstKateTag GstTagSetter
+GstMMS GstURIHandler
+GstMpeg2enc GstPreset
+GstMssDemux GstChildProxy
+GstMythtvSrc GstURIHandler
+GstNeonhttpSrc GstURIHandler
+GstOpenJPEGEnc GstPreset
+GstOpenh264Enc GstPreset
+GstOpusEnc GstPreset GstTagSetter
+GstPipeline GstChildProxy
+GstPnmenc GstPreset
+GstRTMPSink GstURIHandler
+GstRTMPSrc GstURIHandler
+GstSDLVideoSink GstImplementsInterface GstXOverlay GstNavigation
+GstSDPDemux GstChildProxy
+GstSbcEnc GstPreset
+GstSchroEnc GstPreset
+GstSirenEnc GstPreset
+GstTagMux GstTagSetter
+GstUvcH264Src GstChildProxy
+GstVCDSrc GstURIHandler
+GstVP8Enc GstPreset GstTagSetter
+GstVP8Enc GstTagSetter GstPreset
+GstVideoAggregator GstChildProxy
+GstVideoEncoder GstPreset
+GstViewfinderBin GstChildProxy
+GstVoAacEnc GstPreset
+GstVoAmrWbEnc GstPreset
+GstWaylandSink GstVideoOverlay GstWaylandVideo
+GstWebpEnc GstPreset
+GstWrapperCameraBinSrc GstChildProxy
+GstX265Enc GstPreset
+GstXvidEnc GstPreset
+GtkWidget AtkImplementorIface GtkBuildable
+MXFDMS1ClipFramework MXFDescriptiveMetadataFrameworkInterface
+MXFDMS1Framework MXFDescriptiveMetadataFrameworkInterface
+MXFDMS1ProductionClipFramework MXFDescriptiveMetadataFrameworkInterface
+MXFDMS1ProductionFramework MXFDescriptiveMetadataFrameworkInterface
+MXFDMS1SceneFramework MXFDescriptiveMetadataFrameworkInterface
+RsnDvdBin GstChildProxy GstURIHandler
+VdpSink GstImplementsInterface GstNavigation GstXOverlay

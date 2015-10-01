@@ -17,15 +17,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef PARSE_CHANNELS_H
 #define PARSE_CHANNELS_H
 
-GHashTable* parse_channels_conf_from_file(const gchar* filename);
-gboolean set_properties_for_channel(GObject *dvbbasebin, 
-  const gchar* channel_name);
+gboolean set_properties_for_channel (GstElement  * dvbbasebin,
+                                     const gchar * channel_name,
+                                     GError     ** error);
 
 #endif

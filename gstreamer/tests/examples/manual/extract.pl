@@ -29,6 +29,17 @@ xml_decode ($)
 
 # main
 my $output = shift @ARGV;
+my $outputname;
+
+# strip path parts
+if ($output =~ m/.*\/(.*)$/)
+{
+  $outputname = $1;
+}
+else
+{
+  $outputname = $output;
+}
 
 $found = 0;
 %blocks = ();
@@ -39,17 +50,17 @@ foreach $file (@ARGV)
 
   while ($line = <FILE>)
   {
-    if ($line =~ /<!-- example-begin $output (.*?)-->/)
+    if ($line =~ /<!-- example-begin $outputname (.*?)-->/)
     {
       $found = 1;
       $block_id = $1;
       $block = "\n/*** block $block_id from $file ***/\n";
 
-      print "Extracting $output block $block_id from $file\n";
+      print "Extracting $outputname block $block_id from $file\n";
 
       while ($line = <FILE>)
       {
-        if ($line =~ /<!-- example-end $output (.*?)-->/)
+        if ($line =~ /<!-- example-end $outputname (.*?)-->/)
         {
           last;
         }
@@ -63,7 +74,7 @@ foreach $file (@ARGV)
 
 if (!$found)
 {
-  print "Could not find $output example !\n";
+  print "Could not find $outputname example !\n";
   exit(1);
 }
 

@@ -13,15 +13,16 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_H264_PAY_H__
 #define __GST_RTP_H264_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/base/gstadapter.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 
@@ -36,40 +37,56 @@ G_BEGIN_DECLS
 #define GST_IS_RTP_H264_PAY_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_RTP_H264_PAY))
 
-typedef enum
-{
-  GST_H264_SCAN_MODE_BYTESTREAM,
-  GST_H264_SCAN_MODE_MULTI_NAL,
-  GST_H264_SCAN_MODE_SINGLE_NAL
-} GstH264ScanMode;
-
 typedef struct _GstRtpH264Pay GstRtpH264Pay;
 typedef struct _GstRtpH264PayClass GstRtpH264PayClass;
 
+typedef enum
+{
+  GST_H264_STREAM_FORMAT_UNKNOWN,
+  GST_H264_STREAM_FORMAT_BYTESTREAM,
+  GST_H264_STREAM_FORMAT_AVC
+} GstH264StreamFormat;
+
+typedef enum
+{
+  GST_H264_ALIGNMENT_UNKNOWN,
+  GST_H264_ALIGNMENT_NAL,
+  GST_H264_ALIGNMENT_AU
+} GstH264Alignment;
+
 struct _GstRtpH264Pay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   guint profile;
-  guint8 *sps, *pps;
-  guint sps_len, pps_len;
+  GPtrArray *sps, *pps;
 
-  gboolean packetized;
+  GstH264StreamFormat stream_format;
+  GstH264Alignment alignment;
   guint nal_length_size;
   GArray *queue;
 
-  gchar *profile_level_id;
   gchar *sprop_parameter_sets;
   gboolean update_caps;
-  GstH264ScanMode scan_mode;
 
-  gboolean buffer_list;
+  GstAdapter *adapter;
+
+  guint spspps_interval;
+  gboolean send_spspps;
+  GstClockTime last_spspps;
+
+  /* TRUE if the next NALU processed should have the DELTA_UNIT flag */
+  gboolean delta_unit;
+  /* TRUE if the next NALU processed should have the DISCONT flag */
+  gboolean discont;
 };
 
 struct _GstRtpH264PayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_h264_pay_get_type (void);
 
 gboolean gst_rtp_h264_pay_plugin_init (GstPlugin * plugin);
 

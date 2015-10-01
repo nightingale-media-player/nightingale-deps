@@ -1,26 +1,28 @@
 
-Release notes for GStreamer Good Plug-ins 0.10.16 "Secret Handshakes"
-        
+Release notes for GStreamer Good Plugins 1.6.0
 
 
-The GStreamer team is proud to announce a new release
-in the 0.10.x stable series of the
-GStreamer Good Plug-ins.
+The GStreamer team is proud to announce a new major feature release in the
+stable 1.x API series of your favourite cross-platform multimedia framework!
 
 
-The 0.10.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.8.x series.
-It is, however, parallel installable with the 0.8.x series.
+This release has been in the works for more than a year and is packed with new
+features, bug fixes and other improvements.
+
+
+See
+http://gstreamer.freedesktop.org/releases/1.6/
+for the full list of changes.
 
 
 
 "Such ingratitude.  After all the times I've saved your life."
 
 
-A collection of plug-ins you'd want to have right next to you on the
-battlefield.  Shooting sharp and making no mistakes, these plug-ins have it
+A collection of plugins you'd want to have right next to you on the
+battlefield.  Shooting sharp and making no mistakes, these plugins have it
 all: good looks, good code, and good licensing.  Documented and dressed up
-in tests.  If you're looking for a role model to base your own plug-in on,
+in tests.  If you're looking for a role model to base your own plugin on,
 here it is.
 
 
@@ -29,203 +31,81 @@ let us know - it is a matter of honour for us to ensure Blondie doesn't look
 like he's been walking 100 miles through the desert without water.
 
 
-This module contains a set of plug-ins that we consider to have good quality
-  code, correct functionality, our preferred license (LGPL for the plug-in
+This module contains a set of plugins that we consider to have good quality
+  code, correct functionality, our preferred license (LGPL for the plugin
   code, LGPL or LGPL-compatible for the supporting library).
-We believe distributors can safely ship these plug-ins.
+We believe distributors can safely ship these plugins.
 People writing elements should base their code on these elements.
 
 
-Other modules containing plug-ins are:
+Other modules containing plugins are:
 
 
 gst-plugins-base
-contains a basic set of well-supported plug-ins
+contains a basic set of well-supported plugins
 gst-plugins-ugly
-contains a set of well-supported plug-ins, but might pose problems for
+contains a set of well-supported plugins, but might pose problems for
     distributors
 gst-plugins-bad
-contains a set of less supported plug-ins that haven't passed the
-    rigorous quality testing we expect
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 
 
   
 
-Features of this release
-    
-      * Moved rtpmanager from -bad to -good
-      * Implement SEEKING query in more demuxers and decoders (notably mkv, flv, flac)
-      * avimux: adds support to WMA/WMV
-      * cairo: Add cairo-based PDF/PS/SVG encoder element (cairorender)
-      * dv1394src: fix element for live usage
-      * effectv: new elements: rippletv, streaktv, radioactv, optv
-      * flacdec: fix intermittent FLAC__STREAM_DECODER_ABORTED errors when seeking
-      * flacenc: fix issue with broken duration / sample count into flac header in some cases
-      * flvmux: lots of fixes and improvements
-      * id3demux: fix parsing of unsync'ed ID3 v2.4 tags and frames
-      * matroska: add kate subtitle support, add/improve WMA/WMV handling and read bluray PGS subpicture streams
-      * multipartdemux: support more mime types, do proper flow aggregation
-      * pulsesrc: cleanups, report real latency, set the default slave method to skew
-      * qtdemux: support for agsm, misc. tag reading fixes
-      * rtp: new QDM2 and CELT depayloaders; fix SVQ3 depayloader and make it autopluggable
-      * souphttpsrc: Only assume seekability if the server provides Content-Length
-      * v4l2: add v4l2sink element, open device in NULL->READY, optional gudev support
-      * v4l2src: fix 'hang' with some cameras caused by bad timestamping if no framerate is available
-      * videomixer: add RGB format support; fix I420 blending
-
 Bugs fixed in this release
      
-      * 331420 : No PDF/PostScript/SVG encoder in GStreamer yet.
-      * 499242 : [patch] workaround the broken tags encoding for mp3 files
-      * 521625 : [plugin-move] move rtpmanager from -bad to -good
-      * 560033 : [v4l2src] returns caps with a range where max == min
-      * 564100 : [avidemux] premature EOS streaming mjpeg file with JUNK tags
-      * 564501 : [rtph264pay] bytestream scan mode operation is not reliable
-      * 567983 : [avidemux] SAMPLE.AVI fails to play in push mode
-      * 577017 : Videomixer blend bgra and ayuv
-      * 577318 : rtspsrc appears to be leaking memory
-      * 578052 : gstavidemux: support seeking and duration query in default format
-      * 578166 : libgstwaveform, gstwaveformsink.c " BYTE " instead of " byte " 
-      * 578612 : [flacdec] seek on flac file sometimes triggers flac decoder ABORT
-      * 580214 : Equalizer starts distorting the sound after a while.
-      * 580732 : AVIMUX needs mappings for Windows Media codecs
-      * 582153 : rtpmp4vpay does not payload mp4v stream depayloaded with rtpmp4vdepay
-      * 582169 : [multipartdemux] Segmentation fault on empty content
-      * 582462 : souphttpsrc should set caps for " audio/L16 " mime_type
-      * 583593 : Updates for SunAudio plugin
-      * 583640 : [v4lsrc/v4l2src] add support for better device detection with libgudev
-      * 584455 : [flacenc] sometimes writes broken flac files
-      * 584613 : rtpvrawpay seems to produce fixed-length packets padded with random data
-      * 585205 : [rtpmp4gdepay?] Unable to play audio from one specific radio station stream
-      * 585361 : [gstwaveformsink.c]  'byte' is not defined in MSVCRT
-      * 585559 : buffer-list support for rtph264pay, rtpjpegpay and rtpmp4vpay
-      * 585576 : [souphttpsrc] initially reports all servers as seekable
-      * 585630 : [PATCH] Don't try to test flacdec if it's not build
-      * 585699 : GNOME Goal: Remove deprecated glib symbols
-      * 585757 : Remove deprecated GTK+ symbols from unused code
-      * 585828 : audioamplify should support more formats
-      * 585831 : audioamplify should support no clipping
-      * 586397 : gstudpnetutils.h fails to build on FreeBSD
-      * 587426 : non fast-start mov files fail to play from http locations
-      * 587680 : rtp/ts does not repackage cleanly to rtp; mpegvideoparse/rtpmpvpay: timing issues
-      * 587826 : gstavidemux.c: s/GST_DISABLE_DEBUG/GST_DISABLE_GST_DEBUG
-      * 587982 : [udp] uninitialized variable in gst_udp_get_addr function
-      * 587983 : [avidemux] assert format failed
-      * 588148 : [id3demux] APIC tag not found mp3 file
-      * 588349 : [effectv] Add new optv effect filter
-      * 588359 : [effectv] Add radioactv effect filter
-      * 588368 : [effectv] Add streaktv effect filter
-      * 588483 : [flacenc] write padding metadata block
-      * 588695 : [effectv] Add rippletv effect filter
-      * 588777 : [souphttpsrc] don't try to authenticate if no username/password is set
-      * 589056 : [qtdemux] no audio in videos from Aiptek camera
-      * 589365 : [pulsesink] pa_stream_get_sink_input_info() failed: Invalid argument
-      * 589423 : [flacdec] Implement SEEKING query
-      * 589424 : [flvdemux] Implement SEEKING query
-      * 589459 : [pulsesink] Fix a couple error messages that mentioned incorrect function names.
-      * 590038 : pulsesink: pa_timing_info- > configured_sink_usec requires pulse 0.9.11
-      * 590280 : [v4l2] add v4l2sink
-      * 590401 : GstPulseSrc's pulse probe is not initialized correctly
-      * 590447 : [flvmux] crashes when writing index with < = 128 entries
-      * 590970 : [souphttpsrc] better fix for compiler warning fix
-      * 591451 : [v4l2] causes hanging stream when VIDIOC_G_PARM is not supported
-      * 591476 : Possible leak in rtpbin
-      * 591712 : [dvdec] sets top field first not bottom field first on pal interlaced content
-      * 591747 : [v4l2src] should clear formats list when it closes the device
-      * 591951 : pipelines/simple-launch-lines check segfaults with libjpeg 7
-      * 592232 : [qtdemux] QT style string tag extraction fails
-      * 592530 : Get only glitches and noise trying to play a gsm file
-      * 593015 : pa_stream_flush() seems to cause sync issues
-      * 585911 : matroskademux seems to leak large amounts of memory when seeking (skipping)
-      * 576378 : [matroskamux] add support for WMA2 and WMV2
-      * 564437 : rtpjpegdepay was unable to handle frame dimensions greater than 2040
-      * 582515 : Quicktime file with PCM audio does not play correctly
-      * 583048 : [patch] jpegdec: support for larger pictures
-      * 583371 : pulsesink: Print message on underflows
-      * 583803 : pngdec: mismatched g_malloc/free
-      * 584981 : Gstreamer wavparse Could not demultiplex stream
-      * 585056 : regression: no more sound in my H.264+AAC clips
-      * 585549 : Add RTP blocksize functionality to rtspsrc element
-      * 585842 : Support for GstBufferList in gstmultiudpsink
+      * 705991 : Adding support for DASH common encryption to qtdemux and dashdemux
+      * 750731 : rtpsession test fails sometimes
+      * 751393 : aacparse: LOAS config never retrieved
+      * 755265 : rtp{vorbis,theora}pay: Store headers in the packet buffers lists, not a NULL buffer
+      * 755277 : rtptheoradepay: Memory leaks
+      * 755463 : spectrum: Sending magnitude instead of phase in message for Phase info
+      * 755471 : qtdemux: Segment seeks broken again
+      * 755621 : smptealpha: Do not set width/height before comparing with old values
 
-Download
+==== Download ====
 
-You can find source releases of gst-plugins-good in the download directory:
-http://gstreamer.freedesktop.org/src/gst-plugins-good/
+You can find source releases of gst-plugins-good in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-good/
 
-GStreamer Homepage
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-good/
 
-More details can be found on the project's website:
-http://gstreamer.freedesktop.org/
+==== Homepage ====
 
-Support and Bugs
+The project's website is http://gstreamer.freedesktop.org/
+
+==== Support and Bugs ====
 
 We use GNOME's bugzilla for bug reports and feature requests:
 http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
-Developers
+Please submit patches via bugzilla as well.
 
-GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
-Interested developers of the core library, plug-ins, and applications should
-subscribe to the gstreamer-devel list. If there is sufficient interest we
-will create more lists as necessary.
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
 
         
-Applications
-  
 Contributors to this release
     
-      * Alex Ugarte
-      * Ali Sabil
-      * Arnout Vandecappelle
-      * Benjamin Gaignard
-      * Branko Subasic
-      * Brian Cameron
-      * Christian Schaller
-      * Colin Guthrie
-      * David Schleef
-      * Edward Hervey
-      * Elaine Xiong
-      * Filippo Argiolas
-      * Ghislain 'Aus' Lacroix
-      * Hans de Goede
-      * Håvard Graff
       * Jan Schmidt
-      * Jens Granseuer
-      * John Keeping
-      * Jonathan Tellier
-      * Josep Torra
-      * Julien Moutte
-      * Kipp Cannon
-      * Koop Mast
-      * Krzysztof Błaszkowski
-      * Laurent Glayal
-      * Luc Deschenaux
-      * Luis Menina
-      * Lutz Mueller
-      * Marc Leeman
-      * Mark Nauwelaerts
-      * Marvin Schmidt
-      * Ognyan Tonchev
-      * Ole André Vadla Ravnås
-      * Olivier Crête
-      * Patrick Radizi
-      * Peter Kjellerstedt
-      * Philip Jägenstedt
-      * Philippe Normand
-      * Rob Clark
       * Sebastian Dröge
-      * Sjoerd Simons
-      * Stefan Kost
-      * Thiago Santos
-      * Thijs Vermeir
-      * Thomas Vander Stichele
-      * Tim-Philipp Müller
-      * Vincent Penquerc'h
-      * Wim Taymans
-      * Youness Alaoui
-      * Zaheer Merali
-      * Zeeshan Ali (Khattak)
-      * Руслан Ижбулатов
+      * Sebastian Rasmussen
+      * Thibault Saunier
+      * Vikram Fugro
  

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -37,8 +37,7 @@ int
 main (int argc, char **argv)
 {
   GstElement *pipeline;
-  GstBus *bus;
-  GstState state, pending;
+  GstState state;
   GError *error = NULL;
 
   gst_init (&argc, &argv);
@@ -51,17 +50,17 @@ main (int argc, char **argv)
 
   loop = g_main_loop_new (NULL, FALSE);
 
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
   /* lets check it gets to PLAYING */
-  g_assert (gst_element_get_state (pipeline, &state, &pending,
-          GST_CLOCK_TIME_NONE) != GST_STATE_CHANGE_FAILURE);
-  g_assert (state == GST_STATE_PLAYING || pending == GST_STATE_PLAYING);
+  if (gst_element_get_state (pipeline, &state, NULL,
+          GST_CLOCK_TIME_NONE) == GST_STATE_CHANGE_FAILURE ||
+      state != GST_STATE_PLAYING) {
+    g_warning ("State change to playing failed");
+  }
 
   /* We want to get out after 5 seconds */
-  g_timeout_add (5000, (GSourceFunc) terminate_playback, pipeline);
+  g_timeout_add_seconds (5, (GSourceFunc) terminate_playback, pipeline);
 
   g_main_loop_run (loop);
 

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -61,40 +61,65 @@
 #define SEFUNC(x) Search_Effort_C_##x(src_pitch, dst_pitch, rowsize, pWeaveSrc, pWeaveSrcP, pWeaveDest, IsOdd, pCopySrc, pCopySrcP, FldHeight)
 #endif
 
-void FUNCT_NAME(GstDeinterlaceMethod *d_method, GstDeinterlace* object, GstBuffer *outbuf)
+static void FUNCT_NAME(GstDeinterlaceMethod *d_method,
+	const GstDeinterlaceField* history, guint history_count,
+	GstVideoFrame *outframe, int cur_field_idx)
 {
   GstDeinterlaceMethodTomsMoComp *self = GST_DEINTERLACE_METHOD_TOMSMOCOMP (d_method);
-  long SearchEffort = self->search_effort;
-  int UseStrangeBob = self->strange_bob;
-  int IsOdd;
-  const unsigned char *pWeaveSrc;
-  const unsigned char *pWeaveSrcP;
-  unsigned char *pWeaveDest;
-  const unsigned char *pCopySrc;
-  const unsigned char *pCopySrcP;
-  unsigned char *pCopyDest;
-  int src_pitch;
-  int dst_pitch;
-  int rowsize;
-  int FldHeight;
+  glong SearchEffort = self->search_effort;
+  gint UseStrangeBob = self->strange_bob;
+  gint IsOdd;
+  const guint8 *pWeaveSrc;
+  const guint8 *pWeaveSrcP;
+  guint8 *pWeaveDest;
+  const guint8 *pCopySrc;
+  const guint8 *pCopySrcP;
+  guint8 *pCopyDest;
+  gint src_pitch;
+  gint dst_pitch;
+  gint rowsize;
+  gint FldHeight;
+
+  if (cur_field_idx + 2 > history_count || cur_field_idx < 1) {
+    GstDeinterlaceMethod *backup_method;
+    
+    backup_method = g_object_new (gst_deinterlace_method_linear_get_type(),
+        NULL);
+
+    gst_deinterlace_method_setup (backup_method, d_method->vinfo);
+    gst_deinterlace_method_deinterlace_frame (backup_method,
+        history, history_count, outframe, cur_field_idx);
+
+    g_object_unref (backup_method);
+    return;
+  }
 
   /* double stride do address just every odd/even scanline */
-  src_pitch = object->field_stride;
-  dst_pitch = object->row_stride;
-  rowsize   = object->row_stride;
-  FldHeight = object->field_height;
+  src_pitch = GST_VIDEO_FRAME_PLANE_STRIDE (outframe, 0) * 2;
+  dst_pitch = GST_VIDEO_FRAME_PLANE_STRIDE (outframe, 0);
+  rowsize = GST_VIDEO_FRAME_PLANE_STRIDE (outframe, 0);
 
-  pCopySrc   = GST_BUFFER_DATA(object->field_history[object->history_count-1].buf);
-  pCopySrcP  = GST_BUFFER_DATA(object->field_history[object->history_count-3].buf);
-  pWeaveSrc  = GST_BUFFER_DATA(object->field_history[object->history_count-2].buf);  
-  pWeaveSrcP = GST_BUFFER_DATA(object->field_history[object->history_count-4].buf);
+  FldHeight = GST_VIDEO_INFO_HEIGHT (self->parent.vinfo) / 2;
+
+  pCopySrc   = GST_VIDEO_FRAME_PLANE_DATA (history[history_count-1].frame, 0);
+  if (history[history_count - 1].flags & PICTURE_INTERLACED_BOTTOM)
+    pCopySrc += GST_VIDEO_FRAME_PLANE_STRIDE (history[history_count-1].frame, 0);
+  pCopySrcP  = GST_VIDEO_FRAME_PLANE_DATA (history[history_count-3].frame, 0);
+  if (history[history_count - 3].flags & PICTURE_INTERLACED_BOTTOM)
+    pCopySrcP += GST_VIDEO_FRAME_PLANE_STRIDE (history[history_count-3].frame, 0);
+  pWeaveSrc  = GST_VIDEO_FRAME_PLANE_DATA (history[history_count-2].frame, 0);
+  if (history[history_count - 2].flags & PICTURE_INTERLACED_BOTTOM)
+    pWeaveSrc += GST_VIDEO_FRAME_PLANE_STRIDE (history[history_count-2].frame, 0);
+  pWeaveSrcP = GST_VIDEO_FRAME_PLANE_DATA (history[history_count-4].frame, 0);
+  if (history[history_count - 4].flags & PICTURE_INTERLACED_BOTTOM)
+    pWeaveSrcP += GST_VIDEO_FRAME_PLANE_STRIDE (history[history_count-4].frame, 0);
 
   /* use bottom field and interlace top field */
-  if (object->field_history[object->history_count-2].flags == PICTURE_INTERLACED_BOTTOM) {
+  if (history[history_count-2].flags == PICTURE_INTERLACED_BOTTOM) {
     IsOdd      = 1;
 
     // if we have an odd field we copy an even field and weave an odd field
-    pCopyDest = GST_BUFFER_DATA(outbuf);
+    pCopyDest = GST_VIDEO_FRAME_PLANE_DATA (outframe, 0);
     pWeaveDest = pCopyDest + dst_pitch;
   }
   /* do it vice verca */
@@ -102,8 +127,8 @@ void FUNCT_NAME(GstDeinterlaceMethod *d_method, GstDeinterlace* object, GstBuffe
 
     IsOdd      = 0;
     // if we have an even field we copy an odd field and weave an even field
-    pCopyDest = GST_BUFFER_DATA(outbuf) + dst_pitch;
-    pWeaveDest = GST_BUFFER_DATA(outbuf);
+    pCopyDest = (guint8 *) GST_VIDEO_FRAME_PLANE_DATA (outframe, 0) + dst_pitch;
+    pWeaveDest = GST_VIDEO_FRAME_PLANE_DATA (outframe, 0);
   }
 
   

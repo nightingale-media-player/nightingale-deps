@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -28,6 +28,7 @@
 
 G_BEGIN_DECLS
 
+GstCaps *gst_sf_create_audio_template_caps (void);
 
 #define GST_TYPE_SF_MAJOR_TYPES (gst_sf_major_types_get_type())
 #define GST_TYPE_SF_MINOR_TYPES (gst_sf_minor_types_get_type())
@@ -35,9 +36,7 @@ G_BEGIN_DECLS
 GType gst_sf_major_types_get_type (void);
 GType gst_sf_minor_types_get_type (void);
 
-GType gst_sf_sink_get_type (void);
-GType gst_sf_src_get_type (void);
-
+GType gst_sf_dec_get_type (void);
 
 G_END_DECLS
 

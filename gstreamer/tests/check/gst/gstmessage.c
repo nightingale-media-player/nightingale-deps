@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -54,6 +54,8 @@ GST_START_TEST (test_parsing)
     error = NULL;
     debug = NULL;
 
+    gst_message_parse_error (message, NULL, NULL);
+
     gst_message_parse_error (message, &error, &debug);
     fail_if (error == NULL);
     fail_if (debug == NULL);
@@ -82,6 +84,8 @@ GST_START_TEST (test_parsing)
     warning = NULL;
     debug = NULL;
 
+    gst_message_parse_warning (message, NULL, NULL);
+
     gst_message_parse_warning (message, &warning, &debug);
     fail_if (warning == NULL);
     fail_if (debug == NULL);
@@ -96,13 +100,40 @@ GST_START_TEST (test_parsing)
   }
   /* GST_MESSAGE_INFO   */
   {
+    GError *info = NULL;
+    gchar *debug;
+
+    info = g_error_new (domain, 10, "test info");
+    fail_if (info == NULL);
+    message = gst_message_new_info (NULL, info, "info string");
+    fail_if (message == NULL);
+    fail_unless (GST_MESSAGE_TYPE (message) == GST_MESSAGE_INFO);
+    fail_unless (GST_MESSAGE_SRC (message) == NULL);
+
+    g_error_free (info);
+    info = NULL;
+    debug = NULL;
+
+    gst_message_parse_info (message, NULL, NULL);
+
+    gst_message_parse_info (message, &info, &debug);
+    fail_if (info == NULL);
+    fail_if (debug == NULL);
+    fail_unless (strcmp (info->message, "test info") == 0);
+    fail_unless (info->domain == domain);
+    fail_unless (info->code == 10);
+    fail_unless (strcmp (debug, "info string") == 0);
+
+    gst_message_unref (message);
+    g_error_free (info);
+    g_free (debug);
   }
   /* GST_MESSAGE_TAG  */
   {
     GstTagList *tag;
 
     /* FIXME, do some more tag adding */
-    tag = gst_tag_list_new ();
+    tag = gst_tag_list_new_empty ();
     fail_if (tag == NULL);
     message = gst_message_new_tag (NULL, tag);
     fail_if (message == NULL);
@@ -113,7 +144,7 @@ GST_START_TEST (test_parsing)
     fail_if (tag == NULL);
     /* FIXME, check the actual tags */
     gst_message_unref (message);
-    gst_tag_list_free (tag);
+    gst_tag_list_unref (tag);
   }
   /* GST_MESSAGE_BUFFERING   */
   {
@@ -208,7 +239,7 @@ GST_START_TEST (test_parsing)
 
     /* create a task with some dummy function, we're not actually going to run
      * the task here */
-    task = gst_task_create ((GstTaskFunction) gst_object_unref, NULL);
+    task = gst_task_new ((GstTaskFunction) gst_object_unref, NULL, NULL);
 
     ASSERT_OBJECT_REFCOUNT (task, "task", 1);
 
@@ -256,6 +287,93 @@ GST_START_TEST (test_parsing)
     state = GST_STATE_READY;
     gst_message_parse_request_state (message, &state);
     fail_unless (state == GST_STATE_PAUSED);
+
+    gst_message_unref (message);
+  }
+  /* GST_MESSAGE_QOS   */
+  {
+    gboolean live;
+    GstClockTime running_time;
+    GstClockTime stream_time;
+    GstClockTime timestamp, duration;
+    gint64 jitter;
+    gdouble proportion;
+    gint quality;
+    GstFormat format;
+    guint64 processed;
+    guint64 dropped;
+
+    running_time = 1 * GST_SECOND;
+    stream_time = 2 * GST_SECOND;
+    timestamp = 3 * GST_SECOND;
+    duration = 4 * GST_SECOND;
+
+    message =
+        gst_message_new_qos (NULL, TRUE, running_time, stream_time, timestamp,
+        duration);
+    fail_if (message == NULL);
+    fail_unless (GST_MESSAGE_TYPE (message) == GST_MESSAGE_QOS);
+    fail_unless (GST_MESSAGE_SRC (message) == NULL);
+
+    /* check defaults */
+    gst_message_parse_qos_values (message, &jitter, &proportion, &quality);
+    fail_unless (jitter == 0);
+    fail_unless (proportion == 1.0);
+    fail_unless (quality == 1000000);
+
+    gst_message_parse_qos_stats (message, &format, &processed, &dropped);
+    fail_unless (format == GST_FORMAT_UNDEFINED);
+    fail_unless (processed == -1);
+    fail_unless (dropped == -1);
+
+    /* set some wrong values to check if the parse method overwrites them
+     * with the good values */
+    running_time = stream_time = timestamp = duration = 5 * GST_SECOND;
+    live = FALSE;
+    gst_message_parse_qos (message, &live, &running_time, &stream_time,
+        &timestamp, &duration);
+    fail_unless (live == TRUE);
+    fail_unless (running_time == 1 * GST_SECOND);
+    fail_unless (stream_time == 2 * GST_SECOND);
+    fail_unless (timestamp == 3 * GST_SECOND);
+    fail_unless (duration == 4 * GST_SECOND);
+
+    /* change some values */
+    gst_message_set_qos_values (message, -10, 2.0, 5000);
+    gst_message_parse_qos_values (message, &jitter, &proportion, &quality);
+    fail_unless (jitter == -10);
+    fail_unless (proportion == 2.0);
+    fail_unless (quality == 5000);
+
+    gst_message_set_qos_stats (message, GST_FORMAT_DEFAULT, 1030, 65);
+    gst_message_parse_qos_stats (message, &format, &processed, &dropped);
+    fail_unless (format == GST_FORMAT_DEFAULT);
+    fail_unless (processed == 1030);
+    fail_unless (dropped == 65);
+
+    gst_message_unref (message);
+  }
+  /* GST_MESSAGE_PROGRESS   */
+  {
+    GstProgressType type;
+    gchar *category, *text;
+
+    message =
+        gst_message_new_progress (NULL, GST_PROGRESS_TYPE_START, "connecting",
+        "Connecting to youtbue.com");
+    fail_if (message == NULL);
+    fail_unless (GST_MESSAGE_TYPE (message) == GST_MESSAGE_PROGRESS);
+    fail_unless (GST_MESSAGE_SRC (message) == NULL);
+
+    /* set some wrong values to check if the parse method overwrites them
+     * with the good values */
+    type = GST_PROGRESS_TYPE_ERROR;
+    gst_message_parse_progress (message, &type, &category, &text);
+    fail_unless (type == GST_PROGRESS_TYPE_START);
+    fail_unless (!strcmp (category, "connecting"));
+    fail_unless (!strcmp (text, "Connecting to youtbue.com"));
+    g_free (category);
+    g_free (text);
 
     gst_message_unref (message);
   }

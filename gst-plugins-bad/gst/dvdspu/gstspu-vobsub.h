@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GSTSPU_VOBSUB_H__
@@ -52,6 +52,7 @@ struct SpuVobsubState {
   /* Top + Bottom field offsets in the buffer. 0 = not set */
   guint16 pix_data[2]; 
   GstBuffer *pix_buf; /* Current SPU packet the pix_data references */
+  GstMapInfo pix_buf_map; /* Mapped buffer info */
   
   SpuRect disp_rect;
   SpuRect clip_rect;
@@ -103,7 +104,7 @@ struct SpuVobsubState {
 
 void gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts, GstBuffer *buf);
 gboolean gstspu_vobsub_execute_event (GstDVDSpu *dvdspu);
-void gstspu_vobsub_render (GstDVDSpu *dvdspu, GstBuffer *buf);
+void gstspu_vobsub_render (GstDVDSpu *dvdspu, GstVideoFrame *frame);
 gboolean gstspu_vobsub_handle_dvd_event (GstDVDSpu *dvdspu, GstEvent *event);
 void gstspu_vobsub_flush (GstDVDSpu *dvdspu);
 

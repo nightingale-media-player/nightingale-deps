@@ -2,94 +2,107 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>flvmux</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>flvmux: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-flvdemux.html" title="flvdemux">
-<link rel="next" href="gst-plugins-good-plugins-gamma.html" title="gamma">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="next" href="gst-plugins-good-plugins-flxdec.html" title="flxdec">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-flvdemux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-gamma.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-flvmux.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-flvmux.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-flvmux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-flvmux.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-</td></tr>
-</table>
-<div class="refentry" title="flvmux">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-flvdemux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-flxdec.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-flvmux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-flvmux.top_of_page"></a>flvmux</span></h2>
-<p>flvmux — Muxes video/audio streams into a FLV stream</p>
+<p>flvmux</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-flvmux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstFlvMux"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux-struct" title="GstFlvMux">GstFlvMux</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux--streamable" title="The “streamable” property">streamable</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<a name="GstFlvMux"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux-struct" title="GstFlvMux">GstFlvMux</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-flvmux.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstFlvMux
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstFlvMux
 </pre>
 </div>
-<div class="refsect1" title="Implemented Interfaces">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-flvmux.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstFlvMux implements
- <a
-href="../gstreamer-0.10/GstTagSetter.html"
->GstTagSetter</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagSetter.html">GstTagSetter</a>.</p>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-flvmux.description"></a><h2>Description</h2>
-<p>
-flvmux muxes different streams into an FLV file.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example launch line">
-<a name="id484862"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name=m ! filesink location=file.flv   filesrc location=/path/to/video ! decodebin2 ! queue ! m. 
-</pre></div> This pipeline muxes an audio and video file into a single FLV file.
+<p>flvmux muxes different streams into an FLV file.</p>
+<div class="refsect2">
+<a name="id-1.2.58.8.3"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v flvmux name<span class="gtkdoc opt">=</span>mux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>test<span class="gtkdoc opt">.</span>flv  audiotestsrc samplesperbuffer<span class="gtkdoc opt">=</span><span class="number">44100</span> num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">10</span> <span class="gtkdoc opt">!</span> faac <span class="gtkdoc opt">!</span> mux<span class="gtkdoc opt">.</span>  videotestsrc num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">250</span> <span class="gtkdoc opt">!</span> video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span><span class="number">25</span><span class="gtkdoc opt">/</span><span class="number">1</span> <span class="gtkdoc opt">!</span> x264enc <span class="gtkdoc opt">!</span> mux<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="refsynopsisdiv" title="Synopsis">
+ This pipeline encodes a test audio and video stream and muxes both into an FLV file.
+</div>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id491610"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.58.8.4.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -109,31 +122,13 @@ gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id485560"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.58.8.4.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-flv</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -157,7 +152,7 @@ gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/mpeg, mpegversion=(int)4, framed=(boolean)true</td>
+<td> audio/mpeg, mpegversion=(int){ 4, 2 }, stream-format=(string)raw</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -165,11 +160,7 @@ gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, channels=(int){ 1, 2 }, width=(int)8, depth=(int)8, rate=(int){ 5512, 11025, 22050, 44100 }, signed=(boolean)false</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, channels=(int){ 1, 2 }, width=(int)16, depth=(int)16, rate=(int){ 5512, 11025, 22050, 44100 }, signed=(boolean)true</td>
+<td> audio/x-raw, format=(string){ U8, S16LE }, layout=(string)interleaved, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
@@ -181,12 +172,15 @@ gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> audio/x-speex, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
+<td> audio/x-speex, channels=(int)1, rate=(int)16000</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -218,27 +212,61 @@ gst-launch -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name
 </tr>
 <tr>
 <td><p><span class="term"></span></p></td>
-<td> video/x-h264</td>
+<td> video/x-h264, stream-format=(string)avc</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-flv</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-flvmux.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstFlvMux">
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
 <a name="GstFlvMux-struct"></a><h3>GstFlvMux</h3>
 <pre class="programlisting">typedef struct _GstFlvMux GstFlvMux;</pre>
-<p>
-</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstFlvMux--streamable"></a><h3>The <code class="literal">“streamable”</code> property</h3>
+<pre class="programlisting">  “streamable”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>If True, the output will be streaming friendly. (ie without indexes and
+duration)</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

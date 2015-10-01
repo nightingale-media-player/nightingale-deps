@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* SUGGESTIONS AND TODO :
@@ -32,6 +32,8 @@
 
 #include <gst/gstpad.h>
 #include <gst/gstregistry.h>
+
+G_BEGIN_DECLS
 
 /*
  * GST_MAGIC_BINARY_REGISTRY_STR:
@@ -53,12 +55,12 @@
  * This _must_ be updated whenever the registry format changes,
  * we currently use the core version where this change happened.
  */
-#define GST_MAGIC_BINARY_VERSION_STR ("0.10.23.1")
+#define GST_MAGIC_BINARY_VERSION_STR "1.0.0"
 
 /*
  * GST_MAGIC_BINARY_VERSION_LEN:
  *
- * length of the version string.
+ * Maximum length of the version string in the header.
  */
 #define GST_MAGIC_BINARY_VERSION_LEN (64)
 
@@ -68,117 +70,7 @@ typedef struct _GstBinaryRegistryMagic
   gchar version[GST_MAGIC_BINARY_VERSION_LEN];
 } GstBinaryRegistryMagic;
 
-/*
- * we reference strings directly from the plugins and in this case set CONST to
- * avoid freeing them
- */
-enum {
-  GST_BINARY_REGISTRY_FLAG_NONE = 0,
-  GST_BINARY_REGISTRY_FLAG_CONST = 1
-};
-
-/*
- * GstBinaryChunk:
- *
- * Header for binary blobs
- */
-typedef struct _GstBinaryChunk
-{
-  gpointer data;
-  guint size;
-  guint flags;
-  gboolean align;
-} GstBinaryChunk;
-
-/*
- * GstBinaryPluginElement:
- *
- * @nfeatures: says how many binary plugin feature structures we will have
- * right after the structure itself.
- *
- * A structure containing (staticely) every information needed for a plugin
- */
-
-typedef struct _GstBinaryPluginElement
-{
-  gulong file_size;
-  gulong file_mtime;
-
-  guint n_deps;
-
-  guint nfeatures;
-} GstBinaryPluginElement;
-
-/* GstBinaryDep:
- */
-typedef struct _GstBinaryDep
-{
-  guint flags;
-  guint n_env_vars;
-  guint n_paths;
-  guint n_names;
-
-  guint env_hash;
-  guint stat_hash;
-} GstBinaryDep;
-
-/*
- * GstBinaryPluginFeature:
- * @rank: rank of the feature
- *
- * A structure containing the plugin features
- */
-typedef struct _GstBinaryPluginFeature
-{
-  gulong rank;
-} GstBinaryPluginFeature;
-
-/*
- * GstBinaryElementFactory:
- * @npadtemplates: stores the number of GstBinaryPadTemplate structures
- * following the structure
- * @ninterfaces: stores the number of interface names following the structure
- * @nuriprotocols: stores the number of protocol strings following the structure
- *
- * A structure containing the element factory fields
- */
-typedef struct _GstBinaryElementFactory
-{
-  GstBinaryPluginFeature plugin_feature;
-
-  guint npadtemplates;
-  guint ninterfaces;
-  guint nuriprotocols;
-} GstBinaryElementFactory;
-
-/*
- * GstBinaryTypeFindFactory:
- * @nextensions: stores the number of typefind extensions
- *
- * A structure containing the element factory fields
- */
-typedef struct _GstBinaryTypeFindFactory
-{
-  GstBinaryPluginFeature plugin_feature;
-
-  guint nextensions;
-} GstBinaryTypeFindFactory;
-
-/*
- * GstBinaryPadTemplate:
- *
- * A structure containing the static pad templates of a plugin feature
- */
-typedef struct _GstBinaryPadTemplate
-{
-  guint direction;	               /* Either 0:"sink" or 1:"src" */
-  GstPadPresence presence;
-} GstBinaryPadTemplate;
-
-
-/* Function prototypes */
-gboolean gst_registry_binary_write_cache(GstRegistry *registry, const char *location);
-gboolean gst_registry_binary_read_cache(GstRegistry *registry, const char *location);
+G_END_DECLS
 
 #endif /* !__GST_REGISTRYBINARY_H__ */
 

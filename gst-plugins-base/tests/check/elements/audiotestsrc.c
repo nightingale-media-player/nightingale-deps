@@ -16,13 +16,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <unistd.h>
 
 #include <gst/check/gstcheck.h>
+#include <gst/audio/audio.h>
 
 /* For ease of programming we use globals to keep refs for our floating
  * src and sink pads we create; otherwise we always have to do get_pad,
@@ -31,13 +32,10 @@ static GstPad *mysinkpad;
 
 
 #define CAPS_TEMPLATE_STRING            \
-    "audio/x-raw-int, "                 \
+    "audio/x-raw, "                     \
+    "format = (string) "GST_AUDIO_NE(S16)", "   \
     "channels = (int) 1, "              \
-    "rate = (int) [ 1,  MAX ], "        \
-    "endianness = (int) BYTE_ORDER, "   \
-    "width = (int) 16, "                \
-    "depth = (int) 16, "                \
-    "signed = (bool) TRUE"
+    "rate = (int) [ 1,  MAX ]"
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -52,7 +50,7 @@ setup_audiotestsrc (void)
 
   GST_DEBUG ("setup_audiotestsrc");
   audiotestsrc = gst_check_setup_element ("audiotestsrc");
-  mysinkpad = gst_check_setup_sink_pad (audiotestsrc, &sinktemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (audiotestsrc, &sinktemplate);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return audiotestsrc;
@@ -89,15 +87,16 @@ GST_START_TEST (test_all_waves)
 
   while (values[j].value_name) {
     GST_DEBUG_OBJECT (audiotestsrc, "testing wave %s", values[j].value_name);
+    g_object_set (audiotestsrc, "wave", values[j].value, NULL);
 
     fail_unless (gst_element_set_state (audiotestsrc,
             GST_STATE_PLAYING) == GST_STATE_CHANGE_SUCCESS,
         "could not set to playing");
 
-    g_mutex_lock (check_mutex);
+    g_mutex_lock (&check_mutex);
     while (g_list_length (buffers) < 10)
-      g_cond_wait (check_cond, check_mutex);
-    g_mutex_unlock (check_mutex);
+      g_cond_wait (&check_cond, &check_mutex);
+    g_mutex_unlock (&check_mutex);
 
     gst_element_set_state (audiotestsrc, GST_STATE_READY);
 
@@ -125,19 +124,4 @@ audiotestsrc_suite (void)
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = audiotestsrc_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (audiotestsrc);

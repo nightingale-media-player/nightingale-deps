@@ -1,67 +1,88 @@
-lib_LTLIBRARIES = libgstbase-@GST_MAJORMINOR@.la
+lib_LTLIBRARIES = libgstbase-@GST_API_VERSION@.la
 
-libgstbase_@GST_MAJORMINOR@_la_DEPENDENCIES = \
-	$(top_builddir)/gst/libgstreamer-@GST_MAJORMINOR@.la
-libgstbase_@GST_MAJORMINOR@_la_SOURCES = \
+libgstbase_@GST_API_VERSION@_la_DEPENDENCIES = \
+	$(top_builddir)/gst/libgstreamer-@GST_API_VERSION@.la
+libgstbase_@GST_API_VERSION@_la_SOURCES = \
 	gstadapter.c		\
+	gstbaseparse.c		\
 	gstbasesink.c		\
 	gstbasesrc.c		\
 	gstbasetransform.c	\
 	gstbitreader.c		\
 	gstbytereader.c		\
+	gstbytewriter.c         \
 	gstcollectpads.c	\
+	gstdataqueue.c		\
+	gstflowcombiner.c	\
 	gstpushsrc.c		\
-	gsttypefindhelper.c	\
-	gstdataqueue.c
+	gstqueuearray.c		\
+	gsttypefindhelper.c
 
-libgstbase_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
-libgstbase_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS)
-libgstbase_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+libgstbase_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS)
+libgstbase_@GST_API_VERSION@_la_LIBADD = $(GST_OBJ_LIBS)
+libgstbase_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
-libgstbase_@GST_MAJORMINOR@includedir =		\
-	$(includedir)/gstreamer-@GST_MAJORMINOR@/gst/base
+libgstbase_@GST_API_VERSION@includedir =		\
+	$(includedir)/gstreamer-@GST_API_VERSION@/gst/base
 
-libgstbase_@GST_MAJORMINOR@include_HEADERS =	\
+libgstbase_@GST_API_VERSION@include_HEADERS =	\
+	base.h			\
 	gstadapter.h		\
+	gstbaseparse.h		\
 	gstbasesink.h		\
 	gstbasesrc.h		\
 	gstbasetransform.h	\
 	gstbitreader.h		\
 	gstbytereader.h		\
+	gstbytewriter.h         \
 	gstcollectpads.h	\
+	gstdataqueue.h		\
+	gstflowcombiner.h	\
 	gstpushsrc.h		\
-	gsttypefindhelper.h	\
-	gstdataqueue.h
+	gstqueuearray.h		\
+	gsttypefindhelper.h
 
 noinst_HEADERS = \
-	gstbytereader-docs.h
+	gstbytereader-docs.h \
+	gstbytewriter-docs.h \
+	gstbitreader-docs.h \
+	gstindex.h
+
+EXTRA_DIST = gstindex.c gstmemindex.c
 
 CLEANFILES = *.gcno *.gcda *.gcov
 
-%.c.gcov: .libs/libgstbase_@GST_MAJORMINOR@_la-%.gcda %.c
+%.c.gcov: .libs/libgstbase_@GST_API_VERSION@_la-%.gcda %.c
 	$(GCOV) -b -f -o $^ > $@.out
 
-gcov: $(libgstbase_@GST_MAJORMINOR@_la_SOURCES:=.gcov)
+gcov: $(libgstbase_@GST_API_VERSION@_la_SOURCES:=.gcov)
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstBase-@GST_MAJORMINOR@.gir
+BUILT_GIRSOURCES = GstBase-@GST_API_VERSION@.gir
 
-gir_headers=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_MAJORMINOR@include_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_MAJORMINOR@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/base/%',$(libgstbase_@GST_MAJORMINOR@include_HEADERS))
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_API_VERSION@include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstbase_@GST_API_VERSION@_la_SOURCES))
 
-GstBase-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstbase-@GST_MAJORMINOR@.la
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+GstBase-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstbase-@GST_API_VERSION@.la
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" GI_SCANNER_DISABLE_CACHE=yes\
+		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstBase \
-		--nsversion=@GST_MAJORMINOR@ \
+		--nsversion=@GST_API_VERSION@ \
+		--warn-all \
 		--strip-prefix=Gst \
 		-I$(top_srcdir) \
-		$(gir_cincludes) \
+		-I$(top_srcdir)/libs \
+		-I$(top_builddir) \
+		-I$(top_builddir)/libs \
+		--c-include "gst/base/base.h" \
 		--add-include-path=$(top_builddir)/gst \
-		--library=gstbase-0.10 \
-		--include=Gst-0.10 \
-		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-0.10 \
+		--library-path=$(top_builddir)/gst \
+		--library=libgstbase-@GST_API_VERSION@.la \
+		--include=Gst-@GST_API_VERSION@ \
+		--libtool="${LIBTOOL}" \
+		--pkg gstreamer-@GST_API_VERSION@ \
+		--pkg-export gstreamer-base-@GST_API_VERSION@ \
+		--add-init-section="$(INTROSPECTION_INIT)" \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -76,7 +97,7 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(AM_V_GEN)$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
 CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -23,7 +23,6 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/controller/gstcontroller.h>
 
 #include "audiopanorama.h"
 #include "audioinvert.h"
@@ -37,6 +36,7 @@
 #include "audiowsinclimit.h"
 #include "audiofirfilter.h"
 #include "audioecho.h"
+#include "gstscaletempo.h"
 
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
@@ -46,9 +46,6 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* initialize gst controller library */
-  gst_controller_init (NULL, NULL);
-
   return (gst_element_register (plugin, "audiopanorama", GST_RANK_NONE,
           GST_TYPE_AUDIO_PANORAMA) &&
       gst_element_register (plugin, "audioinvert", GST_RANK_NONE,
@@ -72,11 +69,13 @@ plugin_init (GstPlugin * plugin)
       gst_element_register (plugin, "audiofirfilter", GST_RANK_NONE,
           GST_TYPE_AUDIO_FIR_FILTER) &&
       gst_element_register (plugin, "audioecho", GST_RANK_NONE,
-          GST_TYPE_AUDIO_ECHO));
+          GST_TYPE_AUDIO_ECHO) &&
+      gst_element_register (plugin, "scaletempo", GST_RANK_NONE,
+          GST_TYPE_SCALETEMPO));
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "audiofx",
+    audiofx,
     "Audio effects plugin",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

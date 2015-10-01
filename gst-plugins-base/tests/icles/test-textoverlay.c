@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -80,9 +80,9 @@ test_textoverlay (int width, int height)
   gint a, b, c;
 
   pstr = g_strdup_printf ("videotestsrc pattern=blue ! "
-      "video/x-raw-yuv,width=%d,height=%d ! t.video_sink "
+      "video/x-raw,width=%d,height=%d ! t.video_sink "
       "textoverlay name=t font-desc=\"Sans Serif, 20\" ! "
-      " ffmpegcolorspace ! videoscale ! autovideosink", width, height);
+      " videoconvert ! videoscale ! autovideosink", width, height);
 
   pipe = gst_parse_launch_full (pstr, NULL, GST_PARSE_FLAG_NONE, NULL);
   g_assert (pipe);
@@ -106,6 +106,7 @@ test_textoverlay (int width, int height)
     }
   }
 
+  gst_object_unref (toverlay);
   g_free (pstr);
 }
 

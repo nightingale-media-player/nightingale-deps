@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,6 +23,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 
 #include "asfheaders.h"
 
@@ -44,6 +45,7 @@ GST_DEBUG_CATEGORY_EXTERN (asfdemux_dbg);
 
 typedef struct _GstASFDemux GstASFDemux;
 typedef struct _GstASFDemuxClass GstASFDemuxClass;
+typedef enum _GstASF3DMode GstASF3DMode;
 
 typedef struct {
   guint32	packet;
@@ -55,6 +57,21 @@ typedef struct {
                                      * struct gets packed into 4 bytes       */
   guint16                 len;      /* save this so we can skip unknown IDs  */
 } AsfPayloadExtension;
+
+/**
+ * 3D Types for Media play
+ */
+enum _GstASF3DMode
+{
+  GST_ASF_3D_NONE = 0x00,
+
+  //added, interim format - half
+  GST_ASF_3D_SIDE_BY_SIDE_HALF_LR = 0x01,
+  GST_ASF_3D_SIDE_BY_SIDE_HALF_RL = 0x02,
+  GST_ASF_3D_TOP_AND_BOTTOM_HALF_LR = 0x03,
+  GST_ASF_3D_TOP_AND_BOTTOM_HALF_RL = 0x04,
+  GST_ASF_3D_DUAL_STREAM = 0x0D,                  /**< Full format*/
+};
 
 typedef struct
 {
@@ -95,12 +112,20 @@ typedef struct
 
   GstCaps    *caps;
 
+  GstBuffer *streamheader;
+
   GstTagList *pending_tags;
 
   gboolean    discont;
+  gboolean    first_buffer;
+
+  /* Descrambler settings */
+  guint8               span;
+  guint16              ds_packet_size;
+  guint16              ds_chunk_size;
+  guint16              ds_data_size;
 
   /* for new parsing code */
-  GstFlowReturn   last_flow; /* last flow return */
   GArray         *payloads;  /* pending payloads */
 
   /* Video stream PAR & interlacing */
@@ -110,13 +135,15 @@ typedef struct
 
   /* extended stream properties (optional) */
   AsfStreamExtProps  ext_props;
-
+  
+  gboolean     inspect_payload;
 } AsfStream;
 
 typedef enum {
   GST_ASF_DEMUX_STATE_HEADER,
-  GST_ASF_DEMUX_STATE_DATA
-} GstAsfDemuxState;
+  GST_ASF_DEMUX_STATE_DATA,
+  GST_ASF_DEMUX_STATE_INDEX
+} GstASFDemuxState;
 
 #define GST_ASF_DEMUX_NUM_VIDEO_PADS   16
 #define GST_ASF_DEMUX_NUM_AUDIO_PADS   32
@@ -128,19 +155,23 @@ struct _GstASFDemux {
 
   GstPad            *sinkpad;
 
+  gboolean           have_group_id;
+  guint              group_id;
+
   GstAdapter        *adapter;
   GstTagList        *taglist;
-  GstAsfDemuxState   state;
-  
+  GstASFDemuxState   state;
+
+  /* byte offset where the asf starts, which might not be zero on chained
+   * asfs, index_offset and data_offset already are 'offseted' by base_offset */
+  guint64            base_offset;
+
   guint64            index_offset; /* byte offset where index might be, or 0   */
   guint64            data_offset;  /* byte offset where packets start          */
   guint64            data_size;    /* total size of packet data in bytes, or 0 */
   guint64            num_packets;  /* total number of data packets, or 0       */
   gint64             packet;       /* current packet                           */
   guint              speed_packets; /* Known number of packets to get in one go*/
-
-  /* bitrates are unused at the moment */
-  guint32              bitrate[GST_ASF_DEMUX_NUM_STREAM_IDS];
 
   gchar              **languages;
   guint                num_languages;
@@ -156,11 +187,16 @@ struct _GstASFDemux {
   guint32              num_streams;
   AsfStream            stream[GST_ASF_DEMUX_NUM_STREAMS];
   gboolean             activated_streams;
+  GstFlowCombiner     *flowcombiner;
 
-  GstClockTime         first_ts;        /* first timestamp found        */
+  /* for chained asf handling, we need to hold the old asf streams until
+   * we detect the new ones */
+  AsfStream            old_stream[GST_ASF_DEMUX_NUM_STREAMS];
+  gboolean             old_num_streams;
+
+  GstClockTime         first_ts;        /* smallest timestamp found        */
 
   guint32              packet_size;
-  guint32              timestamp;       /* in milliseconds              */
   guint64              play_time;
 
   guint64              preroll;
@@ -172,18 +208,13 @@ struct _GstASFDemux {
   gboolean             accurate;
 
   gboolean             need_newsegment;  /* do we need to send a new-segment event? */
+  guint32              segment_seqnum;   /* if the new segment must have this seqnum */
   GstClockTime         segment_ts;       /* streaming; timestamp for segment start */
   GstSegment           in_segment;       /* streaming; upstream segment info */
   GstClockTime         in_gap;           /* streaming; upstream initial segment gap for interpolation */
   gboolean             segment_running;  /* if we've started the current segment    */
   gboolean             streaming;        /* TRUE if we are operating chain-based    */
   GstClockTime         latency;
-
-  /* Descrambler settings */
-  guint8               span;
-  guint16              ds_packet_size;
-  guint16              ds_chunk_size;
-  guint16              ds_data_size;
 
   /* for debugging only */
   gchar               *objpath;
@@ -192,6 +223,11 @@ struct _GstASFDemux {
   GstClockTime         sidx_interval;    /* interval between entries in ns */
   guint                sidx_num_entries; /* number of index entries        */
   AsfSimpleIndexEntry *sidx_entries;     /* packet number for each entry   */
+  
+  GSList              *other_streams;    /* remember streams that are in header but have unknown type */
+
+  /* parsing 3D */
+  GstASF3DMode asf_3D_mode;
 };
 
 struct _GstASFDemuxClass {
@@ -201,6 +237,8 @@ struct _GstASFDemuxClass {
 GType           gst_asf_demux_get_type (void);
 
 AsfStream     * gst_asf_demux_get_stream (GstASFDemux * demux, guint16 id);
+
+gboolean        gst_asf_demux_is_unknown_stream(GstASFDemux *demux, guint stream_num);
 
 G_END_DECLS
 

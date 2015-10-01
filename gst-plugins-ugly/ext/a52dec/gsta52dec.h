@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -22,6 +22,8 @@
 #define __GST_A52DEC_H__
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
+#include <gst/audio/gstaudiodecoder.h>
 
 G_BEGIN_DECLS
 
@@ -40,41 +42,32 @@ typedef struct _GstA52Dec GstA52Dec;
 typedef struct _GstA52DecClass GstA52DecClass;
 
 struct _GstA52Dec {
-  GstElement     element;
+  GstAudioDecoder element;
 
-  /* pads */
-  GstPad        *sinkpad,
-                *srcpad;
-  GstSegment     segment;
+  GstPadChainFunction base_chain;
 
   gboolean       dvdmode;
-  gboolean       sent_segment;
-  gboolean       discont;
-
   gboolean       flag_update;
   int            prev_flags;
 
+  /* stream properties */
   int            bit_rate;
   int            sample_rate;
   int            stream_channels;
   int            request_channels;
   int            using_channels;
 
+  gint           channel_reorder_map[6];
+
   sample_t       level;
   sample_t       bias;
   gboolean       dynamic_range_compression;
   sample_t      *samples;
   a52_state_t   *state;
-
-  GstBuffer     *cache;
-  GstClockTime   time;
-
-  /* reverse */
-  GList         *queued;
 };
 
 struct _GstA52DecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 
   guint32 a52_cpuflags;
 };

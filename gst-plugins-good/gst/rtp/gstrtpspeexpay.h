@@ -17,7 +17,7 @@
 #define __GST_RTP_SPEEX_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 
@@ -37,15 +37,17 @@ typedef struct _GstRtpSPEEXPayClass GstRtpSPEEXPayClass;
 
 struct _GstRtpSPEEXPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   guint64 packet;
 };
 
 struct _GstRtpSPEEXPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_speex_pay_get_type (void);
 
 gboolean gst_rtp_speex_pay_plugin_init (GstPlugin * plugin);
 

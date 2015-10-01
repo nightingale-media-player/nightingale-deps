@@ -1,3 +1,19 @@
-SUBDIRS = audiofx equalizer level rtp spectrum v4l2
+if USE_JACK
+JACK_DIR=jack
+else
+JACK_DIR=
+endif
 
-DIST_SUBDIRS = audiofx equalizer level rtp spectrum v4l2
+if USE_CAIRO
+CAIRO_DIR=cairo
+else
+CAIRO_DIR=
+endif
+
+SUBDIRS = audiofx equalizer $(JACK_DIR) level pulse \
+	rtp shapewipe spectrum v4l2 $(CAIRO_DIR)
+
+DIST_SUBDIRS = audiofx equalizer jack level pulse \
+	rtp shapewipe spectrum v4l2 cairo
+
+include $(top_srcdir)/common/parallel-subdirs.mak

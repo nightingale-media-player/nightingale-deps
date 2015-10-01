@@ -16,28 +16,28 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GST_MIMENC_H__
-#define __GST_MIMENC_H__
+#ifndef __GST_MIM_ENC_H__
+#define __GST_MIM_ENC_H__
 
 #include <glib.h>
 #include <gst/gst.h>
 #include <mimic.h>
 
 G_BEGIN_DECLS
-#define GST_TYPE_MIMENC \
-  (gst_mimenc_get_type())
-#define GST_MIMENC(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MIMENC,GstMimEnc))
-#define GST_MIMENC_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MIMENC,GstMimEnc))
-#define GST_IS_MIMENC(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MIMENC))
-#define GST_IS_MIMENC_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MIMENC))
+#define GST_TYPE_MIM_ENC \
+  (gst_mim_enc_get_type())
+#define GST_MIM_ENC(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_MIM_ENC,GstMimEnc))
+#define GST_MIM_ENC_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_MIM_ENC,GstMimEncClass))
+#define GST_IS_MIM_ENC(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_MIM_ENC))
+#define GST_IS_MIM_ENC_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MIM_ENC))
 typedef struct _GstMimEnc GstMimEnc;
 typedef struct _GstMimEncClass GstMimEncClass;
 
@@ -57,7 +57,7 @@ struct _GstMimEnc
 
   gboolean paused_mode;
   GstSegment segment;
-  gboolean need_newsegment;
+  GstEvent *pending_segment;
   GstClockTime last_buffer;
   GstClockID clock_id;
   gboolean stop_paused_mode;
@@ -68,7 +68,7 @@ struct _GstMimEncClass
   GstElementClass parent_class;
 };
 
-GType gst_mimenc_get_type (void);
+GType gst_mim_enc_get_type (void);
 
 G_END_DECLS
-#endif /* __GST_MIMENC_H__ */
+#endif /* __GST_MIM_ENC_H__ */

@@ -2,91 +2,202 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>multifilesink</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>multifilesink: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-mulawenc.html" title="mulawenc">
 <link rel="next" href="gst-plugins-good-plugins-multifilesrc.html" title="multifilesrc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-mulawenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-multifilesrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-multifilesink.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multifilesink.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multifilesink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-multifilesink.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" title="multifilesink">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multifilesink.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multifilesink.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-multifilesink.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-mulawenc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-multifilesrc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-multifilesink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-multifilesink.top_of_page"></a>multifilesink</span></h2>
-<p>multifilesink — Write buffers to a sequentially named set of files</p>
+<p>multifilesink</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-multifilesink.synopsis"></a><h2>Synopsis</h2>
-<a name="GstMultiFileSink"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink-struct" title="GstMultiFileSink">GstMultiFileSink</a>;
-</pre>
-</div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-multifilesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-libs-0.10/GstBaseSink.html"
->GstBaseSink</a>
-                     +----GstMultiFileSink
-</pre>
-</div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multifilesink.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--location" title='The "location" property'>location</a>"                 <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--index" title='The "index" property'>index</a>"                    <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--location" title="The “location” property">location</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--index" title="The “index” property">index</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSinkNext" title="enum GstMultiFileSinkNext"><span class="type">GstMultiFileSinkNext</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--next-file" title="The “next-file” property">next-file</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--post-messages" title="The “post-messages” property">post-messages</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--max-files" title="The “max-files” property">max-files</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--max-file-size" title="The “max-file-size” property">max-file-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--aggregate-gops" title="The “aggregate-gops” property">aggregate-gops</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--max-file-duration" title="The “max-file-duration” property">max-file-duration</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstMultiFileSink"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-multifilesink.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink-struct" title="struct GstMultiFileSink">GstMultiFileSink</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSinkNext" title="enum GstMultiFileSinkNext">GstMultiFileSinkNext</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multifilesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSink.html">GstBaseSink</a>
+                    <span class="lineart">╰──</span> GstMultiFileSink
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multifilesink.description"></a><h2>Description</h2>
-<p>
-Write incoming data to a series of sequentially-named files.</p>
-<div class="refsynopsisdiv" title="Synopsis">
+<p>Write incoming data to a series of sequentially-named files.</p>
+<p>This element is usually used with data where each buffer is an
+independent unit of data in its own right (e.g. raw video buffers or
+encoded JPEG or PNG images) or with streamable container formats such
+as MPEG-TS or MPEG-PS.</p>
+<p>It is not possible to use this element to create independently playable
+mp4 files, use the splitmuxsink element for that instead.</p>
+<p>The filename property should contain a string with a %d placeholder that will
+be substituted with the index for each filename.</p>
+<p>If the <a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSink--post-messages" title="The “post-messages” property"><span class="type">“post-messages”</span></a> property is <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>, it sends an application
+message named</p>
+<code class="classname">"GstMultiFileSink"</code> after writing each
+<p>buffer.</p>
+<p>The message's structure contains these fields:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>
+  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *
+  <code class="classname">"filename"</code>:
+  the filename where the buffer was written.
+  </p></li>
+<li class="listitem"><p>
+  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>
+  <code class="classname">"index"</code>:
+  the index of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
+  <code class="classname">"timestamp"</code>:
+  the timestamp of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
+  <code class="classname">"stream-time"</code>:
+  the stream time of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
+  <code class="classname">"running-time"</code>:
+  the running_time of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
+  <code class="classname">"duration"</code>:
+  the duration of the buffer.
+  </p></li>
+<li class="listitem"><p>
+  <span class="type">guint64</span>
+  <code class="classname">"offset"</code>:
+  the offset of the buffer that triggered the message.
+  </p></li>
+<li class="listitem"><p>
+  <span class="type">guint64</span>
+  <code class="classname">"offset-end"</code>:
+  the offset-end of the buffer that triggered the message.
+  </p></li>
+</ul></div>
+<div class="refsect2">
+<a name="id-1.2.86.7.11"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> audiotestsrc <span class="gtkdoc opt">!</span> multifilesink
+gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc <span class="gtkdoc opt">!</span> multifilesink post<span class="gtkdoc opt">-</span>messages<span class="gtkdoc opt">=</span><span class="keyword">true</span> filename<span class="gtkdoc opt">=</span><span class="string">&quot;frame%d&quot;</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id540048"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.86.7.12.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -106,10 +217,13 @@ Write incoming data to a series of sequentially-named files.</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id515888"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.86.7.12.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -131,46 +245,160 @@ Write incoming data to a series of sequentially-named files.</p>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-multifilesink.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstMultiFileSink">
-<a name="GstMultiFileSink-struct"></a><h3>GstMultiFileSink</h3>
-<pre class="programlisting">typedef struct _GstMultiFileSink GstMultiFileSink;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multifilesink.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-multifilesink.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstMultiFileSink-struct"></a><h3>struct GstMultiFileSink</h3>
+<pre class="programlisting">struct GstMultiFileSink;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSinkNext"></a><h3>enum GstMultiFileSinkNext</h3>
+<p>File splitting modes.</p>
+<div class="refsect3">
+<a name="id-1.2.86.9.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-BUFFER:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_BUFFER</p></td>
+<td class="enum_member_description">
+<p>New file for each buffer</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-DISCONT:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_DISCONT</p></td>
+<td class="enum_member_description">
+<p>New file after each discontinuity</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-KEY-FRAME:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_KEY_FRAME</p></td>
+<td class="enum_member_description">
+<p>New file at each key frame
+ (Useful for MPEG-TS segmenting)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-KEY-UNIT-EVENT:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_KEY_UNIT_EVENT</p></td>
+<td class="enum_member_description">
+<p>New file after a force key unit
+ event</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-MAX-SIZE:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_MAX_SIZE</p></td>
+<td class="enum_member_description">
+<p>New file when the configured maximum file
+ size would be exceeded with the next buffer or buffer list</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MULTI-FILE-SINK-NEXT-MAX-DURATION:CAPS"></a>GST_MULTI_FILE_SINK_NEXT_MAX_DURATION</p></td>
+<td class="enum_member_description">
+<p>New file when the configured maximum duration
+ would be exceeded with the next buffer or buffer list</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multifilesink.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "location" property'>
-<a name="GstMultiFileSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write</pre>
+<div class="refsect2">
+<a name="GstMultiFileSink--location"></a><h3>The <code class="literal">“location”</code> property</h3>
+<pre class="programlisting">  “location”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Location of the file to write.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "index" property'>
-<a name="GstMultiFileSink--index"></a><h3>The <code class="literal">"index"</code> property</h3>
-<pre class="programlisting">  "index"                    <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Index to use with location property to create file names.  The index is incremented by one for each buffer read.</p>
+<div class="refsect2">
+<a name="GstMultiFileSink--index"></a><h3>The <code class="literal">“index”</code> property</h3>
+<pre class="programlisting">  “index”                    <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Index to use with location property to create file names.  The index is incremented by one for each buffer written.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--next-file"></a><h3>The <code class="literal">“next-file”</code> property</h3>
+<pre class="programlisting">  “next-file”                <a class="link" href="gst-plugins-good-plugins-multifilesink.html#GstMultiFileSinkNext" title="enum GstMultiFileSinkNext"><span class="type">GstMultiFileSinkNext</span></a></pre>
+<p>When to start a new file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: New file for each buffer</p>
 </div>
-<div class="refsect1" title="See Also">
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--post-messages"></a><h3>The <code class="literal">“post-messages”</code> property</h3>
+<pre class="programlisting">  “post-messages”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Post a message on the GstBus for each file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--max-files"></a><h3>The <code class="literal">“max-files”</code> property</h3>
+<pre class="programlisting">  “max-files”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Maximum number of files to keep on disk. Once the maximum is reached, old
+files start to be deleted to make room for new ones.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--max-file-size"></a><h3>The <code class="literal">“max-file-size”</code> property</h3>
+<pre class="programlisting">  “max-file-size”            <span class="type">guint64</span></pre>
+<p>Maximum file size before starting a new file in max-size mode.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 2147483648</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--aggregate-gops"></a><h3>The <code class="literal">“aggregate-gops”</code> property</h3>
+<pre class="programlisting">  “aggregate-gops”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Whether to aggregate complete GOPs before doing any processing. Set this
+to TRUE to make sure each new file starts with a keyframe. This requires
+the upstream element to flag buffers containing key units and delta
+units correctly. At least the MPEG-PS and MPEG-TS muxers should be doing
+this.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMultiFileSink--max-file-duration"></a><h3>The <code class="literal">“max-file-duration”</code> property</h3>
+<pre class="programlisting">  “max-file-duration”        <span class="type">guint64</span></pre>
+<p>Maximum file size before starting a new file in max-size mode.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 18446744073709551615</p>
+</div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-multifilesink.see-also"></a><h2>See Also</h2>
-#GstFileSrc
+<p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-plugins/html/gstreamer-plugins-filesrc.html#GstFileSrc"><span class="type">GstFileSrc</span></a></p>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

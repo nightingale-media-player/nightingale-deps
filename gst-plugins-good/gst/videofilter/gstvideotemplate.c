@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -68,7 +68,7 @@ enum
 
 enum
 {
-  ARG_0
+  PROP_0
       /* FILL ME */
 };
 
@@ -110,7 +110,7 @@ gst_videotemplate_get_type (void)
   return videotemplate_type;
 }
 
-static GstVideofilterFormat gst_videotemplate_formats[] = {
+static const GstVideofilterFormat gst_videotemplate_formats[] = {
   {"I420", 12, gst_videotemplate_planar411,},
 };
 
@@ -118,16 +118,14 @@ static GstVideofilterFormat gst_videotemplate_formats[] = {
 static void
 gst_videotemplate_base_init (gpointer g_class)
 {
-  static const GstElementDetails videotemplate_details =
-      GST_ELEMENT_DETAILS ("Video filter template",
-      "Filter/Effect/Video",
-      "Template for a video filter",
-      "David Schleef <ds@schleef.org>");
+
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
   GstVideofilterClass *videofilter_class = GST_VIDEOFILTER_CLASS (g_class);
   int i;
 
-  gst_element_class_set_details (element_class, &videotemplate_details);
+  gst_element_class_set_static_metadata (element_class, "Video filter template",
+      "Filter/Effect/Video",
+      "Template for a video filter", "David Schleef <ds@schleef.org>");
 
   for (i = 0; i < G_N_ELEMENTS (gst_videotemplate_formats); i++) {
     gst_videofilter_class_add_format (videofilter_class,
@@ -147,10 +145,10 @@ gst_videotemplate_class_init (gpointer g_class, gpointer class_data)
   videofilter_class = GST_VIDEOFILTER_CLASS (g_class);
 
 #if 0
-  g_object_class_install_property (gobject_class, ARG_METHOD,
+  g_object_class_install_property (gobject_class, PROP_METHOD,
       g_param_spec_enum ("method", "method", "method",
           GST_TYPE_VIDEOTEMPLATE_METHOD, GST_VIDEOTEMPLATE_METHOD_1,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 #endif
 
   gobject_class->set_property = gst_videotemplate_set_property;
@@ -184,7 +182,7 @@ gst_videotemplate_set_property (GObject * object, guint prop_id,
   GST_DEBUG ("gst_videotemplate_set_property");
   switch (prop_id) {
 #if 0
-    case ARG_METHOD:
+    case PROP_METHOD:
       src->method = g_value_get_enum (value);
       break;
 #endif
@@ -204,7 +202,7 @@ gst_videotemplate_get_property (GObject * object, guint prop_id, GValue * value,
 
   switch (prop_id) {
 #if 0
-    case ARG_METHOD:
+    case PROP_METHOD:
       g_value_set_enum (value, src->method);
       break;
 #endif
@@ -223,7 +221,7 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "videotemplate",
+    videotemplate,
     "Template for a video filter",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
 

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_DYNUDPSINK_H__
@@ -22,12 +22,11 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
 #include "gstudpnetutils.h"
-
-#include "gstudp.h"
 
 #define GST_TYPE_DYNUDPSINK             (gst_dynudpsink_get_type())
 #define GST_DYNUDPSINK(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DYNUDPSINK,GstDynUDPSink))
@@ -45,26 +44,28 @@ struct _GstDynUDPSink {
   GstBaseSink parent;
 
   /* properties */
-  gint sockfd;
-  gboolean closefd;
+  GSocket *socket, *socket_v6;
+  gboolean close_socket;
+  gchar *bind_address;
+  gint bind_port;
 
   /* the socket in use */
-  int sock;
-  gboolean externalfd;
+  GSocket *used_socket, *used_socket_v6;
+  gboolean external_socket;
+  gboolean made_cancel_fd;
+  GCancellable *cancellable;
 };
 
 struct _GstDynUDPSinkClass {
   GstBaseSinkClass parent_class;
 
   /* element methods */
-  GValueArray*  (*get_stats)    (GstDynUDPSink *sink, const gchar *host, gint port);
+  GstStructure*  (*get_stats)    (GstDynUDPSink *sink, const gchar *host, gint port);
 
   /* signals */
 };
 
 GType gst_dynudpsink_get_type(void);
-
-GValueArray*    gst_dynudpsink_get_stats        (GstDynUDPSink *sink, const gchar *host, gint port);
 
 G_END_DECLS
 

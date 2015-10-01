@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <gst/netbuffer/gstnetbuffer.h>
+#include <gst/net/gstnetaddressmeta.h>
 
 #include "gstudpsrc.h"
 #include "gstmultiudpsink.h"
@@ -31,14 +31,16 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-#ifdef G_OS_WIN32
-  if (!gst_udp_net_utils_win32_wsa_startup (GST_OBJECT (plugin)))
-    return FALSE;
-#endif
+  /* not using GLIB_CHECK_VERSION on purpose, run-time version matters */
+  if (glib_check_version (2, 36, 0) != NULL) {
+    GST_WARNING ("Your GLib version is < 2.36, UDP multicasting support may "
+        "be broken, see https://bugzilla.gnome.org/show_bug.cgi?id=688378");
+  }
 
-  /* register type of the netbuffer so that we can use it from multiple threads
-   * right away. Note that the plugin loading is always serialized */
-  gst_netbuffer_get_type ();
+  /* register info of the netaddress metadata so that we can use it from
+   * multiple threads right away. Note that the plugin loading is always
+   * serialized */
+  gst_net_address_meta_get_info ();
 
   if (!gst_element_register (plugin, "udpsink", GST_RANK_NONE,
           GST_TYPE_UDPSINK))
@@ -60,6 +62,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "udp",
+    udp,
     "transfer data via UDP",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

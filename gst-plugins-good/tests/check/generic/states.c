@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,21 +31,24 @@
 static GList *elements = NULL;
 
 static void
-setup ()
+setup (void)
 {
   GList *features, *f;
   GList *plugins, *p;
   gchar **ignorelist = NULL;
   const gchar *STATE_IGNORE_ELEMENTS = NULL;
+  GstRegistry *def;
 
   GST_DEBUG ("getting elements for package %s", PACKAGE);
-  STATE_IGNORE_ELEMENTS = g_getenv ("STATE_IGNORE_ELEMENTS");
-  if (STATE_IGNORE_ELEMENTS) {
+  STATE_IGNORE_ELEMENTS = g_getenv ("GST_STATE_IGNORE_ELEMENTS");
+  if (!g_getenv ("GST_NO_STATE_IGNORE_ELEMENTS") && STATE_IGNORE_ELEMENTS) {
     GST_DEBUG ("Will ignore element factories: '%s'", STATE_IGNORE_ELEMENTS);
     ignorelist = g_strsplit (STATE_IGNORE_ELEMENTS, " ", 0);
   }
 
-  plugins = gst_registry_get_plugin_list (gst_registry_get_default ());
+  def = gst_registry_get ();
+
+  plugins = gst_registry_get_plugin_list (def);
 
   for (p = plugins; p; p = p->next) {
     GstPlugin *plugin = p->data;
@@ -54,7 +57,7 @@ setup ()
       continue;
 
     features =
-        gst_registry_get_feature_list_by_plugin (gst_registry_get_default (),
+        gst_registry_get_feature_list_by_plugin (def,
         gst_plugin_get_name (plugin));
 
     for (f = features; f; f = f->next) {
@@ -88,7 +91,7 @@ setup ()
 }
 
 static void
-teardown ()
+teardown (void)
 {
   GList *e;
 
@@ -204,10 +207,10 @@ GST_START_TEST (test_state_changes_down_seq)
 GST_END_TEST;
 
 
-Suite *
+static Suite *
 states_suite (void)
 {
-  Suite *s = suite_create ("states");
+  Suite *s = suite_create ("states_good");
   TCase *tc_chain = tcase_create ("general");
 
   suite_add_tcase (s, tc_chain);

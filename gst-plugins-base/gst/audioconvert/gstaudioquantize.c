@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -136,7 +136,7 @@ MAKE_QUANTIZE_FUNC_NAME (name) (AudioConvertCtx *ctx, gdouble *src,     \
 
 /* Dithering definitions
  * See http://en.wikipedia.org/wiki/Dithering or
- * http://www.cadenzarecording.com/Dither.html for explainations.
+ * http://www.users.qwest.net/~volt42/cadenzarecording/DitherExplained.pdf for explainations.
  *
  * We already add the rounding offset to the dither noise here
  * to have only one overflow check instead of two. */
@@ -145,9 +145,14 @@ MAKE_QUANTIZE_FUNC_NAME (name) (AudioConvertCtx *ctx, gdouble *src,     \
   gint32 rand;                                                          \
   gint32 dither = (1<<(scale));
 
+/* Assuming dither == 2^n,
+ * returns one of 2^(n+1) possible random values:
+ * -dither <= retval < dither */
+#define RANDOM_INT_DITHER(dither)                                       \
+  (- dither + (gst_fast_random_int32 () & ((dither << 1) - 1)))
+
 #define ADD_DITHER_RPDF_I()                                             \
-        rand = gst_fast_random_int32_range (bias - dither,              \
-	    bias + dither);                                             \
+        rand = bias + RANDOM_INT_DITHER(dither);                        \
         if (rand > 0 && tmp > 0 && G_MAXINT32 - tmp <= rand)            \
                 tmp = G_MAXINT32;                                       \
         else if (rand < 0 && tmp < 0 && G_MININT32 - tmp >= rand)       \
@@ -163,14 +168,11 @@ MAKE_QUANTIZE_FUNC_NAME (name) (AudioConvertCtx *ctx, gdouble *src,     \
 
 #define INIT_DITHER_TPDF_I()                                            \
   gint32 rand;                                                          \
-  gint32 dither = (1<<(scale - 1));                                     \
-  bias = bias >> 1;
+  gint32 dither = (1<<(scale - 1));
 
 #define ADD_DITHER_TPDF_I()                                             \
-        rand = gst_fast_random_int32_range (bias - dither,              \
-                   bias + dither - 1)                                   \
-               + gst_fast_random_int32_range (bias - dither,            \
-                   bias + dither - 1);                                  \
+        rand = bias + RANDOM_INT_DITHER(dither)                         \
+                    + RANDOM_INT_DITHER(dither);                        \
         if (rand > 0 && tmp > 0 && G_MAXINT32 - tmp <= rand)            \
                 tmp = G_MAXINT32;                                       \
         else if (rand < 0 && tmp < 0 && G_MININT32 - tmp >= rand)       \
@@ -188,13 +190,11 @@ MAKE_QUANTIZE_FUNC_NAME (name) (AudioConvertCtx *ctx, gdouble *src,     \
 #define INIT_DITHER_TPDF_HF_I()                                         \
   gint32 rand;                                                          \
   gint32 dither = (1<<(scale-1));                                       \
-  gint32 *last_random = (gint32 *) ctx->last_random, tmp_rand;          \
-  bias = bias >> 1;
+  gint32 *last_random = (gint32 *) ctx->last_random, tmp_rand;
 
 #define ADD_DITHER_TPDF_HF_I()                                          \
-        tmp_rand = gst_fast_random_int32_range (bias - dither,          \
-                       bias + dither);                                  \
-        rand = tmp_rand - last_random[chan_pos];                        \
+        tmp_rand = RANDOM_INT_DITHER(dither);                           \
+        rand = bias + tmp_rand - last_random[chan_pos];                 \
         last_random[chan_pos] = tmp_rand;                               \
         if (rand > 0 && tmp > 0 && G_MAXINT32 - tmp <= rand)            \
                 tmp = G_MAXINT32;                                       \
@@ -306,20 +306,12 @@ static const gdouble ns_high_coeffs[] = {
         errors[chan_pos] = (*dst)/factor - orig;
 
 
-MAKE_QUANTIZE_FUNC_I (signed_none_none, NONE_FUNC, NONE_FUNC, ROUND);
-MAKE_QUANTIZE_FUNC_I (signed_rpdf_none, INIT_DITHER_RPDF_I, ADD_DITHER_RPDF_I,
+MAKE_QUANTIZE_FUNC_I (int_none_none, NONE_FUNC, NONE_FUNC, ROUND);
+MAKE_QUANTIZE_FUNC_I (int_rpdf_none, INIT_DITHER_RPDF_I, ADD_DITHER_RPDF_I,
     NONE_FUNC);
-MAKE_QUANTIZE_FUNC_I (signed_tpdf_none, INIT_DITHER_TPDF_I, ADD_DITHER_TPDF_I,
+MAKE_QUANTIZE_FUNC_I (int_tpdf_none, INIT_DITHER_TPDF_I, ADD_DITHER_TPDF_I,
     NONE_FUNC);
-MAKE_QUANTIZE_FUNC_I (signed_tpdf_hf_none, INIT_DITHER_TPDF_HF_I,
-    ADD_DITHER_TPDF_HF_I, NONE_FUNC);
-
-MAKE_QUANTIZE_FUNC_I (unsigned_none_none, NONE_FUNC, NONE_FUNC, ROUND);
-MAKE_QUANTIZE_FUNC_I (unsigned_rpdf_none, INIT_DITHER_RPDF_I, ADD_DITHER_RPDF_I,
-    NONE_FUNC);
-MAKE_QUANTIZE_FUNC_I (unsigned_tpdf_none, INIT_DITHER_TPDF_I, ADD_DITHER_TPDF_I,
-    NONE_FUNC);
-MAKE_QUANTIZE_FUNC_I (unsigned_tpdf_hf_none, INIT_DITHER_TPDF_HF_I,
+MAKE_QUANTIZE_FUNC_I (int_tpdf_hf_none, INIT_DITHER_TPDF_HF_I,
     ADD_DITHER_TPDF_HF_I, NONE_FUNC);
 
 MAKE_QUANTIZE_FUNC_F (float_none_error_feedback, NONE_FUNC,
@@ -362,15 +354,11 @@ MAKE_QUANTIZE_FUNC_F (float_tpdf_hf_medium, INIT_DITHER_TPDF_HF_F,
 MAKE_QUANTIZE_FUNC_F (float_tpdf_hf_high, INIT_DITHER_TPDF_HF_F, INIT_NS_HIGH,
     ADD_NS_HIGH, ADD_DITHER_TPDF_HF_F, UPDATE_ERROR_HIGH);
 
-static AudioConvertQuantize quantize_funcs[] = {
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (signed_none_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (signed_rpdf_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (signed_tpdf_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (signed_tpdf_hf_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (unsigned_none_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (unsigned_rpdf_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (unsigned_tpdf_none),
-  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (unsigned_tpdf_hf_none),
+static const AudioConvertQuantize quantize_funcs[] = {
+  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (int_none_none),
+  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (int_rpdf_none),
+  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (int_tpdf_none),
+  (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (int_tpdf_hf_none),
   (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (float_none_error_feedback),
   (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (float_none_simple),
   (AudioConvertQuantize) MAKE_QUANTIZE_FUNC_NAME (float_none_medium),
@@ -439,7 +427,7 @@ gst_audio_quantize_setup_dither (AudioConvertCtx * ctx)
 {
   switch (ctx->dither) {
     case DITHER_TPDF_HF:
-      if (ctx->out.is_int)
+      if (GST_AUDIO_FORMAT_INFO_IS_INTEGER (ctx->out.finfo))
         ctx->last_random = g_new0 (gint32, ctx->out.channels);
       else
         ctx->last_random = g_new0 (gdouble, ctx->out.channels);
@@ -469,16 +457,15 @@ gst_audio_quantize_setup_quantize_func (AudioConvertCtx * ctx)
 {
   gint index = 0;
 
-  if (!ctx->out.is_int) {
+  if (!GST_AUDIO_FORMAT_INFO_IS_INTEGER (ctx->out.finfo)) {
     ctx->quantize = NULL;
     return;
   }
 
   if (ctx->ns == NOISE_SHAPING_NONE) {
     index += ctx->dither;
-    index += (ctx->out.sign) ? 0 : 4;
   } else {
-    index += 8 + (4 * ctx->dither);
+    index += 4 + (4 * ctx->dither);
     index += ctx->ns - 1;
   }
 

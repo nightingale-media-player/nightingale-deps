@@ -9,15 +9,15 @@
 #include <gst/gst.h>
 
 gst_bin_get_type
+gst_buffer_pool_get_type
 gst_bus_get_type
 gst_child_proxy_get_type
 gst_clock_get_type
+gst_control_binding_get_type
+gst_control_source_get_type
 gst_element_factory_get_type
 gst_element_get_type
 gst_ghost_pad_get_type
-gst_implements_interface_get_type
-gst_index_factory_get_type
-gst_index_get_type
 gst_object_get_type
 gst_pad_get_type
 gst_pad_template_get_type
@@ -30,12 +30,17 @@ gst_tag_setter_get_type
 gst_task_get_type
 gst_type_find_factory_get_type
 gst_uri_handler_get_type
-gst_xml_get_type
 
-% these are not GObject derived types
-% this works with gtk-doc 1.10 at least
-%gst_buffer_get_type
-%gst_mini_object_get_type
-%gst_message_get_type
-%gst_query_get_type
+gst_buffer_get_type
+gst_buffer_list_get_type
+gst_caps_get_type
+gst_context_get_type
+gst_event_get_type
+gst_memory_get_type
+gst_message_get_type
+gst_query_get_type
+gst_sample_get_type
+gst_tag_list_get_type
+gst_toc_get_type
+gst_toc_entry_get_type
 

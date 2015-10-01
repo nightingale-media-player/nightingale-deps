@@ -1,21 +1,25 @@
 
-Release notes for GStreamer Base Plug-ins 0.10.25 "Standard disclaimers apply"
-        
+Release notes for GStreamer Base Plugins 1.6.0
 
 
-The GStreamer team is proud to announce a new release
-in the 0.10.x stable series of the
-GStreamer Base Plug-ins.
+The GStreamer team is proud to announce a new major feature release in the
+stable 1.x API series of your favourite cross-platform multimedia framework!
 
 
-The 0.10.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.8.x series.
-It is, however, parallel installable with the 0.8.x series.
+This release has been in the works for more than a year and is packed with new
+features, bug fixes and other improvements.
+
+
+See
+http://gstreamer.freedesktop.org/releases/1.6/
+for the full list of changes.
 
 
 
 This module contains a set of reference plugins, base classes for other
-plugins, and helper libraries.
+plugins, and helper libraries. It also includes essential elements such
+as audio and video format converters, and higher-level components like playbin,
+decodebin, encodebin, and discoverer.
 
 This module is kept up-to-date together with the core developments.  Element
 writers should look at the elements in this module as a reference for
@@ -27,166 +31,77 @@ This module contains elements for, among others:
   containers: ogg
   codecs: vorbis, theora
   text: textoverlay, subparse
-  sources: audiotestsrc, videotestsrc, gnomevfssrc
+  sources: audiotestsrc, videotestsrc, giosrc
   network: tcp
-  typefind
-  audio processing: audioconvert, adder, audiorate, audioscale, volume
+  typefind functions
+  audio processing: audioconvert, adder, audiorate, audioresample, volume
   visualisation: libvisual
-  video processing: ffmpegcolorspace
-  aggregate elements: decodebin, playbin
+  video processing: videoconvert, videoscale
+  high-level components: playbin, uridecodebin, decodebin, encodebin, discoverer
+  libraries: app, audio, fft, pbutils, riff, rtp, rtsp, sdp, tag, video
 
 
-Other modules containing plug-ins are:
+Other modules containing plugins are:
 
 
 gst-plugins-good
-contains a set of well-supported plug-ins under our preferred license
+contains a set of well-supported plugins under our preferred license
 gst-plugins-ugly
-contains a set of well-supported plug-ins, but might pose problems for
+contains a set of well-supported plugins, but might pose problems for
     distributors
 gst-plugins-bad
-contains a set of less supported plug-ins that haven't passed the
-    rigorous quality testing we expect
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 
 
   
 
-Features of this release
-    
-      * Add per-stream volume controls
-      * Theora 1.0 and Y444 and Y42B format support
-      * Improve audio capture timing
-      * GObject introspection support
-      * Improve audio output startup
-      * RTSP improvements
-      * Use pango-cairo instead of pangoft2
-      * Allow cdda://(device#)?track URI scheme in cddabasesrc
-      * Support interlaced content in videoscale and ffmpegcolorspacee
-      * Many other bug fixes and improvements
-
 Bugs fixed in this release
      
-      * 595401 : gobject assertion and null access to volume instance in playbin
-      * 563828 : [decodebin2] Complains about loops in the graph when demuxer output requires another demuxer
-      * 591677 : Easy codec installation is not working
-      * 588523 : smarter sink selection in playbin2
-      * 590146 : adder regressions
-      * 321532 : [cddabasesrc] Support device setting in cdda:// URI
-      * 340887 : add pangocairo textoverlay plugin.
-      * 397419 : [oggdemux] ogm video with subtitles stuck on first frame
-      * 556537 : [PATCH] typefind: more flexible MPEG4 start code recognition
-      * 559049 : gstcheck.c:76:F:general:test_state_changes_* failure: GST_IS_CLOCK(clock) assertion fails
-      * 567660 : [API] need a stream volume interface for sinks that do volume control
-      * 567928 : Make videorate work with a live source
-      * 571610 : [playbin] Scale of volume property is not documented
-      * 583255 : [playbin2] deadlock when disabling visualisations
-      * 586180 : RTSP improvements
-      * 588717 : [oggmux] gst_caps_unref() warning if not linked downstream
-      * 588761 : [videoscale] Needs special support for interlaced content
-      * 588915 : audioresample's output offset counter's initialization could maybe be improved
-      * 589095 : [appsrc] clarify documentation on caps and linkage
-      * 589574 : [typefind] incorrect sdp file detection
-      * 590243 : [videoscale] Claims to support MAX width/height
-      * 590425 : Slaved alsasrc clock with slave-method=re-timestamp not usable for RTP audio
-      * 590856 : [decodebin2] triggers assertion failure on NULL caps
-      * 591207 : totem does display the following subtitle srt file.
-      * 591357 : gst-plugins-base git won't build due to warning in gstrtspconnection.c
-      * 591577 : [playbin2] Incorrect error message string
-      * 591664 : [playbin2] after seeking, srt subtitles don't resync correctly
-      * 591934 : timestamp drift in audioresample
-      * 592544 : Remove regex.h check
-      * 592657 : [appsink] Blocks after entering on pause state
-      * 592864 : deadlocks from recent inputselector/streamselector change
-      * 592884 : [playbin2] g_object_get increases refcount by 2 and therefore leaves memleak
-      * 593035 : gdp doesn't preserve fields of the buffers put into the caps' streamheader
-      * 593284 : basertppayloader takes time in instance init
-      * 594020 : Totem don't play videos from ssh remote host
-      * 594094 : Playback Error playing Midi file
-      * 594136 : [alsasink] Regression from 0.10.23 -- element reuse doesn't work
-      * 594165 : [theoraenc] Implement support for new formats
-      * 594256 : improved slave-skew resynch mechanism
-      * 594258 : missing break in rtcpbuffer
-      * 594275 : Add cast to navigation to fix compiler warning
-      * 594623 : Expose playsink as a fully-fledged element
-      * 594732 : parse error
-      * 594757 : build fails due to warning in gstbasertppayload.c
-      * 594993 : [introspection] pkg-config file madness
-      * 594994 : [streamvolume] Add get_type function to the documentation
-      * 595454 : [cddabasesrc] uri format change breaks rhythmbox
-      * 545807 : [baseaudiosink] audible crack when starting the pipeline
+      * 752148 : Drawing from paths passed to cairo does not work with PANGOCAIRO_BACKEND=coretext
+      * 754344 : libs: build rtp after audio
+      * 754833 : dmabuf & fdmemory: fix allocator_alloc documentation
+      * 755392 : video: bugs with gst_video_frame_copy and videoconvert (with test scripts)
 
-API changed in this release
-     
-- API additions:
-    
-* gst_rtsp_connection_create_from_fd()
-* gst_rtsp_connection_set_http_mode()
-* gst_rtsp_watch_write_data()
-* gst_rtsp_watch_send_message()
-* GstBaseRTPPayload::perfect-rtptime
-* GstBaseRTPAudioPayload::gst_base_rtp_audio_payload_flush()
-* GstVideoSinkClass::show_frame()
-* GstVideoSink:show-preroll-frame
-* GST_MIXER_TRACK_READONLY
-* GST_MIXER_TRACK_WRITEONLY
-* GstStreamVolume interface
+==== Download ====
 
-Download
+You can find source releases of gst-plugins-base in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-base/
 
-You can find source releases of gst-plugins-base in the download directory:
-http://gstreamer.freedesktop.org/src/gst-plugins-base/
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-base/
 
-GStreamer Homepage
+==== Homepage ====
 
-More details can be found on the project's website:
-http://gstreamer.freedesktop.org/
+The project's website is http://gstreamer.freedesktop.org/
 
-Support and Bugs
+==== Support and Bugs ====
 
 We use GNOME's bugzilla for bug reports and feature requests:
 http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
-Developers
+Please submit patches via bugzilla as well.
 
-GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
-Interested developers of the core library, plug-ins, and applications should
-subscribe to the gstreamer-devel list. If there is sufficient interest we
-will create more lists as necessary.
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
 
         
-Applications
-  
 Contributors to this release
     
-      * Arnout Vandecappelle
-      * Benjamin Gaignard
-      * Benjamin Otte
-      * Christian F.K. Schaller
-      * David Schleef
-      * Edward Hervey
-      * Eero Nurkkala
-      * Havard Graff
-      * Håvard Graff
-      * Jan Schmidt
-      * John Millikin
-      * Jonas Holmberg
-      * Jonathan Matthew
-      * Josep Torra
-      * Kipp Cannon
-      * Marc-André Lureau
-      * Mark Nauwelaerts
-      * Mart Raudsepp
-      * Michael Smith
-      * Olivier Crête
-      * Peter Kjellerstedt
-      * Philip Jägenstedt
-      * René Stadler
+      * Aurélien Zanelli
       * Sebastian Dröge
-      * Siarhei Siamashka
-      * Stefan Kost
-      * Tim-Philipp Müller
-      * Wim Taymans
-      * Young-Ho Cha
-      * Руслан Ижбулатов
  

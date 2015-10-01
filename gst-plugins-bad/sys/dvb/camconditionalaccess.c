@@ -30,6 +30,7 @@
 #define TAG_CONDITIONAL_ACCESS_INFO_ENQUIRY 0x9F8030
 #define TAG_CONDITIONAL_ACCESS_INFO_REPLY 0x9F8031
 #define TAG_CONDITIONAL_ACCESS_PMT 0x9F8032
+#define TAG_CONDITIONAL_ACCESS_PMT_REPLY 0x9F8033
 
 static CamReturn session_request_impl (CamALApplication * application,
     CamSLSession * session, CamSLResourceStatus * status);
@@ -41,7 +42,7 @@ static CamReturn data_impl (CamALApplication * application,
     CamSLSession * session, guint tag, guint8 * buffer, guint length);
 
 CamConditionalAccess *
-cam_conditional_access_new ()
+cam_conditional_access_new (void)
 {
   CamConditionalAccess *cas;
   CamALApplication *application;
@@ -69,7 +70,7 @@ cam_conditional_access_destroy (CamConditionalAccess * cas)
 }
 
 static CamReturn
-send_ca_pmt (CamConditionalAccess * cas, GstStructure * pmt,
+send_ca_pmt (CamConditionalAccess * cas, GstMpegtsPMT * pmt,
     guint8 list_management, guint8 cmd_id)
 {
   CamReturn ret;
@@ -107,7 +108,7 @@ send_ca_pmt (CamConditionalAccess * cas, GstStructure * pmt,
 
 CamReturn
 cam_conditional_access_set_pmt (CamConditionalAccess * cas,
-    GstStructure * pmt, CamConditionalAccessPmtFlag flag)
+    GstMpegtsPMT * pmt, CamConditionalAccessPmtFlag flag)
 {
   return send_ca_pmt (cas, pmt, flag, 0x01 /* ok_descrambling */ );
 }
@@ -136,7 +137,7 @@ static CamReturn
 send_conditional_access_enquiry (CamConditionalAccess * cas,
     CamSLSession * session)
 {
-  GST_DEBUG ("sending application cas enquiry");
+  GST_DEBUG ("sending application CAS enquiry");
   return send_simple (cas, session, TAG_CONDITIONAL_ACCESS_INFO_ENQUIRY);
 }
 
@@ -171,6 +172,7 @@ static CamReturn
 handle_conditional_access_info_reply (CamConditionalAccess * cas,
     CamSLSession * session, guint8 * buffer, guint length)
 {
+#ifndef GST_DISABLE_GST_DEBUG
   int i;
   guint16 cas_id;
 
@@ -185,6 +187,49 @@ handle_conditional_access_info_reply (CamConditionalAccess * cas,
   }
 
   cas->ready = TRUE;
+#endif
+
+  return CAM_RETURN_OK;
+}
+
+static CamReturn
+handle_conditional_access_pmt_reply (CamConditionalAccess * cas,
+    CamSLSession * session, guint8 * buffer, guint length)
+{
+#ifndef GST_DISABLE_GST_DEBUG
+  guint16 program_num;
+  guint8 version_num, current_next_indicator;
+
+  GST_INFO ("conditional access PMT reply");
+
+  program_num = GST_READ_UINT16_BE (buffer);
+  buffer += 2;
+
+  GST_INFO ("program_number : %d", program_num);
+
+  version_num = *buffer >> 1 & 0x1f;
+  current_next_indicator = *buffer & 0x1;
+  buffer++;
+
+  GST_INFO ("version_num:%d, current_next_indicator:%d",
+      version_num, current_next_indicator);
+
+  GST_INFO ("CA_enable : %d (0x%x)", *buffer >> 7 ? *buffer & 0x7f : 0,
+      *buffer);
+  buffer++;
+
+  length -= 4;
+
+  while (length > 0) {
+    guint16 PID = GST_READ_UINT16_BE (buffer);
+    buffer += 2;
+    GST_INFO ("PID 0x%x CA_enable : %d (0x%x)", PID,
+        *buffer >> 7 ? *buffer & 0x7f : 0, *buffer);
+    buffer++;
+
+    length -= 3;
+  }
+#endif
 
   return CAM_RETURN_OK;
 }
@@ -200,7 +245,11 @@ data_impl (CamALApplication * application, CamSLSession * session,
     case TAG_CONDITIONAL_ACCESS_INFO_REPLY:
       ret = handle_conditional_access_info_reply (cas, session, buffer, length);
       break;
+    case TAG_CONDITIONAL_ACCESS_PMT_REPLY:
+      ret = handle_conditional_access_pmt_reply (cas, session, buffer, length);
+      break;
     default:
+      GST_WARNING ("Got unknown callback, tag 0x%x", tag);
       g_return_val_if_reached (CAM_RETURN_ERROR);
   }
 

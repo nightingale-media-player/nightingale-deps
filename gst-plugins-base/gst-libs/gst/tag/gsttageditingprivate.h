@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -35,6 +35,40 @@ struct _GstTagEntryMatch {
 
 GType gst_vorbis_tag_get_type (void);
 
+gint __exif_tag_image_orientation_to_exif_value (const gchar * str);
+const gchar * __exif_tag_image_orientation_from_exif_value (gint value);
+
+gint __exif_tag_capturing_exposure_program_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_exposure_program_from_exif_value (gint value);
+
+gint __exif_tag_capturing_exposure_mode_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_exposure_mode_from_exif_value (gint value);
+
+gint __exif_tag_capturing_scene_capture_type_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_scene_capture_type_from_exif_value (gint value);
+
+gint __exif_tag_capturing_gain_adjustment_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_gain_adjustment_from_exif_value (gint value);
+
+gint __exif_tag_capturing_white_balance_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_white_balance_from_exif_value (gint value);
+
+gint __exif_tag_capturing_contrast_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_contrast_from_exif_value (gint value);
+
+gint __exif_tag_capturing_saturation_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_saturation_from_exif_value (gint value);
+
+gint __exif_tag_capturing_sharpness_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_sharpness_from_exif_value (gint value);
+
+gint __exif_tag_capturing_metering_mode_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_metering_mode_from_exif_value (gint value);
+
+gint __exif_tag_capturing_source_to_exif_value (const gchar * str);
+const gchar * __exif_tag_capturing_source_from_exif_value (gint value);
+
+#define ensure_exif_tags gst_tag_register_musicbrainz_tags
 
 G_END_DECLS
 

@@ -49,7 +49,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=filename.ext ! decodebin ! audioconvert \
+ * gst-launch-1.0 filesrc location=filename.ext ! decodebin ! audioconvert \
  *     ! rgvolume ! audioconvert ! audioresample ! alsasink
  * ]| Playback of a file
  * </refsect2>
@@ -61,8 +61,8 @@
 
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
+#include <gst/audio/audio.h>
 #include <math.h>
-#include <string.h>
 
 #include "gstrgvolume.h"
 #include "replaygain.h"
@@ -97,34 +97,26 @@ enum
 
 /* Same template caps as GstVolume, for I don't like having just ANY caps. */
 
+#define FORMAT "{ "GST_AUDIO_NE(F32)","GST_AUDIO_NE(S16)" }"
+
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 32; "
-        "audio/x-raw-int, "
-        "channels = (int) [ 1, MAX ], "
-        "rate = (int) [ 1,  MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE"));
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " FORMAT ", "
+        "layout = (string) { interleaved, non-interleaved }, "
+        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ]"));
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
-    GST_PAD_SRC, GST_PAD_ALWAYS, GST_STATIC_CAPS ("audio/x-raw-float, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 32; "
-        "audio/x-raw-int, "
-        "channels = (int) [ 1, MAX ], "
-        "rate = (int) [ 1,  MAX ], "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) 16, " "depth = (int) 16, " "signed = (bool) TRUE"));
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " FORMAT ", "
+        "layout = (string) { interleaved, non-interleaved }, "
+        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ]"));
 
-GST_BOILERPLATE (GstRgVolume, gst_rg_volume, GstBin, GST_TYPE_BIN);
-
-static void gst_rg_volume_class_init (GstRgVolumeClass * klass);
-static void gst_rg_volume_init (GstRgVolume * self, GstRgVolumeClass * gclass);
+#define gst_rg_volume_parent_class parent_class
+G_DEFINE_TYPE (GstRgVolume, gst_rg_volume, GST_TYPE_BIN);
 
 static void gst_rg_volume_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -134,35 +126,14 @@ static void gst_rg_volume_dispose (GObject * object);
 
 static GstStateChangeReturn gst_rg_volume_change_state (GstElement * element,
     GstStateChange transition);
-static gboolean gst_rg_volume_sink_event (GstPad * pad, GstEvent * event);
+static gboolean gst_rg_volume_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 
 static GstEvent *gst_rg_volume_tag_event (GstRgVolume * self, GstEvent * event);
 static void gst_rg_volume_reset (GstRgVolume * self);
 static void gst_rg_volume_update_gain (GstRgVolume * self);
 static inline void gst_rg_volume_determine_gain (GstRgVolume * self,
     gdouble * target_gain, gdouble * result_gain);
-
-static void
-gst_rg_volume_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = g_class;
-
-  static const GstElementDetails element_details = {
-    "ReplayGain volume",
-    "Filter/Effect/Audio",
-    "Apply ReplayGain volume adjustment",
-    "Ren\xc3\xa9 Stadler <mail@renestadler.de>"
-  };
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-  gst_element_class_set_details (element_class, &element_details);
-
-  GST_DEBUG_CATEGORY_INIT (gst_rg_volume_debug, "rgvolume", 0,
-      "ReplayGain volume element");
-}
 
 static void
 gst_rg_volume_class_init (GstRgVolumeClass * klass)
@@ -191,13 +162,12 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    *
    * If album mode is enabled but the album gain tag is absent in the stream,
    * the track gain is used instead.  If both gain tags are missing, the value
-   * of the <link linkend="GstRgVolume--fallback-gain">fallback-gain</link>
-   * property is used instead.
+   * of the #GstRgVolume:fallback-gain property is used instead.
    */
   g_object_class_install_property (gobject_class, PROP_ALBUM_MODE,
       g_param_spec_boolean ("album-mode", "Album mode",
           "Prefer album over track gain", DEFAULT_ALBUM_MODE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgVolume:headroom:
    *
@@ -211,13 +181,14 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    * This element internally uses a volume element, which also supports
    * operating on integer audio formats.  These formats do not allow exceeding
    * digital full scale.  If extra headroom is used, make sure that the raw
-   * audio data format is floating point (audio/x-raw-float).  Otherwise,
+   * audio data format is floating point (F32).  Otherwise,
    * clipping distortion might be introduced as part of the volume adjustment
    * itself.
    */
   g_object_class_install_property (gobject_class, PROP_HEADROOM,
       g_param_spec_double ("headroom", "Headroom", "Extra headroom [dB]",
-          0., 60., DEFAULT_HEADROOM, G_PARAM_READWRITE));
+          0., 60., DEFAULT_HEADROOM,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgVolume:pre-amp:
    *
@@ -234,7 +205,8 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    */
   g_object_class_install_property (gobject_class, PROP_PRE_AMP,
       g_param_spec_double ("pre-amp", "Pre-amp", "Extra gain [dB]",
-          -60., 60., DEFAULT_PRE_AMP, G_PARAM_READWRITE));
+          -60., 60., DEFAULT_PRE_AMP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgVolume:fallback-gain:
    *
@@ -243,56 +215,52 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
   g_object_class_install_property (gobject_class, PROP_FALLBACK_GAIN,
       g_param_spec_double ("fallback-gain", "Fallback gain",
           "Gain for streams missing tags [dB]",
-          -60., 60., DEFAULT_FALLBACK_GAIN, G_PARAM_READWRITE));
+          -60., 60., DEFAULT_FALLBACK_GAIN,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgVolume:result-gain:
    *
    * Applied gain [dB].  This gain is applied to processed buffer data.
    *
-   * This is set to the <link linkend="GstRgVolume--target-gain">target
-   * gain</link> if amplification by that amount can be applied safely.
-   * "Safely" means that the volume adjustment does not inflict clipping
-   * distortion.  Should this not be the case, the result gain is set to an
-   * appropriately reduced value (by applying peak normalization).  The proposed
-   * standard calls this "clipping prevention".
+   * This is set to the #GstRgVolume:target-gain if amplification by that amount
+   * can be applied safely. "Safely" means that the volume adjustment does not
+   * inflict clipping distortion.  Should this not be the case, the result gain
+   * is set to an appropriately reduced value (by applying peak normalization).
+   * The proposed standard calls this "clipping prevention".
    *
    * The difference between target and result gain reflects the necessary amount
    * of reduction.  Applications can make use of this information to temporarily
-   * reduce the <link linkend="GstRgVolume--pre-amp">pre-amp</link> for
-   * subsequent streams, as recommended by the ReplayGain standard.
+   * reduce the #GstRgVolume:pre-amp for subsequent streams, as recommended by
+   * the ReplayGain standard.
    *
    * Note that target and result gain differing for a great majority of streams
    * indicates a problem: What happens in this case is that most streams receive
    * peak normalization instead of amplification by the ideal replay gain.  To
-   * prevent this, the <link linkend="GstRgVolume--pre-amp">pre-amp</link> has
-   * to be lowered and/or a limiter has to be used which facilitates the use of
-   * <link linkend="GstRgVolume--headroom">headroom</link>.
+   * prevent this, the #GstRgVolume:pre-amp has to be lowered and/or a limiter
+   * has to be used which facilitates the use of #GstRgVolume:headroom.
    */
   g_object_class_install_property (gobject_class, PROP_RESULT_GAIN,
       g_param_spec_double ("result-gain", "Result-gain", "Applied gain [dB]",
-          -120., 120., 0., G_PARAM_READABLE));
+          -120., 120., 0., G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   /**
    * GstRgVolume:target-gain:
    *
    * Applicable gain [dB].  This gain is supposed to be applied.
    *
-   * Depending on the value of the <link
-   * linkend="GstRgVolume--album-mode">album-mode</link> property and the
+   * Depending on the value of the #GstRgVolume:album-mode property and the
    * presence of ReplayGain tags in the stream, this is set according to one of
    * these simple formulas:
    *
    * <itemizedlist>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + album gain
-   * of the stream</listitem>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + track gain
-   * of the stream</listitem>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + <link
-   * linkend="GstRgVolume--fallback-gain">fallback gain</link></listitem>
+   * <listitem>#GstRgVolume:pre-amp + album gain of the stream</listitem>
+   * <listitem>#GstRgVolume:pre-amp + track gain of the stream</listitem>
+   * <listitem>#GstRgVolume:pre-amp + #GstRgVolume:fallback-gain</listitem>
    * </itemizedlist>
    */
   g_object_class_install_property (gobject_class, PROP_TARGET_GAIN,
       g_param_spec_double ("target-gain", "Target-gain",
-          "Applicable gain [dB]", -120., 120., 0., G_PARAM_READABLE));
+          "Applicable gain [dB]", -120., 120., 0.,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   element_class = (GstElementClass *) klass;
   element_class->change_state = GST_DEBUG_FUNCPTR (gst_rg_volume_change_state);
@@ -302,10 +270,22 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    * mess with our internals. */
   bin_class->add_element = NULL;
   bin_class->remove_element = NULL;
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_set_static_metadata (element_class, "ReplayGain volume",
+      "Filter/Effect/Audio",
+      "Apply ReplayGain volume adjustment",
+      "Ren\xc3\xa9 Stadler <mail@renestadler.de>");
+
+  GST_DEBUG_CATEGORY_INIT (gst_rg_volume_debug, "rgvolume", 0,
+      "ReplayGain volume element");
 }
 
 static void
-gst_rg_volume_init (GstRgVolume * self, GstRgVolumeClass * gclass)
+gst_rg_volume_init (GstRgVolume * self)
 {
   GObjectClass *volume_class;
   GstPad *volume_pad, *ghost_pad;
@@ -340,14 +320,14 @@ gst_rg_volume_init (GstRgVolume * self, GstRgVolumeClass * gclass)
 
   volume_pad = gst_element_get_static_pad (self->volume_element, "sink");
   ghost_pad = gst_ghost_pad_new_from_template ("sink", volume_pad,
-      gst_pad_get_pad_template (volume_pad));
+      GST_PAD_PAD_TEMPLATE (volume_pad));
   gst_object_unref (volume_pad);
   gst_pad_set_event_function (ghost_pad, gst_rg_volume_sink_event);
   gst_element_add_pad (GST_ELEMENT_CAST (self), ghost_pad);
 
   volume_pad = gst_element_get_static_pad (self->volume_element, "src");
   ghost_pad = gst_ghost_pad_new_from_template ("src", volume_pad,
-      gst_pad_get_pad_template (volume_pad));
+      GST_PAD_PAD_TEMPLATE (volume_pad));
   gst_object_unref (volume_pad);
   gst_element_add_pad (GST_ELEMENT_CAST (self), ghost_pad);
 }
@@ -458,20 +438,15 @@ gst_rg_volume_change_state (GstElement * element, GstStateChange transition)
 
 /* Event function for the ghost sink pad. */
 static gboolean
-gst_rg_volume_sink_event (GstPad * pad, GstEvent * event)
+gst_rg_volume_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstRgVolume *self;
-  GstPad *volume_sink_pad;
   GstEvent *send_event = event;
   gboolean res;
 
-  self = GST_RG_VOLUME (gst_pad_get_parent_element (pad));
-  volume_sink_pad = gst_ghost_pad_get_target (GST_GHOST_PAD (pad));
+  self = GST_RG_VOLUME (parent);
 
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:
-      self->got_newsegment = TRUE;
-      break;
     case GST_EVENT_TAG:
 
       GST_LOG_OBJECT (self, "received tag event");
@@ -493,89 +468,11 @@ gst_rg_volume_sink_event (GstPad * pad, GstEvent * event)
   }
 
   if (G_LIKELY (send_event != NULL))
-    res = gst_pad_send_event (volume_sink_pad, send_event);
+    res = gst_pad_event_default (pad, parent, send_event);
   else
     res = TRUE;
 
-  gst_object_unref (volume_sink_pad);
-  gst_object_unref (self);
   return res;
-}
-
-static double
-rgvolume_itunnorm_to_db(int norm_value, int scale)
-{
-  return log10((double)norm_value / scale) * -10;
-}
-
-static guint
-rgvolume_itunes_field (gchar *data, int field)
-{
-  guint value = 0;
-  int i = 0;
-
-  /* Skip 'field' leading fields */
-  while (field--) {
-    while (g_ascii_isspace (data[i]))
-      i++;
-    while (g_ascii_isxdigit(data[i]))
-      i++;
-  }
-
-  /* Skip leading space */
-  while (g_ascii_isspace (data[i]))
-    i++;
-
-  /* Parse hex values */
-  while (g_ascii_isxdigit(data[i])) {
-    value = (value << 4) | g_ascii_xdigit_value(data[i]);
-    i++;
-  }
-
-  return value;
-}
-
-
-/* Private copy of this to avoid having to link in an extra lib */
-static gboolean
-tag_parse_extended_comment (const gchar * ext_comment, gchar ** key,
-    gchar ** lang, gchar ** value, gboolean fail_if_no_key)
-{
-  const gchar *div, *bop, *bcl;
-
-  if (key)
-    *key = NULL;
-  if (lang)
-    *lang = NULL;
-
-  div = strchr (ext_comment, '=');
-  bop = strchr (ext_comment, '[');
-  bcl = strchr (ext_comment, ']');
-
-  if (div == NULL) {
-    if (fail_if_no_key)
-      return FALSE;
-    if (value)
-      *value = g_strdup (ext_comment);
-    return TRUE;
-  }
-
-  if (bop != NULL && bop < div) {
-    if (bcl < bop || bcl > div)
-      return FALSE;
-    if (key)
-      *key = g_strndup (ext_comment, bop - ext_comment);
-    if (lang)
-      *lang = g_strndup (bop + 1, bcl - bop - 1);
-  } else {
-    if (key)
-      *key = g_strndup (ext_comment, div - ext_comment);
-  }
-
-  if (value)
-    *value = g_strdup (div + 1);
-
-  return TRUE;
 }
 
 static GstEvent *
@@ -584,19 +481,9 @@ gst_rg_volume_tag_event (GstRgVolume * self, GstEvent * event)
   GstTagList *tag_list;
   gboolean has_track_gain, has_track_peak, has_album_gain, has_album_peak;
   gboolean has_ref_level;
-  gboolean has_itunnorm = FALSE;
-  int index = 0;
-  gchar *tag = NULL;
 
   g_return_val_if_fail (event != NULL, NULL);
   g_return_val_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_TAG, event);
-
-  if (self->got_newsegment) {
-    /* A tag event following a new segment probably means we don't want any
-     * old replaygain info
-     */
-    gst_rg_volume_reset (self);
-  }
 
   gst_event_parse_tag (event, &tag_list);
 
@@ -615,50 +502,6 @@ gst_rg_volume_tag_event (GstRgVolume * self, GstEvent * event)
       &self->reference_level);
 
   if (!has_track_gain && !has_track_peak && !has_album_gain && !has_album_peak)
-  {
-    while (gst_tag_list_get_string_index (tag_list, 
-        GST_TAG_EXTENDED_COMMENT, index++, &tag))
-    {
-      gchar *key = NULL, *value = NULL;
-      if ( tag_parse_extended_comment (tag, &key, NULL, &value, TRUE))
-      {
-        if (key && value && !strcmp (key, "iTunNORM"))
-        {
-          /* Ok, value is a series of hex-encoded integer fields, 
-           * each (including the first) starting with a space.
-           */
-          int volume_adj_1 = MAX (rgvolume_itunes_field (value, 0), 
-                                  rgvolume_itunes_field (value, 1));
-          int volume_adj_2 = MAX (rgvolume_itunes_field (value, 2), 
-                                  rgvolume_itunes_field (value, 3));
-
-          /* Now calculate the desired volume adjustment in dB */
-          double volume_adjustment = MAX (
-              rgvolume_itunnorm_to_db(volume_adj_1, 1000),
-              rgvolume_itunnorm_to_db(volume_adj_2, 2500));
-
-          if (VALID_GAIN (volume_adjustment)) {
-            GST_DEBUG_OBJECT (self, "Using volume adjustment %" GAIN_FORMAT 
-                " from iTunNORM field", volume_adjustment);
-            self->track_gain = volume_adjustment;
-            self->has_track_gain = TRUE;
-            has_itunnorm = TRUE;
-          }
-          else
-            GST_WARNING_OBJECT (self, 
-                    "Ignoring iTunNORM volume adjustment of %" GAIN_FORMAT, 
-                    volume_adjustment);
-        }
-
-        g_free (key);
-        g_free (value);
-      }
-      g_free(tag);
-    }
-  }
-
-  if (!has_track_gain && !has_track_peak && !has_album_gain && 
-          !has_album_peak && !has_itunnorm)
     return event;
 
   if (has_ref_level && (has_track_gain || has_album_gain)
@@ -744,8 +587,6 @@ gst_rg_volume_reset (GstRgVolume * self)
   self->has_album_peak = FALSE;
 
   self->reference_level = RG_REFERENCE_LEVEL;
-
-  self->got_newsegment = FALSE;
 
   gst_rg_volume_update_gain (self);
 }

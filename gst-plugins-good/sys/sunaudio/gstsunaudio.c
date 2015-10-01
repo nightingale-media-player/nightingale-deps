@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -48,7 +48,6 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (sunaudio_debug, "sunaudio", 0, "sunaudio elements");
 
 #ifdef ENABLE_NLS
-  setlocale (LC_ALL, "");
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
@@ -58,6 +57,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "sunaudio",
+    sunaudio,
     "Sun Audio support for GStreamer",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

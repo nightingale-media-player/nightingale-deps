@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,81 +36,60 @@
 
 enum
 {
-  ARG_0,
-  ARG_HOST,
-  ARG_PORT,
-  ARG_VERSION,
-  ARG_PASSWORD,
-  ARG_OFFSET_X,
-  ARG_OFFSET_Y,
-  ARG_WIDTH,
-  ARG_HEIGHT,
-  ARG_INCREMENTAL,
-  ARG_USE_COPYRECT,
-  ARG_SHARED,
-  ARG_VIEWONLY
+  PROP_0,
+  PROP_HOST,
+  PROP_PORT,
+  PROP_VERSION,
+  PROP_PASSWORD,
+  PROP_OFFSET_X,
+  PROP_OFFSET_Y,
+  PROP_WIDTH,
+  PROP_HEIGHT,
+  PROP_INCREMENTAL,
+  PROP_USE_COPYRECT,
+  PROP_SHARED,
+  PROP_VIEWONLY
 };
 
 GST_DEBUG_CATEGORY_STATIC (rfbsrc_debug);
 GST_DEBUG_CATEGORY (rfbdecoder_debug);
 #define GST_CAT_DEFAULT rfbsrc_debug
 
-static const GstElementDetails gst_rfb_src_details =
-GST_ELEMENT_DETAILS ("Rfb source",
-    "Source/Video",
-    "Creates a rfb video stream",
-    "David A. Schleef <ds@schleef.org>, "
-    "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>, "
-    "Thijs Vermeir <thijsvermeir@gmail.com>");
-
 static GstStaticPadTemplate gst_rfb_src_template =
-GST_STATIC_PAD_TEMPLATE ("src",
+    GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw-rgb, "
-        "bpp = (int) [1, 255], "
-        "depth = (int) [1, 255], "
-        "endianness = (int) [1234, 4321], "
-        "red_mask = (int) [min, max], "
-        "green_mask = (int) [min, max], "
-        "blue_mask = (int) [min, max], "
-        "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ], " "framerate = (fraction) 0/1")
-    );
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("RGB")
+        "; " GST_VIDEO_CAPS_MAKE ("BGR")
+        "; " GST_VIDEO_CAPS_MAKE ("RGBx")
+        "; " GST_VIDEO_CAPS_MAKE ("BGRx")
+        "; " GST_VIDEO_CAPS_MAKE ("xRGB")
+        "; " GST_VIDEO_CAPS_MAKE ("xBGR")));
 
-static void gst_rfb_src_base_init (gpointer g_class);
-static void gst_rfb_src_class_init (GstRfbSrcClass * klass);
-static void gst_rfb_src_dispose (GObject * object);
+static void gst_rfb_src_finalize (GObject * object);
 static void gst_rfb_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_rfb_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
+static GstCaps *gst_rfb_src_fixate (GstBaseSrc * bsrc, GstCaps * caps);
 static gboolean gst_rfb_src_start (GstBaseSrc * bsrc);
 static gboolean gst_rfb_src_stop (GstBaseSrc * bsrc);
 static gboolean gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event);
 static GstFlowReturn gst_rfb_src_create (GstPushSrc * psrc,
     GstBuffer ** outbuf);
 
-GST_BOILERPLATE (GstRfbSrc, gst_rfb_src, GstPushSrc, GST_TYPE_PUSH_SRC);
-
-static void
-gst_rfb_src_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rfb_src_template));
-
-  gst_element_class_set_details (element_class, &gst_rfb_src_details);
-}
+#define gst_rfb_src_parent_class parent_class
+G_DEFINE_TYPE (GstRfbSrc, gst_rfb_src, GST_TYPE_PUSH_SRC);
 
 static void
 gst_rfb_src_class_init (GstRfbSrcClass * klass)
 {
   GObjectClass *gobject_class;
   GstBaseSrcClass *gstbasesrc_class;
+  GstElementClass *gstelement_class;
   GstPushSrcClass *gstpushsrc_class;
+
 
   GST_DEBUG_CATEGORY_INIT (rfbsrc_debug, "rfbsrc", 0, "rfb src element");
   GST_DEBUG_CATEGORY_INIT (rfbdecoder_debug, "rfbdecoder", 0, "rfb decoder");
@@ -119,54 +98,75 @@ gst_rfb_src_class_init (GstRfbSrcClass * klass)
   gstbasesrc_class = (GstBaseSrcClass *) klass;
   gstpushsrc_class = (GstPushSrcClass *) klass;
 
-  gobject_class->dispose = gst_rfb_src_dispose;
+  gobject_class->finalize = gst_rfb_src_finalize;
   gobject_class->set_property = gst_rfb_src_set_property;
   gobject_class->get_property = gst_rfb_src_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_HOST,
+  g_object_class_install_property (gobject_class, PROP_HOST,
       g_param_spec_string ("host", "Host to connect to", "Host to connect to",
-          "127.0.0.1", G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_PORT,
+          "127.0.0.1", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_PORT,
       g_param_spec_int ("port", "Port", "Port",
-          1, 65535, 5900, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_VERSION,
+          1, 65535, 5900, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_VERSION,
       g_param_spec_string ("version", "RFB protocol version",
-          "RFB protocol version", "3.3", G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_PASSWORD,
+          "RFB protocol version", "3.3",
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_PASSWORD,
       g_param_spec_string ("password", "Password for authentication",
-          "Password for authentication", "", G_PARAM_WRITABLE));
-  g_object_class_install_property (gobject_class, ARG_OFFSET_X,
+          "Password for authentication", "",
+          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_OFFSET_X,
       g_param_spec_int ("offset-x", "x offset for screen scrapping",
-          "x offset for screen scrapping", 0, 65535, 0, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_OFFSET_Y,
+          "x offset for screen scrapping", 0, 65535, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_OFFSET_Y,
       g_param_spec_int ("offset-y", "y offset for screen scrapping",
-          "y offset for screen scrapping", 0, 65535, 0, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_WIDTH,
+          "y offset for screen scrapping", 0, 65535, 0,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_WIDTH,
       g_param_spec_int ("width", "width of screen", "width of screen", 0, 65535,
-          0, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_HEIGHT,
+          0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_HEIGHT,
       g_param_spec_int ("height", "height of screen", "height of screen", 0,
-          65535, 0, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_INCREMENTAL,
+          65535, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_INCREMENTAL,
       g_param_spec_boolean ("incremental", "Incremental updates",
-          "Incremental updates", TRUE, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_USE_COPYRECT,
+          "Incremental updates", TRUE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_USE_COPYRECT,
       g_param_spec_boolean ("use-copyrect", "Use copyrect encoding",
-          "Use copyrect encoding", FALSE, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_SHARED,
+          "Use copyrect encoding", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_SHARED,
       g_param_spec_boolean ("shared", "Share desktop with other clients",
-          "Share desktop with other clients", TRUE, G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_VIEWONLY,
+          "Share desktop with other clients", TRUE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_VIEWONLY,
       g_param_spec_boolean ("view-only", "Only view the desktop",
-          "only view the desktop", FALSE, G_PARAM_READWRITE));
+          "only view the desktop", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  gstbasesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_rfb_src_fixate);
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_rfb_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_rfb_src_stop);
   gstbasesrc_class->event = GST_DEBUG_FUNCPTR (gst_rfb_src_event);
   gstpushsrc_class->create = GST_DEBUG_FUNCPTR (gst_rfb_src_create);
+
+  gstelement_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rfb_src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "Rfb source",
+      "Source/Video",
+      "Creates a rfb video stream",
+      "David A. Schleef <ds@schleef.org>, "
+      "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>, "
+      "Thijs Vermeir <thijsvermeir@gmail.com>");
 }
 
 static void
-gst_rfb_src_init (GstRfbSrc * src, GstRfbSrcClass * klass)
+gst_rfb_src_init (GstRfbSrc * src)
 {
   GstBaseSrc *bsrc = GST_BASE_SRC (src);
 
@@ -183,23 +183,28 @@ gst_rfb_src_init (GstRfbSrc * src, GstRfbSrcClass * klass)
 
   src->view_only = FALSE;
 
+  src->pool = NULL;
+
   src->decoder = rfb_decoder_new ();
 
 }
 
 static void
-gst_rfb_src_dispose (GObject * object)
+gst_rfb_src_finalize (GObject * object)
 {
   GstRfbSrc *src = GST_RFB_SRC (object);
 
   g_free (src->host);
+  if (src->pool) {
+    gst_object_unref (src->pool);
+    src->pool = NULL;
+  }
   if (src->decoder) {
     rfb_decoder_free (src->decoder);
-    g_free (src->decoder);
     src->decoder = NULL;
   }
 
-  G_OBJECT_CLASS (parent_class)->dispose (object);
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -244,41 +249,41 @@ gst_rfb_src_set_property (GObject * object, guint prop_id,
   GstRfbSrc *src = GST_RFB_SRC (object);
 
   switch (prop_id) {
-    case ARG_HOST:
+    case PROP_HOST:
       src->host = g_strdup (g_value_get_string (value));
       break;
-    case ARG_PORT:
+    case PROP_PORT:
       src->port = g_value_get_int (value);
       break;
-    case ARG_VERSION:
+    case PROP_VERSION:
       gst_rfb_property_set_version (src, g_strdup (g_value_get_string (value)));
       break;
-    case ARG_PASSWORD:
+    case PROP_PASSWORD:
       g_free (src->decoder->password);
       src->decoder->password = g_strdup (g_value_get_string (value));
       break;
-    case ARG_OFFSET_X:
+    case PROP_OFFSET_X:
       src->decoder->offset_x = g_value_get_int (value);
       break;
-    case ARG_OFFSET_Y:
+    case PROP_OFFSET_Y:
       src->decoder->offset_y = g_value_get_int (value);
       break;
-    case ARG_WIDTH:
+    case PROP_WIDTH:
       src->decoder->rect_width = g_value_get_int (value);
       break;
-    case ARG_HEIGHT:
+    case PROP_HEIGHT:
       src->decoder->rect_height = g_value_get_int (value);
       break;
-    case ARG_INCREMENTAL:
+    case PROP_INCREMENTAL:
       src->incremental_update = g_value_get_boolean (value);
       break;
-    case ARG_USE_COPYRECT:
+    case PROP_USE_COPYRECT:
       src->decoder->use_copyrect = g_value_get_boolean (value);
       break;
-    case ARG_SHARED:
+    case PROP_SHARED:
       src->decoder->shared_flag = g_value_get_boolean (value);
       break;
-    case ARG_VIEWONLY:
+    case PROP_VIEWONLY:
       src->view_only = g_value_get_boolean (value);
       break;
     default:
@@ -294,39 +299,39 @@ gst_rfb_src_get_property (GObject * object, guint prop_id,
   gchar *version;
 
   switch (prop_id) {
-    case ARG_HOST:
+    case PROP_HOST:
       g_value_set_string (value, src->host);
       break;
-    case ARG_PORT:
+    case PROP_PORT:
       g_value_set_int (value, src->port);
       break;
-    case ARG_VERSION:
+    case PROP_VERSION:
       version = gst_rfb_property_get_version (src);
       g_value_set_string (value, version);
       g_free (version);
       break;
-    case ARG_OFFSET_X:
+    case PROP_OFFSET_X:
       g_value_set_int (value, src->decoder->offset_x);
       break;
-    case ARG_OFFSET_Y:
+    case PROP_OFFSET_Y:
       g_value_set_int (value, src->decoder->offset_y);
       break;
-    case ARG_WIDTH:
+    case PROP_WIDTH:
       g_value_set_int (value, src->decoder->rect_width);
       break;
-    case ARG_HEIGHT:
+    case PROP_HEIGHT:
       g_value_set_int (value, src->decoder->rect_height);
       break;
-    case ARG_INCREMENTAL:
+    case PROP_INCREMENTAL:
       g_value_set_boolean (value, src->incremental_update);
       break;
-    case ARG_USE_COPYRECT:
+    case PROP_USE_COPYRECT:
       g_value_set_boolean (value, src->decoder->use_copyrect);
       break;
-    case ARG_SHARED:
+    case PROP_SHARED:
       g_value_set_boolean (value, src->decoder->shared_flag);
       break;
-    case ARG_VIEWONLY:
+    case PROP_VIEWONLY:
       g_value_set_boolean (value, src->view_only);
       break;
     default:
@@ -335,28 +340,131 @@ gst_rfb_src_get_property (GObject * object, guint prop_id,
   }
 }
 
+static GstCaps *
+gst_rfb_src_fixate (GstBaseSrc * bsrc, GstCaps * caps)
+{
+  GstRfbSrc *src = GST_RFB_SRC (bsrc);
+  RfbDecoder *decoder;
+  GstStructure *structure;
+  guint i;
+
+  decoder = src->decoder;
+
+  GST_DEBUG_OBJECT (src, "fixating caps %" GST_PTR_FORMAT, caps);
+
+  caps = gst_caps_make_writable (caps);
+
+  for (i = 0; i < gst_caps_get_size (caps); ++i) {
+    structure = gst_caps_get_structure (caps, i);
+
+    gst_structure_fixate_field_nearest_int (structure,
+        "width", decoder->rect_width);
+    gst_structure_fixate_field_nearest_int (structure,
+        "height", decoder->rect_height);
+    gst_structure_fixate_field (structure, "format");
+  }
+
+  GST_DEBUG_OBJECT (src, "fixated caps %" GST_PTR_FORMAT, caps);
+
+  caps = GST_BASE_SRC_CLASS (parent_class)->fixate (bsrc, caps);
+
+  return caps;
+}
+
+static void
+gst_rfb_negotiate_pool (GstRfbSrc * src, GstCaps * caps)
+{
+  GstQuery *query;
+  GstBufferPool *pool = NULL;
+  guint size, min, max;
+  GstStructure *config;
+
+  /* find a pool for the negotiated caps now */
+  query = gst_query_new_allocation (caps, TRUE);
+
+  if (!gst_pad_peer_query (GST_BASE_SRC_PAD (src), query)) {
+    /* not a problem, we use the defaults of query */
+    GST_DEBUG_OBJECT (src, "could not get downstream ALLOCATION hints");
+  }
+
+  if (gst_query_get_n_allocation_pools (query) > 0) {
+    /* we got configuration from our peer, parse them */
+    gst_query_parse_nth_allocation_pool (query, 0, &pool, &size, &min, &max);
+  } else {
+    GST_DEBUG_OBJECT (src, "didn't get downstream pool hints");
+    size = GST_BASE_SRC (src)->blocksize;
+    min = max = 0;
+  }
+
+  if (pool == NULL) {
+    /* we did not get a pool, make one ourselves then */
+    pool = gst_video_buffer_pool_new ();
+  }
+
+  if (src->pool)
+    gst_object_unref (src->pool);
+  src->pool = pool;
+
+  config = gst_buffer_pool_get_config (pool);
+  gst_buffer_pool_config_set_params (config, caps, size, min, max);
+  gst_buffer_pool_config_add_option (config, GST_BUFFER_POOL_OPTION_VIDEO_META);
+
+  gst_buffer_pool_set_config (pool, config);
+  // and activate
+  gst_buffer_pool_set_active (pool, TRUE);
+
+  gst_query_unref (query);
+}
+
 static gboolean
 gst_rfb_src_start (GstBaseSrc * bsrc)
 {
   GstRfbSrc *src = GST_RFB_SRC (bsrc);
   RfbDecoder *decoder;
   GstCaps *caps;
+  GstVideoInfo vinfo;
+  GstVideoFormat vformat;
   guint32 red_mask, green_mask, blue_mask;
+  gchar *stream_id = NULL;
+  GstEvent *stream_start = NULL;
 
   decoder = src->decoder;
 
   GST_DEBUG_OBJECT (src, "connecting to host %s on port %d",
       src->host, src->port);
   if (!rfb_decoder_connect_tcp (decoder, src->host, src->port)) {
-    GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
-        ("Could not connect to host %s on port %d", src->host, src->port));
-    rfb_decoder_free (decoder);
+    if (decoder->error != NULL) {
+      GST_ELEMENT_ERROR (src, RESOURCE, READ,
+          ("Could not connect to VNC server %s on port %d: %s", src->host,
+              src->port, decoder->error->message), (NULL));
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, READ,
+          ("Could not connect to VNC server %s on port %d", src->host,
+              src->port), (NULL));
+    }
     return FALSE;
   }
 
   while (!decoder->inited) {
-    rfb_decoder_iterate (decoder);
+    if (!rfb_decoder_iterate (decoder)) {
+      if (decoder->error != NULL) {
+        GST_ELEMENT_ERROR (src, RESOURCE, READ,
+            ("Failed to setup VNC connection to host %s on port %d: %s",
+                src->host, src->port, decoder->error->message), (NULL));
+      } else {
+        GST_ELEMENT_ERROR (src, RESOURCE, READ,
+            ("Failed to setup VNC connection to host %s on port %d", src->host,
+                src->port), (NULL));
+      }
+      return FALSE;
+    }
   }
+
+  stream_id = gst_pad_create_stream_id_printf (GST_BASE_SRC_PAD (bsrc),
+      GST_ELEMENT (src), "%s:%d", src->host, src->port);
+  stream_start = gst_event_new_stream_start (stream_id);
+  g_free (stream_id);
+  gst_pad_push_event (GST_BASE_SRC_PAD (bsrc), stream_start);
 
   decoder->rect_width =
       (decoder->rect_width ? decoder->rect_width : decoder->width);
@@ -379,23 +487,25 @@ gst_rfb_src_start (GstBaseSrc * bsrc)
   GST_DEBUG_OBJECT (src, "setting caps width to %d and height to %d",
       decoder->rect_width, decoder->rect_height);
 
-  caps =
-      gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD (bsrc)));
-
   red_mask = decoder->red_max << decoder->red_shift;
   green_mask = decoder->green_max << decoder->green_shift;
   blue_mask = decoder->blue_max << decoder->blue_shift;
 
-  gst_caps_set_simple (caps, "width", G_TYPE_INT, decoder->rect_width,
-      "height", G_TYPE_INT, decoder->rect_height,
-      "bpp", G_TYPE_INT, decoder->bpp,
-      "depth", G_TYPE_INT, decoder->depth,
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "red_mask", G_TYPE_INT, GST_READ_UINT32_BE (&red_mask),
-      "green_mask", G_TYPE_INT, GST_READ_UINT32_BE (&green_mask),
-      "blue_mask", G_TYPE_INT, GST_READ_UINT32_BE (&blue_mask), NULL);
+  vformat = gst_video_format_from_masks (decoder->depth, decoder->bpp,
+      decoder->big_endian ? G_BIG_ENDIAN : G_LITTLE_ENDIAN,
+      red_mask, green_mask, blue_mask, 0);
+
+  gst_video_info_init (&vinfo);
+
+  gst_video_info_set_format (&vinfo, vformat, decoder->rect_width,
+      decoder->rect_height);
+
+  caps = gst_video_info_to_caps (&vinfo);
 
   gst_pad_set_caps (GST_BASE_SRC_PAD (bsrc), caps);
+
+  gst_rfb_negotiate_pool (src, caps);
+
   gst_caps_unref (caps);
 
   return TRUE;
@@ -406,7 +516,10 @@ gst_rfb_src_stop (GstBaseSrc * bsrc)
 {
   GstRfbSrc *src = GST_RFB_SRC (bsrc);
 
-  src->decoder->fd = -1;
+  if (src->decoder->socket) {
+    g_object_unref (src->decoder->socket);
+    src->decoder->socket = NULL;
+  }
 
   if (src->decoder->frame) {
     g_free (src->decoder->frame);
@@ -426,7 +539,7 @@ gst_rfb_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
 {
   GstRfbSrc *src = GST_RFB_SRC (psrc);
   RfbDecoder *decoder = src->decoder;
-  gulong newsize;
+  GstMapInfo info;
   GstFlowReturn ret;
 
   rfb_decoder_send_update_request (decoder, src->incremental_update,
@@ -434,25 +547,35 @@ gst_rfb_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
       decoder->rect_height);
 
   while (decoder->state != NULL) {
-    rfb_decoder_iterate (decoder);
+    if (!rfb_decoder_iterate (decoder)) {
+      if (decoder->error != NULL) {
+        GST_ELEMENT_ERROR (src, RESOURCE, READ,
+            ("Error on VNC connection to host %s on port %d: %s",
+                src->host, src->port, decoder->error->message), (NULL));
+      } else {
+        GST_ELEMENT_ERROR (src, RESOURCE, READ,
+            ("Error on setup VNC connection to host %s on port %d", src->host,
+                src->port), (NULL));
+      }
+    }
   }
 
-  newsize = GST_BASE_SRC (psrc)->blocksize;
-
   /* Create the buffer. */
-  ret = gst_pad_alloc_buffer (GST_BASE_SRC_PAD (GST_BASE_SRC (psrc)),
-      GST_BUFFER_OFFSET_NONE, newsize,
-      GST_PAD_CAPS (GST_BASE_SRC_PAD (GST_BASE_SRC (psrc))), outbuf);
+  ret = gst_buffer_pool_acquire_buffer (src->pool, outbuf, NULL);
 
   if (G_UNLIKELY (ret != GST_FLOW_OK)) {
     return GST_FLOW_ERROR;
   }
 
-  memcpy (GST_BUFFER_DATA (*outbuf), decoder->frame, newsize);
-  GST_BUFFER_SIZE (*outbuf) = newsize;
-  GST_BUFFER_TIMESTAMP (*outbuf) =
+  gst_buffer_map (*outbuf, &info, GST_MAP_WRITE);
+
+  memcpy (info.data, decoder->frame, info.size);
+
+  GST_BUFFER_PTS (*outbuf) =
       gst_clock_get_time (GST_ELEMENT_CLOCK (src)) -
       GST_ELEMENT_CAST (src)->base_time;
+
+  gst_buffer_unmap (*outbuf, &info);
 
   return GST_FLOW_OK;
 }
@@ -463,7 +586,7 @@ gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event)
   GstRfbSrc *src = GST_RFB_SRC (bsrc);
   gdouble x, y;
   gint button;
-  GstStructure *structure;
+  const GstStructure *structure;
   const gchar *event_type;
   gboolean key_event, key_press;
 
@@ -476,7 +599,7 @@ gst_rfb_src_event (GstBaseSrc * bsrc, GstEvent * event)
       if (src->view_only)
         break;
 
-      structure = event->structure;
+      structure = gst_event_get_structure (event);
       event_type = gst_structure_get_string (structure, "event");
 
       if (strcmp (event_type, "key-press") == 0) {
@@ -543,6 +666,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "rfbsrc",
+    rfbsrc,
     "Connects to a VNC server and decodes RFB stream",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

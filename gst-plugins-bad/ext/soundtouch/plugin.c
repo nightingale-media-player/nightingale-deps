@@ -22,15 +22,12 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/controller/gstcontroller.h>
 #include "gstpitch.hh"
 #include "gstbpmdetect.hh"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  gst_controller_init (NULL, NULL);
-
   return gst_element_register (plugin, "pitch", GST_RANK_NONE, GST_TYPE_PITCH)
       && gst_element_register (plugin, "bpmdetect", GST_RANK_NONE,
       GST_TYPE_BPM_DETECT);
@@ -38,6 +35,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "soundtouch",
+    soundtouch,
     "Audio Pitch Controller & BPM Detection",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,42 +32,46 @@ static int n_data_probes = 0;
 static int n_buffer_probes = 0;
 static int n_event_probes = 0;
 
-static gboolean
-probe_do_nothing (GstPad * pad, GstMiniObject * obj, gpointer data)
+static GstPadProbeReturn
+probe_do_nothing (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
   GST_DEBUG_OBJECT (pad, "is buffer:%d", GST_IS_BUFFER (obj));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-data_probe (GstPad * pad, GstMiniObject * obj, gpointer data)
+static GstPadProbeReturn
+data_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
   n_data_probes++;
   GST_DEBUG_OBJECT (pad, "data probe %d", n_data_probes);
-  g_assert (GST_IS_MINI_OBJECT (obj));
+  g_assert (GST_IS_BUFFER (obj) || GST_IS_EVENT (obj));
   g_assert (data == SPECIAL_POINTER (0));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-buffer_probe (GstPad * pad, GstBuffer * obj, gpointer data)
+static GstPadProbeReturn
+buffer_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstBuffer *obj = GST_PAD_PROBE_INFO_BUFFER (info);
   n_buffer_probes++;
   GST_DEBUG_OBJECT (pad, "buffer probe %d", n_buffer_probes);
   g_assert (GST_IS_BUFFER (obj));
   g_assert (data == SPECIAL_POINTER (1));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-event_probe (GstPad * pad, GstEvent * obj, gpointer data)
+static GstPadProbeReturn
+event_probe (GstPad * pad, GstPadProbeInfo * info, gpointer data)
 {
+  GstEvent *obj = GST_PAD_PROBE_INFO_EVENT (info);
   n_event_probes++;
   GST_DEBUG_OBJECT (pad, "event probe %d [%s]",
       n_event_probes, GST_EVENT_TYPE_NAME (obj));
   g_assert (GST_IS_EVENT (obj));
   g_assert (data == SPECIAL_POINTER (2));
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
 GST_START_TEST (test_buffer_probe_n_times)
@@ -89,18 +93,20 @@ GST_START_TEST (test_buffer_probe_n_times)
   pad = gst_element_get_static_pad (fakesink, "sink");
 
   /* add the probes we need for the test */
-  gst_pad_add_data_probe (pad, G_CALLBACK (data_probe), SPECIAL_POINTER (0));
-  gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe),
-      SPECIAL_POINTER (1));
-  gst_pad_add_event_probe (pad, G_CALLBACK (event_probe), SPECIAL_POINTER (2));
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH, data_probe,
+      SPECIAL_POINTER (0), NULL);
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER, buffer_probe,
+      SPECIAL_POINTER (1), NULL);
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH, event_probe,
+      SPECIAL_POINTER (2), NULL);
 
-  /* add some probes just to test that _full works and the data is free'd
+  /* add some string probes just to test that the data is free'd
    * properly as it should be */
-  gst_pad_add_data_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH, probe_do_nothing,
       g_strdup ("data probe string"), (GDestroyNotify) g_free);
-  gst_pad_add_buffer_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER, probe_do_nothing,
       g_strdup ("buffer probe string"), (GDestroyNotify) g_free);
-  gst_pad_add_event_probe_full (pad, G_CALLBACK (probe_do_nothing),
+  gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH, probe_do_nothing,
       g_strdup ("event probe string"), (GDestroyNotify) g_free);
 
   gst_object_unref (pad);
@@ -113,53 +119,59 @@ GST_START_TEST (test_buffer_probe_n_times)
   gst_object_unref (bus);
 
   g_assert (n_buffer_probes == 10);     /* one for every buffer */
-  g_assert (n_event_probes == 3);       /* new segment, latency and eos */
-  g_assert (n_data_probes == 13);       /* duh */
+  g_assert (n_event_probes == 4);       /* stream-start, new segment, latency and eos */
+  g_assert (n_data_probes == 14);       /* duh */
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
   gst_object_unref (pipeline);
 
   /* make sure nothing was sent in addition to the above when shutting down */
   g_assert (n_buffer_probes == 10);     /* one for every buffer */
-  g_assert (n_event_probes == 3);       /* new segment, latency and eos */
-  g_assert (n_data_probes == 13);       /* duh */
+  g_assert (n_event_probes == 4);       /* stream-start, new segment, latency and eos */
+  g_assert (n_data_probes == 14);       /* duh */
 } GST_END_TEST;
 
 static int n_data_probes_once = 0;
 static int n_buffer_probes_once = 0;
 static int n_event_probes_once = 0;
 
-static gboolean
-data_probe_once (GstPad * pad, GstMiniObject * obj, guint * data)
+static GstPadProbeReturn
+data_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstMiniObject *obj = GST_PAD_PROBE_INFO_DATA (info);
+
   n_data_probes_once++;
-  g_assert (GST_IS_MINI_OBJECT (obj));
+  g_assert (GST_IS_BUFFER (obj) || GST_IS_EVENT (obj));
 
-  gst_pad_remove_data_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-buffer_probe_once (GstPad * pad, GstBuffer * obj, guint * data)
+static GstPadProbeReturn
+buffer_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstBuffer *obj = GST_PAD_PROBE_INFO_BUFFER (info);
+
   n_buffer_probes_once++;
   g_assert (GST_IS_BUFFER (obj));
 
-  gst_pad_remove_buffer_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
-static gboolean
-event_probe_once (GstPad * pad, GstEvent * obj, guint * data)
+static GstPadProbeReturn
+event_probe_once (GstPad * pad, GstPadProbeInfo * info, guint * data)
 {
+  GstEvent *obj = GST_PAD_PROBE_INFO_EVENT (info);
+
   n_event_probes_once++;
   g_assert (GST_IS_EVENT (obj));
 
-  gst_pad_remove_event_probe (pad, *data);
+  gst_pad_remove_probe (pad, *data);
 
-  return TRUE;
+  return GST_PAD_PROBE_OK;
 }
 
 GST_START_TEST (test_buffer_probe_once)
@@ -180,9 +192,15 @@ GST_START_TEST (test_buffer_probe_once)
   gst_element_link (fakesrc, fakesink);
 
   pad = gst_element_get_static_pad (fakesink, "sink");
-  id1 = gst_pad_add_data_probe (pad, G_CALLBACK (data_probe_once), &id1);
-  id2 = gst_pad_add_buffer_probe (pad, G_CALLBACK (buffer_probe_once), &id2);
-  id3 = gst_pad_add_event_probe (pad, G_CALLBACK (event_probe_once), &id3);
+  id1 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_BOTH,
+      (GstPadProbeCallback) data_probe_once, &id1, NULL);
+  id2 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_BUFFER,
+      (GstPadProbeCallback) buffer_probe_once, &id2, NULL);
+  id3 =
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_EVENT_BOTH,
+      (GstPadProbeCallback) event_probe_once, &id3, NULL);
   gst_object_unref (pad);
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
@@ -453,7 +471,7 @@ GST_START_TEST (test_parse_bin_from_description)
     }
 
     if (strcmp (s->str, bin_tests[i].pad_names) != 0) {
-      g_error ("FAILED: expted '%s', got '%s' for bin '%s'",
+      g_error ("FAILED: expected '%s', got '%s' for bin '%s'",
           bin_tests[i].pad_names, s->str, bin_tests[i].bin_desc);
     }
     g_string_free (s, TRUE);
@@ -471,11 +489,12 @@ GST_START_TEST (test_element_found_tags)
   GstTagList *list;
   GstBus *bus;
   GstMessage *message;
+  GstPad *srcpad;
 
   pipeline = gst_element_factory_make ("pipeline", NULL);
   fakesrc = gst_element_factory_make ("fakesrc", NULL);
   fakesink = gst_element_factory_make ("fakesink", NULL);
-  list = gst_tag_list_new ();
+  list = gst_tag_list_new_empty ();
 
   g_object_set (fakesrc, "num-buffers", (int) 10, NULL);
 
@@ -484,7 +503,9 @@ GST_START_TEST (test_element_found_tags)
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
-  gst_element_found_tags (GST_ELEMENT (fakesrc), list);
+  srcpad = gst_element_get_static_pad (fakesrc, "src");
+  gst_pad_push_event (srcpad, gst_event_new_tag (list));
+  gst_object_unref (srcpad);
 
   bus = gst_element_get_bus (pipeline);
   message = gst_bus_poll (bus, GST_MESSAGE_EOS, -1);
@@ -880,6 +901,9 @@ _gmp_test_scale (gsl_rng * rng)
       bygst = gst_util_uint64_scale (val, a, b);
       func = "gst_util_uint64_scale";
       break;
+    default:
+      g_assert_not_reached ();
+      break;
   }
   fail_unless (bygst == bygmp,
       "error: %s(): %" G_GUINT64_FORMAT " * %" G_GUINT64_FORMAT " / %"
@@ -910,6 +934,9 @@ _gmp_test_scale_int (gsl_rng * rng)
     case ROUND_DOWN:
       bygst = gst_util_uint64_scale_int (val, a, b);
       func = "gst_util_uint64_scale_int";
+      break;
+    default:
+      g_assert_not_reached ();
       break;
   }
   fail_unless (bygst == bygmp,
@@ -948,6 +975,732 @@ GST_END_TEST;
 #endif
 #endif
 
+GST_START_TEST (test_pad_proxy_query_caps_aggregation)
+{
+  GstElement *tee, *sink1, *sink2;
+  GstCaps *caps;
+  GstPad *tee_src1, *tee_src2, *tee_sink, *sink1_sink, *sink2_sink;
+
+  tee = gst_element_factory_make ("tee", "tee");
+
+  sink1 = gst_element_factory_make ("fakesink", "sink1");
+  tee_src1 = gst_element_get_request_pad (tee, "src_%u");
+  sink1_sink = gst_element_get_static_pad (sink1, "sink");
+  fail_unless_equals_int (gst_pad_link (tee_src1, sink1_sink), GST_PAD_LINK_OK);
+
+  sink2 = gst_element_factory_make ("fakesink", "sink2");
+  tee_src2 = gst_element_get_request_pad (tee, "src_%u");
+  sink2_sink = gst_element_get_static_pad (sink2, "sink");
+  fail_unless_equals_int (gst_pad_link (tee_src2, sink2_sink), GST_PAD_LINK_OK);
+
+  tee_sink = gst_element_get_static_pad (tee, "sink");
+
+  gst_element_set_state (sink1, GST_STATE_PAUSED);
+  gst_element_set_state (sink2, GST_STATE_PAUSED);
+  gst_element_set_state (tee, GST_STATE_PAUSED);
+
+  /* by default, ANY caps should intersect to ANY */
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_unless (gst_caps_is_any (caps));
+  gst_caps_unref (caps);
+
+  /* these don't intersect we should get empty caps */
+  caps = gst_caps_new_empty_simple ("foo/bar");
+  fail_unless (gst_pad_set_caps (sink1_sink, caps));
+  gst_pad_use_fixed_caps (sink1_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_caps_new_empty_simple ("bar/ter");
+  fail_unless (gst_pad_set_caps (sink2_sink, caps));
+  gst_pad_use_fixed_caps (sink2_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_unless (gst_caps_is_empty (caps));
+  gst_caps_unref (caps);
+
+  /* test intersection */
+  caps = gst_caps_new_simple ("foo/bar", "barversion", G_TYPE_INT, 1, NULL);
+  GST_OBJECT_FLAG_UNSET (sink2_sink, GST_PAD_FLAG_FIXED_CAPS);
+  fail_unless (gst_pad_set_caps (sink2_sink, caps));
+  gst_pad_use_fixed_caps (sink2_sink);
+  gst_caps_unref (caps);
+
+  caps = gst_pad_query_caps (tee_sink, NULL);
+  GST_INFO ("got caps: %" GST_PTR_FORMAT, caps);
+  fail_unless (caps != NULL);
+  fail_if (gst_caps_is_empty (caps));
+  {
+    GstStructure *s = gst_caps_get_structure (caps, 0);
+
+    fail_unless_equals_string (gst_structure_get_name (s), "foo/bar");
+    fail_unless (gst_structure_has_field_typed (s, "barversion", G_TYPE_INT));
+  }
+  gst_caps_unref (caps);
+
+  gst_element_set_state (sink1, GST_STATE_NULL);
+  gst_element_set_state (sink2, GST_STATE_NULL);
+  gst_element_set_state (tee, GST_STATE_NULL);
+
+  /* clean up */
+  gst_element_release_request_pad (tee, tee_src1);
+  gst_object_unref (tee_src1);
+  gst_element_release_request_pad (tee, tee_src2);
+  gst_object_unref (tee_src2);
+  gst_object_unref (tee_sink);
+  gst_object_unref (tee);
+  gst_object_unref (sink1_sink);
+  gst_object_unref (sink1);
+  gst_object_unref (sink2_sink);
+  gst_object_unref (sink2);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_greatest_common_divisor)
+{
+  fail_if (gst_util_greatest_common_divisor (1, 1) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, 3) != 1);
+  fail_if (gst_util_greatest_common_divisor (3, 5) != 1);
+  fail_if (gst_util_greatest_common_divisor (-1, 1) != 1);
+  fail_if (gst_util_greatest_common_divisor (-2, 3) != 1);
+  fail_if (gst_util_greatest_common_divisor (-3, 5) != 1);
+  fail_if (gst_util_greatest_common_divisor (-1, -1) != 1);
+  fail_if (gst_util_greatest_common_divisor (-2, -3) != 1);
+  fail_if (gst_util_greatest_common_divisor (-3, -5) != 1);
+  fail_if (gst_util_greatest_common_divisor (1, -1) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, -3) != 1);
+  fail_if (gst_util_greatest_common_divisor (3, -5) != 1);
+  fail_if (gst_util_greatest_common_divisor (2, 2) != 2);
+  fail_if (gst_util_greatest_common_divisor (2, 4) != 2);
+  fail_if (gst_util_greatest_common_divisor (1001, 11) != 11);
+
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_read_macros)
+{
+  guint8 carray[] = "ABCDEFGH"; /* 0x41 ... 0x48 */
+  guint32 uarray[2];
+  guint8 *cpointer;
+
+  memcpy (uarray, carray, 8);
+  cpointer = carray;
+
+  /* 16 bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 1), 0x4243);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 2), 0x4344);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 3), 0x4445);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 4), 0x4546);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 5), 0x4647);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer + 6), 0x4748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 1), 0x4342);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 2), 0x4443);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 3), 0x4544);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 4), 0x4645);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 5), 0x4746);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (cpointer + 6), 0x4847);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 1), 0x4243);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 2), 0x4344);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 3), 0x4445);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 4), 0x4546);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 5), 0x4647);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (carray + 6), 0x4748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 1), 0x4342);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 2), 0x4443);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 3), 0x4544);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 4), 0x4645);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 5), 0x4746);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (carray + 6), 0x4847);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (uarray), 0x4142);
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (uarray + 1), 0x4546);
+
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (uarray), 0x4241);
+  fail_unless_equals_int_hex (GST_READ_UINT16_LE (uarray + 1), 0x4645);
+
+
+  /* 24bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 1), 0x424344);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 2), 0x434445);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 3), 0x444546);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 4), 0x454647);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (cpointer + 5), 0x464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 1), 0x444342);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 2), 0x454443);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 3), 0x464544);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 4), 0x474645);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (cpointer + 5), 0x484746);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 1), 0x424344);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 2), 0x434445);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 3), 0x444546);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 4), 0x454647);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (carray + 5), 0x464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 1), 0x444342);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 2), 0x454443);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 3), 0x464544);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 4), 0x474645);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (carray + 5), 0x484746);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (uarray), 0x414243);
+  fail_unless_equals_int_hex (GST_READ_UINT24_BE (uarray + 1), 0x454647);
+
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (uarray), 0x434241);
+  fail_unless_equals_int_hex (GST_READ_UINT24_LE (uarray + 1), 0x474645);
+
+
+  /* 32bit */
+  /* First try the standard pointer variants */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 1), 0x42434445);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 2), 0x43444546);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 3), 0x44454647);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer + 4), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 1), 0x45444342);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 2), 0x46454443);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 3), 0x47464544);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (cpointer + 4), 0x48474645);
+
+  /* On an array of guint8 */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 1), 0x42434445);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 2), 0x43444546);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 3), 0x44454647);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (carray + 4), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 1), 0x45444342);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 2), 0x46454443);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 3), 0x47464544);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (carray + 4), 0x48474645);
+
+  /* On an array of guint32 */
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (uarray), 0x41424344);
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (uarray + 1), 0x45464748);
+
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (uarray), 0x44434241);
+  fail_unless_equals_int_hex (GST_READ_UINT32_LE (uarray + 1), 0x48474645);
+
+
+  /* 64bit */
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (cpointer),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (cpointer),
+      0x4847464544434241);
+
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (carray),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (carray),
+      0x4847464544434241);
+
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (uarray),
+      0x4142434445464748);
+  fail_unless_equals_int64_hex (GST_READ_UINT64_LE (uarray),
+      0x4847464544434241);
+
+  /* make sure the data argument is not duplicated inside the macro
+   * with possibly unexpected side-effects */
+  cpointer = carray;
+  fail_unless_equals_int (GST_READ_UINT8 (cpointer++), 'A');
+  fail_unless (cpointer == carray + 1);
+
+  cpointer = carray;
+  fail_unless_equals_int_hex (GST_READ_UINT16_BE (cpointer++), 0x4142);
+  fail_unless (cpointer == carray + 1);
+
+  cpointer = carray;
+  fail_unless_equals_int_hex (GST_READ_UINT32_BE (cpointer++), 0x41424344);
+  fail_unless (cpointer == carray + 1);
+
+  cpointer = carray;
+  fail_unless_equals_int64_hex (GST_READ_UINT64_BE (cpointer++),
+      0x4142434445464748);
+  fail_unless (cpointer == carray + 1);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_write_macros)
+{
+  guint8 carray[8];
+  guint8 *cpointer;
+
+  /* make sure the data argument is not duplicated inside the macro
+   * with possibly unexpected side-effects */
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT8 (cpointer++, 'A');
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'A');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT16_BE (cpointer++, 0x4142);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'A');
+  fail_unless_equals_int (carray[1], 'B');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT32_BE (cpointer++, 0x41424344);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'A');
+  fail_unless_equals_int (carray[3], 'D');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT64_BE (cpointer++, 0x4142434445464748);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'A');
+  fail_unless_equals_int (carray[7], 'H');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT16_LE (cpointer++, 0x4142);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'B');
+  fail_unless_equals_int (carray[1], 'A');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT32_LE (cpointer++, 0x41424344);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'D');
+  fail_unless_equals_int (carray[3], 'A');
+
+  memset (carray, 0, sizeof (carray));
+  cpointer = carray;
+  GST_WRITE_UINT64_LE (cpointer++, 0x4142434445464748);
+  fail_unless_equals_pointer (cpointer, carray + 1);
+  fail_unless_equals_int (carray[0], 'H');
+  fail_unless_equals_int (carray[7], 'A');
+}
+
+GST_END_TEST;
+
+static void
+count_request_pad (const GValue * item, gpointer user_data)
+{
+  GstPad *pad = GST_PAD (g_value_get_object (item));
+  guint *count = (guint *) user_data;
+
+  if (GST_PAD_TEMPLATE_PRESENCE (GST_PAD_PAD_TEMPLATE (pad)) == GST_PAD_REQUEST)
+    (*count)++;
+}
+
+static guint
+request_pads (GstElement * element)
+{
+  GstIterator *iter;
+  guint pads = 0;
+
+  iter = gst_element_iterate_pads (element);
+  fail_unless (gst_iterator_foreach (iter, count_request_pad, &pads) ==
+      GST_ITERATOR_DONE);
+  gst_iterator_free (iter);
+
+  return pads;
+}
+
+static GstPadLinkReturn
+refuse_to_link (GstPad * pad, GstObject * parent, GstPad * peer)
+{
+  return GST_PAD_LINK_REFUSED;
+}
+
+typedef struct _GstFakeReqSink GstFakeReqSink;
+typedef struct _GstFakeReqSinkClass GstFakeReqSinkClass;
+
+struct _GstFakeReqSink
+{
+  GstElement element;
+};
+
+struct _GstFakeReqSinkClass
+{
+  GstElementClass parent_class;
+};
+
+G_GNUC_INTERNAL GType gst_fakereqsink_get_type (void);
+
+static GstStaticPadTemplate fakereqsink_sink_template =
+GST_STATIC_PAD_TEMPLATE ("sink_%u",
+    GST_PAD_SINK,
+    GST_PAD_REQUEST,
+    GST_STATIC_CAPS_ANY);
+
+G_DEFINE_TYPE (GstFakeReqSink, gst_fakereqsink, GST_TYPE_ELEMENT);
+
+static GstPad *
+gst_fakereqsink_request_new_pad (GstElement * element, GstPadTemplate * templ,
+    const gchar * name, const GstCaps * caps)
+{
+  GstPad *pad;
+  pad = gst_pad_new_from_static_template (&fakereqsink_sink_template, name);
+  gst_pad_set_link_function (pad, refuse_to_link);
+  gst_element_add_pad (GST_ELEMENT_CAST (element), pad);
+  return pad;
+}
+
+static void
+gst_fakereqsink_release_pad (GstElement * element, GstPad * pad)
+{
+  gst_pad_set_active (pad, FALSE);
+  gst_element_remove_pad (element, pad);
+}
+
+static void
+gst_fakereqsink_class_init (GstFakeReqSinkClass * klass)
+{
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Fake Request Sink", "Sink", "Fake sink with request pads",
+      "Sebastian Rasmussen <sebras@hotmail.com>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&fakereqsink_sink_template));
+
+  gstelement_class->request_new_pad = gst_fakereqsink_request_new_pad;
+  gstelement_class->release_pad = gst_fakereqsink_release_pad;
+}
+
+static void
+gst_fakereqsink_init (GstFakeReqSink * fakereqsink)
+{
+}
+
+static void
+test_link (const gchar * expectation, const gchar * srcname,
+    const gchar * srcpad, const gchar * srcstate, const gchar * sinkname,
+    const gchar * sinkpad, const gchar * sinkstate)
+{
+  GstElement *src, *sink, *othersrc, *othersink;
+  guint src_pads, sink_pads;
+
+  if (g_strcmp0 (srcname, "requestsrc") == 0)
+    src = gst_element_factory_make ("tee", NULL);
+  else if (g_strcmp0 (srcname, "requestsink") == 0)
+    src = gst_element_factory_make ("funnel", NULL);
+  else if (g_strcmp0 (srcname, "staticsrc") == 0)
+    src = gst_element_factory_make ("fakesrc", NULL);
+  else if (g_strcmp0 (srcname, "staticsink") == 0)
+    src = gst_element_factory_make ("fakesink", NULL);
+  else
+    g_assert_not_reached ();
+
+  if (g_strcmp0 (sinkname, "requestsink") == 0)
+    sink = gst_element_factory_make ("funnel", NULL);
+  else if (g_strcmp0 (sinkname, "requestsrc") == 0)
+    sink = gst_element_factory_make ("tee", NULL);
+  else if (g_strcmp0 (sinkname, "staticsink") == 0)
+    sink = gst_element_factory_make ("fakesink", NULL);
+  else if (g_strcmp0 (sinkname, "staticsrc") == 0)
+    sink = gst_element_factory_make ("fakesrc", NULL);
+  else if (g_strcmp0 (sinkname, "fakerequestsink") == 0)
+    sink = gst_element_factory_make ("fakereqsink", NULL);
+  else
+    g_assert_not_reached ();
+
+  othersrc = gst_element_factory_make ("fakesrc", NULL);
+  othersink = gst_element_factory_make ("fakesink", NULL);
+
+  if (g_strcmp0 (srcstate, "linked") == 0)
+    fail_unless (gst_element_link_pads (src, srcpad, othersink, NULL));
+  if (g_strcmp0 (sinkstate, "linked") == 0)
+    fail_unless (gst_element_link_pads (othersrc, NULL, sink, sinkpad));
+  if (g_strcmp0 (srcstate, "unlinkable") == 0) {
+    GstPad *pad = gst_element_get_static_pad (src, srcpad ? srcpad : "src");
+    gst_pad_set_link_function (pad, refuse_to_link);
+    gst_object_unref (pad);
+  }
+  if (g_strcmp0 (sinkstate, "unlinkable") == 0) {
+    GstPad *pad = gst_element_get_static_pad (sink, sinkpad ? sinkpad : "sink");
+    gst_pad_set_link_function (pad, refuse_to_link);
+    gst_object_unref (pad);
+  }
+
+  src_pads = request_pads (src);
+  sink_pads = request_pads (sink);
+  if (g_strcmp0 (expectation, "OK") == 0) {
+    fail_unless (gst_element_link_pads (src, srcpad, sink, sinkpad));
+    if (g_str_has_prefix (srcname, "request")) {
+      fail_unless_equals_int (request_pads (src), src_pads + 1);
+    } else {
+      fail_unless_equals_int (request_pads (src), src_pads);
+    }
+    if (g_str_has_prefix (sinkname, "request")) {
+      fail_unless_equals_int (request_pads (sink), sink_pads + 1);
+    } else {
+      fail_unless_equals_int (request_pads (sink), sink_pads);
+    }
+  } else {
+    fail_if (gst_element_link_pads (src, srcpad, sink, sinkpad));
+    fail_unless_equals_int (request_pads (src), src_pads);
+    fail_unless_equals_int (request_pads (sink), sink_pads);
+  }
+
+  gst_object_unref (othersrc);
+  gst_object_unref (othersink);
+
+  gst_object_unref (src);
+  gst_object_unref (sink);
+}
+
+GST_START_TEST (test_element_link)
+{
+  /* Successful cases */
+
+  gst_element_register (NULL, "fakereqsink", GST_RANK_NONE,
+      gst_fakereqsink_get_type ());
+
+  test_link ("OK", "staticsrc", "src", "", "staticsink", "sink", "");
+  test_link ("OK", "staticsrc", "src", "", "requestsink", "sink_0", "");
+  test_link ("OK", "staticsrc", "src", "", "staticsink", NULL, "");
+  test_link ("OK", "staticsrc", "src", "", "requestsink", NULL, "");
+  test_link ("OK", "requestsrc", "src_0", "", "staticsink", "sink", "");
+  test_link ("OK", "requestsrc", "src_0", "", "requestsink", "sink_0", "");
+  test_link ("OK", "requestsrc", "src_0", "", "staticsink", NULL, "");
+  test_link ("OK", "requestsrc", "src_0", "", "requestsink", NULL, "");
+  test_link ("OK", "staticsrc", NULL, "", "staticsink", "sink", "");
+  test_link ("OK", "staticsrc", NULL, "", "requestsink", "sink_0", "");
+  test_link ("OK", "staticsrc", NULL, "", "staticsink", NULL, "");
+  test_link ("OK", "staticsrc", NULL, "", "requestsink", NULL, "");
+  test_link ("OK", "requestsrc", NULL, "", "staticsink", "sink", "");
+  test_link ("OK", "requestsrc", NULL, "", "requestsink", "sink_0", "");
+  test_link ("OK", "requestsrc", NULL, "", "staticsink", NULL, "");
+  test_link ("OK", "requestsrc", NULL, "", "requestsink", NULL, "");
+
+  /* Failure cases */
+
+  test_link ("NOK", "staticsrc", "missing", "", "staticsink", "sink", "");
+  test_link ("NOK", "staticsink", "sink", "", "staticsink", "sink", "");
+  test_link ("NOK", "staticsrc", "src", "linked", "staticsink", "sink", "");
+  test_link ("NOK", "staticsrc", "src", "", "staticsink", "missing", "");
+  test_link ("NOK", "staticsrc", "src", "", "staticsrc", "src", "");
+  test_link ("NOK", "staticsrc", "src", "", "staticsink", "sink", "linked");
+  test_link ("NOK", "staticsrc", "src", "", "staticsink", "sink", "unlinkable");
+  test_link ("NOK", "staticsrc", NULL, "", "staticsink", "sink", "unlinkable");
+  test_link ("NOK", "staticsrc", NULL, "", "staticsink", NULL, "unlinkable");
+  test_link ("NOK", "requestsrc", "missing", "", "staticsink", "sink", "");
+  test_link ("NOK", "requestsink", "sink_0", "", "staticsink", "sink", "");
+  test_link ("NOK", "requestsrc", "src_0", "linked", "staticsink", "sink", "");
+  test_link ("NOK", "requestsrc", "src_0", "", "staticsink", "missing", "");
+  test_link ("NOK", "requestsrc", "src_0", "", "staticsrc", "src", "");
+  test_link ("NOK", "requestsrc", "src_0", "", "staticsink", "sink", "linked");
+  test_link ("NOK", "requestsrc", "src_0", "", "staticsink", "sink",
+      "unlinkable");
+  test_link ("NOK", "requestsrc", NULL, "", "staticsink", "sink", "unlinkable");
+  test_link ("NOK", "requestsrc", NULL, "", "staticsink", NULL, "unlinkable");
+  test_link ("NOK", "staticsrc", "missing", "", "requestsink", "sink_0", "");
+  test_link ("NOK", "staticsink", "sink", "", "requestsink", "sink_0", "");
+  test_link ("NOK", "staticsrc", "src", "linked", "requestsink", "sink_0", "");
+  test_link ("NOK", "staticsrc", "src", "", "requestsink", "missing", "");
+  test_link ("NOK", "staticsrc", "src", "", "requestsrc", "src_0", "");
+  test_link ("NOK", "staticsrc", "src", "", "requestsink", "sink_0", "linked");
+  test_link ("NOK", "staticsrc", "src", "unlinkable", "requestsink",
+      "sink_0", "");
+  test_link ("NOK", "staticsrc", NULL, "unlinkable", "requestsink",
+      "sink_0", "");
+  test_link ("NOK", "staticsrc", NULL, "unlinkable", "requestsink", NULL, "");
+  test_link ("NOK", "requestsrc", "src_0", "", "staticsink", NULL,
+      "unlinkable");
+  test_link ("NOK", "requestsrc", NULL, "", "fakerequestsink", NULL, "");
+}
+
+GST_END_TEST;
+
+typedef struct _GstTestPadReqSink GstTestPadReqSink;
+typedef struct _GstTestPadReqSinkClass GstTestPadReqSinkClass;
+
+struct _GstTestPadReqSink
+{
+  GstElement element;
+};
+
+struct _GstTestPadReqSinkClass
+{
+  GstElementClass parent_class;
+};
+
+G_GNUC_INTERNAL GType gst_testpadreqsink_get_type (void);
+
+static GstStaticPadTemplate testpadreqsink_video_template =
+GST_STATIC_PAD_TEMPLATE ("video_%u",
+    GST_PAD_SINK,
+    GST_PAD_REQUEST,
+    GST_STATIC_CAPS ("video/x-raw"));
+
+static GstStaticPadTemplate testpadreqsink_audio_template =
+GST_STATIC_PAD_TEMPLATE ("audio_%u",
+    GST_PAD_SINK,
+    GST_PAD_REQUEST,
+    GST_STATIC_CAPS ("audio/x-raw"));
+
+G_DEFINE_TYPE (GstTestPadReqSink, gst_testpadreqsink, GST_TYPE_ELEMENT);
+
+static GstPad *
+gst_testpadreqsink_request_new_pad (GstElement * element,
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
+{
+  GstPad *pad;
+  pad = gst_pad_new_from_template (templ, name);
+  gst_pad_set_active (pad, TRUE);
+  gst_element_add_pad (GST_ELEMENT_CAST (element), pad);
+  return pad;
+}
+
+static void
+gst_testpadreqsink_release_pad (GstElement * element, GstPad * pad)
+{
+  gst_pad_set_active (pad, FALSE);
+  gst_element_remove_pad (element, pad);
+}
+
+static void
+gst_testpadreqsink_class_init (GstTestPadReqSinkClass * klass)
+{
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Test Pad Request Sink", "Sink", "Sink for unit tests with request pads",
+      "Thiago Santos <thiagoss@osg.samsung.com>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&testpadreqsink_video_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&testpadreqsink_audio_template));
+
+  gstelement_class->request_new_pad = gst_testpadreqsink_request_new_pad;
+  gstelement_class->release_pad = gst_testpadreqsink_release_pad;
+}
+
+static void
+gst_testpadreqsink_init (GstTestPadReqSink * testpadeqsink)
+{
+}
+
+static GstCaps *padreqsink_query_caps = NULL;
+
+static gboolean
+testpadreqsink_peer_query (GstPad * pad, GstObject * parent, GstQuery * query)
+{
+  gboolean res;
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_CAPS:
+      if (padreqsink_query_caps) {
+        gst_query_set_caps_result (query, padreqsink_query_caps);
+        res = TRUE;
+        break;
+      }
+    default:
+      res = gst_pad_query_default (pad, parent, query);
+      break;
+  }
+
+  return res;
+}
+
+static void
+check_get_compatible_pad_request (GstElement * element, GstCaps * peer_caps,
+    GstCaps * filter, gboolean should_get_pad, const gchar * pad_tmpl_name)
+{
+  GstPad *peer, *requested;
+  GstPadTemplate *tmpl;
+
+  gst_caps_replace (&padreqsink_query_caps, peer_caps);
+  peer = gst_pad_new ("src", GST_PAD_SRC);
+  gst_pad_set_query_function (peer, testpadreqsink_peer_query);
+  requested = gst_element_get_compatible_pad (element, peer, filter);
+
+  if (should_get_pad) {
+    fail_unless (requested != NULL);
+    if (pad_tmpl_name) {
+      tmpl = gst_pad_get_pad_template (requested);
+      fail_unless (strcmp (GST_PAD_TEMPLATE_NAME_TEMPLATE (tmpl),
+              pad_tmpl_name) == 0);
+      gst_object_unref (tmpl);
+    }
+    gst_element_release_request_pad (element, requested);
+    gst_object_unref (requested);
+  } else {
+    fail_unless (requested == NULL);
+  }
+
+  if (peer_caps)
+    gst_caps_unref (peer_caps);
+  if (filter)
+    gst_caps_unref (filter);
+  gst_object_unref (peer);
+}
+
+GST_START_TEST (test_element_get_compatible_pad_request)
+{
+  GstElement *element;
+
+  gst_element_register (NULL, "testpadreqsink", GST_RANK_NONE,
+      gst_testpadreqsink_get_type ());
+
+  element = gst_element_factory_make ("testpadreqsink", NULL);
+
+  /* Try with a peer pad with any caps and no filter,
+   * returning any pad is ok */
+  check_get_compatible_pad_request (element, NULL, NULL, TRUE, NULL);
+  /* Try with a peer pad with any caps and video as filter */
+  check_get_compatible_pad_request (element, NULL,
+      gst_caps_from_string ("video/x-raw"), TRUE, "video_%u");
+  /* Try with a peer pad with any caps and audio as filter */
+  check_get_compatible_pad_request (element, NULL,
+      gst_caps_from_string ("audio/x-raw"), TRUE, "audio_%u");
+  /* Try with a peer pad with any caps and fake caps as filter */
+  check_get_compatible_pad_request (element, NULL,
+      gst_caps_from_string ("foo/bar"), FALSE, NULL);
+
+  /* Try with a peer pad with video caps and no caps as filter */
+  check_get_compatible_pad_request (element,
+      gst_caps_from_string ("video/x-raw"), NULL, TRUE, "video_%u");
+  /* Try with a peer pad with audio caps and no caps as filter */
+  check_get_compatible_pad_request (element,
+      gst_caps_from_string ("audio/x-raw"), NULL, TRUE, "audio_%u");
+  /* Try with a peer pad with video caps and foo caps as filter */
+  check_get_compatible_pad_request (element,
+      gst_caps_from_string ("video/x-raw"), gst_caps_from_string ("foo/bar"),
+      FALSE, NULL);
+
+  gst_caps_replace (&padreqsink_query_caps, NULL);
+  gst_object_unref (element);
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_utils_suite (void)
 {
@@ -975,9 +1728,17 @@ gst_utils_suite (void)
   tcase_add_test (tc_chain, test_parse_bin_from_description);
 #endif
   tcase_add_test (tc_chain, test_element_found_tags);
+  tcase_add_test (tc_chain, test_element_link);
   tcase_add_test (tc_chain, test_element_unlink);
+  tcase_add_test (tc_chain, test_element_get_compatible_pad_request);
   tcase_add_test (tc_chain, test_set_value_from_string);
   tcase_add_test (tc_chain, test_binary_search);
+
+  tcase_add_test (tc_chain, test_pad_proxy_query_caps_aggregation);
+  tcase_add_test (tc_chain, test_greatest_common_divisor);
+
+  tcase_add_test (tc_chain, test_read_macros);
+  tcase_add_test (tc_chain, test_write_macros);
   return s;
 }
 

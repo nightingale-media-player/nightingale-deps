@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "gstplay-enum.h"
@@ -22,8 +22,8 @@
 #define C_ENUM(v) ((gint) v)
 #define C_FLAGS(v) ((guint) v)
 
-static void
-register_gst_autoplug_select_result (GType * id)
+GType
+gst_autoplug_select_result_get_type (void)
 {
   static const GEnumValue values[] = {
     {C_ENUM (GST_AUTOPLUG_SELECT_TRY), "GST_AUTOPLUG_SELECT_TRY", "try"},
@@ -32,21 +32,21 @@ register_gst_autoplug_select_result (GType * id)
     {C_ENUM (GST_AUTOPLUG_SELECT_SKIP), "GST_AUTOPLUG_SELECT_SKIP", "skip"},
     {0, NULL, NULL}
   };
-  *id = g_enum_register_static ("GstAutoplugSelectResult", values);
-}
+  static volatile GType id = 0;
 
-GType
-gst_autoplug_select_result_get_type (void)
-{
-  static GType id;
-  static GOnce once = G_ONCE_INIT;
+  if (g_once_init_enter ((gsize *) & id)) {
+    GType _id;
 
-  g_once (&once, (GThreadFunc) register_gst_autoplug_select_result, &id);
+    _id = g_enum_register_static ("GstAutoplugSelectResult", values);
+
+    g_once_init_leave ((gsize *) & id, _id);
+  }
+
   return id;
 }
 
-static void
-register_gst_play_flags (GType * id)
+GType
+gst_play_flags_get_type (void)
 {
   static const GFlagsValue values[] = {
     {C_FLAGS (GST_PLAY_FLAG_VIDEO), "Render the video stream", "video"},
@@ -61,17 +61,25 @@ register_gst_play_flags (GType * id)
         "native-video"},
     {C_FLAGS (GST_PLAY_FLAG_DOWNLOAD), "Attempt progressive download buffering",
         "download"},
+    {C_FLAGS (GST_PLAY_FLAG_BUFFERING), "Buffer demuxed/parsed data",
+        "buffering"},
+    {C_FLAGS (GST_PLAY_FLAG_DEINTERLACE), "Deinterlace video if necessary",
+        "deinterlace"},
+    {C_FLAGS (GST_PLAY_FLAG_SOFT_COLORBALANCE), "Use software color balance",
+        "soft-colorbalance"},
+    {C_FLAGS (GST_PLAY_FLAG_FORCE_FILTERS),
+        "Force audio/video filter(s) to be applied", "force-filters"},
     {0, NULL, NULL}
   };
-  *id = g_flags_register_static ("GstPlayFlags", values);
-}
+  static volatile GType id = 0;
 
-GType
-gst_play_flags_get_type (void)
-{
-  static GType id;
-  static GOnce once = G_ONCE_INIT;
+  if (g_once_init_enter ((gsize *) & id)) {
+    GType _id;
 
-  g_once (&once, (GThreadFunc) register_gst_play_flags, &id);
+    _id = g_flags_register_static ("GstPlayFlags", values);
+
+    g_once_init_leave ((gsize *) & id, _id);
+  }
+
   return id;
 }

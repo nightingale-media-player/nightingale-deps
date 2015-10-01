@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,14 +24,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <gst/rtp/gstrtpbuffer.h>
+#include <gst/audio/audio.h>
 #include "gstrtpilbcdepay.h"
-
-/* elementfactory information */
-static const GstElementDetails gst_rtp_ilbc_depay_details =
-GST_ELEMENT_DETAILS ("RTP iLBC depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts iLBC audio from RTP packets (RFC 3952)",
-    "Philippe Kalaf <philippe.kalaf@collabora.co.uk>");
+#include "gstrtputils.h"
 
 /* RtpiLBCDepay signals and args */
 enum
@@ -55,10 +50,8 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-rtp, "
         "media = (string) \"audio\", "
-        "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
-        "clock-rate = (int) 8000, "
-        "encoding-name = (string) \"ILBC\", "
-        "mode = (string) { \"20\", \"30\" }")
+        "clock-rate = (int) 8000, " "encoding-name = (string) \"ILBC\"")
+    /* "mode = (string) { \"20\", \"30\" }" */
     );
 
 static GstStaticPadTemplate gst_rtp_ilbc_depay_src_template =
@@ -73,13 +66,14 @@ static void gst_ilbc_depay_set_property (GObject * object,
 static void gst_ilbc_depay_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-static GstBuffer *gst_rtp_ilbc_depay_process (GstBaseRTPDepayload * depayload,
-    GstBuffer * buf);
-static gboolean gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload,
+static GstBuffer *gst_rtp_ilbc_depay_process (GstRTPBaseDepayload * depayload,
+    GstRTPBuffer * rtp);
+static gboolean gst_rtp_ilbc_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
 
-GST_BOILERPLATE (GstRTPiLBCDepay, gst_rtp_ilbc_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_ilbc_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRTPiLBCDepay, gst_rtp_ilbc_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
 #define GST_TYPE_ILBC_MODE (gst_ilbc_mode_get_type())
 static GType
@@ -99,25 +93,15 @@ gst_ilbc_mode_get_type (void)
 }
 
 static void
-gst_rtp_ilbc_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_ilbc_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_ilbc_depay_sink_template));
-  gst_element_class_set_details (element_class, &gst_rtp_ilbc_depay_details);
-}
-
-static void
 gst_rtp_ilbc_depay_class_init (GstRTPiLBCDepayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
   gobject_class->set_property = gst_ilbc_depay_set_property;
   gobject_class->get_property = gst_ilbc_depay_get_property;
@@ -125,22 +109,32 @@ gst_rtp_ilbc_depay_class_init (GstRTPiLBCDepayClass * klass)
   /* FIXME, mode is in the caps */
   g_object_class_install_property (gobject_class, PROP_MODE,
       g_param_spec_enum ("mode", "Mode", "iLBC frame mode",
-          GST_TYPE_ILBC_MODE, DEFAULT_MODE, G_PARAM_READWRITE));
+          GST_TYPE_ILBC_MODE, DEFAULT_MODE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  gstbasertpdepayload_class->process = gst_rtp_ilbc_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_ilbc_depay_setcaps;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_ilbc_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_ilbc_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP iLBC depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts iLBC audio from RTP packets (RFC 3952)",
+      "Philippe Kalaf <philippe.kalaf@collabora.co.uk>");
+
+  gstrtpbasedepayload_class->process_rtp_packet = gst_rtp_ilbc_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_ilbc_depay_setcaps;
 }
 
 static void
-gst_rtp_ilbc_depay_init (GstRTPiLBCDepay * rtpilbcdepay,
-    GstRTPiLBCDepayClass * klass)
+gst_rtp_ilbc_depay_init (GstRTPiLBCDepay * rtpilbcdepay)
 {
   /* Set default mode */
   rtpilbcdepay->mode = DEFAULT_MODE;
 }
 
 static gboolean
-gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_ilbc_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstRTPiLBCDepay *rtpilbcdepay = GST_RTP_ILBC_DEPAY (depayload);
   GstCaps *srccaps;
@@ -169,7 +163,7 @@ gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 
   srccaps = gst_caps_new_simple ("audio/x-iLBC",
       "mode", G_TYPE_INT, rtpilbcdepay->mode, NULL);
-  ret = gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
+  ret = gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (depayload), srccaps);
 
   GST_DEBUG ("set caps on source: %" GST_PTR_FORMAT " (ret=%d)", srccaps, ret);
   gst_caps_unref (srccaps);
@@ -178,22 +172,27 @@ gst_rtp_ilbc_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 }
 
 static GstBuffer *
-gst_rtp_ilbc_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_ilbc_depay_process (GstRTPBaseDepayload * depayload, GstRTPBuffer * rtp)
 {
   GstBuffer *outbuf;
   gboolean marker;
 
-  marker = gst_rtp_buffer_get_marker (buf);
+  marker = gst_rtp_buffer_get_marker (rtp);
 
-  GST_DEBUG ("process : got %d bytes, mark %d ts %u seqn %d",
-      GST_BUFFER_SIZE (buf), marker,
-      gst_rtp_buffer_get_timestamp (buf), gst_rtp_buffer_get_seq (buf));
+  GST_DEBUG ("process : got %" G_GSIZE_FORMAT " bytes, mark %d ts %u seqn %d",
+      gst_buffer_get_size (rtp->buffer), marker,
+      gst_rtp_buffer_get_timestamp (rtp), gst_rtp_buffer_get_seq (rtp));
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  outbuf = gst_rtp_buffer_get_payload_buffer (rtp);
 
-  if (marker) {
-    /* mark start of talkspurt with DISCONT */
-    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+  if (marker && outbuf) {
+    /* mark start of talkspurt with RESYNC */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_RESYNC);
+  }
+
+  if (outbuf) {
+    gst_rtp_drop_meta (GST_ELEMENT_CAST (depayload), outbuf,
+        g_quark_from_static_string (GST_META_TAG_AUDIO_STR));
   }
 
   return outbuf;
@@ -235,5 +234,5 @@ gboolean
 gst_rtp_ilbc_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpilbcdepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_ILBC_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_ILBC_DEPAY);
 }

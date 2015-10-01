@@ -17,26 +17,27 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <gst/gst.h>
 
 #include "camswclient.h"
 #include "cam.h"
-#include "camutils.h"
 
 #define GST_CAT_DEFAULT cam_debug_cat
 #define UNIX_PATH_MAX 108
 
 CamSwClient *
-cam_sw_client_new ()
+cam_sw_client_new (void)
 {
   CamSwClient *client = g_new0 (CamSwClient, 1);
 
@@ -76,18 +77,22 @@ cam_sw_client_open (CamSwClient * client, const char *sock_path)
   g_return_val_if_fail (client != NULL, FALSE);
   g_return_val_if_fail (client->state == CAM_SW_CLIENT_STATE_CLOSED, FALSE);
   g_return_val_if_fail (sock_path != NULL, FALSE);
+  g_return_val_if_fail (strlen (sock_path) >= sizeof (addr.sun_path), FALSE);
 
   addr.sun_family = AF_UNIX;
-  strncpy (addr.sun_path, sock_path, UNIX_PATH_MAX);
+  strncpy (addr.sun_path, sock_path, sizeof (addr.sun_path));
 
   GST_INFO ("connecting to softcam socket: %s", sock_path);
-  client->sock = socket (PF_UNIX, SOCK_STREAM, 0);
+  if ((client->sock = socket (PF_UNIX, SOCK_STREAM, 0)) < 0) {
+    GST_ERROR ("Failed to create a socket, error: %s", g_strerror (errno));
+    return FALSE;
+  }
   ret =
       connect (client->sock, (struct sockaddr *) &addr,
       sizeof (struct sockaddr_un));
   if (ret != 0) {
     GST_ERROR ("error opening softcam socket %s, error: %s",
-        sock_path, strerror (errno));
+        sock_path, g_strerror (errno));
 
     return FALSE;
   }
@@ -109,7 +114,7 @@ cam_sw_client_close (CamSwClient * client)
 }
 
 static void
-send_ca_pmt (CamSwClient * client, GstStructure * pmt,
+send_ca_pmt (CamSwClient * client, GstMpegtsPMT * pmt,
     guint8 list_management, guint8 cmd_id)
 {
   guint8 *buffer;
@@ -136,7 +141,8 @@ send_ca_pmt (CamSwClient * client, GstStructure * pmt,
   cam_write_length_field (&buffer[3], ca_pmt_size);
 
   if (write (client->sock, buffer, buffer_size) == -1) {
-    GST_WARNING ("write failed when sending pmt with errno: %d", errno);
+    GST_WARNING ("write failed when sending PMT with error: %s (%d)",
+        g_strerror (errno), errno);
   }
 
   g_free (ca_pmt);
@@ -144,7 +150,7 @@ send_ca_pmt (CamSwClient * client, GstStructure * pmt,
 }
 
 void
-cam_sw_client_set_pmt (CamSwClient * client, GstStructure * pmt)
+cam_sw_client_set_pmt (CamSwClient * client, GstMpegtsPMT * pmt)
 {
   g_return_if_fail (client != NULL);
   g_return_if_fail (pmt != NULL);
@@ -154,7 +160,7 @@ cam_sw_client_set_pmt (CamSwClient * client, GstStructure * pmt)
 }
 
 void
-cam_sw_client_update_pmt (CamSwClient * client, GstStructure * pmt)
+cam_sw_client_update_pmt (CamSwClient * client, GstMpegtsPMT * pmt)
 {
   g_return_if_fail (client != NULL);
   g_return_if_fail (pmt != NULL);

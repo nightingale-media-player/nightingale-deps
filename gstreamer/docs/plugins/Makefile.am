@@ -3,7 +3,7 @@ GST_DOC_SCANOBJ = $(top_srcdir)/common/gstdoc-scangobj
 ## Process this file with automake to produce Makefile.in
 
 # The name of the module, e.g. 'glib'.
-#DOC_MODULE=gst-plugins-libs-@GST_MAJORMINOR@
+#DOC_MODULE=gst-plugins-libs-@GST_API_VERSION@
 MODULE=gstreamer
 DOC_MODULE=$(MODULE)-plugins
 
@@ -13,33 +13,17 @@ FORMATS=html
 html: html-build.stamp
 include $(top_srcdir)/common/upload-doc.mak
 
-# generated basefiles
-#basefiles = \
-##		$(DOC_MODULE).types \
-#		$(DOC_MODULE)-sections.txt \
-#		$(DOC_MODULE)-docs.sgml
-
-# ugly hack to make -unused.sgml work
-#unused-build.stamp:
-#	BUILDDIR=`pwd` && \
-#	cd $(srcdir)/tmpl && \
-#	ln -sf gstreamer-libs-unused.sgml \
-#		$$BUILDDIR/tmpl/gstreamer-libs-@GST_MAJORMINOR@-unused.sgml
-#	touch unused-build.stamp
-
-# these rules are added to create parallel docs using GST_MAJORMINOR
-#$(basefiles): gstreamer-libs-@GST_MAJORMINOR@%: gstreamer-libs%
-#	cp $< $@
-
-#CLEANFILES = $(basefiles)
+# Extra environment needed for Core only...
+INSPECT_EXTRA_ENVIRONMENT= \
+    GST_PLUGIN_SCANNER_1_0=$(top_builddir)/libs/gst/helpers/gst-plugin-scanner
 
 # The top-level SGML file. Change it if you want.
 DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 
-# The directory containing the source code. Relative to $(top_srcdir).
+# The directory containing the source code.
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR = $(top_srcdir)/plugins
+DOC_SOURCE_DIR = $(top_srcdir)/plugins/elements
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS=
@@ -48,18 +32,14 @@ SCAN_OPTIONS=
 MKDB_OPTIONS=--sgml-mode
 
 # Extra options to supply to gtkdoc-fixref.
-FIXXREF_OPTIONS=--extra-dir=$(GLIB_PREFIX)/share/gtk-doc/html \
+FIXXREF_OPTIONS=--extra-dir=$(top_builddir)/docs/gst/html \
+	--extra-dir=$(top_builddir)/docs/libs/html \
+	--extra-dir=$(GLIB_PREFIX)/share/gtk-doc/html \
 	--extra-dir=$(datadir)/gtk-doc/html
 
 # Used for dependencies.
-HFILE_GLOB=$(DOC_SOURCE_DIR)/*/*.h
-CFILE_GLOB=$(DOC_SOURCE_DIR)/*/*.c
-
-# this is a wingo addition
-# thomasvs: another nice wingo addition would be an explanation on why
-# this is useful ;)
-
-SCANOBJ_DEPS =
+HFILE_GLOB=$(top_srcdir)/plugins/elements/*.h
+CFILE_GLOB=$(top_srcdir)/plugins/elements/*.c
 
 # Header files to ignore when scanning.
 IGNORE_HFILES =
@@ -75,6 +55,7 @@ IGNORE_CFILES =
 
 EXTRA_HFILES = \
 	$(top_srcdir)/plugins/elements/gstcapsfilter.h \
+	$(top_srcdir)/plugins/elements/gstdownloadbuffer.h \
 	$(top_srcdir)/plugins/elements/gstfakesrc.h \
 	$(top_srcdir)/plugins/elements/gstfakesink.h \
 	$(top_srcdir)/plugins/elements/gstfdsink.h \
@@ -82,10 +63,14 @@ EXTRA_HFILES = \
 	$(top_srcdir)/plugins/elements/gstfilesrc.h \
 	$(top_srcdir)/plugins/elements/gstfilesink.h \
 	$(top_srcdir)/plugins/elements/gstidentity.h \
+	$(top_srcdir)/plugins/elements/gstinputselector.h \
 	$(top_srcdir)/plugins/elements/gstmultiqueue.h \
+	$(top_srcdir)/plugins/elements/gstoutputselector.h \
 	$(top_srcdir)/plugins/elements/gstqueue.h \
+	$(top_srcdir)/plugins/elements/gstqueue2.h \
 	$(top_srcdir)/plugins/elements/gsttypefindelement.h \
-	$(top_srcdir)/plugins/elements/gsttee.h
+	$(top_srcdir)/plugins/elements/gsttee.h \
+	$(top_srcdir)/plugins/elements/gstvalve.h
 
 # Images to copy into HTML directory.
 HTML_IMAGES =
@@ -99,10 +84,7 @@ extra_files =
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
 GTKDOC_CFLAGS = $(GST_OBJ_CFLAGS) -I$(top_builddir) -I$(top_builddir)/libs
-GTKDOC_LIBS = $(SCANOBJ_DEPS) $(GST_OBJ_LIBS)
-
-GTKDOC_CC=$(LIBTOOL) --tag=CC --mode=compile $(CC)
-GTKDOC_LD=$(LIBTOOL) --tag=CC --mode=link $(CC)
+GTKDOC_LIBS = $(GST_OBJ_LIBS)
 
 # If you need to override some of the declarations, place them in this file
 # and uncomment this line.

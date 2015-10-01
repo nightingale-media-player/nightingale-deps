@@ -27,31 +27,31 @@
  */
 
 #include "config.h"
-#include "stdint.h"
+#include "_stdint.h"
 
 #include "d3des.h"
 
 static void scrunch (unsigned char *, unsigned long *);
 static void unscrun (unsigned long *, unsigned char *);
 static void desfunc (unsigned long *, unsigned long *);
-static void cookey (unsigned long *);
+static void cookey (DESContext * ctx, unsigned long *);
 
-static unsigned long KnL[32] = { 0L };
+//static const unsigned long KnL[32] = { 0L };
 
-//static unsigned long KnR[32] = { 0L };
-//static unsigned long Kn3[32] = { 0L };
+//static const unsigned long KnR[32] = { 0L };
+//static const unsigned long Kn3[32] = { 0L };
 /* 
- * static unsigned char Df_Key[24] = {
+ * static const unsigned char Df_Key[24] = {
  * 	0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef,
  * 	0xfe,0xdc,0xba,0x98,0x76,0x54,0x32,0x10,
  * 	0x89,0xab,0xcd,0xef,0x01,0x23,0x45,0x67 };
  */
 
-static uint16_t bytebit[8] = {
+static const uint16_t bytebit[8] = {
   01, 02, 04, 010, 020, 040, 0100, 0200
 };
 
-static unsigned long bigbyte[24] = {
+static const unsigned long bigbyte[24] = {
   0x800000L, 0x400000L, 0x200000L, 0x100000L,
   0x80000L, 0x40000L, 0x20000L, 0x10000L,
   0x8000L, 0x4000L, 0x2000L, 0x1000L,
@@ -62,18 +62,18 @@ static unsigned long bigbyte[24] = {
 
 /* Use the key schedule specified in the Standard (ANSI X3.92-1981). */
 
-static unsigned char pc1[56] = {
+static const unsigned char pc1[56] = {
   56, 48, 40, 32, 24, 16, 8, 0, 57, 49, 41, 33, 25, 17,
   9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35,
   62, 54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21,
   13, 5, 60, 52, 44, 36, 28, 20, 12, 4, 27, 19, 11, 3
 };
 
-static unsigned char totrot[16] = {
+static const unsigned char totrot[16] = {
   1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28
 };
 
-static unsigned char pc2[48] = {
+static const unsigned char pc2[48] = {
   13, 16, 10, 23, 0, 4, 2, 27, 14, 5, 20, 9,
   22, 18, 11, 3, 25, 7, 15, 6, 26, 19, 12, 1,
   40, 51, 30, 36, 46, 54, 29, 39, 50, 44, 32, 47,
@@ -81,10 +81,8 @@ static unsigned char pc2[48] = {
 };
 
 void
-deskey (key, edf)               /* Thanks to James Gillogly & Phil Karn! */
-     unsigned char *key;
-     int32_t edf;
-{
+deskey (DESContext * ctx, unsigned char *key, int32_t edf)
+{                               /* Thanks to James Gillogly & Phil Karn! */
   register int32_t i, j, l, m, n;
   unsigned char pc1m[56], pcr[56];
   unsigned long kn[32];
@@ -122,13 +120,12 @@ deskey (key, edf)               /* Thanks to James Gillogly & Phil Karn! */
         kn[n] |= bigbyte[j];
     }
   }
-  cookey (kn);
+  cookey (ctx, kn);
   return;
 }
 
 static void
-cookey (raw1)
-     register unsigned long *raw1;
+cookey (DESContext * ctx, register unsigned long *raw1)
 {
   register unsigned long *cook, *raw0;
   unsigned long dough[32];
@@ -146,50 +143,45 @@ cookey (raw1)
     *cook |= (*raw1 & 0x0003f000L) >> 4;
     *cook++ |= (*raw1 & 0x0000003fL);
   }
-  usekey (dough);
+  usekey (ctx, dough);
   return;
 }
 
 void
-cpkey (into)
-     register unsigned long *into;
+cpkey (DESContext * ctx, register unsigned long *into)
 {
   register unsigned long *from, *endp;
 
-  from = KnL, endp = &KnL[32];
+  from = ctx->KnL, endp = &ctx->KnL[32];
   while (from < endp)
     *into++ = *from++;
   return;
 }
 
 void
-usekey (from)
-     register unsigned long *from;
+usekey (DESContext * ctx, register unsigned long *from)
 {
   register unsigned long *to, *endp;
 
-  to = KnL, endp = &KnL[32];
+  to = ctx->KnL, endp = &ctx->KnL[32];
   while (to < endp)
     *to++ = *from++;
   return;
 }
 
 void
-des (inblock, outblock)
-     unsigned char *inblock, *outblock;
+des (DESContext * ctx, unsigned char *inblock, unsigned char *outblock)
 {
   unsigned long work[2];
 
   scrunch (inblock, work);
-  desfunc (work, KnL);
+  desfunc (work, ctx->KnL);
   unscrun (work, outblock);
   return;
 }
 
 static void
-scrunch (outof, into)
-     register unsigned char *outof;
-     register unsigned long *into;
+scrunch (register unsigned char *outof, register unsigned long *into)
 {
   *into = (*outof++ & 0xffL) << 24;
   *into |= (*outof++ & 0xffL) << 16;
@@ -203,9 +195,7 @@ scrunch (outof, into)
 }
 
 static void
-unscrun (outof, into)
-     register unsigned long *outof;
-     register unsigned char *into;
+unscrun (register unsigned long *outof, register unsigned char *into)
 {
   *into++ = (*outof >> 24) & 0xffL;
   *into++ = (*outof >> 16) & 0xffL;
@@ -218,7 +208,7 @@ unscrun (outof, into)
   return;
 }
 
-static unsigned long SP1[64] = {
+static const unsigned long SP1[64] = {
   0x01010400L, 0x00000000L, 0x00010000L, 0x01010404L,
   0x01010004L, 0x00010404L, 0x00000004L, 0x00010000L,
   0x00000400L, 0x01010400L, 0x01010404L, 0x00000400L,
@@ -237,7 +227,7 @@ static unsigned long SP1[64] = {
   0x00010004L, 0x00010400L, 0x00000000L, 0x01010004L
 };
 
-static unsigned long SP2[64] = {
+static const unsigned long SP2[64] = {
   0x80108020L, 0x80008000L, 0x00008000L, 0x00108020L,
   0x00100000L, 0x00000020L, 0x80100020L, 0x80008020L,
   0x80000020L, 0x80108020L, 0x80108000L, 0x80000000L,
@@ -256,7 +246,7 @@ static unsigned long SP2[64] = {
   0x80000000L, 0x80100020L, 0x80108020L, 0x00108000L
 };
 
-static unsigned long SP3[64] = {
+static const unsigned long SP3[64] = {
   0x00000208L, 0x08020200L, 0x00000000L, 0x08020008L,
   0x08000200L, 0x00000000L, 0x00020208L, 0x08000200L,
   0x00020008L, 0x08000008L, 0x08000008L, 0x00020000L,
@@ -275,7 +265,7 @@ static unsigned long SP3[64] = {
   0x00020208L, 0x00000008L, 0x08020008L, 0x00020200L
 };
 
-static unsigned long SP4[64] = {
+static const unsigned long SP4[64] = {
   0x00802001L, 0x00002081L, 0x00002081L, 0x00000080L,
   0x00802080L, 0x00800081L, 0x00800001L, 0x00002001L,
   0x00000000L, 0x00802000L, 0x00802000L, 0x00802081L,
@@ -294,7 +284,7 @@ static unsigned long SP4[64] = {
   0x00000080L, 0x00800000L, 0x00002000L, 0x00802080L
 };
 
-static unsigned long SP5[64] = {
+static const unsigned long SP5[64] = {
   0x00000100L, 0x02080100L, 0x02080000L, 0x42000100L,
   0x00080000L, 0x00000100L, 0x40000000L, 0x02080000L,
   0x40080100L, 0x00080000L, 0x02000100L, 0x40080100L,
@@ -313,7 +303,7 @@ static unsigned long SP5[64] = {
   0x00000000L, 0x40080000L, 0x02080100L, 0x40000100L
 };
 
-static unsigned long SP6[64] = {
+static const unsigned long SP6[64] = {
   0x20000010L, 0x20400000L, 0x00004000L, 0x20404010L,
   0x20400000L, 0x00000010L, 0x20404010L, 0x00400000L,
   0x20004000L, 0x00404010L, 0x00400000L, 0x20000010L,
@@ -332,7 +322,7 @@ static unsigned long SP6[64] = {
   0x20404000L, 0x20000000L, 0x00400010L, 0x20004010L
 };
 
-static unsigned long SP7[64] = {
+static const unsigned long SP7[64] = {
   0x00200000L, 0x04200002L, 0x04000802L, 0x00000000L,
   0x00000800L, 0x04000802L, 0x00200802L, 0x04200800L,
   0x04200802L, 0x00200000L, 0x00000000L, 0x04000002L,
@@ -351,7 +341,7 @@ static unsigned long SP7[64] = {
   0x04000002L, 0x04000800L, 0x00000800L, 0x00200002L
 };
 
-static unsigned long SP8[64] = {
+static const unsigned long SP8[64] = {
   0x10001040L, 0x00001000L, 0x00040000L, 0x10041040L,
   0x10000000L, 0x10001040L, 0x00000040L, 0x10000000L,
   0x00040040L, 0x10040000L, 0x10041040L, 0x00041000L,
@@ -371,8 +361,7 @@ static unsigned long SP8[64] = {
 };
 
 static void
-desfunc (block, keys)
-     register unsigned long *block, *keys;
+desfunc (register unsigned long *block, register unsigned long *keys)
 {
   register unsigned long fval, work, right, leftt;
   register int32_t round;

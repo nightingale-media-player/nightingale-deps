@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "gstdshowfakesink.h"
@@ -25,7 +25,7 @@ CDshowFakeSink::CDshowFakeSink ():
 m_hres (S_OK),
 m_callback (NULL),
 m_data (NULL),
-CBaseRenderer (CLSID_DshowFakeSink, _T("DshowFakeSink"), NULL, &m_hres)
+CBaseRenderer (CLSID_DshowFakeSink, TEXT("DshowFakeSink"), NULL, &m_hres)
 {
 }
 
@@ -57,17 +57,17 @@ HRESULT CDshowFakeSink::CheckMediaType (const CMediaType * pmt)
 HRESULT CDshowFakeSink::DoRenderSample (IMediaSample * pMediaSample)
 {
   if (pMediaSample && m_callback) {
-    BYTE *
-        pBuffer = NULL;
-    LONGLONG
-        lStart = 0, lStop = 0;
+    guint8 *pBuffer = NULL;
     pMediaSample->GetPointer (&pBuffer);
-    long
-        size = pMediaSample->GetActualDataLength ();
+
+    guint size = pMediaSample->GetActualDataLength ();
+
+    GstClockTimeDiff lStart = 0;
+    GstClockTimeDiff lStop = 0;
     pMediaSample->GetTime (&lStart, &lStop);
-    lStart *= 100;
-    lStop *= 100;
-    m_callback (pBuffer, size, m_data, lStart, lStop);
+
+    GstClockTime duration = (lStop - lStart) * 100;
+    m_callback (pBuffer, size, m_data, duration);
   }
 
   return S_OK;

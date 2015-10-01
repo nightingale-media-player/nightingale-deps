@@ -1,0 +1,1848 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>vc1parser: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="codecparsers.html" title="Bitstream parsing Library">
+<link rel="prev" href="gst-plugins-bad-libs-mpeg4parser.html" title="mpeg4parser">
+<link rel="next" href="gst-plugins-bad-libs-gstmpegvideometa.html" title="gstmpegvideometa">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-vc1parser.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="codecparsers.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-mpeg4parser.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-gstmpegvideometa.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-vc1parser"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-vc1parser.top_of_page"></a>vc1parser</span></h2>
+<p>vc1parser — Convenience library for parsing vc1 video
+bitstream.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-identify-next-bdu" title="gst_vc1_identify_next_bdu ()">gst_vc1_identify_next_bdu</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-header" title="gst_vc1_parse_sequence_header ()">gst_vc1_parse_sequence_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-layer" title="gst_vc1_parse_sequence_layer ()">gst_vc1_parse_sequence_layer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-header-struct-a" title="gst_vc1_parse_sequence_header_struct_a ()">gst_vc1_parse_sequence_header_struct_a</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-header-struct-b" title="gst_vc1_parse_sequence_header_struct_b ()">gst_vc1_parse_sequence_header_struct_b</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-header-struct-c" title="gst_vc1_parse_sequence_header_struct_c ()">gst_vc1_parse_sequence_header_struct_c</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-entry-point-header" title="gst_vc1_parse_entry_point_header ()">gst_vc1_parse_entry_point_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-frame-header" title="gst_vc1_parse_frame_header ()">gst_vc1_parse_frame_header</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GstVC1BitPlanes</span> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-bitplanes-new" title="gst_vc1_bitplanes_new ()">gst_vc1_bitplanes_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-bitplanes-free" title="gst_vc1_bitplanes_free ()">gst_vc1_bitplanes_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-bitplanes-free-1" title="gst_vc1_bitplanes_free_1 ()">gst_vc1_bitplanes_free_1</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-bitplanes-ensure-size" title="gst_vc1_bitplanes_ensure_size ()">gst_vc1_bitplanes_ensure_size</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#MAX-HRD-NUM-LEAKY-BUCKETS:CAPS" title="MAX_HRD_NUM_LEAKY_BUCKETS">MAX_HRD_NUM_LEAKY_BUCKETS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GST-VC1-BFRACTION-BASIS:CAPS" title="GST_VC1_BFRACTION_BASIS">GST_VC1_BFRACTION_BASIS</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1StartCode" title="enum GstVC1StartCode">GstVC1StartCode</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1Profile" title="enum GstVC1Profile">GstVC1Profile</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult">GstVC1ParserResult</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1PictureType" title="enum GstVC1PictureType">GstVC1PictureType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1Level" title="enum GstVC1Level">GstVC1Level</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1QuantizerSpec" title="enum GstVC1QuantizerSpec">GstVC1QuantizerSpec</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1DQProfile" title="enum GstVC1DQProfile">GstVC1DQProfile</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1Condover" title="enum GstVC1Condover">GstVC1Condover</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1MvMode" title="enum GstVC1MvMode">GstVC1MvMode</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr">GstVC1SeqHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1AdvancedSeqHdr" title="struct GstVC1AdvancedSeqHdr">GstVC1AdvancedSeqHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqLayer" title="struct GstVC1SeqLayer">GstVC1SeqLayer</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructA" title="struct GstVC1SeqStructA">GstVC1SeqStructA</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructB" title="struct GstVC1SeqStructB">GstVC1SeqStructB</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructC" title="struct GstVC1SeqStructC">GstVC1SeqStructC</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1HrdParam" title="struct GstVC1HrdParam">GstVC1HrdParam</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1EntryPointHdr" title="struct GstVC1EntryPointHdr">GstVC1EntryPointHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1FrameHdr" title="struct GstVC1FrameHdr">GstVC1FrameHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1PicAdvanced" title="struct GstVC1PicAdvanced">GstVC1PicAdvanced</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1PicSimpleMain" title="struct GstVC1PicSimpleMain">GstVC1PicSimpleMain</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1Picture" title="GstVC1Picture">GstVC1Picture</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1VopDquant" title="struct GstVC1VopDquant">GstVC1VopDquant</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1BDU" title="struct GstVC1BDU">GstVC1BDU</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/codecparsers/gstvc1parser.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.description"></a><h2>Description</h2>
+<p>For more details about the structures, look at the
+smpte specifications (S421m-2006.pdf).</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-vc1-identify-next-bdu"></a><h3>gst_vc1_identify_next_bdu ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_identify_next_bdu (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                           <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1BDU" title="struct GstVC1BDU"><span class="type">GstVC1BDU</span></a> *bdu</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+ and fills <em class="parameter"><code>bdu</code></em>
+ fields</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bdu</p></td>
+<td class="parameter_description"><p> The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1BDU" title="struct GstVC1BDU"><span class="type">GstVC1BDU</span></a> where to store parsed bdu headers. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.2.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-sequence-header"></a><h3>gst_vc1_parse_sequence_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_sequence_header (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                               <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> *seqhdr</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>seqhdr</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>seqhdr</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.3.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-sequence-layer"></a><h3>gst_vc1_parse_sequence_layer ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_sequence_layer (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                              <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                              <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqLayer" title="struct GstVC1SeqLayer"><span class="type">GstVC1SeqLayer</span></a> *seqlayer</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>seqlayer</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>seqlayer</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqLayer" title="struct GstVC1SeqLayer"><span class="type">GstVC1SeqLayer</span></a> to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.4.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-sequence-header-struct-a"></a><h3>gst_vc1_parse_sequence_header_struct_a ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_sequence_header_struct_a
+                               (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                                <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructA" title="struct GstVC1SeqStructA"><span class="type">GstVC1SeqStructA</span></a> *structa</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>structa</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>structa</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructA" title="struct GstVC1SeqStructA"><span class="type">GstVC1SeqStructA</span></a> to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.5.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-sequence-header-struct-b"></a><h3>gst_vc1_parse_sequence_header_struct_b ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_sequence_header_struct_b
+                               (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                                <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructB" title="struct GstVC1SeqStructB"><span class="type">GstVC1SeqStructB</span></a> *structb</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>structb</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>structb</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructB" title="struct GstVC1SeqStructB"><span class="type">GstVC1SeqStructB</span></a> to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.6.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-sequence-header-struct-c"></a><h3>gst_vc1_parse_sequence_header_struct_c ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_sequence_header_struct_c
+                               (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                                <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructC" title="struct GstVC1SeqStructC"><span class="type">GstVC1SeqStructC</span></a> *structc</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>structc</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>structc</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqStructC" title="struct GstVC1SeqStructC"><span class="type">GstVC1SeqStructC</span></a> to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.7.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-entry-point-header"></a><h3>gst_vc1_parse_entry_point_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_entry_point_header (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                                  <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1EntryPointHdr" title="struct GstVC1EntryPointHdr"><span class="type">GstVC1EntryPointHdr</span></a> *entrypoint</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> *seqhdr</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and sets <em class="parameter"><code>entrypoint</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>entrypoint</p></td>
+<td class="parameter_description"><p> The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1EntryPointHdr" title="struct GstVC1EntryPointHdr"><span class="type">GstVC1EntryPointHdr</span></a> to set. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>seqhdr</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> currently being parsed</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.8.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1EntryPointHdr" title="struct GstVC1EntryPointHdr"><span class="type">GstVC1EntryPointHdr</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-parse-frame-header"></a><h3>gst_vc1_parse_frame_header ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="returnvalue">GstVC1ParserResult</span></a>
+gst_vc1_parse_frame_header (<em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                            <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                            <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1FrameHdr" title="struct GstVC1FrameHdr"><span class="type">GstVC1FrameHdr</span></a> *framehdr</code></em>,
+                            <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> *seqhdr</code></em>,
+                            <em class="parameter"><code><span class="type">GstVC1BitPlanes</span> *bitplanes</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills <em class="parameter"><code>entrypoint</code></em>
+ fields.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>framehdr</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1FrameHdr" title="struct GstVC1FrameHdr"><span class="type">GstVC1FrameHdr</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>seqhdr</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> currently being parsed</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bitplanes</p></td>
+<td class="parameter_description"><p>The <span class="type">GstVC1BitPlanes</span> to store bitplanes in or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.9.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1ParserResult" title="enum GstVC1ParserResult"><span class="type">GstVC1ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-bitplanes-new"></a><h3>gst_vc1_bitplanes_new ()</h3>
+<pre class="programlisting"><span class="returnvalue">GstVC1BitPlanes</span> *
+gst_vc1_bitplanes_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Creates a new <span class="type">GstVC1BitPlanes</span>. It should be freed with
+<a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-bitplanes-free" title="gst_vc1_bitplanes_free ()"><code class="function">gst_vc1_bitplanes_free()</code></a> after use.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.10.5"></a><h4>Returns</h4>
+<p> a new <span class="type">GstVC1BitPlanes</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-bitplanes-free"></a><h3>gst_vc1_bitplanes_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_vc1_bitplanes_free (<em class="parameter"><code><span class="type">GstVC1BitPlanes</span> *bitplanes</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-bitplanes-free-1"></a><h3>gst_vc1_bitplanes_free_1 ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_vc1_bitplanes_free_1 (<em class="parameter"><code><span class="type">GstVC1BitPlanes</span> *bitplanes</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-vc1-bitplanes-ensure-size"></a><h3>gst_vc1_bitplanes_ensure_size ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_vc1_bitplanes_ensure_size (<em class="parameter"><code><span class="type">GstVC1BitPlanes</span> *bitplanes</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> *seqhdr</code></em>);</pre>
+<p>Fills the <em class="parameter"><code>bitplanes</code></em>
+ structure from <em class="parameter"><code>seqhdr</code></em>
+, this function
+should be called after <a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-sequence-header" title="gst_vc1_parse_sequence_header ()"><span class="type">gst_vc1_parse_sequence_header</span></a> if
+in simple or main mode, or after <a class="link" href="gst-plugins-bad-libs-vc1parser.html#gst-vc1-parse-entry-point-header" title="gst_vc1_parse_entry_point_header ()"><span class="type">gst_vc1_parse_entry_point_header</span></a>
+if in advanced mode.</p>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>bitplanes</p></td>
+<td class="parameter_description"><p>The <span class="type">GstVC1BitPlanes</span> to reset</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>seqhdr</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-vc1parser.html#GstVC1SeqHdr" title="struct GstVC1SeqHdr"><span class="type">GstVC1SeqHdr</span></a> from which to set <em class="parameter"><code>bitplanes</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.7.7.13.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if everything went fine, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwize</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-vc1parser.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="MAX-HRD-NUM-LEAKY-BUCKETS:CAPS"></a><h3>MAX_HRD_NUM_LEAKY_BUCKETS</h3>
+<pre class="programlisting">#define MAX_HRD_NUM_LEAKY_BUCKETS 31
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VC1-BFRACTION-BASIS:CAPS"></a><h3>GST_VC1_BFRACTION_BASIS</h3>
+<pre class="programlisting">#define GST_VC1_BFRACTION_BASIS 840
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1StartCode"></a><h3>enum GstVC1StartCode</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.4.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-END-OF-SEQ:CAPS"></a>GST_VC1_END_OF_SEQ</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-SLICE:CAPS"></a>GST_VC1_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-FIELD:CAPS"></a>GST_VC1_FIELD</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-FRAME:CAPS"></a>GST_VC1_FRAME</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-ENTRYPOINT:CAPS"></a>GST_VC1_ENTRYPOINT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-SEQUENCE:CAPS"></a>GST_VC1_SEQUENCE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-SLICE-USER:CAPS"></a>GST_VC1_SLICE_USER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-FIELD-USER:CAPS"></a>GST_VC1_FIELD_USER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-FRAME-USER:CAPS"></a>GST_VC1_FRAME_USER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-ENTRY-POINT-USER:CAPS"></a>GST_VC1_ENTRY_POINT_USER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-SEQUENCE-USER:CAPS"></a>GST_VC1_SEQUENCE_USER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1Profile"></a><h3>enum GstVC1Profile</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.5.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PROFILE-SIMPLE:CAPS"></a>GST_VC1_PROFILE_SIMPLE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PROFILE-MAIN:CAPS"></a>GST_VC1_PROFILE_MAIN</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PROFILE-RESERVED:CAPS"></a>GST_VC1_PROFILE_RESERVED</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PROFILE-ADVANCED:CAPS"></a>GST_VC1_PROFILE_ADVANCED</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1ParserResult"></a><h3>enum GstVC1ParserResult</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.6.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PARSER-OK:CAPS"></a>GST_VC1_PARSER_OK</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PARSER-BROKEN-DATA:CAPS"></a>GST_VC1_PARSER_BROKEN_DATA</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PARSER-NO-BDU:CAPS"></a>GST_VC1_PARSER_NO_BDU</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PARSER-NO-BDU-END:CAPS"></a>GST_VC1_PARSER_NO_BDU_END</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PARSER-ERROR:CAPS"></a>GST_VC1_PARSER_ERROR</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1PictureType"></a><h3>enum GstVC1PictureType</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.7.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PICTURE-TYPE-P:CAPS"></a>GST_VC1_PICTURE_TYPE_P</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PICTURE-TYPE-B:CAPS"></a>GST_VC1_PICTURE_TYPE_B</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PICTURE-TYPE-I:CAPS"></a>GST_VC1_PICTURE_TYPE_I</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PICTURE-TYPE-BI:CAPS"></a>GST_VC1_PICTURE_TYPE_BI</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-PICTURE-TYPE-SKIPPED:CAPS"></a>GST_VC1_PICTURE_TYPE_SKIPPED</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1Level"></a><h3>enum GstVC1Level</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.8.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-LOW:CAPS"></a>GST_VC1_LEVEL_LOW</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-MEDIUM:CAPS"></a>GST_VC1_LEVEL_MEDIUM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-HIGH:CAPS"></a>GST_VC1_LEVEL_HIGH</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-L0:CAPS"></a>GST_VC1_LEVEL_L0</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-L1:CAPS"></a>GST_VC1_LEVEL_L1</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-L2:CAPS"></a>GST_VC1_LEVEL_L2</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-L3:CAPS"></a>GST_VC1_LEVEL_L3</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-L4:CAPS"></a>GST_VC1_LEVEL_L4</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-LEVEL-UNKNOWN:CAPS"></a>GST_VC1_LEVEL_UNKNOWN</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1QuantizerSpec"></a><h3>enum GstVC1QuantizerSpec</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.9.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-QUANTIZER-IMPLICITLY:CAPS"></a>GST_VC1_QUANTIZER_IMPLICITLY</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-QUANTIZER-EXPLICITLY:CAPS"></a>GST_VC1_QUANTIZER_EXPLICITLY</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-QUANTIZER-NON-UNIFORM:CAPS"></a>GST_VC1_QUANTIZER_NON_UNIFORM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-QUANTIZER-UNIFORM:CAPS"></a>GST_VC1_QUANTIZER_UNIFORM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1DQProfile"></a><h3>enum GstVC1DQProfile</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.10.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-DQPROFILE-FOUR-EDGES:CAPS"></a>GST_VC1_DQPROFILE_FOUR_EDGES</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-DQPROFILE-DOUBLE-EDGES:CAPS"></a>GST_VC1_DQPROFILE_DOUBLE_EDGES</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-DQPROFILE-SINGLE-EDGE:CAPS"></a>GST_VC1_DQPROFILE_SINGLE_EDGE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-DQPROFILE-ALL-MBS:CAPS"></a>GST_VC1_DQPROFILE_ALL_MBS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1Condover"></a><h3>enum GstVC1Condover</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.11.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-CONDOVER-NONE:CAPS"></a>GST_VC1_CONDOVER_NONE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-CONDOVER-ALL:CAPS"></a>GST_VC1_CONDOVER_ALL</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-CONDOVER-SELECT:CAPS"></a>GST_VC1_CONDOVER_SELECT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1MvMode"></a><h3>enum GstVC1MvMode</h3>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.12.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-MVMODE-1MV-HPEL-BILINEAR:CAPS"></a>GST_VC1_MVMODE_1MV_HPEL_BILINEAR</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-MVMODE-1MV:CAPS"></a>GST_VC1_MVMODE_1MV</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-MVMODE-1MV-HPEL:CAPS"></a>GST_VC1_MVMODE_1MV_HPEL</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-MVMODE-MIXED-MV:CAPS"></a>GST_VC1_MVMODE_MIXED_MV</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VC1-MVMODE-INTENSITY-COMP:CAPS"></a>GST_VC1_MVMODE_INTENSITY_COMP</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1SeqHdr"></a><h3>struct GstVC1SeqHdr</h3>
+<pre class="programlisting">struct GstVC1SeqHdr {
+  GstVC1Profile profile;
+
+  GstVC1SeqStructC struct_c;
+
+  /*  calculated */
+  guint mb_height;
+  guint mb_width;
+  guint mb_stride;
+
+  GstVC1AdvancedSeqHdr   advanced;
+};
+</pre>
+<p>Structure for sequence headers in any profile.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1AdvancedSeqHdr"></a><h3>struct GstVC1AdvancedSeqHdr</h3>
+<pre class="programlisting">struct GstVC1AdvancedSeqHdr {
+  GstVC1Level  level;
+
+  guint8  frmrtq_postproc;
+  guint8  bitrtq_postproc;
+  guint8  postprocflag;
+  guint16 max_coded_width;
+  guint16 max_coded_height;
+  guint8  pulldown;
+  guint8  interlace;
+  guint8  tfcntrflag;
+  guint8  finterpflag;
+  guint8  psf;
+  guint8  display_ext;
+  guint16 disp_horiz_size;
+  guint16 disp_vert_size;
+  guint8  aspect_ratio_flag;
+  guint8  aspect_ratio;
+  guint8  aspect_horiz_size;
+  guint8  aspect_vert_size;
+  guint8  framerate_flag;
+  guint8  framerateind;
+  guint8  frameratenr;
+  guint8  frameratedr;
+  guint16 framerateexp;
+  guint8  color_format_flag;
+  guint8  color_prim;
+  guint8  transfer_char;
+  guint8  matrix_coef;
+  guint8  hrd_param_flag;
+  guint8  colordiff_format;
+
+  GstVC1HrdParam hrd_param;
+
+  /* computed */
+  guint framerate; /* Around in fps, 0 if unknown*/
+  guint bitrate;   /* Around in kpbs, 0 if unknown*/
+  guint par_n;
+  guint par_d;
+  guint fps_n;
+  guint fps_d;
+
+  /* The last parsed entry point */
+  GstVC1EntryPointHdr entrypoint;
+};
+</pre>
+<p>Structure for the advanced profile sequence headers specific parameters.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1SeqLayer"></a><h3>struct GstVC1SeqLayer</h3>
+<pre class="programlisting">struct GstVC1SeqLayer {
+  guint32 numframes;
+
+  GstVC1SeqStructA struct_a;
+  GstVC1SeqStructB struct_b;
+  GstVC1SeqStructC struct_c;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1SeqStructA"></a><h3>struct GstVC1SeqStructA</h3>
+<pre class="programlisting">struct GstVC1SeqStructA {
+  guint32 vert_size;
+  guint32 horiz_size;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1SeqStructB"></a><h3>struct GstVC1SeqStructB</h3>
+<pre class="programlisting">struct GstVC1SeqStructB {
+  GstVC1Level  level;
+
+  guint8 cbr;
+  guint32 framerate;
+
+  /* In simple and main profiles only */
+  guint32 hrd_buffer;
+  guint32 hrd_rate;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1SeqStructC"></a><h3>struct GstVC1SeqStructC</h3>
+<pre class="programlisting">struct GstVC1SeqStructC {
+  GstVC1Profile profile;
+
+  /* Only in simple and main profiles */
+  guint8 frmrtq_postproc;
+  guint8 bitrtq_postproc;
+  guint8 res_sprite;
+  guint8 loop_filter;
+  guint8 multires;
+  guint8 fastuvmc;
+  guint8 extended_mv;
+  guint8 dquant;
+  guint8 vstransform;
+  guint8 overlap;
+  guint8 syncmarker;
+  guint8 rangered;
+  guint8 maxbframes;
+  guint8 quantizer;
+  guint8 finterpflag;
+
+  /* Computed */
+  guint framerate; /* Around in fps, 0 if unknown*/
+  guint bitrate;   /* Around in kpbs, 0 if unknown*/
+
+  /* This should be filled by user if previously known */
+  guint16 coded_width;
+  /* This should be filled by user if previously known */
+  guint16 coded_height;
+
+  /* Wmvp specific */
+  guint8 wmvp;          /* Specify if the stream is wmp or not */
+  /* In the wmvp case, the framerate is not computed but in the bistream */
+  guint8 slice_code;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1HrdParam"></a><h3>struct GstVC1HrdParam</h3>
+<pre class="programlisting">struct GstVC1HrdParam {
+  guint8 hrd_num_leaky_buckets;
+  guint8 bit_rate_exponent;
+  guint8 buffer_size_exponent;
+  guint16 hrd_rate[MAX_HRD_NUM_LEAKY_BUCKETS];
+  guint16 hrd_buffer[MAX_HRD_NUM_LEAKY_BUCKETS];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1EntryPointHdr"></a><h3>struct GstVC1EntryPointHdr</h3>
+<pre class="programlisting">struct GstVC1EntryPointHdr {
+  guint8 broken_link;
+  guint8 closed_entry;
+  guint8 panscan_flag;
+  guint8 refdist_flag;
+  guint8 loopfilter;
+  guint8 fastuvmc;
+  guint8 extended_mv;
+  guint8 dquant;
+  guint8 vstransform;
+  guint8 overlap;
+  guint8 quantizer;
+  guint8 coded_size_flag;
+  guint16 coded_width;
+  guint16 coded_height;
+  guint8 extended_dmv;
+  guint8 range_mapy_flag;
+  guint8 range_mapy;
+  guint8 range_mapuv_flag;
+  guint8 range_mapuv;
+
+  guint8 hrd_full[MAX_HRD_NUM_LEAKY_BUCKETS];
+};
+</pre>
+<p>Structure for entrypoint header, this will be used only in advanced profiles</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1FrameHdr"></a><h3>struct GstVC1FrameHdr</h3>
+<pre class="programlisting">struct GstVC1FrameHdr {
+  /* common fields */
+  GstVC1PictureType ptype;
+  guint8 interpfrm;
+  guint8 halfqp;
+  guint8 transacfrm;
+  guint8 transdctab;
+  guint8 pqindex;
+  guint8 pquantizer;
+
+  /* Computed */
+  guint8 pquant;
+
+  /* Convenience fields */
+  guint8 profile;
+  guint8 dquant;
+
+  /*  If dquant */
+  GstVC1VopDquant vopdquant;
+
+  union {
+    GstVC1PicSimpleMain simple;
+    GstVC1PicAdvanced advanced;
+  } pic;
+
+  /* Size of the picture layer in bits */
+  guint header_size;
+};
+</pre>
+<p>Structure that represent picture in any profile or mode.
+You should look at <em class="parameter"><code>ptype</code></em>
+ and <em class="parameter"><code>profile</code></em>
+ to know what is currently
+in use.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1PicAdvanced"></a><h3>struct GstVC1PicAdvanced</h3>
+<pre class="programlisting">struct GstVC1PicAdvanced {
+  GstVC1FrameCodingMode fcm;
+  guint8  tfcntr;
+
+  guint8  rptfrm;
+  guint8  tff;
+  guint8  rff;
+  guint8  ps_present;
+  guint32 ps_hoffset;
+  guint32 ps_voffset;
+  guint16 ps_width;
+  guint16 ps_height;
+  guint8  rndctrl;
+  guint8  uvsamp;
+  guint8  postproc;
+
+  /*  B and P picture specific */
+  guint8  mvrange;
+  guint8  mvmode;
+  guint8  mvtab;
+  guint8  cbptab;
+  guint8  ttmbf;
+  guint8  ttfrm;
+
+  /* B and BI picture only
+   * Should be divided by #GST_VC1_BFRACTION_BASIS
+   * to get the real value. */
+  guint16 bfraction;
+
+  /* ppic */
+  guint8  mvmode2;
+  guint8  lumscale;
+  guint8  lumshift;
+
+  /* bipic */
+  guint8  bf;
+  guint8  condover;
+  guint8  transacfrm2;
+
+  /* Biplane value, those fields only mention the fact
+   * that the bitplane is in raw mode or not */
+  guint8  acpred;
+  guint8  overflags;
+  guint8  mvtypemb;
+  guint8  skipmb;
+  guint8  directmb;
+  guint8  forwardmb; /* B pic interlace field only */
+
+  /* For interlaced pictures only */
+  guint8  fieldtx;
+
+  /* P and B pictures */
+  guint8  intcomp;
+  guint8  dmvrange;
+  guint8  mbmodetab;
+  guint8  imvtab;
+  guint8  icbptab;
+  guint8  mvbptab2;
+  guint8  mvbptab4; /* If 4mvswitch in ppic */
+
+  /*  P picture */
+  guint8  mvswitch4;
+
+  /* For interlaced fields only */
+  guint16 refdist;
+  guint8 fptype; /* Raw value */
+
+  /* P pic */
+  guint8  numref;
+  guint8  reffield;
+  guint8  lumscale2;
+  guint8  lumshift2;
+  guint8  intcompfield;
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.22.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">GstVC1FrameCodingMode</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.fcm"></a>fcm</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.tfcntr"></a>tfcntr</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.rptfrm"></a>rptfrm</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.tff"></a>tff</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.rff"></a>rff</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ps-present"></a>ps_present</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ps-hoffset"></a>ps_hoffset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ps-voffset"></a>ps_voffset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ps-width"></a>ps_width</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ps-height"></a>ps_height</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.rndctrl"></a>rndctrl</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.uvsamp"></a>uvsamp</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.postproc"></a>postproc</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvrange"></a>mvrange</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvmode"></a>mvmode</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvtab"></a>mvtab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.cbptab"></a>cbptab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ttmbf"></a>ttmbf</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.ttfrm"></a>ttfrm</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.bfraction"></a>bfraction</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvmode2"></a>mvmode2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.lumscale"></a>lumscale</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.lumshift"></a>lumshift</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.bf"></a>bf</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.condover"></a>condover</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.transacfrm2"></a>transacfrm2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.acpred"></a>acpred</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.overflags"></a>overflags</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvtypemb"></a>mvtypemb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.skipmb"></a>skipmb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.directmb"></a>directmb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.forwardmb"></a>forwardmb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.fieldtx"></a>fieldtx</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.intcomp"></a>intcomp</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.dmvrange"></a>dmvrange</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mbmodetab"></a>mbmodetab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.imvtab"></a>imvtab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.icbptab"></a>icbptab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvbptab2"></a>mvbptab2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvbptab4"></a>mvbptab4</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.mvswitch4"></a>mvswitch4</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.refdist"></a>refdist</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.fptype"></a>fptype</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.numref"></a>numref</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.reffield"></a>reffield</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.lumscale2"></a>lumscale2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.lumshift2"></a>lumshift2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicAdvanced.intcompfield"></a>intcompfield</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1PicSimpleMain"></a><h3>struct GstVC1PicSimpleMain</h3>
+<pre class="programlisting">struct GstVC1PicSimpleMain {
+  guint8 frmcnt;
+  guint8 mvrange;
+  guint8 rangeredfrm;
+
+  /* I and P pic simple and main profiles only */
+  guint8 respic;
+
+  /* I and BI pic simple and main profiles only */
+  guint8 transacfrm2;
+  guint8 bf;
+
+  /* B and P pic simple and main profiles only */
+  guint8 mvmode;
+  guint8 mvtab;
+  guint8 ttmbf;
+
+  /* P pic simple and main profiles only */
+  guint8 mvmode2;
+  guint8 lumscale;
+  guint8 lumshift;
+
+  guint8 cbptab;
+  guint8 ttfrm;
+
+  /* B and BI picture only
+   * Should be divided by #GST_VC1_BFRACTION_BASIS
+   * to get the real value. */
+  guint16 bfraction;
+
+  /* Biplane value, those fields only mention the fact
+   * that the bitplane is in raw mode or not */
+  guint8 mvtypemb;
+  guint8 skipmb;
+  guint8 directmb; /* B pic main profile only */
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.4.7.8.23.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.frmcnt"></a>frmcnt</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.mvrange"></a>mvrange</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.rangeredfrm"></a>rangeredfrm</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.respic"></a>respic</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.transacfrm2"></a>transacfrm2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.bf"></a>bf</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.mvmode"></a>mvmode</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.mvtab"></a>mvtab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.ttmbf"></a>ttmbf</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.mvmode2"></a>mvmode2</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.lumscale"></a>lumscale</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.lumshift"></a>lumshift</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.cbptab"></a>cbptab</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.ttfrm"></a>ttfrm</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.bfraction"></a>bfraction</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.mvtypemb"></a>mvtypemb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.skipmb"></a>skipmb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstVC1PicSimpleMain.directmb"></a>directmb</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1Picture"></a><h3>GstVC1Picture</h3>
+<pre class="programlisting">typedef struct _GstVC1Picture GstVC1Picture;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1VopDquant"></a><h3>struct GstVC1VopDquant</h3>
+<pre class="programlisting">struct GstVC1VopDquant {
+  guint8 pqdiff;
+  guint8 abspq;
+
+  /* Computed */
+  guint8 altpquant;
+
+  /*  if dqant != 2*/
+  guint8 dquantfrm;
+  guint8 dqprofile;
+
+  /* Boundary edge selection. This represents DQSBEDGE
+   * if dqprofile == GST_VC1_DQPROFILE_SINGLE_EDGE or
+   * DQDBEDGE if dqprofile == GST_VC1_DQPROFILE_DOUBLE_EDGE */
+  guint8 dqbedge;
+
+  /* FIXME: remove */
+  guint8 unused;
+
+  /* if dqprofile == GST_VC1_DQPROFILE_ALL_MBS */
+  guint8 dqbilevel;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVC1BDU"></a><h3>struct GstVC1BDU</h3>
+<pre class="programlisting">struct GstVC1BDU {
+  GstVC1StartCode type;
+  guint size;
+  guint sc_offset;
+  guint offset;
+  guint8 * data;
+};
+</pre>
+<p>Structure that represents a Bitstream Data Unit.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

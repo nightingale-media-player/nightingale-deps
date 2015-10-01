@@ -14,15 +14,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef __GST_CLOCK_OVERLAY_H__
 #define __GST_CLOCK_OVERLAY_H__
 
-#include "gsttextoverlay.h"
+#include "gstbasetextoverlay.h"
 
 G_BEGIN_DECLS
 
@@ -46,15 +46,34 @@ typedef struct _GstClockOverlayClass GstClockOverlayClass;
  * Opaque clockoverlay data structure.
  */
 struct _GstClockOverlay {
-  GstTextOverlay textoverlay;
-	gchar         *format; /* as in strftime () */
+  GstBaseTextOverlay textoverlay;
+  gchar         *format; /* as in strftime () */
+  gchar         *text;
 };
 
 struct _GstClockOverlayClass {
-  GstTextOverlayClass parent_class;
+  GstBaseTextOverlayClass parent_class;
 };
 
 GType gst_clock_overlay_get_type (void);
+
+
+/* This is a hack hat allows us to use nonliterals for strftime without
+ * triggering a warning from -Wformat-nonliteral. We need to allow this
+ * because we export the format string as a property of the element.
+ * For the inspiration of this and a discussion of why this is necessary,
+ * see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=39438
+ */
+#ifdef __GNUC__
+#pragma GCC system_header
+static size_t my_strftime(char *s, size_t max, const char *format,
+                          const struct tm *tm)
+{
+  return strftime (s, max, format, tm);
+}
+#define strftime my_strftime
+#endif
+
 
 G_END_DECLS
 

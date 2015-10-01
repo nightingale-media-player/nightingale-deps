@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -60,7 +60,7 @@ gst_vcd_parse_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
 
-  gst_element_class_set_details_simple (element_class, "(S)VCD stream parser",
+  gst_element_class_set_static_metadata (element_class, "(S)VCD stream parser",
       "Codec/Parser", "Strip (S)VCD stream from its sync headers",
       "Tim-Philipp Müller <tim centricular net>, "
       "Ronald Bultje <rbultje@ronald.bitfreak.net>");

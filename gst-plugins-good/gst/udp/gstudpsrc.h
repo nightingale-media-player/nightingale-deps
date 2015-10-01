@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,16 +23,11 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-
 #include "gstudpnetutils.h"
-
-#include "gstudp.h"
 
 #define GST_TYPE_UDPSRC \
   (gst_udpsrc_get_type())
@@ -53,25 +48,41 @@ struct _GstUDPSrc {
   GstPushSrc parent;
 
   /* properties */
-  gchar     *uri;
-  int        port;
-  gchar     *multi_group;
+  gchar     *address;
+  gint       port;
   gchar     *multi_iface;
   gint       ttl;
   GstCaps   *caps;
   gint       buffer_size;
   guint64    timeout;
   gint       skip_first_bytes;
-  int        sockfd;
-  gboolean   closefd;
+  GSocket   *socket;
+  gboolean   close_socket;
   gboolean   auto_multicast;
+  gboolean   reuse;
+
+  /* stats */
+  guint      max_size;
 
   /* our sockets */
-  GstPollFD  sock;
-  GstPoll   *fdset;
-  gboolean   externalfd;
+  GSocket   *used_socket;
+  GInetSocketAddress *addr;
+  gboolean   external_socket;
 
-  struct   sockaddr_storage myaddr;
+  gboolean   made_cancel_fd;
+  GCancellable *cancellable;
+
+  /* memory management */
+  GstAllocator *allocator;
+  GstAllocationParams params;
+
+  GstMemory   *mem;
+  GstMapInfo   map;
+  GstMemory   *mem_max;
+  GstMapInfo   map_max;
+  GInputVector vec[2];
+
+  gchar     *uri;
 };
 
 struct _GstUDPSrcClass {

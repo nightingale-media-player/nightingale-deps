@@ -1,47 +1,74 @@
-libgstrtpincludedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/rtp
+libgstrtpincludedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/rtp
 
-libgstrtpinclude_HEADERS = gstrtpbuffer.h \
+libgstrtpinclude_HEADERS = \
+			   rtp.h \
+			   gstrtpdefs.h \
+			   gstrtpbuffer.h \
 			   gstrtcpbuffer.h \
 			   gstrtppayloads.h \
-			gstbasertpaudiopayload.h \
-			gstbasertppayload.h \
-			gstbasertpdepayload.h
+			   gstrtphdrext.h \
+			gstrtpbaseaudiopayload.h \
+			gstrtpbasepayload.h \
+			gstrtpbasedepayload.h
 
-lib_LTLIBRARIES = libgstrtp-@GST_MAJORMINOR@.la
+lib_LTLIBRARIES = libgstrtp-@GST_API_VERSION@.la
 
-libgstrtp_@GST_MAJORMINOR@_la_SOURCES = gstrtpbuffer.c \
+libgstrtp_@GST_API_VERSION@_la_SOURCES = gstrtpbuffer.c \
 			        gstrtcpbuffer.c \
 			        gstrtppayloads.c \
-			        gstbasertpaudiopayload.c \
-  				gstbasertppayload.c \
-  				gstbasertpdepayload.c
+			   	gstrtphdrext.c \
+			        gstrtpbaseaudiopayload.c \
+				gstrtpbasepayload.c \
+				gstrtpbasedepayload.c
 
-libgstrtp_@GST_MAJORMINOR@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
-libgstrtp_@GST_MAJORMINOR@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS)
-libgstrtp_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+built_sources = gstrtp-enumtypes.c
+built_headers = gstrtp-enumtypes.h
+
+libgstrtp_@GST_API_VERSION@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
+libgstrtp_@GST_API_VERSION@_la_LIBADD = $(GST_BASE_LIBS) $(GST_LIBS)
+libgstrtp_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+
+nodist_libgstrtp_@GST_API_VERSION@_la_SOURCES = $(built_sources)
+nodist_libgstrtpinclude_HEADERS = gstrtp-enumtypes.h
+
+BUILT_SOURCES = $(built_headers) $(built_sources)
+CLEANFILES = $(BUILT_SOURCES)
+
+glib_gen_prefix = __gst_rtp
+glib_enum_define = gst_rtp
+glib_enum_headers = $(libgstrtpinclude_HEADERS)
+glib_gen_basename = gstrtp
+
+include $(top_srcdir)/common/gst-glib-gen.mak
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstRtp-@GST_MAJORMINOR@.gir
+BUILT_GIRSOURCES = GstRtp-@GST_API_VERSION@.gir
 
 gir_headers=$(patsubst %,$(srcdir)/%, $(libgstrtpinclude_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstrtp_@GST_MAJORMINOR@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/rtp/%',$(libgstrtpinclude_HEADERS))
+gir_headers+=$(patsubst %,$(builddir)/%, $(nodist_libgstrtpinclude_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstrtp_@GST_API_VERSION@_la_SOURCES))
+gir_sources+=$(patsubst %,$(builddir)/%, $(nodist_libgstrtp_@GST_API_VERSION@_la_SOURCES))
 
-GstRtp-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstrtp-@GST_MAJORMINOR@.la
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+GstRtp-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstrtp-@GST_API_VERSION@.la
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" GI_SCANNER_DISABLE_CACHE=yes\
+		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstRtp \
-		--nsversion=@GST_MAJORMINOR@ \
+		--nsversion=@GST_API_VERSION@ \
 		--strip-prefix=Gst \
-		$(gir_cincludes) \
+		--warn-all \
+		--c-include "gst/rtp/rtp.h" \
+		-I$(top_builddir)/gst-libs \
 		-I$(top_srcdir)/gst-libs \
-		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst \
-		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-base-0.10` \
-		--library=gstrtp-0.10 \
-		--include=Gst-0.10 \
-		--include=GstBase-0.10 \
+		--add-include-path=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
+		--add-include-path=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-base-@GST_API_VERSION@` \
+		--library=libgstrtp-@GST_API_VERSION@.la \
+		--include=Gst-@GST_API_VERSION@ \
+		--include=GstBase-@GST_API_VERSION@ \
 		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-0.10 \
-		--pkg gstreamer-base-0.10 \
+		--pkg gstreamer-@GST_API_VERSION@ \
+		--pkg gstreamer-base-@GST_API_VERSION@ \
+		--pkg-export gstreamer-rtp-@GST_API_VERSION@ \
+		--add-init-section="$(INTROSPECTION_INIT)" \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -56,7 +83,13 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-base-0.10` $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" \
+		$(INTROSPECTION_COMPILER) \
+		--includedir=$(srcdir) \
+		--includedir=$(builddir) \
+		--includedir=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
+		--includedir=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-base-@GST_API_VERSION@` \
+		$(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
-CLEANFILES = $(BUILT_GIRSOURCES) $(typelibs_DATA)
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif

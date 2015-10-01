@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,15 +26,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <gst/rtp/gstrtpbuffer.h>
+#include <gst/audio/audio.h>
 #include "gstrtpsirendepay.h"
-
-/* elementfactory information */
-static const GstElementDetails gst_rtp_siren_depay_details =
-GST_ELEMENT_DETAILS ("RTP Siren packet depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts Siren audio from RTP packets",
-    "Philippe Kalaf <philippe.kalaf@collabora.co.uk>");
-
+#include "gstrtputils.h"
 
 static GstStaticPadTemplate gst_rtp_siren_depay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
@@ -42,65 +36,62 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-rtp, "
         "media = (string) \"audio\", "
-        "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
-        "clock-rate = (int) 16000, "
-        "encoding-name = (string) \"SIREN\", " "dct-length = (int) 320")
+        "clock-rate = (int) 16000, " "encoding-name = (string) \"SIREN\"")
+    /* This is the default, so the peer doesn't have to specify it */
+    /*  " "dct-length = (int) 320") */
     );
 
-static GstStaticPadTemplate gst_rtp_siren_depay_src_template =
-GST_STATIC_PAD_TEMPLATE ("src",
+     static GstStaticPadTemplate gst_rtp_siren_depay_src_template =
+         GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/x-siren, " "dct-length = (int) 320")
     );
 
-static GstBuffer *gst_rtp_siren_depay_process (GstBaseRTPDepayload * depayload,
-    GstBuffer * buf);
-static gboolean gst_rtp_siren_depay_setcaps (GstBaseRTPDepayload * depayload,
-    GstCaps * caps);
+     static GstBuffer *gst_rtp_siren_depay_process (GstRTPBaseDepayload *
+    depayload, GstRTPBuffer * rtp);
+     static gboolean gst_rtp_siren_depay_setcaps (GstRTPBaseDepayload *
+    depayload, GstCaps * caps);
 
-GST_BOILERPLATE (GstRTPSirenDepay, gst_rtp_siren_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+G_DEFINE_TYPE (GstRTPSirenDepay, gst_rtp_siren_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
-static void
-gst_rtp_siren_depay_base_init (gpointer klass)
+     static void gst_rtp_siren_depay_class_init (GstRTPSirenDepayClass * klass)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
-  gst_element_class_add_pad_template (element_class,
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
+
+  gstrtpbasedepayload_class->process_rtp_packet = gst_rtp_siren_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_siren_depay_setcaps;
+
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&gst_rtp_siren_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&gst_rtp_siren_depay_sink_template));
-  gst_element_class_set_details (element_class, &gst_rtp_siren_depay_details);
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP Siren packet depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts Siren audio from RTP packets",
+      "Philippe Kalaf <philippe.kalaf@collabora.co.uk>");
 }
 
 static void
-gst_rtp_siren_depay_class_init (GstRTPSirenDepayClass * klass)
-{
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
-
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
-
-  gstbasertpdepayload_class->process = gst_rtp_siren_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_siren_depay_setcaps;
-}
-
-static void
-gst_rtp_siren_depay_init (GstRTPSirenDepay * rtpsirendepay,
-    GstRTPSirenDepayClass * klass)
+gst_rtp_siren_depay_init (GstRTPSirenDepay * rtpsirendepay)
 {
 
 }
 
 static gboolean
-gst_rtp_siren_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_siren_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstCaps *srccaps;
   gboolean ret;
 
   srccaps = gst_caps_new_simple ("audio/x-siren",
       "dct-length", G_TYPE_INT, 320, NULL);
-  ret = gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
+  ret = gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (depayload), srccaps);
 
   GST_DEBUG ("set caps on source: %" GST_PTR_FORMAT " (ret=%d)", srccaps, ret);
   gst_caps_unref (srccaps);
@@ -112,11 +103,17 @@ gst_rtp_siren_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 }
 
 static GstBuffer *
-gst_rtp_siren_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_siren_depay_process (GstRTPBaseDepayload * depayload,
+    GstRTPBuffer * rtp)
 {
   GstBuffer *outbuf;
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  outbuf = gst_rtp_buffer_get_payload_buffer (rtp);
+
+  if (outbuf) {
+    gst_rtp_drop_meta (GST_ELEMENT_CAST (depayload), outbuf,
+        g_quark_from_static_string (GST_META_TAG_AUDIO_STR));
+  }
 
   return outbuf;
 }
@@ -125,5 +122,5 @@ gboolean
 gst_rtp_siren_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpsirendepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_SIREN_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_SIREN_DEPAY);
 }

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /**
  * SECTION:element-dv1394src
@@ -27,7 +27,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink d. ! queue ! alsasink
+ * gst-launch-1.0 dv1394src ! queue ! dvdemux name=d ! queue ! dvdec ! xvimagesink d. ! queue ! alsasink
  * ]| This pipeline captures from the firewire port and displays it (might need
  * format converters for audio/video).
  * </refsect2>
@@ -56,6 +56,7 @@
 
 #include "gstdv1394src.h"
 #include "gst1394probe.h"
+#include "gst1394clock.h"
 
 
 #define CONTROL_STOP            'S'     /* stop the select call */
@@ -65,7 +66,7 @@
 
 #define SEND_COMMAND(src, command)          \
 G_STMT_START {                              \
-  int _res; unsigned char c; c = command;   \
+  int G_GNUC_UNUSED _res; unsigned char c; c = command;   \
   _res = write (WRITE_SOCKET(src), &c, 1);  \
 } G_STMT_END
 
@@ -112,14 +113,6 @@ enum
   PROP_DEVICE_NAME
 };
 
-static const GstElementDetails gst_dv1394src_details =
-GST_ELEMENT_DETAILS ("Firewire (1394) DV video source",
-    "Source/Video",
-    "Source for DV video data from firewire port",
-    "Erik Walthinsen <omega@temple-baptist.com>\n"
-    "Daniel Fischer <dan@f3c.com>\n" "Wim Taymans <wim@fluendo.com>\n"
-    "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
-
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -136,6 +129,10 @@ static void gst_dv1394src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 static void gst_dv1394src_dispose (GObject * object);
 
+static GstClock *gst_dv1394src_provide_clock (GstElement * element);
+static GstStateChangeReturn gst_dv1394_src_change_state (GstElement * element,
+    GstStateChange transition);
+
 static gboolean gst_dv1394src_start (GstBaseSrc * bsrc);
 static gboolean gst_dv1394src_stop (GstBaseSrc * bsrc);
 static gboolean gst_dv1394src_unlock (GstBaseSrc * bsrc);
@@ -145,54 +142,32 @@ static GstFlowReturn gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf);
 static gboolean gst_dv1394src_query (GstBaseSrc * src, GstQuery * query);
 static void gst_dv1394src_update_device_name (GstDV1394Src * src);
 
-static void
-_do_init (GType type)
-{
-  static const GInterfaceInfo urihandler_info = {
-    gst_dv1394src_uri_handler_init,
-    NULL,
-    NULL,
-  };
-  g_type_add_interface_static (type, GST_TYPE_URI_HANDLER, &urihandler_info);
-
-  gst_1394_type_add_property_probe_interface (type);
-
-  GST_DEBUG_CATEGORY_INIT (dv1394src_debug, "dv1394src", 0,
-      "DV firewire source");
-}
-
-GST_BOILERPLATE_FULL (GstDV1394Src, gst_dv1394src, GstPushSrc,
-    GST_TYPE_PUSH_SRC, _do_init);
-
+#define gst_dv1394src_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstDV1394Src, gst_dv1394src, GST_TYPE_PUSH_SRC,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER,
+        gst_dv1394src_uri_handler_init));
 
 static guint gst_dv1394src_signals[LAST_SIGNAL] = { 0 };
-
-
-static void
-gst_dv1394src_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-
-  gst_element_class_set_details (element_class, &gst_dv1394src_details);
-}
 
 static void
 gst_dv1394src_class_init (GstDV1394SrcClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
   GstPushSrcClass *gstpushsrc_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
   gstbasesrc_class = (GstBaseSrcClass *) klass;
   gstpushsrc_class = (GstPushSrcClass *) klass;
 
   gobject_class->set_property = gst_dv1394src_set_property;
   gobject_class->get_property = gst_dv1394src_get_property;
   gobject_class->dispose = gst_dv1394src_dispose;
+
+  gstelement_class->provide_clock = gst_dv1394src_provide_clock;
+  gstelement_class->change_state = gst_dv1394_src_change_state;
 
   gst_dv1394src_signals[SIGNAL_FRAME_DROPPED] =
       g_signal_new ("frame-dropped", G_TYPE_FROM_CLASS (klass),
@@ -201,39 +176,39 @@ gst_dv1394src_class_init (GstDV1394SrcClass * klass)
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PORT,
       g_param_spec_int ("port", "Port", "Port number (-1 automatic)",
-          -1, 16, DEFAULT_PORT, G_PARAM_READWRITE));
+          -1, 16, DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_CHANNEL,
       g_param_spec_int ("channel", "Channel", "Channel number for listening",
-          0, 64, DEFAULT_CHANNEL, G_PARAM_READWRITE));
+          0, 64, DEFAULT_CHANNEL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_CONSECUTIVE,
       g_param_spec_int ("consecutive", "consecutive frames",
           "send n consecutive frames after skipping", 1, G_MAXINT,
-          DEFAULT_CONSECUTIVE, G_PARAM_READWRITE));
+          DEFAULT_CONSECUTIVE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_SKIP,
       g_param_spec_int ("skip", "skip frames", "skip n frames",
-          0, G_MAXINT, DEFAULT_SKIP, G_PARAM_READWRITE));
+          0, G_MAXINT, DEFAULT_SKIP,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DROP_INCOMPLETE,
-      g_param_spec_boolean ("drop_incomplete", "drop_incomplete",
+      g_param_spec_boolean ("drop-incomplete", "drop incomplete",
           "drop incomplete frames", DEFAULT_DROP_INCOMPLETE,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_USE_AVC,
       g_param_spec_boolean ("use-avc", "Use AV/C", "Use AV/C VTR control",
-          DEFAULT_USE_AVC, G_PARAM_READWRITE));
+          DEFAULT_USE_AVC, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_GUID,
       g_param_spec_uint64 ("guid", "GUID",
           "select one of multiple DV devices by its GUID. use a hexadecimal "
           "like 0xhhhhhhhhhhhhhhhh. (0 = no guid)", 0, G_MAXUINT64,
-          DEFAULT_GUID, G_PARAM_READWRITE));
+          DEFAULT_GUID, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstDV1394Src:device-name
+   * GstDV1394Src:device-name:
    *
    * Descriptive name of the currently opened device
-   *
-   * Since: 0.10.7
-   **/
+   */
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DEVICE_NAME,
       g_param_spec_string ("device-name", "device name",
-          "user-friendly name of the device", "Default", G_PARAM_READABLE));
+          "user-friendly name of the device", "Default",
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   gstbasesrc_class->negotiate = NULL;
   gstbasesrc_class->start = gst_dv1394src_start;
@@ -242,10 +217,23 @@ gst_dv1394src_class_init (GstDV1394SrcClass * klass)
   gstbasesrc_class->query = gst_dv1394src_query;
 
   gstpushsrc_class->create = gst_dv1394src_create;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Firewire (1394) DV video source", "Source/Video",
+      "Source for DV video data from firewire port",
+      "Erik Walthinsen <omega@temple-baptist.com>, "
+      "Daniel Fischer <dan@f3c.com>, " "Wim Taymans <wim@fluendo.com>, "
+      "Zaheer Abbas Merali <zaheerabbas at merali dot org>");
+
+  GST_DEBUG_CATEGORY_INIT (dv1394src_debug, "dv1394src", 0,
+      "DV firewire source");
 }
 
 static void
-gst_dv1394src_init (GstDV1394Src * dv1394src, GstDV1394SrcClass * klass)
+gst_dv1394src_init (GstDV1394Src * dv1394src)
 {
   GstPad *srcpad = GST_BASE_SRC_PAD (dv1394src);
 
@@ -274,12 +262,18 @@ gst_dv1394src_init (GstDV1394Src * dv1394src, GstDV1394SrcClass * klass)
   dv1394src->buf = NULL;
   dv1394src->frame = NULL;
   dv1394src->frame_sequence = 0;
+
+  dv1394src->provided_clock = gst_1394_clock_new ("dv1394clock");
 }
 
 static void
 gst_dv1394src_dispose (GObject * object)
 {
   GstDV1394Src *src = GST_DV1394SRC (object);
+
+  if (src->provided_clock) {
+    g_object_unref (src->provided_clock);
+  }
 
   g_free (src->uri);
   src->uri = NULL;
@@ -363,6 +357,47 @@ gst_dv1394src_get_property (GObject * object, guint prop_id, GValue * value,
   }
 }
 
+static GstClock *
+gst_dv1394src_provide_clock (GstElement * element)
+{
+  GstDV1394Src *dv1394src = GST_DV1394SRC (element);
+
+  return GST_CLOCK_CAST (gst_object_ref (dv1394src->provided_clock));
+}
+
+static GstStateChangeReturn
+gst_dv1394_src_change_state (GstElement * element, GstStateChange transition)
+{
+  GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+  GstDV1394Src *src = GST_DV1394SRC (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+      gst_element_post_message (element,
+          gst_message_new_clock_lost (GST_OBJECT_CAST (element),
+              GST_CLOCK_CAST (src->provided_clock)));
+      break;
+    default:
+      break;
+  }
+
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
+  if (ret == GST_STATE_CHANGE_FAILURE)
+    return ret;
+
+  switch (transition) {
+    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+      gst_element_post_message (element,
+          gst_message_new_clock_provide (GST_OBJECT_CAST (element),
+              GST_CLOCK_CAST (src->provided_clock), TRUE));
+      break;
+    default:
+      break;
+  }
+
+  return ret;
+}
+
 #ifdef HAVE_LIBIEC61883
 static GstDV1394Src *
 gst_dv1394src_from_raw1394handle (raw1394handle_t handle)
@@ -387,7 +422,7 @@ gst_dv1394src_iec61883_receive (unsigned char *data, int len,
 {
   GstDV1394Src *dv1394src = GST_DV1394SRC (cbdata);
 
-  if (G_UNLIKELY (!GST_PAD_CAPS (GST_BASE_SRC_PAD (dv1394src)))) {
+  if (G_UNLIKELY (!gst_pad_has_current_caps (GST_BASE_SRC_PAD (dv1394src)))) {
     GstCaps *caps;
     unsigned char *p = data;
 
@@ -418,14 +453,12 @@ gst_dv1394src_iec61883_receive (unsigned char *data, int len,
   if (G_LIKELY ((dv1394src->frame_sequence + 1) % (dv1394src->skip +
               dv1394src->consecutive) < dv1394src->consecutive)) {
     if (complete && len == dv1394src->frame_size) {
-      guint8 *bufdata;
       GstBuffer *buf;
 
       buf = gst_buffer_new_and_alloc (dv1394src->frame_size);
 
       GST_BUFFER_OFFSET (buf) = dv1394src->frame_sequence;
-      bufdata = GST_BUFFER_DATA (buf);
-      memcpy (bufdata, data, len);
+      gst_buffer_fill (buf, 0, data, len);
       dv1394src->buf = buf;
     }
   }
@@ -611,7 +644,6 @@ static GstFlowReturn
 gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
   GstDV1394Src *dv1394src = GST_DV1394SRC (psrc);
-  GstCaps *caps;
   struct pollfd pollfds[2];
 
   pollfds[0].fd = raw1394_get_fd (dv1394src->handle);
@@ -653,10 +685,6 @@ gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf)
 
   g_assert (dv1394src->buf);
 
-  caps = gst_pad_get_caps (GST_BASE_SRC_PAD (psrc));
-  gst_buffer_set_caps (dv1394src->buf, caps);
-  gst_caps_unref (caps);
-
   *buf = dv1394src->buf;
   dv1394src->buf = NULL;
   return GST_FLOW_OK;
@@ -664,12 +692,12 @@ gst_dv1394src_create (GstPushSrc * psrc, GstBuffer ** buf)
 error_while_polling:
   {
     GST_ELEMENT_ERROR (dv1394src, RESOURCE, READ, (NULL), GST_ERROR_SYSTEM);
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 told_to_stop:
   {
     GST_DEBUG_OBJECT (dv1394src, "told to stop, shutting down");
-    return GST_FLOW_WRONG_STATE;
+    return GST_FLOW_FLUSHING;
   }
 }
 
@@ -833,6 +861,8 @@ gst_dv1394src_start (GstBaseSrc * bsrc)
     }
   }
 
+  gst_1394_clock_set_handle (src->provided_clock, src->handle);
+
   return TRUE;
 
 socket_pair:
@@ -927,6 +957,8 @@ gst_dv1394src_stop (GstBaseSrc * bsrc)
     }
   }
 
+  gst_1394_clock_unset_handle (src->provided_clock);
+
   raw1394_destroy_handle (src->handle);
 
   return TRUE;
@@ -948,7 +980,7 @@ gst_dv1394src_query (GstBaseSrc * basesrc, GstQuery * query)
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_LATENCY:
     {
-      gst_query_set_latency (query, TRUE, GST_SECOND / 25, GST_CLOCK_TIME_NONE);
+      gst_query_set_latency (query, TRUE, GST_SECOND / 25, GST_SECOND / 25);
     }
       break;
     default:
@@ -1015,21 +1047,21 @@ gethandle_failed:
 
 /*** GSTURIHANDLER INTERFACE *************************************************/
 
-static guint
-gst_dv1394src_uri_get_type (void)
+static GstURIType
+gst_dv1394src_uri_get_type (GType type)
 {
   return GST_URI_SRC;
 }
 
-static gchar **
-gst_dv1394src_uri_get_protocols (void)
+static const gchar *const *
+gst_dv1394src_uri_get_protocols (GType type)
 {
-  static gchar *protocols[] = { "dv", NULL };
+  static const gchar *protocols[] = { (char *) "dv", NULL };
 
   return protocols;
 }
 
-static const gchar *
+static gchar *
 gst_dv1394src_uri_get_uri (GstURIHandler * handler)
 {
   GstDV1394Src *gst_dv1394src = GST_DV1394SRC (handler);
@@ -1038,7 +1070,8 @@ gst_dv1394src_uri_get_uri (GstURIHandler * handler)
 }
 
 static gboolean
-gst_dv1394src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
+gst_dv1394src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
+    GError ** error)
 {
   gchar *protocol, *location;
   gboolean ret = TRUE;
@@ -1047,6 +1080,7 @@ gst_dv1394src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
   protocol = gst_uri_get_protocol (uri);
   if (strcmp (protocol, "dv") != 0) {
     g_free (protocol);
+    g_set_error (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI, "Invalid DV URI");
     return FALSE;
   }
   g_free (protocol);

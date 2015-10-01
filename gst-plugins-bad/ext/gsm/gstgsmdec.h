@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_GSMDEC_H__
 #define __GST_GSMDEC_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudiodecoder.h>
 
 #ifdef GSM_HEADER_IN_SUBDIR
 #include <gsm/gsm.h>
@@ -47,28 +47,16 @@ typedef struct _GstGSMDecClass GstGSMDecClass;
 
 struct _GstGSMDec
 {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
+  GstAudioDecoder element;
 
   gsm state;
   gint use_wav49;
-  gint64 next_of;
-  GstClockTime next_ts;
-
-  GstAdapter *adapter;
-
-  GstSegment segment;
-
-  gint rate;
-
-  GstClockTime duration;
+  gint needed;
 };
 
 struct _GstGSMDecClass
 {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_gsmdec_get_type (void);

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,7 +25,6 @@
 
 #include <gst/gst-i18n-plugin.h>
 
-#include "gstwavpackparse.h"
 #include "gstwavpackdec.h"
 #include "gstwavpackenc.h"
 
@@ -37,20 +36,19 @@ plugin_init (GstPlugin * plugin)
 {
   GST_DEBUG_CATEGORY_INIT (wavpack_debug, "wavpack", 0, "Wavpack elements");
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-  return (gst_wavpack_parse_plugin_init (plugin)
-      && gst_wavpack_dec_plugin_init (plugin)
+  return (gst_wavpack_dec_plugin_init (plugin)
       && gst_wavpack_enc_plugin_init (plugin));
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "wavpack",
+    wavpack,
     "Wavpack lossless/lossy audio format handling",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

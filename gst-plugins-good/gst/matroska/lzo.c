@@ -18,6 +18,9 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <gst/gst.h>
 #include <stdlib.h>
@@ -283,6 +286,8 @@ main (int argc, char *argv[])
     av_log (NULL, AV_LOG_ERROR, "decompression incorrect\n");
   else
     av_log (NULL, AV_LOG_ERROR, "decompression ok\n");
+
+  fclose (in);
   return 0;
 }
 #endif

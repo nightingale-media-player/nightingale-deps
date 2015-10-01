@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -24,23 +24,11 @@
 
 
 #include <gst/gst.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <arpa/inet.h>
-#include "gstmultifdsink.h"
+#include "gstmultisocketsink.h"
 
 #define GST_TYPE_TCP_SERVER_SINK \
   (gst_tcp_server_sink_get_type())
@@ -68,19 +56,19 @@ typedef enum {
  * Opaque data structure.
  */
 struct _GstTCPServerSink {
-  GstMultiFdSink element;
+  GstMultiSocketSink element;
 
   /* server information */
-  int server_port;
-  gchar *host;
-  struct sockaddr_in server_sin;
+  int current_port;        /* currently bound-to port, or 0 */ /* ATOMIC */
+  int server_port;         /* port property */
+  gchar *host;             /* host property */
 
-  /* socket */
-  GstPollFD server_sock;
+  GSocket *server_socket;
+  GSource *server_source;
 };
 
 struct _GstTCPServerSinkClass {
-  GstMultiFdSinkClass parent_class;
+  GstMultiSocketSinkClass parent_class;
 };
 
 GType gst_tcp_server_sink_get_type (void);

@@ -10,12 +10,12 @@ libgstsunaudio_la_SOURCES = gstsunaudio.c \
 
 libgstsunaudio_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
 libgstsunaudio_la_LIBADD = \
-        -lgstinterfaces-@GST_MAJORMINOR@ \
-        -lgstaudio-@GST_MAJORMINOR@ \
+        -lgstinterfaces-@GST_API_VERSION@ \
+        -lgstaudio-@GST_API_VERSION@ \
         $(GST_PLUGINS_BASE_LIBS) \
         $(GST_LIBS)
 libgstsunaudio_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstsunaudio_la_LIBTOOLFLAGS = --tag=disable-static
+libgstsunaudio_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = gstsunaudiosink.h \
                  gstsunaudiomixer.h \

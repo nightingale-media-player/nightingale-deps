@@ -64,7 +64,7 @@ static int firstTime = 1;
 static int sintable[0xffff];
 
 ZoomFilterData *
-zoomFilterNew ()
+zoomFilterNew (void)
 {
   ZoomFilterData *zf = malloc (sizeof (ZoomFilterData));
 
@@ -106,7 +106,7 @@ ShiftRight (int x, const unsigned char s)
   px et py indique la nouvelle position (en sqrtperte ieme de pixel)
   (valeur * 16)
 */
-void
+static void
 calculatePXandPY (GoomData * gd, int x, int y, int *px, int *py)
 {
   ZoomFilterData *zf = gd->zfd;
@@ -250,39 +250,6 @@ setPixelRGB_ (Uint * buffer, Uint x, Color c, guint32 resolx, guint32 resoly)
 #endif
 }
 
-
-
-static inline void
-getPixelRGB (Uint * buffer, Uint x, Uint y, Color * c,
-    guint32 resolx, guint32 resoly)
-{
-  register unsigned char *tmp8;
-
-#ifdef _DEBUG
-  if (x + y * resolx >= resolx * resoly) {
-    printf ("getPixel ERROR : hors du tableau... %i, %i\n", x, y);
-    exit (1);
-  }
-#endif
-
-#ifdef __BIG_ENDIAN__
-  c->b = *(unsigned char *) (tmp8 =
-      (unsigned char *) (buffer + (x + y * resolx)));
-  c->r = *(unsigned char *) (++tmp8);
-  c->v = *(unsigned char *) (++tmp8);
-  c->b = *(unsigned char *) (++tmp8);
-
-#else
-  /* ATTENTION AU PETIT INDIEN  */
-  c->b = *(unsigned char *) (tmp8 =
-      (unsigned char *) (buffer + (x + y * resolx)));
-  c->v = *(unsigned char *) (++tmp8);
-  c->r = *(unsigned char *) (++tmp8);
-/*      *c = (Color) buffer[x+y*WIDTH] ; */
-#endif
-}
-
-
 static inline void
 getPixelRGB_ (Uint * buffer, Uint x, Color * c, guint32 resolx, guint32 resoly)
 {
@@ -365,48 +332,6 @@ zoomFilterSetResolution (GoomData * gd, ZoomFilterData * zf)
     /* generation d'une table de sinus */
     for (us = 0; us < 0xffff; us++) {
       sintable[us] = (int) (1024.0f * sin (us * 2 * 3.31415f / 0xffff));
-    }
-  }
-
-  {
-    int loopv;
-
-    for (loopv = zf->res_y; loopv != 0;) {
-      int decc = 0;
-      int spdc = 0;
-      int accel = 0;
-
-      loopv--;
-      zf->firedec[loopv] = decc;
-      decc += spdc / 10;
-      spdc += RAND (gd) % 3;
-      spdc -= RAND (gd) % 3;
-
-      if (decc > 4)
-        spdc -= 1;
-      if (decc < -4)
-        spdc += 1;
-
-      if (spdc > 30)
-        spdc = spdc - RAND (gd) % 3 + accel / 10;
-      if (spdc < -30)
-        spdc = spdc + RAND (gd) % 3 + accel / 10;
-
-      if (decc > 8 && spdc > 1)
-        spdc -= RAND (gd) % 3 - 2;
-
-      if (decc < -8 && spdc < -1)
-        spdc += RAND (gd) % 3 + 2;
-
-      if (decc > 8 || decc < -8)
-        decc = decc * 8 / 9;
-
-      accel += RAND (gd) % 2;
-      accel -= RAND (gd) % 2;
-      if (accel > 20)
-        accel -= 2;
-      if (accel < -20)
-        accel += 2;
     }
   }
 }

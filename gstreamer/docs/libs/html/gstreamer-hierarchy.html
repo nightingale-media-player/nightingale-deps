@@ -2,67 +2,54 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Object Hierarchy</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer 0.10 Library Reference Manual">
-<link rel="up" href="index.html" title="GStreamer 0.10 Library Reference Manual">
-<link rel="prev" href="gstreamer-libs-GstBufferStraw.html" title="GstBufferStraw">
-<link rel="next" href="api-index-full.html" title="API Index">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<title>Object Hierarchy: GStreamer 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
+<link rel="up" href="index.html" title="GStreamer 1.0 Library Reference Manual">
+<link rel="prev" href="GstTestClock.html" title="GstTestClock">
+<link rel="next" href="ix01.html" title="API Index">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-libs.html" title="Part I. GStreamer Libraries">
-<link rel="chapter" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
-<link rel="chapter" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
-<link rel="chapter" href="gstreamer-dataprotocol.html" title="GStreamer Data Protocol">
-<link rel="chapter" href="gstreamer-net.html" title="GStreamer Network Classes">
-<link rel="chapter" href="gstreamer-check.html" title="GStreamer Check Unit Testing">
-<link rel="chapter" href="gstreamer-hierarchy.html" title="Object Hierarchy">
-<link rel="index" href="api-index-full.html" title="API Index">
-<link rel="index" href="api-index-deprecated.html" title="Index of deprecated API">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="gstreamer-libs-GstBufferStraw.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td> </td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="api-index-full.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><img src="up-insensitive.png" width="16" height="16" border="0"></td>
+<td><a accesskey="p" href="GstTestClock.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="ix01.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="chapter" lang="en">
-<div class="titlepage"><div><div><h2 class="title">
-<a name="gstreamer-hierarchy"></a>Object Hierarchy</h2></div></div></div>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="gstreamer-hierarchy"></a>Object Hierarchy</h1></div></div></div>
 <pre class="screen">
-    <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-        <a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-            <a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-                <a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a>
-                    <a class="link" href="GstPushSrc.html" title="GstPushSrc">GstPushSrc</a>
-                <a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a>
-                <a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a>
-            <a
-href="../gstreamer-0.10/GstClock.html"
->GstClock</a>
-                <a
-href="../gstreamer-0.10/GstSystemClock.html"
->GstSystemClock</a>
-                    <a class="link" href="GstNetClientClock.html" title="GstNetClientClock">GstNetClientClock</a>
-            <a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a>
-            <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider">GstNetTimeProvider</a>
-        <a class="link" href="GstAdapter.html" title="GstAdapter">GstAdapter</a>
-        <a class="link" href="GstController.html" title="GstController">GstController</a>
-        <a class="link" href="GstControlSource.html" title="GstControlSource">GstControlSource</a>
-            <a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a>
-            <a class="link" href="GstLFOControlSource.html" title="GstLFOControlSource">GstLFOControlSource</a>
+    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">├──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+    <span class="lineart">│</span>   <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+    <span class="lineart">│</span>       <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstBaseParse.html" title="GstBaseParse">GstBaseParse</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstBaseSrc.html" title="GstBaseSrc">GstBaseSrc</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstPushSrc.html" title="GstPushSrc">GstPushSrc</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstBaseSink.html" title="GstBaseSink">GstBaseSink</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstBaseTransform.html" title="GstBaseTransform">GstBaseTransform</a>
+    <span class="lineart">│</span>       <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html">GstClock</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSystemClock.html">GstSystemClock</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstNetClientClock.html" title="GstNetClientClock">GstNetClientClock</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstTestClock.html" title="GstTestClock">GstTestClock</a>
+    <span class="lineart">│</span>       <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstControlBinding.html">GstControlBinding</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstARGBControlBinding.html" title="GstARGBControlBinding">GstARGBControlBinding</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstDirectControlBinding.html" title="GstDirectControlBinding">GstDirectControlBinding</a>
+    <span class="lineart">│</span>       <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstControlSource.html">GstControlSource</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstTimedValueControlSource.html" title="GstTimedValueControlSource">GstTimedValueControlSource</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">│</span>   <span class="lineart">├──</span> <a class="link" href="GstInterpolationControlSource.html" title="GstInterpolationControlSource">GstInterpolationControlSource</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstTriggerControlSource.html" title="GstTriggerControlSource">GstTriggerControlSource</a>
+    <span class="lineart">│</span>       <span class="lineart">│</span>   <span class="lineart">╰──</span> <a class="link" href="GstLFOControlSource.html" title="GstLFOControlSource">GstLFOControlSource</a>
+    <span class="lineart">│</span>       <span class="lineart">├──</span> <a class="link" href="GstCollectPads.html" title="GstCollectPads">GstCollectPads</a>
+    <span class="lineart">│</span>       <span class="lineart">╰──</span> <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider">GstNetTimeProvider</a>
+    <span class="lineart">╰──</span> <a class="link" href="GstAdapter.html" title="GstAdapter">GstAdapter</a>
 </pre>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

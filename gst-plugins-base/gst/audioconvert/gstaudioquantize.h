@@ -16,15 +16,12 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/gst.h>
 #include "audioconvert.h"
-
-GST_DEBUG_CATEGORY_EXTERN (audio_convert_debug);
-#define GST_CAT_DEFAULT (audio_convert_debug)
 
 #ifndef __GST_AUDIO_QUANTIZE_H__
 #define __GST_AUDIO_QUANTIZE_H__

@@ -39,8 +39,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -50,18 +50,19 @@
 #include <string.h>
 
 #include <gst/gst.h>
-#include <gst/audio/multichannel.h>
-#include "qtaudiowrapper.h"
+#include "qtwrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 
 #ifdef G_OS_WIN32
 #include <QuickTimeComponents.h>
 #else
-#include <Quicktime/QuickTimeComponents.h>
+#include <QuickTime/QuickTimeComponents.h>
 #endif
 
 #define QTWRAPPER_ADEC_PARAMS_QDATA g_quark_from_static_string("qtwrapper-adec-params")
+
+#define NO_MORE_INPUT_DATA 42
 
 static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -149,7 +150,6 @@ qtwrapper_audio_decoder_init (QTWrapperAudioDecoder * qtwrapper)
 
   /* Source pad */
   qtwrapper->srcpad = gst_pad_new_from_static_template (&src_templ, "src");
-  gst_pad_use_fixed_caps (qtwrapper->srcpad);
   gst_element_add_pad (GST_ELEMENT (qtwrapper), qtwrapper->srcpad);
 }
 
@@ -304,92 +304,25 @@ write_len (guint8 * buf, int val)
   return 4;
 }
 
-static AudioChannelLayout*
-aac_parse_codec_data (GstBuffer * codec_data, guint * channels, guint *rate)
+static void
+aac_parse_codec_data (GstBuffer * codec_data, gint * channels)
 {
   guint8 *data = GST_BUFFER_DATA (codec_data);
-  int codec_channels;
-  int codec_rate;
-  AudioChannelLayout *layout = NULL;
-  unsigned int rateindex;
-  int rates[] = 
-    { 96000, 88200, 64000, 48000, 44100, 32000, 
-      24000, 22050, 16000, 12000, 11025, 8000 };
+  guint codec_channels;
 
   if (GST_BUFFER_SIZE (codec_data) < 2) {
     GST_WARNING ("Cannot parse codec_data for channel count");
-    return NULL;
+    return;
   }
 
   codec_channels = (data[1] & 0x7f) >> 3;
 
-  if (codec_channels == 0) {
-    GST_DEBUG ("AOT configuration not supported: "
-               "using container channel count %d instead", *channels);
-    codec_channels = *channels;
-  } else if (*channels != codec_channels) {
+  if (*channels != codec_channels) {
     GST_INFO ("Overwriting channels %d with %d", *channels, codec_channels);
-    *channels = codec_channels;
+    *channels = (gint) codec_channels;
   } else {
     GST_INFO ("Retaining channel count %d", codec_channels);
   }
-
-  if (codec_channels < 3) {
-    GST_DEBUG ("No need to set channel positions for %i channels",
-            codec_channels);
-  } else if (codec_channels > 7) {
-    GST_WARNING ("Don't know how to deal with reserved channel configuration %i",
-            codec_channels);
-  } else {
-    guint n = 0;
-    const gsize buffer_size = sizeof (AudioChannelLayout) +
-            sizeof (AudioChannelDescription) * (codec_channels - 1);
-    layout = (AudioChannelLayout *) g_malloc0 (buffer_size);
-    /* channel flags are initialized to kAudioChannelFlags_AllOff (which is 0) */
-    layout->mChannelLayoutTag =
-        kAudioChannelLayoutTag_DiscreteInOrder | codec_channels;
-    layout->mNumberChannelDescriptions = codec_channels;
-
-    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Center;
-    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Left;
-    layout->mChannelDescriptions[n++].mChannelLabel = kAudioChannelLabel_Right;
-    if (codec_channels == 4) {
-      layout->mChannelDescriptions[n++].mChannelLabel =
-              kAudioChannelLabel_CenterSurround;
-    } else if (codec_channels > 4) {
-      if (codec_channels == 7) {
-        layout->mChannelDescriptions[n++].mChannelLabel =
-                kAudioChannelLabel_LeftSurroundDirect;
-        layout->mChannelDescriptions[n++].mChannelLabel =
-                kAudioChannelLabel_RightSurroundDirect;
-      }
-      layout->mChannelDescriptions[n++].mChannelLabel =
-              kAudioChannelLabel_LeftSurround;
-      layout->mChannelDescriptions[n++].mChannelLabel =
-              kAudioChannelLabel_RightSurround;
-      if (codec_channels > 5) {
-        layout->mChannelDescriptions[n++].mChannelLabel =
-                kAudioChannelLabel_LFEScreen;
-      }
-    }
-  }
-
-  GST_MEMDUMP ("codec data:", data, GST_BUFFER_SIZE (codec_data));
-
-  rateindex = ((data[0] & 0x7) << 1) | ((data[1] & 0x80) >> 7);
-  if (rateindex < sizeof (rates) / sizeof(*rates))
-    codec_rate = rates[rateindex];
-  else
-    codec_rate = *rate;
-
-  if (*rate != codec_rate) {
-    GST_INFO ("Overwriting rate %d with %d", *rate, codec_rate);
-    *rate = codec_rate;
-  } else {
-    GST_INFO ("Retaining rate %d", codec_rate);
-  }
-
-  return layout;
 }
 
 /* The AAC decoder requires the entire mpeg4 audio elementary stream 
@@ -459,7 +392,7 @@ make_aac_magic_cookie (GstBuffer * codec_data, gsize * len)
 }
 
 static void
-close_decoder (QTWrapperAudioDecoder *qtwrapper)
+close_decoder (QTWrapperAudioDecoder * qtwrapper)
 {
   if (qtwrapper->adec) {
     CloseComponent (qtwrapper->adec);
@@ -491,7 +424,6 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
   const GValue *value;
   GstBuffer *codec_data = NULL;
   gboolean have_esds = FALSE;
-  AudioChannelLayout *input_layout = NULL;
 
   /* Clean up any existing decoder */
   close_decoder (qtwrapper);
@@ -514,12 +446,10 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
 
   if (codec_data
       && oclass->componentSubType == QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a')) {
-    /* QuickTime/iTunes creates AAC files with the wrong channel count in the 
-     * header, so parse that out of the codec data if we can. The wrong sample 
-     * rate is also occasionally found.
+    /* QuickTime/iTunes creates AAC files with the wrong channel count in the header,
+       so parse that out of the codec data if we can.
      */
-    input_layout = aac_parse_codec_data (codec_data, (guint *) &channels,
-            (guint *) &rate);
+    aac_parse_codec_data (codec_data, &channels);
   }
 
   /* If the quicktime demuxer gives us a full esds atom, use that instead of 
@@ -605,21 +535,11 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
     goto beach;
   }
 
-  /* Set the input channel layout, if we know about it */
-  if (input_layout) {
-    const gsize buffer_size = sizeof (AudioChannelLayout) +
-            sizeof (AudioChannelDescription) * (channels - 1);
-    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
-            kQTSCAudioPropertyID_InputChannelLayout, buffer_size, input_layout);
-    if (status) {
-      GST_WARNING_OBJECT (qtwrapper,
-          "Error setting input channel layout: %ld", status);
-    }
-  }
+  /* TODO: we can select a channel layout here, figure out if we want to */
 
   /* if we have codec_data, give it to the converter ! */
   if (codec_data) {
-    gsize len;
+    gsize len = 0;
     gpointer magiccookie;
 
     switch (oclass->componentSubType) {
@@ -660,6 +580,8 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
             status);
         goto beach;
       }
+
+      g_free (magiccookie);
     }
   }
 
@@ -751,73 +673,9 @@ open_decoder (QTWrapperAudioDecoder * qtwrapper, GstCaps * caps,
       "rate", G_TYPE_INT, qtwrapper->samplerate, "channels", G_TYPE_INT,
       qtwrapper->channels, NULL);
 
-  /* If we have input layout, set an output layout too, if we can */
-  if (input_layout) {
-    guint32 i;
-    const gsize qt_buffer_size = sizeof (AudioChannelLayout) +
-            sizeof (AudioChannelDescription) * (channels - 1);
-    GstAudioChannelPosition *output_position =
-            g_malloc (sizeof(GstAudioChannelPosition) * qtwrapper->channels);
-    for (i = 0; i < qtwrapper->channels; ++i) {
-      switch (input_layout->mChannelDescriptions[i].mChannelLabel) {
-      case kAudioChannelLabel_Left:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT;
-        break;
-      case kAudioChannelLabel_Right:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT;
-        break;
-      case kAudioChannelLabel_Center:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER;
-        break;
-      case kAudioChannelLabel_LFEScreen:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_LFE;
-        break;
-      case kAudioChannelLabel_LeftSurround:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_LEFT;
-        break;
-      case kAudioChannelLabel_RightSurround:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT;
-        break;
-      case kAudioChannelLabel_LeftCenter:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER;
-        break;
-      case kAudioChannelLabel_RightCenter:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER;
-        break;
-      case kAudioChannelLabel_CenterSurround:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_REAR_CENTER;
-        break;
-      case kAudioChannelLabel_LeftSurroundDirect:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT;
-        break;
-      case kAudioChannelLabel_RightSurroundDirect:
-        output_position[i] = GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT;
-        break;
-      }
-    }
-    GST_MEMDUMP_OBJECT (qtwrapper, "ouput channel positions", output_position,
-            sizeof(GstAudioChannelPosition) * qtwrapper->channels);
-    GST_MEMDUMP_OBJECT (qtwrapper, "output QT channel layout", input_layout,
-            qt_buffer_size);
-
-    status = QTSetComponentProperty (qtwrapper->adec, kQTPropertyClass_SCAudio,
-            kQTSCAudioPropertyID_ChannelLayout, qt_buffer_size, input_layout);
-    if (status) {
-      GST_WARNING_OBJECT (qtwrapper,
-          "Error setting quicktime output channel layout: %ld", status);
-    } else {
-      GstStructure *str = gst_caps_get_structure (*othercaps, 0);
-      gst_audio_set_channel_positions (str, output_position);
-    }
-    g_free (output_position);
-  }
-
   ret = TRUE;
 
 beach:
-  if (input_layout) {
-    g_free (input_layout);
-  }
   return ret;
 }
 
@@ -889,9 +747,10 @@ process_buffer_cb (ComponentInstance inAudioConverter,
     return noErr;
   }
 
-  GST_LOG_OBJECT (qtwrapper, "No remaining input data, returning 42 for hack");
+  GST_LOG_OBJECT (qtwrapper,
+      "No remaining input data, returning NO_MORE_INPUT_DATA");
 
-  return 42;
+  return NO_MORE_INPUT_DATA;
 }
 
 static GstFlowReturn
@@ -904,8 +763,6 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
   guint32 outsamples;
   guint32 savedbytes;
   guint32 realbytes;
-  gboolean padding = FALSE;
-  QTWrapperAudioDecoderClass *oclass;
 
   qtwrapper = (QTWrapperAudioDecoder *) gst_pad_get_parent (pad);
 
@@ -923,45 +780,17 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
 #endif
 
   if (qtwrapper->gotnewsegment) {
-    GST_INFO_OBJECT (qtwrapper, "SCAudioReset()");
+
+    GST_DEBUG_OBJECT (qtwrapper, "SCAudioReset()");
 
     SCAudioReset (qtwrapper->adec);
 
     /* some formats can give us a better initial time using the buffer
      * timestamp. */
-    if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (buf))) {
+    if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (buf)))
       qtwrapper->initial_time = GST_BUFFER_TIMESTAMP (buf);
-      GST_LOG ("initial_time is now %" GST_TIME_FORMAT, GST_TIME_ARGS (qtwrapper->initial_time));
-    }
 
     qtwrapper->gotnewsegment = FALSE;
-    padding = TRUE;
-  }
-
-  oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
-  if (padding && oclass->componentSubType == QT_MAKE_FOURCC_LE ('.', 'm', 'p', '3'))
-  {
-    /* For gapless playback, we want to introduce a 529 sample delay - to make the quicktime
-       decoder behave like our other decoders. This is really a bit nasty... */
-    int padsize = 529 * qtwrapper->channels * sizeof(float);
-    GstBuffer *padbuf;
-
-    ret = gst_pad_alloc_buffer (qtwrapper->srcpad, qtwrapper->cur_offset,
-        padsize, GST_PAD_CAPS (qtwrapper->srcpad), &padbuf);
-    if (ret != GST_FLOW_OK)
-      goto beach;
-
-    memset (GST_BUFFER_DATA (padbuf), 0, padsize);
-    qtwrapper->cur_offset += 529;
-
-    GST_BUFFER_TIMESTAMP (padbuf) = qtwrapper->initial_time;
-    GST_BUFFER_DURATION (padbuf) = GST_SECOND * 529 / qtwrapper->samplerate;
-
-    ret = gst_pad_push (qtwrapper->srcpad, padbuf);
-    if (ret != GST_FLOW_OK) {
-      gst_buffer_unref (padbuf);
-      goto beach;
-    }
   }
 
   outsamples = qtwrapper->bufferlist->mBuffers[0].mDataByteSize / 8;
@@ -979,8 +808,7 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
         (SCAudioInputDataProc) process_buffer_cb,
         qtwrapper, (UInt32 *) & outsamples, qtwrapper->bufferlist, NULL);
 
-    /* TODO: What's this '42' crap?? It does seem to be needed, though. */
-    if ((status != noErr) && (status != 42)) {
+    if ((status != noErr) && (status != NO_MORE_INPUT_DATA)) {
       if (status < 0)
         GST_WARNING_OBJECT (qtwrapper,
             "Error in SCAudioFillBuffer() : %d", (gint32) status);
@@ -1009,7 +837,7 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
       goto beach;
 
     /* copy data from bufferlist to output buffer */
-    g_memmove (GST_BUFFER_DATA (outbuf),
+    memmove (GST_BUFFER_DATA (outbuf),
         qtwrapper->bufferlist->mBuffers[0].mData, realbytes);
 
     /* 5. calculate timestamp and duration */
@@ -1038,7 +866,7 @@ qtwrapper_audio_decoder_chain (GstPad * pad, GstBuffer * buf)
 
     GST_DEBUG_OBJECT (qtwrapper,
         "Read %d bytes, could have read up to %d bytes", realbytes, savedbytes);
-  } while (realbytes == savedbytes);
+  } while (status != NO_MORE_INPUT_DATA);
 
 beach:
   gst_buffer_unref (buf);
@@ -1090,7 +918,8 @@ qtwrapper_audio_decoder_sink_event (GstPad * pad, GstEvent * event)
 
       GST_LOG ("initial_time is now %" GST_TIME_FORMAT, GST_TIME_ARGS (start));
 
-      qtwrapper->gotnewsegment = TRUE;
+      if (qtwrapper->adec)
+        qtwrapper->gotnewsegment = TRUE;
 
       break;
     }
@@ -1107,10 +936,10 @@ qtwrapper_audio_decoder_sink_event (GstPad * pad, GstEvent * event)
 static void
 qtwrapper_audio_decoder_base_init (QTWrapperAudioDecoderClass * klass)
 {
-  GstElementDetails details;
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   gchar *name = NULL;
   gchar *info = NULL;
+  char *longname, *description;
   ComponentDescription desc;
   QTWrapperAudioDecoderParams *params;
 
@@ -1122,19 +951,19 @@ qtwrapper_audio_decoder_base_init (QTWrapperAudioDecoderClass * klass)
   get_name_info_from_component (params->component, &desc, &name, &info);
 
   /* Fill in details */
-  details.longname = g_strdup_printf ("QTWrapper SCAudio Audio Decoder : %s",
+  longname =
+      g_strdup_printf ("QTWrapper SCAudio Audio Decoder : %s",
       GST_STR_NULL (name));
-  details.klass = "Codec/Decoder/Audio";
-  details.description =
+  description =
       g_strdup_printf ("QTWrapper SCAudio wrapper for decoder: %s",
       GST_STR_NULL (info));
-  details.author =
+  gst_element_class_set_metadata (element_class,
+      longname, "Codec/Decoder/Audio", description,
       "Fluendo <gstreamer@fluendo.com>, "
-      "Pioneers of the Inevitable <songbird@songbirdnest.com>";
-  gst_element_class_set_details (element_class, &details);
+      "Pioneers of the Inevitable <songbird@songbirdnest.com>");
 
-  g_free (details.longname);
-  g_free (details.description);
+  g_free (longname);
+  g_free (description);
   g_free (name);
   g_free (info);
 
@@ -1149,10 +978,12 @@ qtwrapper_audio_decoder_base_init (QTWrapperAudioDecoderClass * klass)
   klass->componentSubType = desc.componentSubType;
 }
 
-static void qtwrapper_audio_decoder_dispose (GObject * object)
+static void
+qtwrapper_audio_decoder_dispose (GObject * object)
 {
-  QTWrapperAudioDecoder *qtwrapper = (QTWrapperAudioDecoder *)object;
-  QTWrapperAudioDecoderClass *oclass = (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
+  QTWrapperAudioDecoder *qtwrapper = (QTWrapperAudioDecoder *) object;
+  QTWrapperAudioDecoderClass *oclass =
+      (QTWrapperAudioDecoderClass *) (G_OBJECT_GET_CLASS (qtwrapper));
   GObjectClass *parent_class = g_type_class_peek_parent (oclass);
 
   close_decoder (qtwrapper);

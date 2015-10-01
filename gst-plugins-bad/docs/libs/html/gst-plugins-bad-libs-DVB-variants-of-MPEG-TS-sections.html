@@ -1,0 +1,1131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DVB variants of MPEG-TS sections: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="mpegts.html" title="Mpeg TS helper library">
+<link rel="prev" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-sections.html" title="ATSC variants of MPEG-TS sections">
+<link rel="next" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.html" title="ATSC variants of MPEG-TS descriptors">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="mpegts.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-sections.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.top_of_page"></a>DVB variants of MPEG-TS sections</span></h2>
+<p>DVB variants of MPEG-TS sections — Sections for the various DVB specifications</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="returnvalue">GstMpegtsNIT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-nit" title="gst_mpegts_section_get_nit ()">gst_mpegts_section_get_nit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="returnvalue">GstMpegtsNIT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-nit-new" title="gst_mpegts_nit_new ()">gst_mpegts_nit_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNITStream" title="struct GstMpegtsNITStream"><span class="returnvalue">GstMpegtsNITStream</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-nit-stream-new" title="gst_mpegts_nit_stream_new ()">gst_mpegts_nit_stream_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="returnvalue">GstMpegtsSection</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-from-nit" title="gst_mpegts_section_from_nit ()">gst_mpegts_section_from_nit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBAT" title="struct GstMpegtsBAT"><span class="returnvalue">GstMpegtsBAT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-bat" title="gst_mpegts_section_get_bat ()">gst_mpegts_section_get_bat</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="returnvalue">GstMpegtsSDT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-sdt" title="gst_mpegts_section_get_sdt ()">gst_mpegts_section_get_sdt</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="returnvalue">GstMpegtsSDT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-sdt-new" title="gst_mpegts_sdt_new ()">gst_mpegts_sdt_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDTService" title="struct GstMpegtsSDTService"><span class="returnvalue">GstMpegtsSDTService</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-sdt-service-new" title="gst_mpegts_sdt_service_new ()">gst_mpegts_sdt_service_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="returnvalue">GstMpegtsSection</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-from-sdt" title="gst_mpegts_section_from_sdt ()">gst_mpegts_section_from_sdt</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEIT" title="struct GstMpegtsEIT"><span class="returnvalue">GstMpegtsEIT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-eit" title="gst_mpegts_section_get_eit ()">gst_mpegts_section_get_eit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="returnvalue">GstDateTime</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-tdt" title="gst_mpegts_section_get_tdt ()">gst_mpegts_section_get_tdt</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsTOT" title="struct GstMpegtsTOT"><span class="returnvalue">GstMpegtsTOT</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#gst-mpegts-section-get-tot" title="gst_mpegts_section_get_tot ()">gst_mpegts_section_get_tot</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSectionDVBTableID" title="enum GstMpegtsSectionDVBTableID">GstMpegtsSectionDVBTableID</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT">GstMpegtsNIT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNITStream" title="struct GstMpegtsNITStream">GstMpegtsNITStream</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBAT" title="struct GstMpegtsBAT">GstMpegtsBAT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBATStream" title="struct GstMpegtsBATStream">GstMpegtsBATStream</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT">GstMpegtsSDT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDTService" title="struct GstMpegtsSDTService">GstMpegtsSDTService</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEIT" title="struct GstMpegtsEIT">GstMpegtsEIT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEITEvent" title="struct GstMpegtsEITEvent">GstMpegtsEITEvent</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsRunningStatus" title="enum GstMpegtsRunningStatus">GstMpegtsRunningStatus</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsTOT" title="struct GstMpegtsTOT">GstMpegtsTOT</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Enumeration-and-Flag-Types.html">GEnum</a>
+    <span class="lineart">╰──</span> GstMpegtsRunningStatus
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/mpegts/mpegts.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-nit"></a><h3>gst_mpegts_section_get_nit ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="returnvalue">GstMpegtsNIT</span></a> *
+gst_mpegts_section_get_nit (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a> contained in the <em class="parameter"><code>section</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-NIT:CAPS"><code class="literal">GST_MPEGTS_SECTION_NIT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.2.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error
+happened.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-nit-new"></a><h3>gst_mpegts_nit_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="returnvalue">GstMpegtsNIT</span></a> *
+gst_mpegts_nit_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocates and initializes a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.3.5"></a><h4>Returns</h4>
+<p> A newly allocated <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-nit-stream-new"></a><h3>gst_mpegts_nit_stream_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNITStream" title="struct GstMpegtsNITStream"><span class="returnvalue">GstMpegtsNITStream</span></a> *
+gst_mpegts_nit_stream_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocates and initializes a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNITStream" title="struct GstMpegtsNITStream"><span class="type">GstMpegtsNITStream</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.4.5"></a><h4>Returns</h4>
+<p> A newly allocated <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNITStream" title="struct GstMpegtsNITStream"><span class="type">GstMpegtsNITStream</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-from-nit"></a><h3>gst_mpegts_section_from_nit ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="returnvalue">GstMpegtsSection</span></a> *
+gst_mpegts_section_from_nit (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a> *nit</code></em>);</pre>
+<p>Ownership of <em class="parameter"><code>nit</code></em>
+ is taken. The data in <em class="parameter"><code>nit</code></em>
+ is managed by the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>nit</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsNIT" title="struct GstMpegtsNIT"><span class="type">GstMpegtsNIT</span></a> to create the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> from. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.5.6"></a><h4>Returns</h4>
+<p> the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-bat"></a><h3>gst_mpegts_section_get_bat ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBAT" title="struct GstMpegtsBAT"><span class="returnvalue">GstMpegtsBAT</span></a> *
+gst_mpegts_section_get_bat (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBAT" title="struct GstMpegtsBAT"><span class="type">GstMpegtsBAT</span></a> contained in the <em class="parameter"><code>section</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-BAT:CAPS"><code class="literal">GST_MPEGTS_SECTION_BAT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.6.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsBAT" title="struct GstMpegtsBAT"><span class="type">GstMpegtsBAT</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error
+happened.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-sdt"></a><h3>gst_mpegts_section_get_sdt ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="returnvalue">GstMpegtsSDT</span></a> *
+gst_mpegts_section_get_sdt (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a> contained in the <em class="parameter"><code>section</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-SDT:CAPS"><code class="literal">GST_MPEGTS_SECTION_SDT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.7.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error
+happened.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-sdt-new"></a><h3>gst_mpegts_sdt_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="returnvalue">GstMpegtsSDT</span></a> *
+gst_mpegts_sdt_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocates and initializes a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.8.5"></a><h4>Returns</h4>
+<p> A newly allocated <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-sdt-service-new"></a><h3>gst_mpegts_sdt_service_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDTService" title="struct GstMpegtsSDTService"><span class="returnvalue">GstMpegtsSDTService</span></a> *
+gst_mpegts_sdt_service_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Allocates and initializes a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDTService" title="struct GstMpegtsSDTService"><span class="type">GstMpegtsSDTService</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.9.5"></a><h4>Returns</h4>
+<p> A newly allocated <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDTService" title="struct GstMpegtsSDTService"><span class="type">GstMpegtsSDTService</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-from-sdt"></a><h3>gst_mpegts_section_from_sdt ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="returnvalue">GstMpegtsSection</span></a> *
+gst_mpegts_section_from_sdt (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a> *sdt</code></em>);</pre>
+<p>Ownership of <em class="parameter"><code>sdt</code></em>
+ is taken. The data in <em class="parameter"><code>sdt</code></em>
+ is managed by the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>sdt</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsSDT" title="struct GstMpegtsSDT"><span class="type">GstMpegtsSDT</span></a> to create the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> from. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.10.6"></a><h4>Returns</h4>
+<p> the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-eit"></a><h3>gst_mpegts_section_get_eit ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEIT" title="struct GstMpegtsEIT"><span class="returnvalue">GstMpegtsEIT</span></a> *
+gst_mpegts_section_get_eit (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEIT" title="struct GstMpegtsEIT"><span class="type">GstMpegtsEIT</span></a> contained in the <em class="parameter"><code>section</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-EIT:CAPS"><code class="literal">GST_MPEGTS_SECTION_EIT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.11.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsEIT" title="struct GstMpegtsEIT"><span class="type">GstMpegtsEIT</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error
+happened.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-tdt"></a><h3>gst_mpegts_section_get_tdt ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="returnvalue">GstDateTime</span></a> *
+gst_mpegts_section_get_tdt (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="type">GstDateTime</span></a> of the TDT</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-TDT:CAPS"><code class="literal">GST_MPEGTS_SECTION_TDT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.12.6"></a><h4>Returns</h4>
+<p> The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="type">GstDateTime</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+if an error happened. Release with <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html#gst-date-time-unref"><span class="type">gst_date_time_unref</span></a> when done.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-section-get-tot"></a><h3>gst_mpegts_section_get_tot ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsTOT" title="struct GstMpegtsTOT"><span class="returnvalue">GstMpegtsTOT</span></a> *
+gst_mpegts_section_get_tot (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> *section</code></em>);</pre>
+<p>Returns the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsTOT" title="struct GstMpegtsTOT"><span class="type">GstMpegtsTOT</span></a> contained in the <em class="parameter"><code>section</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>section</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> of type <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GST-MPEGTS-SECTION-TOT:CAPS"><code class="literal">GST_MPEGTS_SECTION_TOT</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.5.7.8.13.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsTOT" title="struct GstMpegtsTOT"><span class="type">GstMpegtsTOT</span></a> contained in the section, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error
+happened.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstMpegtsSectionDVBTableID"></a><h3>enum GstMpegtsSectionDVBTableID</h3>
+<p>Values for a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSection"><span class="type">GstMpegtsSection</span></a> table_id.</p>
+<p>These are the registered DVB table_id variants.</p>
+<p>see also: <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html#GstMpegtsSectionTableID" title="enum GstMpegtsSectionTableID"><span class="type">GstMpegtsSectionTableID</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.2.6"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-NETWORK-INFORMATION-ACTUAL-NETWORK:CAPS"></a>GST_MTS_TABLE_ID_NETWORK_INFORMATION_ACTUAL_NETWORK</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-NETWORK-INFORMATION-OTHER-NETWORK:CAPS"></a>GST_MTS_TABLE_ID_NETWORK_INFORMATION_OTHER_NETWORK</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-SERVICE-DESCRIPTION-ACTUAL-TS:CAPS"></a>GST_MTS_TABLE_ID_SERVICE_DESCRIPTION_ACTUAL_TS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-SERVICE-DESCRIPTION-OTHER-TS:CAPS"></a>GST_MTS_TABLE_ID_SERVICE_DESCRIPTION_OTHER_TS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-BOUQUET-ASSOCIATION:CAPS"></a>GST_MTS_TABLE_ID_BOUQUET_ASSOCIATION</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-ACTUAL-TS-PRESENT:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_ACTUAL_TS_PRESENT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-OTHER-TS-PRESENT:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_OTHER_TS_PRESENT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-ACTUAL-TS-SCHEDULE-1:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_ACTUAL_TS_SCHEDULE_1</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-ACTUAL-TS-SCHEDULE-N:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_ACTUAL_TS_SCHEDULE_N</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-OTHER-TS-SCHEDULE-1:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_OTHER_TS_SCHEDULE_1</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-EVENT-INFORMATION-OTHER-TS-SCHEDULE-N:CAPS"></a>GST_MTS_TABLE_ID_EVENT_INFORMATION_OTHER_TS_SCHEDULE_N</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TIME-DATE:CAPS"></a>GST_MTS_TABLE_ID_TIME_DATE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-RUNNING-STATUS:CAPS"></a>GST_MTS_TABLE_ID_RUNNING_STATUS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-STUFFING:CAPS"></a>GST_MTS_TABLE_ID_STUFFING</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TIME-OFFSET:CAPS"></a>GST_MTS_TABLE_ID_TIME_OFFSET</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-APPLICATION-INFORMATION-TABLE:CAPS"></a>GST_MTS_TABLE_ID_APPLICATION_INFORMATION_TABLE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CONTAINER:CAPS"></a>GST_MTS_TABLE_ID_CONTAINER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-RELATED-CONTENT:CAPS"></a>GST_MTS_TABLE_ID_RELATED_CONTENT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CONTENT-IDENTIFIER:CAPS"></a>GST_MTS_TABLE_ID_CONTENT_IDENTIFIER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-MPE-FEC:CAPS"></a>GST_MTS_TABLE_ID_MPE_FEC</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-RESOLUTION-NOTIFICATION:CAPS"></a>GST_MTS_TABLE_ID_RESOLUTION_NOTIFICATION</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-MPE-IFEC:CAPS"></a>GST_MTS_TABLE_ID_MPE_IFEC</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-DISCONTINUITY-INFORMATION:CAPS"></a>GST_MTS_TABLE_ID_DISCONTINUITY_INFORMATION</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-SELECTION-INFORMATION:CAPS"></a>GST_MTS_TABLE_ID_SELECTION_INFORMATION</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CA-MESSAGE-ECM-0:CAPS"></a>GST_MTS_TABLE_ID_CA_MESSAGE_ECM_0</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CA-MESSAGE-ECM-1:CAPS"></a>GST_MTS_TABLE_ID_CA_MESSAGE_ECM_1</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CA-MESSAGE-SYSTEM-PRIVATE-1:CAPS"></a>GST_MTS_TABLE_ID_CA_MESSAGE_SYSTEM_PRIVATE_1</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CA-MESSAGE-SYSTEM-PRIVATE-N:CAPS"></a>GST_MTS_TABLE_ID_CA_MESSAGE_SYSTEM_PRIVATE_N</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-SCT:CAPS"></a>GST_MTS_TABLE_ID_SCT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-FCT:CAPS"></a>GST_MTS_TABLE_ID_FCT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TCT:CAPS"></a>GST_MTS_TABLE_ID_TCT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-SPT:CAPS"></a>GST_MTS_TABLE_ID_SPT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-CMT:CAPS"></a>GST_MTS_TABLE_ID_CMT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TBTP:CAPS"></a>GST_MTS_TABLE_ID_TBTP</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-PCR-PACKET-PAYLOAD:CAPS"></a>GST_MTS_TABLE_ID_PCR_PACKET_PAYLOAD</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TRANSMISSION-MODE-SUPPORT-PAYLOAD:CAPS"></a>GST_MTS_TABLE_ID_TRANSMISSION_MODE_SUPPORT_PAYLOAD</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-TIM:CAPS"></a>GST_MTS_TABLE_ID_TIM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MTS-TABLE-ID-LL-FEC-PARITY-DATA-TABLE:CAPS"></a>GST_MTS_TABLE_ID_LL_FEC_PARITY_DATA_TABLE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsNIT"></a><h3>struct GstMpegtsNIT</h3>
+<pre class="programlisting">struct GstMpegtsNIT {
+  gboolean   actual_network;
+  guint16    network_id;
+
+  GPtrArray  *descriptors;
+
+  GPtrArray *streams;
+};
+</pre>
+<p>Network Information Table (ISO/IEC 13818-1 / EN 300 468)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsNIT.actual-network"></a>actual_network</code></em>;</p></td>
+<td class="struct_member_description"><p>Whether this NIT corresponds to the actual stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsNIT.network-id"></a>network_id</code></em>;</p></td>
+<td class="struct_member_description"><p>ID of the network that this NIT describes</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsNIT.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p> the global descriptors. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsNIT.streams"></a>streams</code></em>;</p></td>
+<td class="struct_member_description"><p> the streams. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsNITStream]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsNITStream"></a><h3>struct GstMpegtsNITStream</h3>
+<pre class="programlisting">struct GstMpegtsNITStream {
+  guint16  transport_stream_id;
+  guint16  original_network_id;
+
+  GPtrArray  *descriptors;
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsNITStream.transport-stream-id"></a>transport_stream_id</code></em>;</p></td>
+<td class="struct_member_description"> </td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsNITStream.original-network-id"></a>original_network_id</code></em>;</p></td>
+<td class="struct_member_description"> </td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsNITStream.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p>. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsBAT"></a><h3>struct GstMpegtsBAT</h3>
+<pre class="programlisting">struct GstMpegtsBAT {
+  GPtrArray  *descriptors;
+
+  GPtrArray  *streams;
+};
+</pre>
+<p>DVB Bouquet Association Table (EN 300 468)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.5.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsBAT.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p>. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsBAT.streams"></a>streams</code></em>;</p></td>
+<td class="struct_member_description"><p>. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsBATStream]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsBATStream"></a><h3>struct GstMpegtsBATStream</h3>
+<pre class="programlisting">struct GstMpegtsBATStream {
+  guint16   transport_stream_id;
+  guint16   original_network_id;
+
+  GPtrArray   *descriptors;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsSDT"></a><h3>struct GstMpegtsSDT</h3>
+<pre class="programlisting">struct GstMpegtsSDT {
+  guint16    original_network_id;
+  gboolean   actual_ts;
+  guint16    transport_stream_id;
+
+  GPtrArray *services;
+};
+</pre>
+<p>Service Description Table (EN 300 468)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.7.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsSDT.original-network-id"></a>original_network_id</code></em>;</p></td>
+<td class="struct_member_description"><p>Network ID of the originating delivery system</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsSDT.actual-ts"></a>actual_ts</code></em>;</p></td>
+<td class="struct_member_description"><p>True if the table describes this transport stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsSDT.transport-stream-id"></a>transport_stream_id</code></em>;</p></td>
+<td class="struct_member_description"><p>ID of this transport stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsSDT.services"></a>services</code></em>;</p></td>
+<td class="struct_member_description"><p> List of services. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsSDTService]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsSDTService"></a><h3>struct GstMpegtsSDTService</h3>
+<pre class="programlisting">struct GstMpegtsSDTService {
+  guint16    service_id;
+
+  gboolean   EIT_schedule_flag;
+  gboolean   EIT_present_following_flag;
+  GstMpegtsRunningStatus running_status;
+  gboolean   free_CA_mode;
+
+  GPtrArray    *descriptors;
+};
+</pre>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.8.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsSDTService.service-id"></a>service_id</code></em>;</p></td>
+<td class="struct_member_description"><p>The program number this table belongs to</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsSDTService.EIT-schedule-flag"></a>EIT_schedule_flag</code></em>;</p></td>
+<td class="struct_member_description"><p>EIT schedule information is present in this transport stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsSDTService.EIT-present-following-flag"></a>EIT_present_following_flag</code></em>;</p></td>
+<td class="struct_member_description"><p>EIT present/following information is present in this transport stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsRunningStatus" title="enum GstMpegtsRunningStatus"><span class="type">GstMpegtsRunningStatus</span></a> <em class="structfield"><code><a name="GstMpegtsSDTService.running-status"></a>running_status</code></em>;</p></td>
+<td class="struct_member_description"><p>Status of this service</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsSDTService.free-CA-mode"></a>free_CA_mode</code></em>;</p></td>
+<td class="struct_member_description"><p>True if one or more streams is controlled by a CA system</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsSDTService.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p> List of descriptors. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsEIT"></a><h3>struct GstMpegtsEIT</h3>
+<pre class="programlisting">struct GstMpegtsEIT {
+  guint16        transport_stream_id;
+  guint16        original_network_id;
+  guint8         segment_last_section_number;
+  guint8         last_table_id;
+
+  gboolean       actual_stream;
+  gboolean       present_following;
+
+  GPtrArray     *events;
+};
+</pre>
+<p>Event Information Table (EN 300 468)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.9.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsEIT.transport-stream-id"></a>transport_stream_id</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsEIT.original-network-id"></a>original_network_id</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMpegtsEIT.segment-last-section-number"></a>segment_last_section_number</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMpegtsEIT.last-table-id"></a>last_table_id</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsEIT.actual-stream"></a>actual_stream</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsEIT.present-following"></a>present_following</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsEIT.events"></a>events</code></em>;</p></td>
+<td class="struct_member_description"><p> List of events. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsEITEvent]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsEITEvent"></a><h3>struct GstMpegtsEITEvent</h3>
+<pre class="programlisting">struct GstMpegtsEITEvent {
+  guint16      event_id;
+
+  GstDateTime *start_time;
+  guint32      duration;
+
+  GstMpegtsRunningStatus running_status;
+  gboolean     free_CA_mode;
+
+  GPtrArray   *descriptors;
+};
+</pre>
+<p>Event from a <em class="parameter"><code>GstMpegtsEIT</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.10.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMpegtsEITEvent.event-id"></a>event_id</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="type">GstDateTime</span></a> *<em class="structfield"><code><a name="GstMpegtsEITEvent.start-time"></a>start_time</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstMpegtsEITEvent.duration"></a>duration</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html#GstMpegtsRunningStatus" title="enum GstMpegtsRunningStatus"><span class="type">GstMpegtsRunningStatus</span></a> <em class="structfield"><code><a name="GstMpegtsEITEvent.running-status"></a>running_status</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegtsEITEvent.free-CA-mode"></a>free_CA_mode</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsEITEvent.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p> List of descriptors. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsRunningStatus"></a><h3>enum GstMpegtsRunningStatus</h3>
+<p>Running status of a service.</p>
+<p>Corresponds to table 6 of ETSI EN 300 468 (v1.13.0)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.11.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-UNDEFINED:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_UNDEFINED</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-NOT-RUNNING:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_NOT_RUNNING</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-STARTS-IN-FEW-SECONDS:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_STARTS_IN_FEW_SECONDS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-PAUSING:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_PAUSING</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-RUNNING:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_RUNNING</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MPEGTS-RUNNING-STATUS-OFF-AIR:CAPS"></a>GST_MPEGTS_RUNNING_STATUS_OFF_AIR</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegtsTOT"></a><h3>struct GstMpegtsTOT</h3>
+<pre class="programlisting">struct GstMpegtsTOT {
+  GstDateTime   *utc_time;
+
+  GPtrArray     *descriptors;
+};
+</pre>
+<p>Time Offset Table (EN 300 468)</p>
+<div class="refsect3">
+<a name="id-1.2.5.7.9.12.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstDateTime.html"><span class="type">GstDateTime</span></a> *<em class="structfield"><code><a name="GstMpegtsTOT.utc-time"></a>utc_time</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *<em class="structfield"><code><a name="GstMpegtsTOT.descriptors"></a>descriptors</code></em>;</p></td>
+<td class="struct_member_description"><p> List of descriptors. </p></td>
+<td class="struct_member_annotations"><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegtsDescriptor]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

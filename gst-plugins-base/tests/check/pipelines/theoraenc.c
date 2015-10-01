@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -36,9 +36,9 @@
 
 #define check_buffer_is_header(buffer,is_header) \
   fail_unless (GST_BUFFER_FLAG_IS_SET (buffer,   \
-          GST_BUFFER_FLAG_IN_CAPS) == is_header, \
+          GST_BUFFER_FLAG_HEADER) == is_header, \
       "GST_BUFFER_IN_CAPS is set to %d but expected %d", \
-      GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_IN_CAPS), is_header)
+      GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_HEADER), is_header)
 
 #define check_buffer_timestamp(buffer,timestamp) \
   fail_unless (GST_BUFFER_TIMESTAMP (buffer) == timestamp, \
@@ -135,7 +135,7 @@ GST_START_TEST (test_granulepos_offset)
   GError *error = NULL;
 
   pipe_str = g_strdup_printf ("videotestsrc timestamp-offset=%" G_GUINT64_FORMAT
-      " num-buffers=10 ! video/x-raw-yuv,format=(fourcc)I420,framerate=10/1"
+      " num-buffers=10 ! video/x-raw,format=(string)I420,framerate=10/1"
       " ! theoraenc ! fakesink name=fs0", TIMESTAMP_OFFSET);
 
   bin = gst_parse_launch (pipe_str, &error);
@@ -228,7 +228,7 @@ GST_START_TEST (test_continuity)
   GError *error = NULL;
 
   pipe_str = g_strdup_printf ("videotestsrc num-buffers=10"
-      " ! video/x-raw-yuv,format=(fourcc)I420,framerate=10/1"
+      " ! video/x-raw,format=(string)I420,framerate=10/1"
       " ! theoraenc ! fakesink name=fs0");
 
   bin = gst_parse_launch (pipe_str, &error);
@@ -272,7 +272,6 @@ GST_START_TEST (test_continuity)
 
   {
     GstClockTime next_timestamp;
-    gint64 last_granulepos;
 
     /* first buffer should have timestamp of TIMESTAMP_OFFSET, granulepos to
      * match the timestamp of the end of the last sample in the output buffer.
@@ -281,7 +280,6 @@ GST_START_TEST (test_continuity)
      * take care to timestamp correctly based on the offset of the input data
      * however, so it does do sub-granulepos timestamping. */
     buffer = gst_buffer_straw_get_buffer (bin, pad);
-    last_granulepos = GST_BUFFER_OFFSET_END (buffer);
     check_buffer_timestamp (buffer, 0);
     /* plain division because I know the answer is exact */
     check_buffer_duration (buffer, GST_SECOND / 10);
@@ -310,120 +308,6 @@ GST_START_TEST (test_continuity)
 
 GST_END_TEST;
 
-static gboolean
-drop_second_data_buffer (GstPad * droppad, GstBuffer * buffer, gpointer unused)
-{
-  return !(GST_BUFFER_OFFSET (buffer) == 1);
-}
-
-GST_START_TEST (test_discontinuity)
-{
-  GstElement *bin;
-  GstPad *pad, *droppad;
-  gchar *pipe_str;
-  GstBuffer *buffer;
-  GError *error = NULL;
-  guint drop_id;
-
-  pipe_str = g_strdup_printf ("videotestsrc num-buffers=10"
-      " ! video/x-raw-yuv,format=(fourcc)I420,framerate=10/1"
-      " ! theoraenc ! fakesink name=fs0");
-
-  bin = gst_parse_launch (pipe_str, &error);
-  fail_unless (bin != NULL, "Error parsing pipeline: %s",
-      error ? error->message : "(invalid error)");
-  g_free (pipe_str);
-
-  /* the plan: same as test_continuity, but dropping a buffer and seeing if
-     theoraenc correctly notes the discontinuity */
-
-  /* get the pad to use to drop buffers */
-  {
-    GstElement *sink = gst_bin_get_by_name (GST_BIN (bin), "theoraenc0");
-
-    fail_unless (sink != NULL, "Could not get theoraenc out of bin");
-    droppad = gst_element_get_static_pad (sink, "sink");
-    fail_unless (droppad != NULL, "Could not get pad out of theoraenc");
-    gst_object_unref (sink);
-  }
-
-  /* get the pad */
-  {
-    GstElement *sink = gst_bin_get_by_name (GST_BIN (bin), "fs0");
-
-    fail_unless (sink != NULL, "Could not get fakesink out of bin");
-    pad = gst_element_get_static_pad (sink, "sink");
-    fail_unless (pad != NULL, "Could not get pad out of fakesink");
-    gst_object_unref (sink);
-  }
-
-  drop_id = gst_pad_add_buffer_probe (droppad,
-      G_CALLBACK (drop_second_data_buffer), NULL);
-  gst_buffer_straw_start_pipeline (bin, pad);
-
-  /* header packets should have timestamp == NONE, granulepos 0 */
-  buffer = gst_buffer_straw_get_buffer (bin, pad);
-  check_buffer_timestamp (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_duration (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_granulepos (buffer, 0);
-  check_buffer_is_header (buffer, TRUE);
-  gst_buffer_unref (buffer);
-
-  buffer = gst_buffer_straw_get_buffer (bin, pad);
-  check_buffer_timestamp (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_duration (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_granulepos (buffer, 0);
-  check_buffer_is_header (buffer, TRUE);
-  gst_buffer_unref (buffer);
-
-  buffer = gst_buffer_straw_get_buffer (bin, pad);
-  check_buffer_timestamp (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_duration (buffer, GST_CLOCK_TIME_NONE);
-  check_buffer_granulepos (buffer, 0);
-  check_buffer_is_header (buffer, TRUE);
-  gst_buffer_unref (buffer);
-
-  {
-    buffer = gst_buffer_straw_get_buffer (bin, pad);
-    check_buffer_timestamp (buffer, 0);
-    /* plain division because I know the answer is exact */
-    check_buffer_duration (buffer, GST_SECOND / 10);
-    check_buffer_granulepos (buffer, 1 << GRANULEPOS_SHIFT);
-    check_buffer_is_header (buffer, FALSE);
-    fail_if (GST_BUFFER_IS_DISCONT (buffer), "expected continuous buffer yo");
-    gst_buffer_unref (buffer);
-
-    /* check discontinuity with the next buffer */
-    buffer = gst_buffer_straw_get_buffer (bin, pad);
-    check_buffer_duration (buffer, GST_SECOND / 10);
-    /* After a discont, we'll always get a keyframe, so this one should be 
-     * 3<<GRANULEPOS_SHIFT */
-    check_buffer_granulepos (buffer, 3 << GRANULEPOS_SHIFT);
-    check_buffer_is_header (buffer, FALSE);
-    fail_unless (GST_BUFFER_IS_DISCONT (buffer),
-        "expected discontinuous buffer yo");
-    gst_buffer_unref (buffer);
-
-    /* Then the buffer after that should be continuous */
-    buffer = gst_buffer_straw_get_buffer (bin, pad);
-    fail_if (GST_BUFFER_IS_DISCONT (buffer), "expected continuous buffer yo");
-    /* plain division because I know the answer is exact */
-    check_buffer_duration (buffer, GST_SECOND / 10);
-    check_buffer_granulepos (buffer, (3 << GRANULEPOS_SHIFT) | 1);
-    check_buffer_is_header (buffer, FALSE);
-    gst_buffer_unref (buffer);
-  }
-
-  gst_buffer_straw_stop_pipeline (bin, pad);
-  gst_pad_remove_buffer_probe (droppad, drop_id);
-
-  gst_object_unref (droppad);
-  gst_object_unref (pad);
-  gst_object_unref (bin);
-}
-
-GST_END_TEST;
-
 #endif /* #ifndef GST_DISABLE_PARSE */
 
 static Suite *
@@ -439,25 +323,9 @@ theoraenc_suite (void)
 #ifndef GST_DISABLE_PARSE
   tcase_add_test (tc_chain, test_granulepos_offset);
   tcase_add_test (tc_chain, test_continuity);
-  tcase_add_test (tc_chain, test_discontinuity);
 #endif
 
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = theoraenc_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (theoraenc);

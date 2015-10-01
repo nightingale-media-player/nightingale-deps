@@ -15,9 +15,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -84,7 +88,7 @@ gst_musepackdec_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
 
-  gst_element_class_set_details_simple (element_class, "Musepack decoder",
+  gst_element_class_set_static_metadata (element_class, "Musepack decoder",
       "Codec/Decoder/Audio",
       "Musepack decoder", "Ronald Bultje <rbultje@ronald.bitfreak.net>");
 }
@@ -257,7 +261,7 @@ gst_musepackdec_handle_seek_event (GstMusepackDec * dec, GstEvent * event)
   GST_DEBUG_OBJECT (dec, "seek successful");
 
   gst_pad_start_task (dec->sinkpad,
-      (GstTaskFunction) gst_musepackdec_loop, dec->sinkpad);
+      (GstTaskFunction) gst_musepackdec_loop, dec->sinkpad, NULL);
 
   GST_PAD_STREAM_UNLOCK (dec->sinkpad);
 
@@ -489,7 +493,7 @@ gst_musepackdec_sink_activate_pull (GstPad * sinkpad, gboolean active)
 
   if (active) {
     result = gst_pad_start_task (sinkpad,
-        (GstTaskFunction) gst_musepackdec_loop, sinkpad);
+        (GstTaskFunction) gst_musepackdec_loop, sinkpad, NULL);
   } else {
     result = gst_pad_stop_task (sinkpad);
   }
@@ -597,6 +601,8 @@ gst_musepackdec_loop (GstPad * sinkpad)
     gst_element_post_message (GST_ELEMENT (musepackdec),
         gst_message_new_segment_done (GST_OBJECT (musepackdec),
             GST_FORMAT_TIME, stop_time));
+    gst_pad_push_event (musepackdec->srcpad,
+        gst_event_new_segment_done (GST_FORMAT_TIME, stop_time));
 
     goto pause_task;
   }
@@ -662,6 +668,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "musepack",
+    musepack,
     "Musepack decoder", plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN)

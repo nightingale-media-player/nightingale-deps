@@ -39,8 +39,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_KATE_TIGER_H__
@@ -49,6 +49,8 @@
 #include <kate/kate.h>
 #include <tiger/tiger.h>
 #include <gst/gst.h>
+#include <gst/video/video.h>
+#include <gst/video/video-overlay-composition.h>
 #include "gstkateutil.h"
 
 G_BEGIN_DECLS
@@ -68,13 +70,11 @@ typedef struct _GstKateTigerClass GstKateTigerClass;
 
 struct _GstKateTiger
 {
-  GstElement element;
+  GstKateDecoderBase decoder;
 
   GstPad *katesinkpad;
   GstPad *videosinkpad;
   GstPad *srcpad;
-
-  GstKateDecoderBase decoder;
 
   tiger_renderer *tr;
 
@@ -90,11 +90,21 @@ struct _GstKateTiger
   guchar default_background_g;
   guchar default_background_b;
   guchar default_background_a;
+  gboolean silent;
 
+  GstVideoFormat video_format;
   gint video_width;
   gint video_height;
+  gboolean swap_rgb;
+  GstBuffer *render_buffer;
+  GstVideoOverlayComposition *composition;
 
   GMutex *mutex;
+  GCond *cond;
+
+  GstSegment video_segment;
+  gboolean video_flushing;
+  gboolean seen_header;
 };
 
 struct _GstKateTigerClass

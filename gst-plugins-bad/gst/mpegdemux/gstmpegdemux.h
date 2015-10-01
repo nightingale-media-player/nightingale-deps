@@ -29,8 +29,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * The Original Code is Fluendo MPEG Demuxer plugin.
  *
@@ -39,69 +39,79 @@
  * Fluendo, S.L. All Rights Reserved.
  *
  * Contributor(s): Wim Taymans <wim@fluendo.com>
+ *                 Jan Schmidt <thaytan@noraisin.net>
  */
 
-#ifndef __GST_FLUPS_DEMUX_H__
-#define __GST_FLUPS_DEMUX_H__
+#ifndef __GST_PS_DEMUX_H__
+#define __GST_PS_DEMUX_H__
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 
 #include "gstpesfilter.h"
 
 G_BEGIN_DECLS
-#define GST_TYPE_FLUPS_DEMUX		(gst_flups_demux_get_type())
-#define GST_FLUPS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_FLUPS_DEMUX,GstFluPSDemux))
-#define GST_FLUPS_DEMUX_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_FLUPS_DEMUX,GstFluPSDemuxClass))
-#define GST_FLUPS_DEMUX_GET_CLASS(klass) (G_TYPE_INSTANCE_GET_CLASS((klass),GST_TYPE_FLUPS_DEMUX,GstFluPSDemuxClass))
-#define GST_IS_FLUPS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_FLUPS_DEMUX))
-#define GST_IS_FLUPS_DEMUX_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FLUPS_DEMUX))
-typedef struct _GstFluPSStream GstFluPSStream;
-typedef struct _GstFluPSDemux GstFluPSDemux;
-typedef struct _GstFluPSDemuxClass GstFluPSDemuxClass;
 
-#define GST_FLUPS_DEMUX_MAX_STREAMS	256
-#define GST_FLUPS_DEMUX_MAX_PSM		256
+#define GST_TYPE_PS_DEMUX		(gst_ps_demux_get_type())
+#define GST_PS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_PS_DEMUX,GstPsDemux))
+#define GST_PS_DEMUX_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_PS_DEMUX,GstPsDemuxClass))
+#define GST_PS_DEMUX_GET_CLASS(klass) (G_TYPE_INSTANCE_GET_CLASS((klass),GST_TYPE_PS_DEMUX,GstPsDemuxClass))
+#define GST_IS_PS_DEMUX(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_PS_DEMUX))
+#define GST_IS_PS_DEMUX_CLASS(obj)	(G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_PS_DEMUX))
 
-typedef enum
-{
-  GST_FLUPS_DEMUX_SYNC_AUTO = 0,
-  GST_FLUPS_DEMUX_SYNC_SCR = 1,
-  GST_FLUPS_DEMUX_SYNC_DTS = 2
-} GstFluPSDemuxSync;
+typedef struct _GstPsStream GstPsStream;
+typedef struct _GstPsDemux GstPsDemux;
+typedef struct _GstPsDemuxClass GstPsDemuxClass;
+
+#define GST_PS_DEMUX_MAX_STREAMS	256
+#define GST_PS_DEMUX_MAX_PSM		256
+
+#define MAX_DVD_AUDIO_STREAMS       8
+#define MAX_DVD_SUBPICTURE_STREAMS  32
 
 typedef enum
 {
-  STATE_FLUPS_DEMUX_NEED_SYNC,
-  STATE_FLUPS_DEMUX_SYNCED,
-  STATE_FLUPS_DEMUX_NEED_MORE_DATA,
-} GstFluPSDemuxState;
+  GST_PS_DEMUX_SYNC_AUTO = 0,
+  GST_PS_DEMUX_SYNC_SCR = 1,
+  GST_PS_DEMUX_SYNC_DTS = 2
+} GstPsDemuxSync;
+
+typedef enum
+{
+  STATE_PS_DEMUX_NEED_SYNC,
+  STATE_PS_DEMUX_SYNCED,
+  STATE_PS_DEMUX_NEED_MORE_DATA,
+} GstPsDemuxState;
 
 /* Information associated with a single FluPS stream. */
-struct _GstFluPSStream
+struct _GstPsStream
 {
   GstPad *pad;
 
   gint id;
   gint type;
-  gint size_bound;
 
   GstClockTime segment_thresh;
-  GstClockTime last_seg_start;
   GstClockTime last_ts;
 
   gboolean discont;
   gboolean notlinked;
   gboolean need_segment;
+
+  GstTagList *pending_tags;
 };
 
-struct _GstFluPSDemux
+struct _GstPsDemux
 {
   GstElement parent;
 
   GstPad *sinkpad;
   gboolean random_access;       /* If we operate in pull mode */
   gboolean flushing;
+
+  gboolean have_group_id;
+  guint group_id;
 
   GstAdapter *adapter;
   GstAdapter *rev_adapter;
@@ -127,29 +137,28 @@ struct _GstFluPSDemux
   guint64 first_pts;
   guint64 last_pts;
 
-  gint16 psm[GST_FLUPS_DEMUX_MAX_PSM];
+  gint16 psm[GST_PS_DEMUX_MAX_PSM];
 
   GstSegment sink_segment;
   GstSegment src_segment;
+  gboolean adjust_segment;
 
   /* stream output */
-  GstFluPSStream *current_stream;
+  GstPsStream *current_stream;
   guint64 next_pts;
   guint64 next_dts;
-  GstFluPSStream **streams;
-  GstFluPSStream **streams_found;
+  GstPsStream **streams;
+  GstPsStream **streams_found;
   gint found_count;
   gboolean need_no_more_pads;
 
+  GstFlowCombiner *flowcombiner;
+
   /* Indicates an MPEG-2 stream */
   gboolean is_mpeg2_pack;
-
-  /* Language codes event is stored when a dvd-lang-codes
-   * custom event arrives from upstream */
-  GstEvent *lang_codes;
 };
 
-struct _GstFluPSDemuxClass
+struct _GstPsDemuxClass
 {
   GstElementClass parent_class;
 
@@ -160,9 +169,7 @@ struct _GstFluPSDemuxClass
   GstPadTemplate *private_template;
 };
 
-GType gst_flups_demux_get_type (void);
-
-gboolean gst_flups_demux_plugin_init (GstPlugin * plugin);
+GType gst_ps_demux_get_type (void);
 
 G_END_DECLS
-#endif /* __GST_FLUPS_DEMUX_H__ */
+#endif /* __GST_PS_DEMUX_H__ */

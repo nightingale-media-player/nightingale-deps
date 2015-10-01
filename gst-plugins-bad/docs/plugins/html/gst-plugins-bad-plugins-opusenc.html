@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>opusenc: GStreamer Bad Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-opusdec.html" title="opusdec">
+<link rel="next" href="gst-plugins-bad-plugins-opusparse.html" title="opusparse">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-opusenc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-opusenc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-opusenc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-opusdec.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-opusparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-plugins-opusenc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-opusenc.top_of_page"></a>opusenc</span></h2>
+<p>opusenc</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--audio" title="The “audio” property">audio</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstOpusEncBandwidth</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--bandwidth" title="The “bandwidth” property">bandwidth</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--bitrate" title="The “bitrate” property">bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--cbr" title="The “cbr” property">cbr</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--complexity" title="The “complexity” property">complexity</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--constrained-vbr" title="The “constrained-vbr” property">constrained-vbr</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--dtx" title="The “dtx” property">dtx</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstOpusEncFrameSize</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--frame-size" title="The “frame-size” property">frame-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--inband-fec" title="The “inband-fec” property">inband-fec</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--max-payload-size" title="The “max-payload-size” property">max-payload-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--packet-loss-percentage" title="The “packet-loss-percentage” property">packet-loss-percentage</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstOpusEncAudioType</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--audio-type" title="The “audio-type” property">audio-type</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstOpusEncBitrateType</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc--bitrate-type" title="The “bitrate-type” property">bitrate-type</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstOpenalSrc"></a><a name="GstOpencvTextOverlay"></a><a name="GstOpusDec"></a><a name="GstOpusEnc"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-plugins-opusenc.html#GstOpusEnc-struct" title="struct GstOpusEnc">GstOpusEnc</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudioencoder.html#GstAudioEncoder">GstAudioEncoder</a>
+                    <span class="lineart">╰──</span> GstOpusEnc
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.58.10.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-opus.html#plugin-opus">opus</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Vincent Penquerc'h &lt;vincent.penquerch@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Encoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.58.10.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw, format=(string)S16LE, layout=(string)interleaved, rate=(int){ 8000, 12000, 16000, 24000, 48000 }, channels=(int)[ 1, 2 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-opus</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstOpusEnc-struct"></a><h3>struct GstOpusEnc</h3>
+<pre class="programlisting">struct GstOpusEnc;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-opusenc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstOpusEnc--audio"></a><h3>The <code class="literal">“audio”</code> property</h3>
+<pre class="programlisting">  “audio”                    <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Audio or voice (DEPRECATED: use audio-type).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--bandwidth"></a><h3>The <code class="literal">“bandwidth”</code> property</h3>
+<pre class="programlisting">  “bandwidth”                <span class="type">GstOpusEncBandwidth</span></pre>
+<p>Audio Band Width.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Full band</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--bitrate"></a><h3>The <code class="literal">“bitrate”</code> property</h3>
+<pre class="programlisting">  “bitrate”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Specify an encoding bit-rate (in bps).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [4000,650000]</p>
+<p>Default value: 64000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--cbr"></a><h3>The <code class="literal">“cbr”</code> property</h3>
+<pre class="programlisting">  “cbr”                      <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Constant bit rate (DEPRECATED: use bitrate-type).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--complexity"></a><h3>The <code class="literal">“complexity”</code> property</h3>
+<pre class="programlisting">  “complexity”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Complexity.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,10]</p>
+<p>Default value: 10</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--constrained-vbr"></a><h3>The <code class="literal">“constrained-vbr”</code> property</h3>
+<pre class="programlisting">  “constrained-vbr”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Constrained VBR (DEPRECATED: use bitrate-type).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--dtx"></a><h3>The <code class="literal">“dtx”</code> property</h3>
+<pre class="programlisting">  “dtx”                      <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>DTX.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--frame-size"></a><h3>The <code class="literal">“frame-size”</code> property</h3>
+<pre class="programlisting">  “frame-size”               <span class="type">GstOpusEncFrameSize</span></pre>
+<p>The duration of an audio frame, in ms.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 20</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--inband-fec"></a><h3>The <code class="literal">“inband-fec”</code> property</h3>
+<pre class="programlisting">  “inband-fec”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable forward error correction.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--max-payload-size"></a><h3>The <code class="literal">“max-payload-size”</code> property</h3>
+<pre class="programlisting">  “max-payload-size”         <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Maximum payload size in bytes.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [2,4000]</p>
+<p>Default value: 4000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--packet-loss-percentage"></a><h3>The <code class="literal">“packet-loss-percentage”</code> property</h3>
+<pre class="programlisting">  “packet-loss-percentage”   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Packet loss percentage.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,100]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--audio-type"></a><h3>The <code class="literal">“audio-type”</code> property</h3>
+<pre class="programlisting">  “audio-type”               <span class="type">GstOpusEncAudioType</span></pre>
+<p>What type of audio to optimize for.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Generic audio</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstOpusEnc--bitrate-type"></a><h3>The <code class="literal">“bitrate-type”</code> property</h3>
+<pre class="programlisting">  “bitrate-type”             <span class="type">GstOpusEncBitrateType</span></pre>
+<p>Bitrate type.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: CBR</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -22,7 +22,8 @@
 #define __GST_AASINK_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstbasesink.h>
+#include <gst/video/video.h>
+#include <gst/video/gstvideosink.h>
 
 #include <aalib.h>
 
@@ -46,10 +47,9 @@ typedef struct _GstAASink GstAASink;
 typedef struct _GstAASinkClass GstAASinkClass;
 
 struct _GstAASink {
-  GstBaseSink parent;
+  GstVideoSink parent;
 
-  gulong format;
-  gint width, height;
+  GstVideoInfo info;
 
   gint frames_displayed;
   guint64 frame_time;
@@ -62,11 +62,7 @@ struct _GstAASink {
 };
 
 struct _GstAASinkClass {
-  GstBaseSinkClass parent_class;
-
-  /* signals */
-  void (*frame_displayed) (GstElement *element);
-  void (*have_size)       (GstElement *element, guint width, guint height);
+  GstVideoSinkClass parent_class;
 };
 
 GType gst_aasink_get_type(void);

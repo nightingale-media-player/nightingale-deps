@@ -1,56 +1,60 @@
-lib_LTLIBRARIES = libgstcontroller-@GST_MAJORMINOR@.la
+lib_LTLIBRARIES = libgstcontroller-@GST_API_VERSION@.la
 
-libgstcontroller_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/controller
-libgstcontroller_@GST_MAJORMINOR@_include_HEADERS = \
-	gstcontroller.h \
-	gstcontrolsource.h \
+libgstcontroller_@GST_API_VERSION@_includedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/controller
+libgstcontroller_@GST_API_VERSION@_include_HEADERS = \
+	controller.h \
+	gstargbcontrolbinding.h \
+	gstdirectcontrolbinding.h \
+	gsttimedvaluecontrolsource.h \
 	gstinterpolationcontrolsource.h \
+	gsttriggercontrolsource.h \
 	gstlfocontrolsource.h
 
-noinst_HEADERS = \
-	gstcontrollerprivate.h \
-	gstinterpolationcontrolsourceprivate.h \
-	gstlfocontrolsourceprivate.h
-
-libgstcontroller_@GST_MAJORMINOR@_la_SOURCES = \
-	lib.c \
-	gstcontroller.c \
-	gstinterpolation.c \
-	gsthelper.c \
-	gstcontrolsource.c \
+libgstcontroller_@GST_API_VERSION@_la_SOURCES = \
+	gstargbcontrolbinding.c \
+	gstdirectcontrolbinding.c \
+	gsttimedvaluecontrolsource.c \
 	gstinterpolationcontrolsource.c \
+	gsttriggercontrolsource.c \
 	gstlfocontrolsource.c
 
-libgstcontroller_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
-libgstcontroller_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS) $(LIBM)
-libgstcontroller_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+libgstcontroller_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS)
+libgstcontroller_@GST_API_VERSION@_la_LIBADD = $(GST_OBJ_LIBS) $(LIBM)
+libgstcontroller_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
 CLEANFILES = *.gcno *.gcda *.gcov
 
-%.c.gcov: .libs/libgstcontroller_@GST_MAJORMINOR@_la-%.gcda %.c
+%.c.gcov: .libs/libgstcontroller_@GST_API_VERSION@_la-%.gcda %.c
 	$(GCOV) -b -f -o $^ > $@.out
 
-gcov: $(libgstcontroller_@GST_MAJORMINOR@_la_SOURCES:=.gcov)
+gcov: $(libgstcontroller_@GST_API_VERSION@_la_SOURCES:=.gcov)
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstController-@GST_MAJORMINOR@.gir
+BUILT_GIRSOURCES = GstController-@GST_API_VERSION@.gir
 
-gir_headers=$(patsubst %,$(srcdir)/%, $(libgstcontroller_@GST_MAJORMINOR@_include_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstcontroller_@GST_MAJORMINOR@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/controller/%',$(libgstcontroller_@GST_MAJORMINOR@_include_HEADERS))
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstcontroller_@GST_API_VERSION@_include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstcontroller_@GST_API_VERSION@_la_SOURCES))
 
-GstController-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstcontroller-@GST_MAJORMINOR@.la
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+GstController-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstcontroller-@GST_API_VERSION@.la
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" GI_SCANNER_DISABLE_CACHE=yes\
+		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstController \
-		--nsversion=@GST_MAJORMINOR@ \
+		--nsversion=@GST_API_VERSION@ \
+		--warn-all \
 		--strip-prefix=Gst \
 		-I$(top_srcdir) \
-		$(gir_cincludes) \
+		-I$(top_srcdir)/libs \
+		-I$(top_builddir) \
+		-I$(top_builddir)/libs \
+		--c-include "gst/controller/controller.h" \
 		--add-include-path=$(top_builddir)/gst \
-		--library=gstcontroller-0.10 \
-		--include=Gst-0.10 \
-		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-0.10 \
+		--library-path=$(top_builddir)/gst \
+		--library=libgstcontroller-@GST_API_VERSION@.la \
+		--include=Gst-@GST_API_VERSION@ \
+		--libtool="${LIBTOOL}" \
+		--pkg gstreamer-@GST_API_VERSION@ \
+		--pkg-export gstreamer-controller-@GST_API_VERSION@ \
+		--add-init-section="$(INTROSPECTION_INIT)" \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -65,7 +69,7 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(AM_V_GEN)$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=$(top_builddir)/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
 CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif

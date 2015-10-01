@@ -15,23 +15,35 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_WAVEFORMSINK_H__
 #define __GST_WAVEFORMSINK_H__
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 #include <gst/audio/gstaudiosink.h>
 
 #include <windows.h>
 #include <mmsystem.h>
 
+#ifndef WAVE_FORMAT_96M08
 #define WAVE_FORMAT_96M08       0x00001000       /* 96   kHz, Mono,   8-bit  */
+#endif
+
+#ifndef WAVE_FORMAT_96S08
 #define WAVE_FORMAT_96S08       0x00002000       /* 96   kHz, Stereo, 8-bit  */
+#endif
+
+#ifndef WAVE_FORMAT_96M16
 #define WAVE_FORMAT_96M16       0x00004000       /* 96   kHz, Mono,   16-bit */
+#endif
+
+#ifndef WAVE_FORMAT_96S16
 #define WAVE_FORMAT_96S16       0x00008000       /* 96   kHz, Stereo, 16-bit */
+#endif
 
 #define ERROR_LENGTH MAXERRORLENGTH+50
 #define BUFFER_COUNT 20

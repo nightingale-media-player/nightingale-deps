@@ -16,15 +16,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_WAVPACK_COMMON_H__
 #define __GST_WAVPACK_COMMON_H__
 
 #include <gst/gst.h>
-#include <gst/audio/multichannel.h>
+#include <gst/audio/audio.h>
 #include <wavpack/wavpack.h>
 
 typedef struct
@@ -67,7 +67,7 @@ gboolean gst_wavpack_read_header (WavpackHeader * header, guint8 * buf);
 gboolean gst_wavpack_read_metadata (GstWavpackMetadata * meta,
     guint8 * header_data, guint8 ** p_data);
 gint gst_wavpack_get_default_channel_mask (gint nchannels);
-gboolean gst_wavpack_set_channel_layout (GstCaps * caps, gint layout);
+gboolean gst_wavpack_get_channel_positions (gint nchannels, gint layout, GstAudioChannelPosition *pos);
 GstAudioChannelPosition *gst_wavpack_get_default_channel_positions (gint nchannels);
 gint gst_wavpack_get_channel_mask_from_positions (GstAudioChannelPosition *pos, gint nchannels);
 gboolean gst_wavpack_set_channel_mapping (GstAudioChannelPosition *pos, gint nchannels, gint8 *channel_mapping);

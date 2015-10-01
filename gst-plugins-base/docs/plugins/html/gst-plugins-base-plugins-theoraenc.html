@@ -2,164 +2,162 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>theoraenc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<title>theoraenc: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-theoradec.html" title="theoradec">
 <link rel="next" href="gst-plugins-base-plugins-theoraparse.html" title="theoraparse">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-theoradec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-theoraparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-theoraenc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-theoraenc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-theoraenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-theoraenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-theoraenc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-theoraenc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-theoraenc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-theoraenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-theoraenc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-theoradec.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-theoraparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-base-plugins-theoraenc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-theoraenc.top_of_page"></a>theoraenc</span></h2>
-<p>theoraenc — encode raw YUV video to a theora stream</p>
+<p>theoraenc</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-theoraenc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstTheoraEnc"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc-struct" title="GstTheoraEnc">GstTheoraEnc</a>;
-enum                <a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode" title="enum GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-theoraenc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--bitrate" title="The “bitrate” property">bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--cap-overflow" title="The “cap-overflow” property">cap-overflow</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--cap-underflow" title="The “cap-underflow” property">cap-underflow</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--drop-frames" title="The “drop-frames” property">drop-frames</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-auto" title="The “keyframe-auto” property">keyframe-auto</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-force" title="The “keyframe-force” property">keyframe-force</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-freq" title="The “keyframe-freq” property">keyframe-freq</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--multipass-cache-file" title="The “multipass-cache-file” property">multipass-cache-file</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncMultipassMode" title="enum GstTheoraEncMultipassMode"><span class="type">GstTheoraEncMultipassMode</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--multipass-mode" title="The “multipass-mode” property">multipass-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--quality" title="The “quality” property">quality</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--rate-buffer" title="The “rate-buffer” property">rate-buffer</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--speed-level" title="The “speed-level” property">speed-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--vp3-compatible" title="The “vp3-compatible” property">vp3-compatible</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<a name="GstTheoraEnc"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-theoraenc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc-struct" title="struct GstTheoraEnc">GstTheoraEnc</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncMultipassMode" title="enum GstTheoraEncMultipassMode">GstTheoraEncMultipassMode</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-theoraenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstTheoraEnc
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-GstVideoEncoder.html#GstVideoEncoder">GstVideoEncoder</a>
+                    <span class="lineart">╰──</span> GstTheoraEnc
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-theoraenc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstTheoraEnc implements
- <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPreset.html"
->GstPreset</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPreset.html">GstPreset</a>.</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-theoraenc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--border" title='The "border" property'>border</a>"                   <a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode" title="enum GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--center" title='The "center" property'>center</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-auto" title='The "keyframe-auto" property'>keyframe-auto</a>"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-force" title='The "keyframe-force" property'>keyframe-force</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-freq" title='The "keyframe-freq" property'>keyframe-freq</a>"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-mindistance" title='The "keyframe-mindistance" property'>keyframe-mindistance</a>"     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--keyframe-threshold" title='The "keyframe-threshold" property'>keyframe-threshold</a>"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--noise-sensitivity" title='The "noise-sensitivity" property'>noise-sensitivity</a>"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--quality" title='The "quality" property'>quality</a>"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--quick" title='The "quick" property'>quick</a>"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--sharpness" title='The "sharpness" property'>sharpness</a>"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEnc--speed-level" title='The "speed-level" property'>speed-level</a>"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-theoraenc.description"></a><h2>Description</h2>
-<p>
-This element encodes raw video into a Theora stream.
-<a class="ulink" href="http://www.theora.org/" target="_top">Theora</a> is a royalty-free
-video codec maintained by the <a class="ulink" href="http://www.xiph.org/" target="_top">Xiph.org
-Foundation</a>, based on the VP3 codec.
-</p>
-<p>
-The theora codec internally only supports encoding of images that are a
-multiple of 16 pixels in both X and Y direction. It is however perfectly
-possible to encode images with other dimensions because an arbitrary
-rectangular cropping region can be set up. This element will automatically
-set up a correct cropping region if the dimensions are not multiples of 16
-pixels. The <span class="type">"border"</span> and <span class="type">"center"</span> properties
-control how this cropping region will be set up.
-</p>
-<p>
-To control the quality of the encoding, the <span class="type">"bitrate"</span> and
-<span class="type">"quality"</span> properties can be used. These two properties are
-mutualy exclusive. Setting the bitrate property will produce a constant
-bitrate (CBR) stream while setting the quality property will produce a
-variable bitrate (VBR) stream.
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2637236"></a><h3>Example pipeline</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v videotestsrc num-buffers=1000 ! theoraenc ! oggmux ! filesink location=videotestsrc.ogg
-</pre></div> This example pipeline will encode a test video source to theora muxed in an
-ogg container. Refer to the theoradec documentation to decode the create
-stream.
-</div>
-<p>
-</p>
-<p>
-Last reviewed on 2006-03-01 (0.10.4)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2637265"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.42.8.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -179,10 +177,13 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2637328"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.42.8.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -198,83 +199,15 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, Y42B, Y444 }, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
+<td>video/x-raw, format=(string){ I420, Y42B, Y444 }, framerate=(fraction)[ 1/2147483647, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-theora</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-</div>
-<div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2637471"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">plugin</span></p></td>
-<td>
-            <a class="link" href="gst-plugins-base-plugins-plugin-theora.html#plugin-theora">theora</a>
-          </td>
-</tr>
-<tr>
-<td><p><span class="term">author</span></p></td>
-<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
-</tr>
-<tr>
-<td><p><span class="term">class</span></p></td>
-<td>Codec/Encoder/Video</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2637534"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>video/x-raw-yuv, format=(fourcc){ I420, Y42B, Y444 }, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -290,195 +223,169 @@ Last reviewed on 2006-03-01 (0.10.4)</p>
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-theora</td>
+<td>video/x-theora, framerate=(fraction)[ 1/2147483647, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-theoraenc.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc-struct"></a><h3>GstTheoraEnc</h3>
-<pre class="programlisting">typedef struct _GstTheoraEnc GstTheoraEnc;</pre>
-<p>
-Opaque data structure.</p>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-theoraenc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-theoraenc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstTheoraEnc-struct"></a><h3>struct GstTheoraEnc</h3>
+<pre class="programlisting">struct GstTheoraEnc;</pre>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEncBorderMode"></a><h3>enum GstTheoraEncBorderMode</h3>
-<pre class="programlisting">typedef enum
-{
-  BORDER_NONE,
-  BORDER_BLACK,
-  BORDER_MIRROR
-}
-GstTheoraEncBorderMode;
-</pre>
-<p>
-Border color to add when sizes not multiple of 16.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="GstTheoraEncMultipassMode"></a><h3>enum GstTheoraEncMultipassMode</h3>
+<div class="refsect3">
+<a name="id-1.2.42.10.3.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><a name="BORDER-NONE--CAPS"></a><span class="term"><code class="literal">BORDER_NONE</code></span></p></td>
-<td> no border
-</td>
+<td class="enum_member_name"><p><a name="MULTIPASS-MODE-SINGLE-PASS:CAPS"></a>MULTIPASS_MODE_SINGLE_PASS</p></td>
+<td> </td>
+<td> </td>
 </tr>
 <tr>
-<td><p><a name="BORDER-BLACK--CAPS"></a><span class="term"><code class="literal">BORDER_BLACK</code></span></p></td>
-<td> black border
-</td>
+<td class="enum_member_name"><p><a name="MULTIPASS-MODE-FIRST-PASS:CAPS"></a>MULTIPASS_MODE_FIRST_PASS</p></td>
+<td> </td>
+<td> </td>
 </tr>
 <tr>
-<td><p><a name="BORDER-MIRROR--CAPS"></a><span class="term"><code class="literal">BORDER_MIRROR</code></span></p></td>
-<td> Mirror image in border
-</td>
+<td class="enum_member_name"><p><a name="MULTIPASS-MODE-SECOND-PASS:CAPS"></a>MULTIPASS_MODE_SECOND_PASS</p></td>
+<td> </td>
+<td> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-theoraenc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
-<pre class="programlisting">  "bitrate"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstTheoraEnc--bitrate"></a><h3>The <code class="literal">“bitrate”</code> property</h3>
+<pre class="programlisting">  “bitrate”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Compressed video bitrate (kbps).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,16777215]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--border"></a><h3>The <code class="literal">"border"</code> property</h3>
-<pre class="programlisting">  "border"                   <a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncBorderMode" title="enum GstTheoraEncBorderMode">GstTheoraEncBorderMode</a>  : Read / Write</pre>
-<p>Border color to add when sizes not multiple of 16.</p>
-<p>Default value: Black Border</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--center"></a><h3>The <code class="literal">"center"</code> property</h3>
-<pre class="programlisting">  "center"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
-<p>Center image when sizes not multiple of 16.</p>
+<div class="refsect2">
+<a name="GstTheoraEnc--cap-overflow"></a><h3>The <code class="literal">“cap-overflow”</code> property</h3>
+<pre class="programlisting">  “cap-overflow”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable capping of bit reservoir overflows.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--keyframe-auto"></a><h3>The <code class="literal">"keyframe-auto"</code> property</h3>
-<pre class="programlisting">  "keyframe-auto"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstTheoraEnc--cap-underflow"></a><h3>The <code class="literal">“cap-underflow”</code> property</h3>
+<pre class="programlisting">  “cap-underflow”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable capping of bit reservoir underflows.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTheoraEnc--drop-frames"></a><h3>The <code class="literal">“drop-frames”</code> property</h3>
+<pre class="programlisting">  “drop-frames”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Allow or disallow frame dropping.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTheoraEnc--keyframe-auto"></a><h3>The <code class="literal">“keyframe-auto”</code> property</h3>
+<pre class="programlisting">  “keyframe-auto”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Automatic keyframe detection.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--keyframe-force"></a><h3>The <code class="literal">"keyframe-force"</code> property</h3>
-<pre class="programlisting">  "keyframe-force"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstTheoraEnc--keyframe-force"></a><h3>The <code class="literal">“keyframe-force”</code> property</h3>
+<pre class="programlisting">  “keyframe-force”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Force keyframe every N frames.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [1,32768]</p>
 <p>Default value: 64</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--keyframe-freq"></a><h3>The <code class="literal">"keyframe-freq"</code> property</h3>
-<pre class="programlisting">  "keyframe-freq"            <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstTheoraEnc--keyframe-freq"></a><h3>The <code class="literal">“keyframe-freq”</code> property</h3>
+<pre class="programlisting">  “keyframe-freq”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Keyframe frequency.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [1,32768]</p>
 <p>Default value: 64</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--keyframe-mindistance"></a><h3>The <code class="literal">"keyframe-mindistance"</code> property</h3>
-<pre class="programlisting">  "keyframe-mindistance"     <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Keyframe mindistance.</p>
-<p>Allowed values: [1,32768]</p>
-<p>Default value: 8</p>
+<div class="refsect2">
+<a name="GstTheoraEnc--multipass-cache-file"></a><h3>The <code class="literal">“multipass-cache-file”</code> property</h3>
+<pre class="programlisting">  “multipass-cache-file”     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Multipass cache file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--keyframe-threshold"></a><h3>The <code class="literal">"keyframe-threshold"</code> property</h3>
-<pre class="programlisting">  "keyframe-threshold"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Keyframe threshold.</p>
-<p>Allowed values: [0,32768]</p>
-<p>Default value: 80</p>
+<div class="refsect2">
+<a name="GstTheoraEnc--multipass-mode"></a><h3>The <code class="literal">“multipass-mode”</code> property</h3>
+<pre class="programlisting">  “multipass-mode”           <a class="link" href="gst-plugins-base-plugins-theoraenc.html#GstTheoraEncMultipassMode" title="enum GstTheoraEncMultipassMode"><span class="type">GstTheoraEncMultipassMode</span></a></pre>
+<p>Single pass or first/second pass.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Single pass</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--noise-sensitivity"></a><h3>The <code class="literal">"noise-sensitivity"</code> property</h3>
-<pre class="programlisting">  "noise-sensitivity"        <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Noise sensitivity.</p>
-<p>Allowed values: [0,32768]</p>
-<p>Default value: 1</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
-<pre class="programlisting">  "quality"                  <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstTheoraEnc--quality"></a><h3>The <code class="literal">“quality”</code> property</h3>
+<pre class="programlisting">  “quality”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Video quality.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,63]</p>
-<p>Default value: 16</p>
+<p>Default value: 48</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--quick"></a><h3>The <code class="literal">"quick"</code> property</h3>
-<pre class="programlisting">  "quick"                    <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
-<p>Quick encoding.</p>
-<p>Default value: TRUE</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--sharpness"></a><h3>The <code class="literal">"sharpness"</code> property</h3>
-<pre class="programlisting">  "sharpness"                <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Sharpness.</p>
-<p>Allowed values: [0,2]</p>
+<div class="refsect2">
+<a name="GstTheoraEnc--rate-buffer"></a><h3>The <code class="literal">“rate-buffer”</code> property</h3>
+<pre class="programlisting">  “rate-buffer”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Sets the size of the rate control buffer, in units of frames.  The default value of 0 instructs the encoder to automatically select an appropriate value.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,1000]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTheoraEnc--speed-level"></a><h3>The <code class="literal">"speed-level"</code> property</h3>
-<pre class="programlisting">  "speed-level"              <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
-<p>Controls the amount of motion vector searching done while encoding.  This property requires libtheora version &gt;= 1.0.</p>
-<p>Allowed values: [0,2]</p>
+<div class="refsect2">
+<a name="GstTheoraEnc--speed-level"></a><h3>The <code class="literal">“speed-level”</code> property</h3>
+<pre class="programlisting">  “speed-level”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Controls the amount of motion vector searching done while encoding.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,3]</p>
 <p>Default value: 1</p>
 </div>
+<hr>
+<div class="refsect2">
+<a name="GstTheoraEnc--vp3-compatible"></a><h3>The <code class="literal">“vp3-compatible”</code> property</h3>
+<pre class="programlisting">  “vp3-compatible”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Disables non-VP3 compatible features.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-theoraenc.see-also"></a><h2>See Also</h2>
-theoradec, oggmux
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

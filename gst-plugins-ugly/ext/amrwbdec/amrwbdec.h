@@ -13,19 +13,23 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_AMRWBDEC_H__
 #define __GST_AMRWBDEC_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudiodecoder.h>
+
+#ifdef HAVE_OPENCORE_AMRWB_0_1_3_OR_LATER
 #include <opencore-amrwb/dec_if.h>
 #include <opencore-amrwb/if_rom.h>
-
-#define L_FRAME16k      320   /* Frame size at 16kHz  */
+#else
+#include <dec_if.h>
+#include <if_rom.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -49,27 +53,17 @@ typedef struct _GstAmrwbDecClass GstAmrwbDecClass;
  * Opaque data structure.
  */
 struct _GstAmrwbDec {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-  guint64 ts;
-
-  GstAdapter *adapter;
+  GstAudioDecoder element;
 
   /* library handle */
   void *handle;
 
   /* output settings */
   gint channels, rate;
-  gint duration;
-
-  GstSegment        segment;
-  gboolean          discont;
 };
 
 struct _GstAmrwbDecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_amrwbdec_get_type (void);

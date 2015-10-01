@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -40,89 +40,80 @@ gst_frei0r_src_set_caps (GstBaseSrc * src, GstCaps * caps)
 {
   GstFrei0rSrc *self = GST_FREI0R_SRC (src);
 
-  if (!gst_video_format_parse_caps (caps, &self->fmt, &self->width,
-          &self->height)
-      || !gst_video_parse_caps_framerate (caps, &self->fps_n, &self->fps_d))
+  gst_video_info_init (&self->info);
+  if (!gst_video_info_from_caps (&self->info, caps))
     return FALSE;
+
+  gst_base_src_set_blocksize (src, self->info.size);
 
   return TRUE;
 }
 
-static GstCaps *
-gst_frei0r_src_get_caps (GstBaseSrc * src)
-{
-  if (GST_PAD_CAPS (GST_BASE_SRC_PAD (src)))
-    return gst_caps_ref (GST_PAD_CAPS (GST_BASE_SRC_PAD (src)));
-  else
-    return
-        gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD (src)));
-}
-
 static GstFlowReturn
-gst_frei0r_src_create (GstPushSrc * src, GstBuffer ** buf)
+gst_frei0r_src_fill (GstPushSrc * src, GstBuffer * buf)
 {
   GstFrei0rSrc *self = GST_FREI0R_SRC (src);
   GstFrei0rSrcClass *klass = GST_FREI0R_SRC_GET_CLASS (src);
-  guint size, newsize;
-  GstFlowReturn ret = GST_FLOW_OK;
-  GstBuffer *outbuf = NULL;
+  GstClockTime timestamp;
   gdouble time;
-
-  *buf = NULL;
-
-  if (G_UNLIKELY (self->width <= 0 || self->height <= 0))
-    return GST_FLOW_NOT_NEGOTIATED;
+  GstMapInfo map;
 
   if (G_UNLIKELY (!self->f0r_instance)) {
     self->f0r_instance =
         gst_frei0r_instance_construct (klass->ftable, klass->properties,
-        klass->n_properties, self->property_cache, self->width, self->height);
+        klass->n_properties, self->property_cache, self->info.width,
+        self->info.height);
 
     if (G_UNLIKELY (!self->f0r_instance))
       return GST_FLOW_ERROR;
   }
 
-  newsize = gst_video_format_get_size (self->fmt, self->width, self->height);
-
-  ret =
-      gst_pad_alloc_buffer_and_set_caps (GST_BASE_SRC_PAD (src),
-      GST_BUFFER_OFFSET_NONE, newsize, GST_PAD_CAPS (GST_BASE_SRC_PAD (src)),
-      &outbuf);
-  if (ret != GST_FLOW_OK)
-    return ret;
-
-  /* Format might have changed */
-  size = GST_BUFFER_SIZE (outbuf);
-  newsize = gst_video_format_get_size (self->fmt, self->width, self->height);
-
-  if (size != newsize) {
-    gst_buffer_unref (outbuf);
-    outbuf = gst_buffer_new_and_alloc (newsize);
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (GST_BASE_SRC_PAD (src)));
-  }
-
-  GST_BUFFER_TIMESTAMP (outbuf) =
-      gst_util_uint64_scale (self->n_frames, GST_SECOND * self->fps_d,
-      self->fps_n);
-  GST_BUFFER_OFFSET (outbuf) = self->n_frames;
+  timestamp =
+      gst_util_uint64_scale (self->n_frames, GST_SECOND * self->info.fps_d,
+      self->info.fps_n);
+  GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf) = timestamp;
+  GST_BUFFER_OFFSET (buf) = self->n_frames;
   self->n_frames++;
-  GST_BUFFER_OFFSET_END (outbuf) = self->n_frames;
-  GST_BUFFER_DURATION (outbuf) =
-      gst_util_uint64_scale (self->n_frames, GST_SECOND * self->fps_d,
-      self->fps_n) - GST_BUFFER_TIMESTAMP (outbuf);
+  GST_BUFFER_OFFSET_END (buf) = self->n_frames;
+  GST_BUFFER_DURATION (buf) =
+      gst_util_uint64_scale (self->n_frames, GST_SECOND * self->info.fps_d,
+      self->info.fps_n) - GST_BUFFER_TIMESTAMP (buf);
 
-  time = ((gdouble) GST_BUFFER_TIMESTAMP (outbuf)) / GST_SECOND;
+  timestamp =
+      gst_segment_to_stream_time (&GST_BASE_SRC_CAST (self)->segment,
+      GST_FORMAT_TIME, timestamp);
+
+  GST_DEBUG_OBJECT (self, "sync to %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (timestamp));
+
+  if (GST_CLOCK_TIME_IS_VALID (timestamp))
+    gst_object_sync_values (GST_OBJECT (self), timestamp);
+
+  time = ((gdouble) GST_BUFFER_TIMESTAMP (buf)) / GST_SECOND;
+
+  GST_OBJECT_LOCK (self);
+
+  if (!gst_buffer_map (buf, &map, GST_MAP_WRITE))
+    goto map_error;
 
   if (klass->ftable->update2)
     klass->ftable->update2 (self->f0r_instance, time, NULL, NULL, NULL,
-        (guint32 *) GST_BUFFER_DATA (outbuf));
+        (guint32 *) map.data);
   else
     klass->ftable->update (self->f0r_instance, time, NULL,
-        (guint32 *) GST_BUFFER_DATA (outbuf));
+        (guint32 *) map.data);
 
-  *buf = outbuf;
+  gst_buffer_unmap (buf, &map);
+
+  GST_OBJECT_UNLOCK (self);
 
   return GST_FLOW_OK;
+
+map_error:
+  GST_OBJECT_UNLOCK (self);
+  GST_ELEMENT_ERROR (GST_ELEMENT (src), RESOURCE, WRITE, (NULL),
+      ("Could not map buffer for writing"));
+  return GST_FLOW_ERROR;
 }
 
 static gboolean
@@ -146,9 +137,7 @@ gst_frei0r_src_stop (GstBaseSrc * basesrc)
     self->f0r_instance = NULL;
   }
 
-  self->fmt = GST_VIDEO_FORMAT_UNKNOWN;
-  self->width = self->height = 0;
-  self->fps_n = self->fps_d = 0;
+  gst_video_info_init (&self->info);
   self->n_frames = 0;
 
   return TRUE;
@@ -167,12 +156,12 @@ gst_frei0r_src_do_seek (GstBaseSrc * bsrc, GstSegment * segment)
   GstFrei0rSrc *self = GST_FREI0R_SRC (bsrc);
 
   segment->time = segment->start;
-  time = segment->last_stop;
+  time = segment->position;
 
   /* now move to the time indicated */
-  if (self->fps_n) {
+  if (self->info.fps_n) {
     self->n_frames = gst_util_uint64_scale (time,
-        self->fps_n, self->fps_d * GST_SECOND);
+        self->info.fps_n, self->info.fps_d * GST_SECOND);
   } else {
     self->n_frames = 0;
   }
@@ -204,9 +193,9 @@ gst_frei0r_src_query (GstBaseSrc * bsrc, GstQuery * query)
           switch (dest_fmt) {
             case GST_FORMAT_TIME:
               /* frames to time */
-              if (self->fps_n) {
+              if (self->info.fps_n) {
                 dest_val = gst_util_uint64_scale (src_val,
-                    self->fps_d * GST_SECOND, self->fps_n);
+                    self->info.fps_d * GST_SECOND, self->info.fps_n);
               } else {
                 dest_val = 0;
               }
@@ -219,9 +208,9 @@ gst_frei0r_src_query (GstBaseSrc * bsrc, GstQuery * query)
           switch (dest_fmt) {
             case GST_FORMAT_DEFAULT:
               /* time to frames */
-              if (self->fps_n) {
+              if (self->info.fps_n) {
                 dest_val = gst_util_uint64_scale (src_val,
-                    self->fps_n, self->fps_d * GST_SECOND);
+                    self->info.fps_n, self->info.fps_d * GST_SECOND);
               } else {
                 dest_val = 0;
               }
@@ -253,16 +242,20 @@ error:
   }
 }
 
-static void
-gst_frei0r_src_src_fixate (GstPad * pad, GstCaps * caps)
+static GstCaps *
+gst_frei0r_src_fixate (GstBaseSrc * src, GstCaps * caps)
 {
   GstStructure *structure;
+
+  caps = gst_caps_make_writable (caps);
 
   structure = gst_caps_get_structure (caps, 0);
 
   gst_structure_fixate_field_nearest_int (structure, "width", 320);
   gst_structure_fixate_field_nearest_int (structure, "height", 240);
   gst_structure_fixate_field_nearest_fraction (structure, "framerate", 30, 1);
+
+  return caps;
 }
 
 static void
@@ -291,10 +284,12 @@ gst_frei0r_src_get_property (GObject * object, guint prop_id, GValue * value,
   GstFrei0rSrc *self = GST_FREI0R_SRC (object);
   GstFrei0rSrcClass *klass = GST_FREI0R_SRC_GET_CLASS (object);
 
+  GST_OBJECT_LOCK (self);
   if (!gst_frei0r_get_property (self->f0r_instance, klass->ftable,
           klass->properties, klass->n_properties, self->property_cache, prop_id,
           value))
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+  GST_OBJECT_UNLOCK (self);
 }
 
 static void
@@ -304,10 +299,12 @@ gst_frei0r_src_set_property (GObject * object, guint prop_id,
   GstFrei0rSrc *self = GST_FREI0R_SRC (object);
   GstFrei0rSrcClass *klass = GST_FREI0R_SRC_GET_CLASS (object);
 
+  GST_OBJECT_LOCK (self);
   if (!gst_frei0r_set_property (self->f0r_instance, klass->ftable,
           klass->properties, klass->n_properties, self->property_cache, prop_id,
           value))
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+  GST_OBJECT_UNLOCK (self);
 }
 
 static void
@@ -319,6 +316,7 @@ gst_frei0r_src_class_init (GstFrei0rSrcClass * klass,
   GstPushSrcClass *gstpushsrc_class = (GstPushSrcClass *) klass;
   GstBaseSrcClass *gstbasesrc_class = (GstBaseSrcClass *) klass;
   GstPadTemplate *templ;
+  const gchar *desc;
   GstCaps *caps;
   gchar *author;
 
@@ -339,8 +337,11 @@ gst_frei0r_src_class_init (GstFrei0rSrcClass * klass,
       g_strdup_printf
       ("Sebastian Dröge <sebastian.droege@collabora.co.uk>, %s",
       class_data->info.author);
-  gst_element_class_set_details_simple (gstelement_class, class_data->info.name,
-      "Src/Video", class_data->info.explanation, author);
+  desc = class_data->info.explanation;
+  if (desc == NULL || *desc == '\0')
+    desc = "No details";
+  gst_element_class_set_metadata (gstelement_class, class_data->info.name,
+      "Src/Video", desc, author);
   g_free (author);
 
   caps = gst_frei0r_caps_from_color_model (class_data->info.color_model);
@@ -348,33 +349,30 @@ gst_frei0r_src_class_init (GstFrei0rSrcClass * klass,
   templ = gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, caps);
   gst_element_class_add_pad_template (gstelement_class, templ);
 
-  gstbasesrc_class->set_caps = gst_frei0r_src_set_caps;
-  gstbasesrc_class->get_caps = gst_frei0r_src_get_caps;
-  gstbasesrc_class->is_seekable = gst_frei0r_src_is_seekable;
-  gstbasesrc_class->do_seek = gst_frei0r_src_do_seek;
-  gstbasesrc_class->query = gst_frei0r_src_query;
-  gstbasesrc_class->start = gst_frei0r_src_start;
-  gstbasesrc_class->stop = gst_frei0r_src_stop;
+  gstbasesrc_class->set_caps = GST_DEBUG_FUNCPTR (gst_frei0r_src_set_caps);
+  gstbasesrc_class->is_seekable =
+      GST_DEBUG_FUNCPTR (gst_frei0r_src_is_seekable);
+  gstbasesrc_class->do_seek = GST_DEBUG_FUNCPTR (gst_frei0r_src_do_seek);
+  gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_frei0r_src_query);
+  gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_frei0r_src_start);
+  gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_frei0r_src_stop);
+  gstbasesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_frei0r_src_fixate);
 
-  gstpushsrc_class->create = GST_DEBUG_FUNCPTR (gst_frei0r_src_create);
+  gstpushsrc_class->fill = GST_DEBUG_FUNCPTR (gst_frei0r_src_fill);
 }
 
 static void
 gst_frei0r_src_init (GstFrei0rSrc * self, GstFrei0rSrcClass * klass)
 {
-  GstPad *pad = GST_BASE_SRC_PAD (self);
-
   self->property_cache =
       gst_frei0r_property_cache_init (klass->properties, klass->n_properties);
-
-  gst_pad_set_fixatecaps_function (pad, gst_frei0r_src_src_fixate);
-
+  gst_video_info_init (&self->info);
   gst_base_src_set_format (GST_BASE_SRC_CAST (self), GST_FORMAT_TIME);
 }
 
-gboolean
-gst_frei0r_src_register (GstPlugin * plugin, const f0r_plugin_info_t * info,
-    const GstFrei0rFuncTable * ftable)
+GstFrei0rPluginRegisterReturn
+gst_frei0r_src_register (GstPlugin * plugin, const gchar * vendor,
+    const f0r_plugin_info_t * info, const GstFrei0rFuncTable * ftable)
 {
   GTypeInfo typeinfo = {
     sizeof (GstFrei0rSrcClass),
@@ -390,16 +388,19 @@ gst_frei0r_src_register (GstPlugin * plugin, const f0r_plugin_info_t * info,
   GType type;
   gchar *type_name, *tmp;
   GstFrei0rSrcClassData *class_data;
-  gboolean ret = FALSE;
+  GstFrei0rPluginRegisterReturn ret = GST_FREI0R_PLUGIN_REGISTER_RETURN_FAILED;
 
-  tmp = g_strdup_printf ("frei0r-src-%s", info->name);
+  if (vendor)
+    tmp = g_strdup_printf ("frei0r-src-%s-%s", vendor, info->name);
+  else
+    tmp = g_strdup_printf ("frei0r-src-%s", info->name);
   type_name = g_ascii_strdown (tmp, -1);
   g_free (tmp);
   g_strcanon (type_name, G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "-+", '-');
 
   if (g_type_from_name (type_name)) {
-    GST_WARNING ("Type '%s' already exists", type_name);
-    return FALSE;
+    GST_DEBUG ("Type '%s' already exists", type_name);
+    return GST_FREI0R_PLUGIN_REGISTER_RETURN_ALREADY_REGISTERED;
   }
 
   class_data = g_new0 (GstFrei0rSrcClassData, 1);
@@ -408,7 +409,8 @@ gst_frei0r_src_register (GstPlugin * plugin, const f0r_plugin_info_t * info,
   typeinfo.class_data = class_data;
 
   type = g_type_register_static (GST_TYPE_PUSH_SRC, type_name, &typeinfo, 0);
-  ret = gst_element_register (plugin, type_name, GST_RANK_NONE, type);
+  if (gst_element_register (plugin, type_name, GST_RANK_NONE, type))
+    ret = GST_FREI0R_PLUGIN_REGISTER_RETURN_OK;
 
   g_free (type_name);
   return ret;

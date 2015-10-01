@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>splitmuxsink: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-splitfilesrc.html" title="splitfilesrc">
+<link rel="next" href="gst-plugins-good-plugins-splitmuxsrc.html" title="splitmuxsrc">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-splitmuxsink.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-splitmuxsink.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-splitmuxsink.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-splitmuxsink.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-splitmuxsink.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-splitfilesrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-splitmuxsrc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-splitmuxsink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-splitmuxsink.top_of_page"></a>splitmuxsink</span></h2>
+<p>splitmuxsink — Muxer wrapper for splitting output stream by size or time</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--location" title="The “location” property">location</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--max-size-bytes" title="The “max-size-bytes” property">max-size-bytes</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--max-size-time" title="The “max-size-time” property">max-size-time</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--mux-overhead" title="The “mux-overhead” property">mux-overhead</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--muxer" title="The “muxer” property">muxer</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink--sink" title="The “sink” property">sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink-format-location" title="The “format-location” signal">format-location</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstSplitMuxSink"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink-struct" title="struct GstSplitMuxSink">GstSplitMuxSink</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                    <span class="lineart">╰──</span> GstSplitMuxSink
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstSplitMuxSink implements
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.description"></a><h2>Description</h2>
+<p>This element wraps a muxer and a sink, and starts a new file when the mux
+contents are about to cross a threshold of maximum size of maximum time,
+splitting at video keyframe boundaries. Exactly one input video stream
+is required, with as many accompanying audio and subtitle streams as
+desired.</p>
+<p>By default, it uses mp4mux and filesink, but they can be changed via
+the 'muxer' and 'sink' properties.</p>
+<p>The minimum file size is 1 GOP, however - so limits may be overrun if the
+distance between any 2 keyframes is larger than the limits.</p>
+<p>The splitting process is driven by the video stream contents, and
+the video stream must contain closed GOPs for the output file parts
+to be played individually correctly.</p>
+<div class="refsect2">
+<a name="id-1.2.164.9.6"></a><h3>Example pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>e v4l2src num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">500</span> <span class="gtkdoc opt">!</span> video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span>height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> queue <span class="gtkdoc opt">!</span> timeoverlay <span class="gtkdoc opt">!</span> x264enc key<span class="gtkdoc opt">-</span><span class="gtkdoc kwb">int</span><span class="gtkdoc opt">-</span>max<span class="gtkdoc opt">=</span><span class="number">10</span> <span class="gtkdoc opt">!</span> h264parse <span class="gtkdoc opt">!</span> splitmuxsink location<span class="gtkdoc opt">=</span>video<span class="gtkdoc opt">%</span><span class="number">02</span>d<span class="gtkdoc opt">.</span>mov max<span class="gtkdoc opt">-</span>size<span class="gtkdoc opt">-</span>time<span class="gtkdoc opt">=</span><span class="number">10000000000</span> max<span class="gtkdoc opt">-</span>size<span class="gtkdoc opt">-</span>bytes<span class="gtkdoc opt">=</span><span class="number">1000000</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Records a video stream captured from a v4l2 device and muxes it into
+ISO mp4 files, splitting as needed to limit size/duration to 10 seconds
+and 1MB maximum size.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.164.9.7.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-multifile.html#plugin-multifile">multifile</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Jan Schmidt &lt;jan@centricular.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Bin/Muxer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.164.9.7.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>subtitle_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstSplitMuxSink-struct"></a><h3>struct GstSplitMuxSink</h3>
+<pre class="programlisting">struct GstSplitMuxSink;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstSplitMuxSink--location"></a><h3>The <code class="literal">“location”</code> property</h3>
+<pre class="programlisting">  “location”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Format string pattern for the location of the files to write (e.g. video%05d.mp4).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSplitMuxSink--max-size-bytes"></a><h3>The <code class="literal">“max-size-bytes”</code> property</h3>
+<pre class="programlisting">  “max-size-bytes”           <span class="type">guint64</span></pre>
+<p>Max. amount of data per file (in bytes, 0=disable).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSplitMuxSink--max-size-time"></a><h3>The <code class="literal">“max-size-time”</code> property</h3>
+<pre class="programlisting">  “max-size-time”            <span class="type">guint64</span></pre>
+<p>Max. amount of time per file (in ns, 0=disable).</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSplitMuxSink--mux-overhead"></a><h3>The <code class="literal">“mux-overhead”</code> property</h3>
+<pre class="programlisting">  “mux-overhead”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></pre>
+<p>Extra size overhead of muxing (0.02 = 2%).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 0.02</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSplitMuxSink--muxer"></a><h3>The <code class="literal">“muxer”</code> property</h3>
+<pre class="programlisting">  “muxer”                    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>The muxer element to use (NULL = default mp4mux).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSplitMuxSink--sink"></a><h3>The <code class="literal">“sink”</code> property</h3>
+<pre class="programlisting">  “sink”                     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>The sink element (or element chain) to use (NULL = default filesink).</p>
+<p>Flags: Read / Write</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-splitmuxsink.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstSplitMuxSink-format-location"></a><h3>The <code class="literal">“format-location”</code> signal</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a>*
+user_function (<a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink"><span class="type">GstSplitMuxSink</span></a> *splitmux,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>            fragment_id,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>         user_data)</pre>
+<div class="refsect3">
+<a name="id-1.2.164.13.2.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>splitmux</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-good-plugins-splitmuxsink.html#GstSplitMuxSink"><span class="type">GstSplitMuxSink</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fragment_id</p></td>
+<td class="parameter_description"><p>the sequence number of the file to be created</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.164.13.2.5"></a><h4>Returns</h4>
+<p> the location to be used for the next output file</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

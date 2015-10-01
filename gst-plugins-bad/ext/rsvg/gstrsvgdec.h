@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RSVG_DEC_H__
@@ -27,7 +27,9 @@
 #include <cairo/cairo.h>
 
 #include <librsvg/rsvg.h>
+#ifndef HAVE_RSVG_2_36_2
 #include <librsvg/rsvg-cairo.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -47,19 +49,17 @@ typedef struct _GstRsvgDecClass GstRsvgDecClass;
 
 struct _GstRsvgDec
 {
-  GstElement  element;
+  GstVideoDecoder  decoder;
 
   GstPad     *sinkpad;
   GstPad     *srcpad;
 
-  gint width, height;
-
   GList *pending_events;
-  GstTagList *pending_tags;
 
-  gint fps_n, fps_d;
-  GstClockTime timestamp_offset;
+  GstClockTime first_timestamp;
   guint64 frame_count;
+
+  GstVideoCodecState *input_state;
 
   GstSegment segment;
   gboolean need_newsegment;
@@ -69,7 +69,7 @@ struct _GstRsvgDec
 
 struct _GstRsvgDecClass
 {
-  GstElementClass parent_class;
+  GstVideoDecoderClass parent_class;
 };
 
 GType gst_rsvg_dec_get_type (void);

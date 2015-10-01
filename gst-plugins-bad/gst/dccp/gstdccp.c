@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,12 +26,6 @@
 #ifdef HAVE_FIONREAD_IN_SYS_FILIO
 #include <sys/filio.h>
 #endif
-
-/* Prototypes and definitions for private functions and not exported via gstdccp.h */
-GstFlowReturn gst_dccp_socket_write (GstElement * element, int socket,
-    const void *buf, size_t count, int packet_size);
-struct sockaddr_in gst_dccp_create_sockaddr (GstElement * element, gchar * ip,
-    int port);
 
 /*
  * Resolves host to IP address
@@ -96,8 +90,7 @@ gst_dccp_read_buffer (GstElement * this, int socket, GstBuffer ** buf)
 {
   fd_set testfds;
   int maxfdp1;
-  int ret;
-  ssize_t bytes_read;
+  gssize bytes_read;
 #ifndef G_OS_WIN32
   int readsize;
   struct msghdr mh;
@@ -114,7 +107,7 @@ gst_dccp_read_buffer (GstElement * this, int socket, GstBuffer ** buf)
   maxfdp1 = socket + 1;
 
   /* no action (0) is also an error in our case */
-  if ((ret = select (maxfdp1, &testfds, NULL, NULL, 0)) <= 0) {
+  if (select (maxfdp1, &testfds, NULL, NULL, 0) <= 0) {
     GST_ELEMENT_ERROR (this, RESOURCE, READ, (NULL),
         ("select failed: %s", g_strerror (errno)));
     return GST_FLOW_ERROR;
@@ -122,11 +115,11 @@ gst_dccp_read_buffer (GstElement * this, int socket, GstBuffer ** buf)
 
   /* ask how much is available for reading on the socket */
 #ifndef G_OS_WIN32
-  if ((ret = ioctl (socket, FIONREAD, &readsize)) < 0) {
+  if (ioctl (socket, FIONREAD, &readsize) < 0) {
     GST_ELEMENT_ERROR (this, RESOURCE, READ, (NULL),
         ("read FIONREAD value failed: %s", g_strerror (errno)));
 #else
-  if ((ret = ioctlsocket (socket, FIONREAD, &readsize)) == SOCKET_ERROR) {
+  if (ioctlsocket (socket, FIONREAD, &readsize) == SOCKET_ERROR) {
     GST_ELEMENT_ERROR (this, RESOURCE, READ, (NULL),
         ("read FIONREAD value failed: %s", g_strerror (WSAGetLastError ())));
 #endif
@@ -156,11 +149,11 @@ gst_dccp_read_buffer (GstElement * this, int socket, GstBuffer ** buf)
 #endif
 
   if (bytes_read != readsize) {
-    GST_DEBUG_OBJECT (this, ("Error while reading data"));
+    GST_DEBUG_OBJECT (this, "Error while reading data");
     return GST_FLOW_ERROR;
   }
 
-  GST_LOG_OBJECT (this, "bytes read %" G_GSIZE_FORMAT, bytes_read);
+  GST_LOG_OBJECT (this, "bytes read %" G_GSSIZE_FORMAT, bytes_read);
   GST_LOG_OBJECT (this, "returning buffer of size %d", GST_BUFFER_SIZE (*buf));
 
   return GST_FLOW_OK;
@@ -248,18 +241,14 @@ gst_dccp_server_wait_connections (GstElement * element, int server_sock_fd)
   /* new client */
   int client_sock_fd;
   struct sockaddr_in client_address;
-  unsigned int client_address_len;
+  socklen_t client_address_len;
 
   memset (&client_address, 0, sizeof (client_address));
   client_address_len = 0;
 
   if ((client_sock_fd =
           accept (server_sock_fd, (struct sockaddr *) &client_address,
-#ifndef G_OS_WIN32
               &client_address_len)) == -1) {
-#else
-              (int *) &client_address_len)) == -1) {
-#endif
     GST_ELEMENT_ERROR (element, RESOURCE, OPEN_WRITE, (NULL),
         ("Could not accept client on server socket %d: %s (%d)",
             server_sock_fd, g_strerror (errno), errno));
@@ -339,12 +328,12 @@ gst_dccp_listen_server_socket (GstElement * element, int server_sock_fd)
  * @param packet_size - the MTU
  * @return the number of bytes written.
  */
-GstFlowReturn
+static GstFlowReturn
 gst_dccp_socket_write (GstElement * element, int socket, const void *buf,
     size_t size, int packet_size)
 {
   size_t bytes_written = 0;
-  ssize_t wrote;
+  ssize_t wrote = 0;
 
 #ifndef G_OS_WIN32
   struct iovec iov;
@@ -373,11 +362,14 @@ gst_dccp_socket_write (GstElement * element, int socket, const void *buf,
     } while (wrote == SOCKET_ERROR && errorCode == EAGAIN);
 #endif
 
-    /* TODO print the send error */
-    bytes_written += wrote;
+    /* give up on error */
+    if (wrote >= 0)
+      bytes_written += wrote;
+    else
+      break;
   }
 
-  if (bytes_written < 0)
+  if (wrote < 0)
     GST_WARNING ("Error while writing.");
   else
     GST_LOG_OBJECT (element, "Wrote %" G_GSIZE_FORMAT " bytes succesfully.",
@@ -420,26 +412,6 @@ gst_dccp_send_buffer (GstElement * this, GstBuffer * buffer, int client_sock_fd,
   }
 
   return gst_dccp_socket_write (this, client_sock_fd, data, size, packet_size);
-}
-
-/*
- * Create socket address.
- * @param element - the element
- * @param ip - the ip address
- * @param port - the port
- * @return sockaddr_in.
- */
-struct sockaddr_in
-gst_dccp_create_sockaddr (GstElement * element, gchar * ip, int port)
-{
-  struct sockaddr_in sin;
-
-  memset (&sin, 0, sizeof (sin));
-  sin.sin_family = AF_INET;     /* network socket */
-  sin.sin_port = htons (port);  /* on port */
-  sin.sin_addr.s_addr = inet_addr (ip); /* on host ip */
-
-  return sin;
 }
 
 /*
@@ -516,12 +488,13 @@ gst_dccp_set_ccid (GstElement * element, int sock_fd, uint8_t ccid)
   return TRUE;
 }
 
+#if 0
 /*
  * Get the current ccid of TX or RX half-connection. tx_or_rx parameter must be
  * DCCP_SOCKOPT_TX_CCID or DCCP_SOCKOPT_RX_CCID.
  * @return ccid or -1 on error or tx_or_rx not the correct option
  */
-uint8_t
+static uint8_t
 gst_dccp_get_ccid (GstElement * element, int sock_fd, int tx_or_rx)
 {
   uint8_t ccid;
@@ -548,6 +521,7 @@ gst_dccp_get_ccid (GstElement * element, int sock_fd, int tx_or_rx)
   }
   return ccid;
 }
+#endif
 
 /*
  * Get the socket MTU.

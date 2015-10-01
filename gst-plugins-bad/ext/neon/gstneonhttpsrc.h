@@ -52,18 +52,14 @@ struct _GstNeonhttpSrc {
   gchar *query_string;
   ne_uri proxy;
   gchar *user_agent;
+  gchar **cookies;
 
   guint64 content_size;
 
   gboolean eos;
 
-  /* icecast/audiocast metadata extraction handling */
+  /* whether to request icecast metadata */
   gboolean iradio_mode;
-  gchar *iradio_name;
-  gchar *iradio_genre;
-  gchar *iradio_url;
-  GstCaps *icy_caps;
-  gint icy_metaint;
 
   /* enable Neon HTTP redirects (HTTP 302 status code) */
   gboolean automatic_redirect;
@@ -76,6 +72,10 @@ struct _GstNeonhttpSrc {
 
   gint64 read_position;
   gboolean seekable;
+
+  /* seconds before timing out when connecting or reading to/from a socket */
+  guint connect_timeout;
+  guint read_timeout;
 };
 
 struct _GstNeonhttpSrcClass {

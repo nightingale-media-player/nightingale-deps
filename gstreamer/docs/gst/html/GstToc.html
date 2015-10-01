@@ -1,0 +1,1547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstToc: GStreamer 1.0 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="GstTaskPool.html" title="GstTaskPool">
+<link rel="next" href="gstreamer-GstTocSetter.html" title="GstTocSetter">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GstToc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GstToc.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GstTaskPool.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-GstTocSetter.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstToc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstToc.top_of_page"></a>GstToc</span></h2>
+<p>GstToc — Generic table of contents support</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstToc.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html" title="GstToc"><span class="returnvalue">GstToc</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-new" title="gst_toc_new ()">gst_toc_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-ref" title="gst_toc_ref()">gst_toc_ref</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-unref" title="gst_toc_unref()">gst_toc_unref</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-copy" title="gst_toc_copy()">gst_toc_copy</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-make-writable" title="gst_toc_make_writable()">gst_toc_make_writable</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html#GstTocScope" title="enum GstTocScope"><span class="returnvalue">GstTocScope</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-get-scope" title="gst_toc_get_scope ()">gst_toc_get_scope</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-get-entries" title="gst_toc_get_entries ()">gst_toc_get_entries</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-append-entry" title="gst_toc_append_entry ()">gst_toc_append_entry</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstTagList.html" title="GstTagList"><span class="returnvalue">GstTagList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-get-tags" title="gst_toc_get_tags ()">gst_toc_get_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-merge-tags" title="gst_toc_merge_tags ()">gst_toc_merge_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-set-tags" title="gst_toc_set_tags ()">gst_toc_set_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-dump" title="gst_toc_dump ()">gst_toc_dump</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-new" title="gst_toc_entry_new ()">gst_toc_entry_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-ref" title="gst_toc_entry_ref()">gst_toc_entry_ref</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-unref" title="gst_toc_entry_unref()">gst_toc_entry_unref</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-copy" title="gst_toc_entry_copy()">gst_toc_entry_copy</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-make-writable" title="gst_toc_entry_make_writable()">gst_toc_entry_make_writable</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-find-entry" title="gst_toc_find_entry ()">gst_toc_find_entry</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html" title="GstToc"><span class="returnvalue">GstToc</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-toc" title="gst_toc_entry_get_toc ()">gst_toc_entry_get_toc</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-uid" title="gst_toc_entry_get_uid ()">gst_toc_entry_get_uid</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-parent" title="gst_toc_entry_get_parent ()">gst_toc_entry_get_parent</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-sub-entries" title="gst_toc_entry_get_sub_entries ()">gst_toc_entry_get_sub_entries</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-append-sub-entry" title="gst_toc_entry_append_sub_entry ()">gst_toc_entry_append_sub_entry</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-loop" title="gst_toc_entry_get_loop ()">gst_toc_entry_get_loop</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-set-loop" title="gst_toc_entry_set_loop ()">gst_toc_entry_set_loop</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-start-stop-times" title="gst_toc_entry_get_start_stop_times ()">gst_toc_entry_get_start_stop_times</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-set-start-stop-times" title="gst_toc_entry_set_start_stop_times ()">gst_toc_entry_set_start_stop_times</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstTagList.html" title="GstTagList"><span class="returnvalue">GstTagList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-tags" title="gst_toc_entry_get_tags ()">gst_toc_entry_get_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-merge-tags" title="gst_toc_entry_merge_tags ()">gst_toc_entry_merge_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-set-tags" title="gst_toc_entry_set_tags ()">gst_toc_entry_set_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-type-get-nick" title="gst_toc_entry_type_get_nick ()">gst_toc_entry_type_get_nick</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="returnvalue">GstTocEntryType</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-get-entry-type" title="gst_toc_entry_get_entry_type ()">gst_toc_entry_get_entry_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-is-alternative" title="gst_toc_entry_is_alternative ()">gst_toc_entry_is_alternative</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#gst-toc-entry-is-sequence" title="gst_toc_entry_is_sequence ()">gst_toc_entry_is_sequence</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#GST-TOC-ENTRY-TYPE-IS-ALTERNATIVE:CAPS" title="GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE()">GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="GstToc.html#GST-TOC-ENTRY-TYPE-IS-SEQUENCE:CAPS" title="GST_TOC_ENTRY_TYPE_IS_SEQUENCE()">GST_TOC_ENTRY_TYPE_IS_SEQUENCE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="GstToc.html#GST-TOC-REPEAT-COUNT-INFINITE:CAPS" title="GST_TOC_REPEAT_COUNT_INFINITE">GST_TOC_REPEAT_COUNT_INFINITE</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstTocEntry"></a><div class="refsect1">
+<a name="GstToc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstToc.html#GstToc-struct" title="GstToc">GstToc</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstToc.html#GstTocScope" title="enum GstTocScope">GstTocScope</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstToc.html#GstTocEntry-struct" title="GstTocEntry">GstTocEntry</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType">GstTocEntryType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="GstToc.html#GstTocLoopType" title="enum GstTocLoopType">GstTocLoopType</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstToc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Boxed-Types.html">GBoxed</a>
+    <span class="lineart">├──</span> GstToc
+    <span class="lineart">╰──</span> GstTocEntry
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstToc.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstToc.description"></a><h2>Description</h2>
+<p><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> functions are used to create/free <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> and <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> structures.
+Also they are used to convert <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> into <a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a> and vice versa.</p>
+<p><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> lets you to inform other elements in pipeline or application that playing
+source has some kind of table of contents (TOC). These may be chapters, editions,
+angles or other types. For example: DVD chapters, Matroska chapters or cue sheet
+TOC. Such TOC will be useful for applications to display instead of just a
+playlist.</p>
+<p>Using TOC is very easy. Firstly, create <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> structure which represents root
+contents of the source. You can also attach TOC-specific tags to it. Then fill
+it with <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> entries by appending them to the <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> using
+<a class="link" href="GstToc.html#gst-toc-append-entry" title="gst_toc_append_entry ()"><code class="function">gst_toc_append_entry()</code></a>, and appending subentries to a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> using
+<a class="link" href="GstToc.html#gst-toc-entry-append-sub-entry" title="gst_toc_entry_append_sub_entry ()"><code class="function">gst_toc_entry_append_sub_entry()</code></a>.</p>
+<p>Note that root level of the TOC can contain only either editions or chapters. You
+should not mix them together at the same level. Otherwise you will get serialization
+/deserialization errors. Make sure that no one of the entries has negative start and
+ stop values.</p>
+<p>Use <a class="link" href="GstEvent.html#gst-event-new-toc" title="gst_event_new_toc ()"><code class="function">gst_event_new_toc()</code></a> to create a new TOC <a class="link" href="GstEvent.html" title="GstEvent"><span class="type">GstEvent</span></a>, and <a class="link" href="GstEvent.html#gst-event-parse-toc" title="gst_event_parse_toc ()"><code class="function">gst_event_parse_toc()</code></a> to
+parse received TOC event. Use <a class="link" href="GstEvent.html#gst-event-new-toc-select" title="gst_event_new_toc_select ()"><code class="function">gst_event_new_toc_select()</code></a> to create a new TOC select <a class="link" href="GstEvent.html" title="GstEvent"><span class="type">GstEvent</span></a>,
+and <a class="link" href="GstEvent.html#gst-event-parse-toc-select" title="gst_event_parse_toc_select ()"><code class="function">gst_event_parse_toc_select()</code></a> to parse received TOC select event. The same rule for
+the <a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a>: <a class="link" href="GstMessage.html#gst-message-new-toc" title="gst_message_new_toc ()"><code class="function">gst_message_new_toc()</code></a> to create new TOC <a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a>, and
+<a class="link" href="GstMessage.html#gst-message-parse-toc" title="gst_message_parse_toc ()"><code class="function">gst_message_parse_toc()</code></a> to parse received TOC message.</p>
+<p>TOCs can have global scope or current scope. Global scope TOCs contain
+all entries that can possibly be selected using a toc select event, and
+are what an application is usually interested in. TOCs with current scope
+only contain the parts of the TOC relevant to the currently selected/playing
+stream; the current scope TOC is used by downstream elements such as muxers
+to write correct TOC entries when transcoding files, for example. When
+playing a DVD, the global TOC would contain a hierarchy of all titles,
+chapters and angles, for example, while the current TOC would only contain
+the chapters for the currently playing title if playback of a specific
+title was requested.</p>
+<p>Applications and plugins should not rely on TOCs having a certain kind of
+structure, but should allow for different alternatives. For example, a
+simple CUE sheet embedded in a file may be presented as a flat list of
+track entries, or could have a top-level edition node (or some other
+alternative type entry) with track entries underneath that node; or even
+multiple top-level edition nodes (or some other alternative type entries)
+each with track entries underneath, in case the source file has extracted
+a track listing from different sources).</p>
+</div>
+<div class="refsect1">
+<a name="GstToc.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-toc-new"></a><h3>gst_toc_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html" title="GstToc"><span class="returnvalue">GstToc</span></a> *
+gst_toc_new (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocScope" title="enum GstTocScope"><span class="type">GstTocScope</span></a> scope</code></em>);</pre>
+<p>Create a new <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> structure.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>scope</p></td>
+<td class="parameter_description"><p>scope of this TOC</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.2.6"></a><h4>Returns</h4>
+<p> newly allocated <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> structure, free it
+with <a class="link" href="GstToc.html#gst-toc-unref" title="gst_toc_unref()"><code class="function">gst_toc_unref()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-ref"></a><h3>gst_toc_ref()</h3>
+<pre class="programlisting">#define gst_toc_ref(toc)            (GstToc*)gst_mini_object_ref(GST_MINI_OBJECT_CAST(toc))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-unref"></a><h3>gst_toc_unref()</h3>
+<pre class="programlisting">#define gst_toc_unref(toc)          gst_mini_object_unref(GST_MINI_OBJECT_CAST(toc))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-copy"></a><h3>gst_toc_copy()</h3>
+<pre class="programlisting">#define gst_toc_copy(toc)           (GstToc*)gst_mini_object_copy(GST_MINI_OBJECT_CAST(toc))
+</pre>
+<p>Copy <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> with all subentries (deep copy).</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> to copy.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.5.6"></a><h4>Returns</h4>
+<p> newly allocated <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> in case of success,
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> otherwise; free it when done with <a class="link" href="GstToc.html#gst-toc-unref" title="gst_toc_unref()"><code class="function">gst_toc_unref()</code></a>. </p>
+<p><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-make-writable"></a><h3>gst_toc_make_writable()</h3>
+<pre class="programlisting">#define gst_toc_make_writable(toc)  (GstToc*)gst_mini_object_make_writable(GST_MINI_OBJECT_CAST(toc))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-get-scope"></a><h3>gst_toc_get_scope ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html#GstTocScope" title="enum GstTocScope"><span class="returnvalue">GstTocScope</span></a>
+gst_toc_get_scope (<em class="parameter"><code>const <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.3.52.9.7.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.7.5"></a><h4>Returns</h4>
+<p> scope of <em class="parameter"><code>toc</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-get-entries"></a><h3>gst_toc_get_entries ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+gst_toc_get_entries (<em class="parameter"><code>const <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>);</pre>
+<p>Gets the list of <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> of <em class="parameter"><code>toc</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.8.6"></a><h4>Returns</h4>
+<p> A <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> for <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> Gst.TocEntry]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-append-entry"></a><h3>gst_toc_append_entry ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_append_entry (<em class="parameter"><code><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>,
+                      <em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Appends the <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> <em class="parameter"><code>entry</code></em>
+ to <em class="parameter"><code>toc</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-get-tags"></a><h3>gst_toc_get_tags ()</h3>
+<pre class="programlisting"><a class="link" href="GstTagList.html" title="GstTagList"><span class="returnvalue">GstTagList</span></a> *
+gst_toc_get_tags (<em class="parameter"><code>const <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>);</pre>
+<p>Gets the tags for <em class="parameter"><code>toc</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.10.6"></a><h4>Returns</h4>
+<p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> for <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-merge-tags"></a><h3>gst_toc_merge_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_merge_tags (<em class="parameter"><code><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>,
+                    <em class="parameter"><code><a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>,
+                    <em class="parameter"><code><a class="link" href="GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> mode</code></em>);</pre>
+<p>Merge <em class="parameter"><code>tags</code></em>
+ into the existing tags of <em class="parameter"><code>toc</code></em>
+ using <em class="parameter"><code>mode</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tags</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mode</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode"><span class="type">GstTagMergeMode</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-set-tags"></a><h3>gst_toc_set_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_set_tags (<em class="parameter"><code><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>,
+                  <em class="parameter"><code><a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>);</pre>
+<p>Set a <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> with tags for the complete <em class="parameter"><code>toc</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tags</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-dump"></a><h3>gst_toc_dump ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_dump (<em class="parameter"><code><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-new"></a><h3>gst_toc_entry_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+gst_toc_entry_new (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="type">GstTocEntryType</span></a> type</code></em>,
+                   <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *uid</code></em>);</pre>
+<p>Create new <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> structure.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>entry type.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>uid</p></td>
+<td class="parameter_description"><p>unique ID (UID) in the whole TOC.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.14.6"></a><h4>Returns</h4>
+<p> newly allocated <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> structure, free it with <a class="link" href="GstToc.html#gst-toc-entry-unref" title="gst_toc_entry_unref()"><code class="function">gst_toc_entry_unref()</code></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-ref"></a><h3>gst_toc_entry_ref()</h3>
+<pre class="programlisting">#define gst_toc_entry_ref(entry)            (GstTocEntry*)gst_mini_object_ref(GST_MINI_OBJECT_CAST(entry))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-unref"></a><h3>gst_toc_entry_unref()</h3>
+<pre class="programlisting">#define gst_toc_entry_unref(entry)          gst_mini_object_unref(GST_MINI_OBJECT_CAST(entry))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-copy"></a><h3>gst_toc_entry_copy()</h3>
+<pre class="programlisting">#define gst_toc_entry_copy(entry)           (GstTocEntry*)gst_mini_object_copy(GST_MINI_OBJECT_CAST(entry))
+</pre>
+<p>Copy <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> with all subentries (deep copy).</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> to copy.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.17.6"></a><h4>Returns</h4>
+<p> newly allocated <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> in case of
+success, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> otherwise; free it when done with
+<a class="link" href="GstToc.html#gst-toc-entry-unref" title="gst_toc_entry_unref()"><code class="function">gst_toc_entry_unref()</code></a>. </p>
+<p><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-make-writable"></a><h3>gst_toc_entry_make_writable()</h3>
+<pre class="programlisting">#define gst_toc_entry_make_writable(entry)  (GstTocEntry*)gst_mini_object_make_writable(GST_MINI_OBJECT_CAST(entry))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-find-entry"></a><h3>gst_toc_find_entry ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+gst_toc_find_entry (<em class="parameter"><code>const <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> *toc</code></em>,
+                    <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *uid</code></em>);</pre>
+<p>Find <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> with given <em class="parameter"><code>uid</code></em>
+ in the <em class="parameter"><code>toc</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>toc</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> to search in.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>uid</p></td>
+<td class="parameter_description"><p>UID to find <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> with.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.19.6"></a><h4>Returns</h4>
+<p> <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> with specified
+<em class="parameter"><code>uid</code></em>
+from the <em class="parameter"><code>toc</code></em>
+, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not found. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-toc"></a><h3>gst_toc_entry_get_toc ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html" title="GstToc"><span class="returnvalue">GstToc</span></a> *
+gst_toc_entry_get_toc (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Gets the parent <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> of <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.20.6"></a><h4>Returns</h4>
+<p> The parent <a class="link" href="GstToc.html" title="GstToc"><span class="type">GstToc</span></a> of <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-uid"></a><h3>gst_toc_entry_get_uid ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_toc_entry_get_uid (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Gets the UID of <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.21.6"></a><h4>Returns</h4>
+<p> The UID of <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-parent"></a><h3>gst_toc_entry_get_parent ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html#GstTocEntry"><span class="returnvalue">GstTocEntry</span></a> *
+gst_toc_entry_get_parent (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Gets the parent <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> of <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.22.6"></a><h4>Returns</h4>
+<p> The parent <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> of <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-sub-entries"></a><h3>gst_toc_entry_get_sub_entries ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+gst_toc_entry_get_sub_entries (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Gets the sub-entries of <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.23.6"></a><h4>Returns</h4>
+<p> A <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> of <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> Gst.TocEntry]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-append-sub-entry"></a><h3>gst_toc_entry_append_sub_entry ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_entry_append_sub_entry (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                                <em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *subentry</code></em>);</pre>
+<p>Appends the <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> <em class="parameter"><code>subentry</code></em>
+ to <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>subentry</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-loop"></a><h3>gst_toc_entry_get_loop ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_toc_entry_get_loop (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                        <em class="parameter"><code><a class="link" href="GstToc.html#GstTocLoopType" title="enum GstTocLoopType"><span class="type">GstTocLoopType</span></a> *loop_type</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *repeat_count</code></em>);</pre>
+<p>Get <em class="parameter"><code>loop_type</code></em>
+ and <em class="parameter"><code>repeat_count</code></em>
+ values from the <em class="parameter"><code>entry</code></em>
+ and write them into
+appropriate storages. Loops are e.g. used by sampled instruments. GStreamer
+is not automatically applying the loop. The application can process this
+meta data and use it e.g. to send a seek-event to loop a section.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.25.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> to get values from.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>loop_type</p></td>
+<td class="parameter_description"><p> the storage for the loop_type
+value, leave <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not need. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>repeat_count</p></td>
+<td class="parameter_description"><p> the storage for the repeat_count
+value, leave <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not need. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.25.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if all non-<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> storage pointers were filled with appropriate
+values, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-set-loop"></a><h3>gst_toc_entry_set_loop ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_entry_set_loop (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                        <em class="parameter"><code><a class="link" href="GstToc.html#GstTocLoopType" title="enum GstTocLoopType"><span class="type">GstTocLoopType</span></a> loop_type</code></em>,
+                        <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> repeat_count</code></em>);</pre>
+<p>Set <em class="parameter"><code>loop_type</code></em>
+ and <em class="parameter"><code>repeat_count</code></em>
+ values for the <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> to set values.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>loop_type</p></td>
+<td class="parameter_description"><p>loop_type value to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>repeat_count</p></td>
+<td class="parameter_description"><p>repeat_count value to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-start-stop-times"></a><h3>gst_toc_entry_get_start_stop_times ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_toc_entry_get_start_stop_times (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                                    <em class="parameter"><code><span class="type">gint64</span> *start</code></em>,
+                                    <em class="parameter"><code><span class="type">gint64</span> *stop</code></em>);</pre>
+<p>Get <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ values from the <em class="parameter"><code>entry</code></em>
+ and write them into appropriate
+storages.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.27.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> to get values from.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>start</p></td>
+<td class="parameter_description"><p> the storage for the start value, leave
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not need. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stop</p></td>
+<td class="parameter_description"><p> the storage for the stop value, leave
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not need. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.27.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if all non-<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> storage pointers were filled with appropriate
+values, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-set-start-stop-times"></a><h3>gst_toc_entry_set_start_stop_times ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_entry_set_start_stop_times (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                                    <em class="parameter"><code><span class="type">gint64</span> start</code></em>,
+                                    <em class="parameter"><code><span class="type">gint64</span> stop</code></em>);</pre>
+<p>Set <em class="parameter"><code>start</code></em>
+ and <em class="parameter"><code>stop</code></em>
+ values for the <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.28.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> to set values.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>start</p></td>
+<td class="parameter_description"><p>start value to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stop</p></td>
+<td class="parameter_description"><p>stop value to set.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-tags"></a><h3>gst_toc_entry_get_tags ()</h3>
+<pre class="programlisting"><a class="link" href="GstTagList.html" title="GstTagList"><span class="returnvalue">GstTagList</span></a> *
+gst_toc_entry_get_tags (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<p>Gets the tags for <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.29.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.29.6"></a><h4>Returns</h4>
+<p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> for <em class="parameter"><code>entry</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-merge-tags"></a><h3>gst_toc_entry_merge_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_entry_merge_tags (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                          <em class="parameter"><code><a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>,
+                          <em class="parameter"><code><a class="link" href="GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> mode</code></em>);</pre>
+<p>Merge <em class="parameter"><code>tags</code></em>
+ into the existing tags of <em class="parameter"><code>entry</code></em>
+ using <em class="parameter"><code>mode</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.30.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tags</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mode</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstTagList.html#GstTagMergeMode" title="enum GstTagMergeMode"><span class="type">GstTagMergeMode</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-set-tags"></a><h3>gst_toc_entry_set_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_toc_entry_set_tags (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>,
+                        <em class="parameter"><code><a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>);</pre>
+<p>Set a <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> with tags for the complete <em class="parameter"><code>entry</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.31.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> instance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tags</p></td>
+<td class="parameter_description"><p> A <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a> or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-type-get-nick"></a><h3>gst_toc_entry_type_get_nick ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_toc_entry_type_get_nick (<em class="parameter"><code><a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="type">GstTocEntryType</span></a> type</code></em>);</pre>
+<p>Converts <em class="parameter"><code>type</code></em>
+ to a string representation.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.32.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="type">GstTocEntryType</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.32.6"></a><h4>Returns</h4>
+<p> Returns a human-readable string for <em class="parameter"><code>type</code></em>
+. This string is
+only for debugging purpose and should not be displayed in a user
+interface.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-get-entry-type"></a><h3>gst_toc_entry_get_entry_type ()</h3>
+<pre class="programlisting"><a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="returnvalue">GstTocEntryType</span></a>
+gst_toc_entry_get_entry_type (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.3.52.9.33.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.33.5"></a><h4>Returns</h4>
+<p> <em class="parameter"><code>entry</code></em>
+'s entry type</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-is-alternative"></a><h3>gst_toc_entry_is_alternative ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_toc_entry_is_alternative (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.3.52.9.34.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.34.5"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>entry</code></em>
+'s type is an alternative type, otherwise <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-toc-entry-is-sequence"></a><h3>gst_toc_entry_is_sequence ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_toc_entry_is_sequence (<em class="parameter"><code>const <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> *entry</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.3.52.9.35.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.52.9.35.5"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>entry</code></em>
+'s type is a sequence type, otherwise <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TOC-ENTRY-TYPE-IS-ALTERNATIVE:CAPS"></a><h3>GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE()</h3>
+<pre class="programlisting">#define GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE(entry_type)  (entry_type &lt; 0)
+</pre>
+<p>Checks if <em class="parameter"><code>entry_type</code></em>
+ indicates that its <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> is an alternative.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.36.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry_type</p></td>
+<td class="parameter_description"><p>The <a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="type">GstTocEntryType</span></a> from a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TOC-ENTRY-TYPE-IS-SEQUENCE:CAPS"></a><h3>GST_TOC_ENTRY_TYPE_IS_SEQUENCE()</h3>
+<pre class="programlisting">#define GST_TOC_ENTRY_TYPE_IS_SEQUENCE(entry_type)     (entry_type &gt; 0)
+</pre>
+<p>Checks if <em class="parameter"><code>entry_type</code></em>
+ indicates that its <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> is a sequence.</p>
+<div class="refsect3">
+<a name="id-1.3.52.9.37.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>entry_type</p></td>
+<td class="parameter_description"><p>The <a class="link" href="GstToc.html#GstTocEntryType" title="enum GstTocEntryType"><span class="type">GstTocEntryType</span></a> from a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TOC-REPEAT-COUNT-INFINITE:CAPS"></a><h3>GST_TOC_REPEAT_COUNT_INFINITE</h3>
+<pre class="programlisting">#define GST_TOC_REPEAT_COUNT_INFINITE (-1)
+</pre>
+<p>Special value for the repeat_count set in <a class="link" href="GstToc.html#gst-toc-entry-set-loop" title="gst_toc_entry_set_loop ()"><code class="function">gst_toc_entry_set_loop()</code></a> or
+returned by <a class="link" href="GstToc.html#gst-toc-entry-set-loop" title="gst_toc_entry_set_loop ()"><code class="function">gst_toc_entry_set_loop()</code></a> to indicate infinite looping.</p>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstToc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstToc-struct"></a><h3>GstToc</h3>
+<pre class="programlisting">typedef struct _GstToc GstToc;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTocScope"></a><h3>enum GstTocScope</h3>
+<p>The scope of a TOC.</p>
+<div class="refsect3">
+<a name="id-1.3.52.10.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-SCOPE-GLOBAL:CAPS"></a>GST_TOC_SCOPE_GLOBAL</p></td>
+<td class="enum_member_description">
+<p>global TOC representing all selectable options
+    (this is what applications are usually interested in)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-SCOPE-CURRENT:CAPS"></a>GST_TOC_SCOPE_CURRENT</p></td>
+<td class="enum_member_description">
+<p>TOC for the currently active/selected stream
+    (this is a TOC representing the current stream from start to EOS,
+    and is what a TOC writer / muxer is usually interested in; it will
+    usually be a subset of the global TOC, e.g. just the chapters of
+    the current title, or the chapters selected for playback from the
+    current title)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTocEntry-struct"></a><h3>GstTocEntry</h3>
+<pre class="programlisting">typedef struct _GstTocEntry GstTocEntry;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTocEntryType"></a><h3>enum GstTocEntryType</h3>
+<p>The different types of TOC entries (see <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a>).</p>
+<p>There are two types of TOC entries: alternatives or parts in a sequence.</p>
+<div class="refsect3">
+<a name="id-1.3.52.10.5.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-ANGLE:CAPS"></a>GST_TOC_ENTRY_TYPE_ANGLE</p></td>
+<td class="enum_member_description">
+<p>entry is an angle (i.e. an alternative)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-VERSION:CAPS"></a>GST_TOC_ENTRY_TYPE_VERSION</p></td>
+<td class="enum_member_description">
+<p>entry is a version (i.e. alternative)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-EDITION:CAPS"></a>GST_TOC_ENTRY_TYPE_EDITION</p></td>
+<td class="enum_member_description">
+<p>entry is an edition (i.e. alternative)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-INVALID:CAPS"></a>GST_TOC_ENTRY_TYPE_INVALID</p></td>
+<td class="enum_member_description">
+<p>invalid entry type value</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-TITLE:CAPS"></a>GST_TOC_ENTRY_TYPE_TITLE</p></td>
+<td class="enum_member_description">
+<p>entry is a title (i.e. a part of a sequence)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-TRACK:CAPS"></a>GST_TOC_ENTRY_TYPE_TRACK</p></td>
+<td class="enum_member_description">
+<p>entry is a track (i.e. a part of a sequence)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-ENTRY-TYPE-CHAPTER:CAPS"></a>GST_TOC_ENTRY_TYPE_CHAPTER</p></td>
+<td class="enum_member_description">
+<p>entry is a chapter (i.e. a part of a sequence)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTocLoopType"></a><h3>enum GstTocLoopType</h3>
+<p>How a <a class="link" href="GstToc.html#GstTocEntry"><span class="type">GstTocEntry</span></a> should be repeated. By default, entries are played a
+single time.</p>
+<div class="refsect3">
+<a name="id-1.3.52.10.6.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-LOOP-NONE:CAPS"></a>GST_TOC_LOOP_NONE</p></td>
+<td class="enum_member_description">
+<p>single forward playback</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-LOOP-FORWARD:CAPS"></a>GST_TOC_LOOP_FORWARD</p></td>
+<td class="enum_member_description">
+<p>repeat forward</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-LOOP-REVERSE:CAPS"></a>GST_TOC_LOOP_REVERSE</p></td>
+<td class="enum_member_description">
+<p>repeat backward</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TOC-LOOP-PING-PONG:CAPS"></a>GST_TOC_LOOP_PING_PONG</p></td>
+<td class="enum_member_description">
+<p>repeat forward and backward</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstToc.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a>, <a class="link" href="GstEvent.html" title="GstEvent"><span class="type">GstEvent</span></a>, <a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a>, <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

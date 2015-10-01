@@ -1,6 +1,8 @@
 /* GStreamer
  * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
  * Copyright (C) <2004> Thomas Vander Stichele <thomas at apestaart dot org>
+ * Copyright (C) <2011> Collabora Ltd.
+ *     Author: Sebastian Dröge <sebastian.droege@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -14,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -26,9 +28,9 @@
  * <title>Example launch line</title>
  * |[
  * # server:
- * gst-launch tcpserversrc protocol=none port=3000 ! fdsink fd=2
+ * gst-launch-1.0 tcpserversrc port=3000 ! fdsink fd=2
  * # client:
- * gst-launch fdsrc fd=1 ! tcpclientsink protocol=none port=3000
+ * gst-launch-1.0 fdsrc fd=1 ! tcpclientsink port=3000
  * ]| 
  * </refsect2>
  */
@@ -40,11 +42,6 @@
 #include <gst/gst-i18n-plugin.h>
 #include "gsttcp.h"
 #include "gsttcpserversrc.h"
-#include <string.h>             /* memset */
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-
 
 GST_DEBUG_CATEGORY_STATIC (tcpserversrc_debug);
 #define GST_CAT_DEFAULT tcpserversrc_debug
@@ -52,37 +49,30 @@ GST_DEBUG_CATEGORY_STATIC (tcpserversrc_debug);
 #define TCP_DEFAULT_LISTEN_HOST         NULL    /* listen on all interfaces */
 #define TCP_BACKLOG                     1       /* client connection queue */
 
-
-static const GstElementDetails gst_tcp_server_src_details =
-GST_ELEMENT_DETAILS ("TCP server source",
-    "Source/Network",
-    "Receive data as a server over the network via TCP",
-    "Thomas Vander Stichele <thomas at apestaart dot org>");
+#define MAX_READ_SIZE                   4 * 1024
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
-
 enum
 {
   PROP_0,
   PROP_HOST,
   PROP_PORT,
-  PROP_PROTOCOL
+  PROP_CURRENT_PORT
 };
 
-
-GST_BOILERPLATE (GstTCPServerSrc, gst_tcp_server_src, GstPushSrc,
-    GST_TYPE_PUSH_SRC);
-
+#define gst_tcp_server_src_parent_class parent_class
+G_DEFINE_TYPE (GstTCPServerSrc, gst_tcp_server_src, GST_TYPE_PUSH_SRC);
 
 static void gst_tcp_server_src_finalize (GObject * gobject);
 
 static gboolean gst_tcp_server_src_start (GstBaseSrc * bsrc);
 static gboolean gst_tcp_server_src_stop (GstBaseSrc * bsrc);
 static gboolean gst_tcp_server_src_unlock (GstBaseSrc * bsrc);
+static gboolean gst_tcp_server_src_unlock_stop (GstBaseSrc * bsrc);
 static GstFlowReturn gst_tcp_server_src_create (GstPushSrc * psrc,
     GstBuffer ** buf);
 
@@ -91,26 +81,16 @@ static void gst_tcp_server_src_set_property (GObject * object, guint prop_id,
 static void gst_tcp_server_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-
-static void
-gst_tcp_server_src_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&srctemplate));
-
-  gst_element_class_set_details (element_class, &gst_tcp_server_src_details);
-}
-
 static void
 gst_tcp_server_src_class_init (GstTCPServerSrcClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
   GstPushSrcClass *gstpush_src_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
   gstbasesrc_class = (GstBaseSrcClass *) klass;
   gstpush_src_class = (GstPushSrcClass *) klass;
 
@@ -118,21 +98,42 @@ gst_tcp_server_src_class_init (GstTCPServerSrcClass * klass)
   gobject_class->get_property = gst_tcp_server_src_get_property;
   gobject_class->finalize = gst_tcp_server_src_finalize;
 
+  /* FIXME 2.0: Rename this to bind-address, host does not make much
+   * sense here */
   g_object_class_install_property (gobject_class, PROP_HOST,
       g_param_spec_string ("host", "Host", "The hostname to listen as",
           TCP_DEFAULT_LISTEN_HOST, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PORT,
-      g_param_spec_int ("port", "Port", "The port to listen to",
+      g_param_spec_int ("port", "Port",
+          "The port to listen to (0=random available port)",
           0, TCP_HIGHEST_PORT, TCP_DEFAULT_PORT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  g_object_class_install_property (gobject_class, PROP_PROTOCOL,
-      g_param_spec_enum ("protocol", "Protocol", "The protocol to wrap data in",
-          GST_TYPE_TCP_PROTOCOL, GST_TCP_PROTOCOL_NONE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstTCPServerSrc:current-port:
+   *
+   * The port number the socket is currently bound to. Applications can use
+   * this property to retrieve the port number actually bound to in case
+   * the port requested was 0 (=allocate a random available port).
+   *
+   * Since: 1.0.2
+   **/
+  g_object_class_install_property (gobject_class, PROP_CURRENT_PORT,
+      g_param_spec_int ("current-port", "current-port",
+          "The port number the socket is currently bound to", 0,
+          TCP_HIGHEST_PORT, 0, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "TCP server source", "Source/Network",
+      "Receive data as a server over the network via TCP",
+      "Thomas Vander Stichele <thomas at apestaart dot org>");
 
   gstbasesrc_class->start = gst_tcp_server_src_start;
   gstbasesrc_class->stop = gst_tcp_server_src_stop;
   gstbasesrc_class->unlock = gst_tcp_server_src_unlock;
+  gstbasesrc_class->unlock_stop = gst_tcp_server_src_unlock_stop;
 
   gstpush_src_class->create = gst_tcp_server_src_create;
 
@@ -141,13 +142,13 @@ gst_tcp_server_src_class_init (GstTCPServerSrcClass * klass)
 }
 
 static void
-gst_tcp_server_src_init (GstTCPServerSrc * src, GstTCPServerSrcClass * g_class)
+gst_tcp_server_src_init (GstTCPServerSrc * src)
 {
   src->server_port = TCP_DEFAULT_PORT;
   src->host = g_strdup (TCP_DEFAULT_HOST);
-  src->server_sock_fd.fd = -1;
-  src->client_sock_fd.fd = -1;
-  src->protocol = GST_TCP_PROTOCOL_NONE;
+  src->server_socket = NULL;
+  src->client_socket = NULL;
+  src->cancellable = g_cancellable_new ();
 
   GST_OBJECT_FLAG_UNSET (src, GST_TCP_SERVER_SRC_OPEN);
 }
@@ -157,7 +158,18 @@ gst_tcp_server_src_finalize (GObject * gobject)
 {
   GstTCPServerSrc *src = GST_TCP_SERVER_SRC (gobject);
 
+  if (src->cancellable)
+    g_object_unref (src->cancellable);
+  src->cancellable = NULL;
+  if (src->server_socket)
+    g_object_unref (src->server_socket);
+  src->server_socket = NULL;
+  if (src->client_socket)
+    g_object_unref (src->client_socket);
+  src->client_socket = NULL;
+
   g_free (src->host);
+  src->host = NULL;
 
   G_OBJECT_CLASS (parent_class)->finalize (gobject);
 }
@@ -167,137 +179,155 @@ gst_tcp_server_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
 {
   GstTCPServerSrc *src;
   GstFlowReturn ret = GST_FLOW_OK;
+  gssize rret, avail;
+  gsize read;
+  GError *err = NULL;
+  GstMapInfo map;
 
   src = GST_TCP_SERVER_SRC (psrc);
 
   if (!GST_OBJECT_FLAG_IS_SET (src, GST_TCP_SERVER_SRC_OPEN))
     goto wrong_state;
 
-restart:
-  if (src->client_sock_fd.fd >= 0) {
-    /* if we have a client, wait for read */
-    gst_poll_fd_ctl_read (src->fdset, &src->server_sock_fd, FALSE);
-    gst_poll_fd_ctl_read (src->fdset, &src->client_sock_fd, TRUE);
-  } else {
-    /* else wait on server socket for connections */
-    gst_poll_fd_ctl_read (src->fdset, &src->server_sock_fd, TRUE);
-  }
+  if (!src->client_socket) {
+    /* wait on server socket for connections */
+    src->client_socket =
+        g_socket_accept (src->server_socket, src->cancellable, &err);
+    if (!src->client_socket)
+      goto accept_error;
+    GST_DEBUG_OBJECT (src, "closing server socket");
 
-  /* no action (0) is an error too in our case */
-  if ((ret = gst_poll_wait (src->fdset, GST_CLOCK_TIME_NONE)) <= 0) {
-    if (ret == -1 && errno == EBUSY)
-      goto select_cancelled;
-    else
-      goto select_error;
-  }
-
-  /* if we have no client socket we can accept one now */
-  if (src->client_sock_fd.fd < 0) {
-    if (gst_poll_fd_can_read (src->fdset, &src->server_sock_fd)) {
-      if ((src->client_sock_fd.fd =
-              accept (src->server_sock_fd.fd,
-                  (struct sockaddr *) &src->client_sin,
-                  &src->client_sin_len)) == -1)
-        goto accept_error;
-
-      gst_poll_add_fd (src->fdset, &src->client_sock_fd);
+    if (!g_socket_close (src->server_socket, &err)) {
+      GST_ERROR_OBJECT (src, "Failed to close socket: %s", err->message);
+      g_clear_error (&err);
     }
-    /* and restart now to poll the socket. */
-    goto restart;
+    /* now read from the socket. */
   }
 
+  /* if we have a client, wait for read */
   GST_LOG_OBJECT (src, "asked for a buffer");
 
-  switch (src->protocol) {
-    case GST_TCP_PROTOCOL_NONE:
-      ret = gst_tcp_read_buffer (GST_ELEMENT (src), src->client_sock_fd.fd,
-          src->fdset, outbuf);
-      break;
+  /* read the buffer header */
+  avail = g_socket_get_available_bytes (src->client_socket);
+  if (avail < 0) {
+    goto get_available_error;
+  } else if (avail == 0) {
+    GIOCondition condition;
 
-    case GST_TCP_PROTOCOL_GDP:
-      if (!src->caps_received) {
-        GstCaps *caps;
-        gchar *string;
+    if (!g_socket_condition_wait (src->client_socket,
+            G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP, src->cancellable, &err))
+      goto select_error;
 
-        ret = gst_tcp_gdp_read_caps (GST_ELEMENT (src), src->client_sock_fd.fd,
-            src->fdset, &caps);
+    condition =
+        g_socket_condition_check (src->client_socket,
+        G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP);
 
-        if (ret == GST_FLOW_WRONG_STATE)
-          goto gdp_cancelled;
-
-        if (ret != GST_FLOW_OK)
-          goto gdp_caps_read_error;
-
-        src->caps_received = TRUE;
-        string = gst_caps_to_string (caps);
-        GST_DEBUG_OBJECT (src, "Received caps through GDP: %s", string);
-        g_free (string);
-
-        gst_pad_set_caps (GST_BASE_SRC_PAD (psrc), caps);
-      }
-
-      ret = gst_tcp_gdp_read_buffer (GST_ELEMENT (src), src->client_sock_fd.fd,
-          src->fdset, outbuf);
-
-      if (ret == GST_FLOW_OK)
-        gst_buffer_set_caps (*outbuf, GST_PAD_CAPS (GST_BASE_SRC_PAD (src)));
-
-      break;
-
-    default:
-      /* need to assert as buf == NULL */
-      g_assert ("Unhandled protocol type");
-      break;
+    if ((condition & G_IO_ERR)) {
+      GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
+          ("Socket in error state"));
+      *outbuf = NULL;
+      ret = GST_FLOW_ERROR;
+      goto done;
+    } else if ((condition & G_IO_HUP)) {
+      GST_DEBUG_OBJECT (src, "Connection closed");
+      *outbuf = NULL;
+      ret = GST_FLOW_EOS;
+      goto done;
+    }
+    avail = g_socket_get_available_bytes (src->client_socket);
+    if (avail < 0)
+      goto get_available_error;
   }
 
-  if (ret == GST_FLOW_OK) {
+  if (avail > 0) {
+    read = MIN (avail, MAX_READ_SIZE);
+    *outbuf = gst_buffer_new_and_alloc (read);
+    gst_buffer_map (*outbuf, &map, GST_MAP_READWRITE);
+    rret =
+        g_socket_receive (src->client_socket, (gchar *) map.data, read,
+        src->cancellable, &err);
+  } else {
+    /* Connection closed */
+    rret = 0;
+    *outbuf = NULL;
+    read = 0;
+  }
+
+  if (rret == 0) {
+    GST_DEBUG_OBJECT (src, "Connection closed");
+    ret = GST_FLOW_EOS;
+    if (*outbuf) {
+      gst_buffer_unmap (*outbuf, &map);
+      gst_buffer_unref (*outbuf);
+    }
+    *outbuf = NULL;
+  } else if (rret < 0) {
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      ret = GST_FLOW_FLUSHING;
+      GST_DEBUG_OBJECT (src, "Cancelled reading from socket");
+    } else {
+      ret = GST_FLOW_ERROR;
+      GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
+          ("Failed to read from socket: %s", err->message));
+    }
+    gst_buffer_unmap (*outbuf, &map);
+    gst_buffer_unref (*outbuf);
+    *outbuf = NULL;
+  } else {
+    ret = GST_FLOW_OK;
+    gst_buffer_unmap (*outbuf, &map);
+    gst_buffer_resize (*outbuf, 0, rret);
+
     GST_LOG_OBJECT (src,
-        "Returning buffer from _get of size %d, ts %"
+        "Returning buffer from _get of size %" G_GSIZE_FORMAT ", ts %"
         GST_TIME_FORMAT ", dur %" GST_TIME_FORMAT
         ", offset %" G_GINT64_FORMAT ", offset_end %" G_GINT64_FORMAT,
-        GST_BUFFER_SIZE (*outbuf),
+        gst_buffer_get_size (*outbuf),
         GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (*outbuf)),
         GST_TIME_ARGS (GST_BUFFER_DURATION (*outbuf)),
         GST_BUFFER_OFFSET (*outbuf), GST_BUFFER_OFFSET_END (*outbuf));
   }
+  g_clear_error (&err);
 
+done:
   return ret;
 
 wrong_state:
   {
     GST_DEBUG_OBJECT (src, "connection to closed, cannot read data");
-    return GST_FLOW_WRONG_STATE;
-  }
-select_error:
-  {
-    GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
-        ("Select error: %s", g_strerror (errno)));
-    return GST_FLOW_ERROR;
-  }
-select_cancelled:
-  {
-    GST_DEBUG_OBJECT (src, "select canceled");
-    return GST_FLOW_WRONG_STATE;
+    return GST_FLOW_FLUSHING;
   }
 accept_error:
   {
-    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
-        ("Could not accept client on server socket: %s", g_strerror (errno)));
-    return GST_FLOW_ERROR;
-  }
-gdp_cancelled:
-  {
-    GST_DEBUG_OBJECT (src, "reading gdp canceled");
-    return GST_FLOW_WRONG_STATE;
-  }
-gdp_caps_read_error:
-  {
-    /* if we did not get canceled, report an error */
-    if (ret != GST_FLOW_WRONG_STATE) {
-      GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
-          ("Could not read caps through GDP"));
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled accepting of client");
+      ret = GST_FLOW_FLUSHING;
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Failed to accept client: %s", err->message));
+      ret = GST_FLOW_ERROR;
     }
+    g_clear_error (&err);
     return ret;
+  }
+select_error:
+  {
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled select");
+      ret = GST_FLOW_FLUSHING;
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Select failed: %s", err->message));
+      ret = GST_FLOW_ERROR;
+    }
+    g_clear_error (&err);
+    return ret;
+  }
+get_available_error:
+  {
+    GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
+        ("Failed to get available bytes from socket"));
+    return GST_FLOW_ERROR;
   }
 }
 
@@ -319,9 +349,6 @@ gst_tcp_server_src_set_property (GObject * object, guint prop_id,
     case PROP_PORT:
       tcpserversrc->server_port = g_value_get_int (value);
       break;
-    case PROP_PROTOCOL:
-      tcpserversrc->protocol = g_value_get_enum (value);
-      break;
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -342,10 +369,9 @@ gst_tcp_server_src_get_property (GObject * object, guint prop_id,
     case PROP_PORT:
       g_value_set_int (value, tcpserversrc->server_port);
       break;
-    case PROP_PROTOCOL:
-      g_value_set_enum (value, tcpserversrc->protocol);
+    case PROP_CURRENT_PORT:
+      g_value_set_int (value, g_atomic_int_get (&tcpserversrc->current_port));
       break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -356,104 +382,127 @@ gst_tcp_server_src_get_property (GObject * object, guint prop_id,
 static gboolean
 gst_tcp_server_src_start (GstBaseSrc * bsrc)
 {
-  int ret;
   GstTCPServerSrc *src = GST_TCP_SERVER_SRC (bsrc);
+  GError *err = NULL;
+  GInetAddress *addr;
+  GSocketAddress *saddr;
+  GResolver *resolver;
+  gint bound_port = 0;
 
-  /* reset caps_received flag */
-  src->caps_received = FALSE;
+  /* look up name if we need to */
+  addr = g_inet_address_new_from_string (src->host);
+  if (!addr) {
+    GList *results;
+
+    resolver = g_resolver_get_default ();
+
+    results =
+        g_resolver_lookup_by_name (resolver, src->host, src->cancellable, &err);
+    if (!results)
+      goto name_resolve;
+    addr = G_INET_ADDRESS (g_object_ref (results->data));
+
+    g_resolver_free_addresses (results);
+    g_object_unref (resolver);
+  }
+#ifndef GST_DISABLE_GST_DEBUG
+  {
+    gchar *ip = g_inet_address_to_string (addr);
+
+    GST_DEBUG_OBJECT (src, "IP address for host %s is %s", src->host, ip);
+    g_free (ip);
+  }
+#endif
+
+  saddr = g_inet_socket_address_new (addr, src->server_port);
+  g_object_unref (addr);
 
   /* create the server listener socket */
-  if ((src->server_sock_fd.fd = socket (AF_INET, SOCK_STREAM, 0)) == -1)
-    goto socket_error;
+  src->server_socket =
+      g_socket_new (g_socket_address_get_family (saddr), G_SOCKET_TYPE_STREAM,
+      G_SOCKET_PROTOCOL_TCP, &err);
+  if (!src->server_socket)
+    goto no_socket;
 
-  GST_DEBUG_OBJECT (src, "opened receiving server socket with fd %d",
-      src->server_sock_fd.fd);
-
-  /* make address reusable */
-  ret = 1;
-  if (setsockopt (src->server_sock_fd.fd, SOL_SOCKET, SO_REUSEADDR, &ret,
-          sizeof (int)) < 0)
-    goto sock_opt;
-
-  /* name the socket */
-  memset (&src->server_sin, 0, sizeof (src->server_sin));
-  src->server_sin.sin_family = AF_INET; /* network socket */
-  src->server_sin.sin_port = htons (src->server_port);  /* on port */
-  if (src->host) {
-    gchar *host;
-
-    if (!(host = gst_tcp_host_to_ip (GST_ELEMENT (src), src->host)))
-      goto host_error;
-    src->server_sin.sin_addr.s_addr = inet_addr (host);
-    g_free (host);
-  } else
-    src->server_sin.sin_addr.s_addr = htonl (INADDR_ANY);
+  GST_DEBUG_OBJECT (src, "opened receiving server socket");
 
   /* bind it */
   GST_DEBUG_OBJECT (src, "binding server socket to address");
-  if ((ret = bind (src->server_sock_fd.fd, (struct sockaddr *) &src->server_sin,
-              sizeof (src->server_sin))) < 0)
-    goto bind_error;
+  if (!g_socket_bind (src->server_socket, saddr, TRUE, &err))
+    goto bind_failed;
 
-  GST_DEBUG_OBJECT (src, "listening on server socket %d with queue of %d",
-      src->server_sock_fd.fd, TCP_BACKLOG);
+  g_object_unref (saddr);
 
-  if (listen (src->server_sock_fd.fd, TCP_BACKLOG) == -1)
-    goto listen_error;
+  GST_DEBUG_OBJECT (src, "listening on server socket");
 
-  /* create an fdset to keep track of our file descriptors */
-  if ((src->fdset = gst_poll_new (TRUE)) == NULL)
-    goto socket_pair;
+  g_socket_set_listen_backlog (src->server_socket, TCP_BACKLOG);
 
-  gst_poll_add_fd (src->fdset, &src->server_sock_fd);
-
-  GST_DEBUG_OBJECT (src, "received client");
+  if (!g_socket_listen (src->server_socket, &err))
+    goto listen_failed;
 
   GST_OBJECT_FLAG_SET (src, GST_TCP_SERVER_SRC_OPEN);
+
+  if (src->server_port == 0) {
+    saddr = g_socket_get_local_address (src->server_socket, NULL);
+    bound_port = g_inet_socket_address_get_port ((GInetSocketAddress *) saddr);
+    g_object_unref (saddr);
+  } else {
+    bound_port = src->server_port;
+  }
+
+  GST_DEBUG_OBJECT (src, "listening on port %d", bound_port);
+
+  g_atomic_int_set (&src->current_port, bound_port);
+  g_object_notify (G_OBJECT (src), "current-port");
 
   return TRUE;
 
   /* ERRORS */
-socket_error:
+no_socket:
   {
-    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL), GST_ERROR_SYSTEM);
-    return FALSE;
-  }
-sock_opt:
-  {
-    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
-        ("Could not setsockopt: %s", g_strerror (errno)));
-    gst_tcp_socket_close (&src->server_sock_fd);
-    return FALSE;
-  }
-host_error:
-  {
-    gst_tcp_socket_close (&src->server_sock_fd);
-    return FALSE;
-  }
-bind_error:
-  {
-    gst_tcp_socket_close (&src->server_sock_fd);
-    switch (errno) {
-      default:
-        GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
-            ("bind failed: %s", g_strerror (errno)));
-        break;
-    }
-    return FALSE;
-  }
-listen_error:
-  {
-    gst_tcp_socket_close (&src->server_sock_fd);
     GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
-        ("Could not listen on server socket: %s", g_strerror (errno)));
+        ("Failed to create socket: %s", err->message));
+    g_clear_error (&err);
+    g_object_unref (saddr);
     return FALSE;
   }
-socket_pair:
+name_resolve:
   {
-    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ_WRITE, (NULL),
-        GST_ERROR_SYSTEM);
-    gst_tcp_socket_close (&src->server_sock_fd);
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled name resolval");
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Failed to resolve host '%s': %s", src->host, err->message));
+    }
+    g_clear_error (&err);
+    g_object_unref (resolver);
+    return FALSE;
+  }
+bind_failed:
+  {
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled binding");
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Failed to bind on host '%s:%d': %s", src->host, src->server_port,
+              err->message));
+    }
+    g_clear_error (&err);
+    g_object_unref (saddr);
+    gst_tcp_server_src_stop (GST_BASE_SRC (src));
+    return FALSE;
+  }
+listen_failed:
+  {
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled listening");
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Failed to listen on host '%s:%d': %s", src->host, src->server_port,
+              err->message));
+    }
+    g_clear_error (&err);
+    gst_tcp_server_src_stop (GST_BASE_SRC (src));
     return FALSE;
   }
 }
@@ -462,12 +511,32 @@ static gboolean
 gst_tcp_server_src_stop (GstBaseSrc * bsrc)
 {
   GstTCPServerSrc *src = GST_TCP_SERVER_SRC (bsrc);
+  GError *err = NULL;
 
-  gst_poll_free (src->fdset);
-  src->fdset = NULL;
+  if (src->client_socket) {
+    GST_DEBUG_OBJECT (src, "closing socket");
 
-  gst_tcp_socket_close (&src->server_sock_fd);
-  gst_tcp_socket_close (&src->client_sock_fd);
+    if (!g_socket_close (src->client_socket, &err)) {
+      GST_ERROR_OBJECT (src, "Failed to close socket: %s", err->message);
+      g_clear_error (&err);
+    }
+    g_object_unref (src->client_socket);
+    src->client_socket = NULL;
+  }
+
+  if (src->server_socket) {
+    GST_DEBUG_OBJECT (src, "closing socket");
+
+    if (!g_socket_close (src->server_socket, &err)) {
+      GST_ERROR_OBJECT (src, "Failed to close socket: %s", err->message);
+      g_clear_error (&err);
+    }
+    g_object_unref (src->server_socket);
+    src->server_socket = NULL;
+
+    g_atomic_int_set (&src->current_port, 0);
+    g_object_notify (G_OBJECT (src), "current-port");
+  }
 
   GST_OBJECT_FLAG_UNSET (src, GST_TCP_SERVER_SRC_OPEN);
 
@@ -480,7 +549,18 @@ gst_tcp_server_src_unlock (GstBaseSrc * bsrc)
 {
   GstTCPServerSrc *src = GST_TCP_SERVER_SRC (bsrc);
 
-  gst_poll_set_flushing (src->fdset, TRUE);
+  g_cancellable_cancel (src->cancellable);
+
+  return TRUE;
+}
+
+static gboolean
+gst_tcp_server_src_unlock_stop (GstBaseSrc * bsrc)
+{
+  GstTCPServerSrc *src = GST_TCP_SERVER_SRC (bsrc);
+
+  g_object_unref (src->cancellable);
+  src->cancellable = g_cancellable_new ();
 
   return TRUE;
 }

@@ -14,15 +14,20 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include "gstgme.h"
+#include <gst/audio/audio.h>
 
 #include <string.h>
 #include <glib/gprintf.h>
@@ -39,18 +44,22 @@ static GstStaticPadTemplate sink_factory =
 
 static GstStaticPadTemplate src_factory =
 GST_STATIC_PAD_TEMPLATE ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "endianness = (int) BYTE_ORDER, "
-        "signed = (boolean) TRUE, "
-        "width = (int) 16, "
-        "depth = (int) 16, " "rate = (int) 32000, " "channels = (int) 2"));
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " GST_AUDIO_NE (S16) ", "
+        "layout = (string) interleaved, "
+        "rate = (int) 32000, " "channels = (int) 2"));
 
-GST_BOILERPLATE (GstGmeDec, gst_gme_dec, GstElement, GST_TYPE_ELEMENT);
+#define gst_gme_dec_parent_class parent_class
+G_DEFINE_TYPE (GstGmeDec, gst_gme_dec, GST_TYPE_ELEMENT);
 
-static GstFlowReturn gst_gme_dec_chain (GstPad * pad, GstBuffer * buffer);
-static gboolean gst_gme_dec_sink_event (GstPad * pad, GstEvent * event);
-static gboolean gst_gme_dec_src_event (GstPad * pad, GstEvent * event);
-static gboolean gst_gme_dec_src_query (GstPad * pad, GstQuery * query);
+static GstFlowReturn gst_gme_dec_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
+static gboolean gst_gme_dec_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_gme_dec_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_gme_dec_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
 static GstStateChangeReturn gst_gme_dec_change_state (GstElement * element,
     GstStateChange transition);
 static void gst_gme_play (GstPad * pad);
@@ -60,55 +69,24 @@ static gboolean gme_setup (GstGmeDec * gme);
 static gboolean
 gme_negotiate (GstGmeDec * gme)
 {
-  GstCaps *allowed, *caps;
-  GstStructure *structure;
-  gint width = 16, depth = 16;
-  gboolean sign;
-  int rate = 32000;
-  int channels = 2;
+  GstCaps *caps;
 
-  allowed = gst_pad_get_allowed_caps (gme->srcpad);
-  if (!allowed) {
-    GST_DEBUG_OBJECT (gme, "couldn't get allowed caps");
-    return FALSE;
-  }
-
-  GST_DEBUG_OBJECT (gme, "allowed caps: %" GST_PTR_FORMAT, allowed);
-
-  structure = gst_caps_get_structure (allowed, 0);
-  gst_structure_get_int (structure, "width", &width);
-  gst_structure_get_int (structure, "depth", &depth);
-
-  if (width && depth && width != depth) {
-    GST_DEBUG_OBJECT (gme, "width %d and depth %d are different", width, depth);
-    gst_caps_unref (allowed);
-    return FALSE;
-  }
-
-  gst_structure_get_boolean (structure, "signed", &sign);
-  gst_structure_get_int (structure, "rate", &rate);
-  gst_structure_get_int (structure, "channels", &channels);
-
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "endianness", G_TYPE_INT, G_BYTE_ORDER,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, width,
-      "depth", G_TYPE_INT, depth,
-      "rate", G_TYPE_INT, rate, "channels", G_TYPE_INT, channels, NULL);
+  caps = gst_pad_get_pad_template_caps (gme->srcpad);
   gst_pad_set_caps (gme->srcpad, caps);
-
   gst_caps_unref (caps);
-  gst_caps_unref (allowed);
 
   return TRUE;
 }
 
 static void
-gst_gme_dec_base_init (gpointer g_class)
+gst_gme_dec_class_init (GstGmeDecClass * klass)
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstElementClass *element_class = (GstElementClass *) klass;
 
-  gst_element_class_set_details_simple (element_class,
+  gobject_class->dispose = gst_gme_dec_dispose;
+
+  gst_element_class_set_static_metadata (element_class,
       "Gaming console music file decoder", "Codec/Audio/Decoder",
       "Uses libgme to emulate a gaming console sound processors",
       "Chris Lee <clee@kde.org>, Brian Koropoff <bkoropoff@gmail.com>, "
@@ -118,33 +96,13 @@ gst_gme_dec_base_init (gpointer g_class)
       gst_static_pad_template_get (&sink_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
-}
-
-static void
-gst_gme_dec_class_init (GstGmeDecClass * klass)
-{
-  GstElementClass *element_class = (GstElementClass *) klass;
-  GObjectClass *gobject_class = (GObjectClass *) klass;
 
   element_class->change_state = GST_DEBUG_FUNCPTR (gst_gme_dec_change_state);
-  gobject_class->dispose = gst_gme_dec_dispose;
-}
-
-static const GstQueryType *
-gst_gme_dec_src_query_type (GstPad * pad)
-{
-  static const GstQueryType query_types[] = {
-    GST_QUERY_DURATION,
-    GST_QUERY_POSITION,
-    (GstQueryType) 0
-  };
-
-  return query_types;
 }
 
 
 static void
-gst_gme_dec_init (GstGmeDec * gme, GstGmeDecClass * klass)
+gst_gme_dec_init (GstGmeDec * gme)
 {
   gme->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
   /* gst_pad_set_query_function (gme->sinkpad, NULL); */
@@ -155,7 +113,6 @@ gst_gme_dec_init (GstGmeDec * gme, GstGmeDecClass * klass)
   gme->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
   gst_pad_set_event_function (gme->srcpad, gst_gme_dec_src_event);
   gst_pad_set_query_function (gme->srcpad, gst_gme_dec_src_query);
-  gst_pad_set_query_type_function (gme->srcpad, gst_gme_dec_src_query_type);
   gst_pad_use_fixed_caps (gme->srcpad);
   gst_element_add_pad (GST_ELEMENT (gme), gme->srcpad);
 
@@ -174,25 +131,25 @@ gst_gme_dec_dispose (GObject * object)
     g_object_unref (gme->adapter);
     gme->adapter = NULL;
   }
+
+  GST_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static GstFlowReturn
-gst_gme_dec_chain (GstPad * pad, GstBuffer * buffer)
+gst_gme_dec_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
-  GstGmeDec *gme = GST_GME_DEC (gst_pad_get_parent (pad));
+  GstGmeDec *gme = GST_GME_DEC (parent);
 
   /* Accumulate GME data until end-of-stream, then commence playback. */
   gst_adapter_push (gme->adapter, buffer);
-
-  gst_object_unref (gme);
 
   return GST_FLOW_OK;
 }
 
 static gboolean
-gst_gme_dec_sink_event (GstPad * pad, GstEvent * event)
+gst_gme_dec_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstGmeDec *gme = GST_GME_DEC (gst_pad_get_parent (pad));
+  GstGmeDec *gme = GST_GME_DEC (parent);
   gboolean result = TRUE;
   gboolean forward = FALSE;
 
@@ -215,15 +172,13 @@ gst_gme_dec_sink_event (GstPad * pad, GstEvent * event)
   else
     gst_event_unref (event);
 
-  gst_object_unref (gme);
-
   return result;
 }
 
 static gboolean
-gst_gme_dec_src_event (GstPad * pad, GstEvent * event)
+gst_gme_dec_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstGmeDec *gme = GST_GME_DEC (gst_pad_get_parent (pad));
+  GstGmeDec *gme = GST_GME_DEC (parent);
   gboolean result = FALSE;
 
   switch (GST_EVENT_TYPE (event)) {
@@ -255,6 +210,7 @@ gst_gme_dec_src_event (GstPad * pad, GstEvent * event)
         stop = GST_CLOCK_TIME_NONE;
 
       if (start_type == GST_SEEK_TYPE_SET) {
+        GstSegment seg;
         guint64 cur = gme_tell (gme->player) * GST_MSECOND;
         guint64 dest = (guint64) start;
 
@@ -282,21 +238,25 @@ gst_gme_dec_src_event (GstPad * pad, GstEvent * event)
         }
 
         if (flush) {
-          gst_pad_push_event (gme->srcpad, gst_event_new_flush_stop ());
+          gst_pad_push_event (gme->srcpad, gst_event_new_flush_stop (TRUE));
         }
 
         if (stop == GST_CLOCK_TIME_NONE
             && gme->total_duration != GST_CLOCK_TIME_NONE)
           stop = gme->total_duration;
 
-        gst_pad_push_event (gme->srcpad, gst_event_new_new_segment (FALSE, rate,
-                GST_FORMAT_TIME, dest, stop, dest));
+        gst_segment_init (&seg, GST_FORMAT_TIME);
+        seg.rate = rate;
+        seg.start = dest;
+        seg.stop = stop;
+        seg.time = dest;
+        gst_pad_push_event (gme->srcpad, gst_event_new_segment (&seg));
 
         gme->seekpoint = dest / GST_MSECOND;    /* nsecs to msecs */
         gme->seeking = TRUE;
 
         gst_pad_start_task (gme->srcpad, (GstTaskFunction) gst_gme_play,
-            gme->srcpad);
+            gme->srcpad, NULL);
 
         GST_PAD_STREAM_UNLOCK (gme->srcpad);
         result = TRUE;
@@ -308,15 +268,13 @@ gst_gme_dec_src_event (GstPad * pad, GstEvent * event)
       break;
   }
 
-  gst_object_unref (gme);
-
   return result;
 }
 
 static gboolean
-gst_gme_dec_src_query (GstPad * pad, GstQuery * query)
+gst_gme_dec_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
-  GstGmeDec *gme = GST_GME_DEC (gst_pad_get_parent (pad));
+  GstGmeDec *gme = GST_GME_DEC (parent);
   gboolean result = TRUE;
 
   switch (GST_QUERY_TYPE (query)) {
@@ -347,11 +305,9 @@ gst_gme_dec_src_query (GstPad * pad, GstQuery * query)
       break;
     }
     default:
-      result = gst_pad_query_default (pad, query);
+      result = gst_pad_query_default (pad, parent, query);
       break;
   }
-
-  gst_object_unref (gme);
 
   return result;
 }
@@ -367,15 +323,17 @@ gst_gme_play (GstPad * pad)
   const int NUM_SAMPLES = 1600; /* 4 bytes (stereo 16-bit) per sample */
 
   if (!seeking) {
+    GstMapInfo map;
+
     out = gst_buffer_new_and_alloc (NUM_SAMPLES * 4);
-    gst_buffer_set_caps (out, GST_PAD_CAPS (pad));
     GST_BUFFER_TIMESTAMP (out) = gme_tell (gme->player) * GST_MSECOND;
 
-    gme_err =
-        gme_play (gme->player, NUM_SAMPLES * 2,
-        (short *) GST_BUFFER_DATA (out));
+    gst_buffer_map (out, &map, GST_MAP_WRITE);
+    gme_err = gme_play (gme->player, NUM_SAMPLES * 2, (short *) map.data);
+    gst_buffer_unmap (out, &map);
+
     if (gme_err) {
-      GST_ELEMENT_ERROR (gme, STREAM, DEMUX, (NULL), (gme_err));
+      GST_ELEMENT_ERROR (gme, STREAM, DEMUX, (NULL), ("%s", gme_err));
       gst_pad_pause_task (pad);
       gst_pad_push_event (pad, gst_event_new_eos ());
       gst_object_unref (gme);
@@ -386,7 +344,6 @@ gst_gme_play (GstPad * pad)
     gme->seeking = FALSE;
 
     out = gst_buffer_new ();
-    gst_buffer_set_caps (out, GST_PAD_CAPS (pad));
   }
 
   if ((flow_return = gst_pad_push (gme->srcpad, out)) != GST_FLOW_OK) {
@@ -395,12 +352,17 @@ gst_gme_play (GstPad * pad)
 
     gst_pad_pause_task (pad);
 
-    if (GST_FLOW_IS_FATAL (flow_return) || flow_return == GST_FLOW_NOT_LINKED) {
+    if (flow_return == GST_FLOW_EOS) {
+      gst_pad_push_event (pad, gst_event_new_eos ());
+    } else if (flow_return < GST_FLOW_EOS || flow_return == GST_FLOW_NOT_LINKED) {
+      GST_ELEMENT_ERROR (gme, STREAM, FAILED, ("Internal data stream error."),
+          ("stream stopped, reason %s", gst_flow_get_name (flow_return)));
+
       gst_pad_push_event (pad, gst_event_new_eos ());
     }
   }
 
-  if (gme_track_ended (gme->player)) {
+  if (gme_tell (gme->player) * GST_MSECOND > gme->total_duration) {
     gst_pad_pause_task (pad);
     gst_pad_push_event (pad, gst_event_new_eos ());
   }
@@ -417,7 +379,10 @@ gme_setup (GstGmeDec * gme)
   gme_err_t gme_err = NULL;
   GstTagList *taglist;
   guint64 total_duration;
+  guint64 fade_time;
   GstBuffer *buffer;
+  GstSegment seg;
+  GstMapInfo map;
 
   if (!gst_adapter_available (gme->adapter) || !gme_negotiate (gme)) {
     return FALSE;
@@ -427,9 +392,9 @@ gme_setup (GstGmeDec * gme)
       gst_adapter_take_buffer (gme->adapter,
       gst_adapter_available (gme->adapter));
 
-  gme_err =
-      gme_open_data (GST_BUFFER_DATA (buffer), GST_BUFFER_SIZE (buffer),
-      &gme->player, 32000);
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  gme_err = gme_open_data (map.data, map.size, &gme->player, 32000);
+  gst_buffer_unmap (buffer, &map);
   gst_buffer_unref (buffer);
 
   if (gme_err || !gme->player) {
@@ -438,14 +403,14 @@ gme_setup (GstGmeDec * gme)
       gme->player = NULL;
     }
 
-    GST_ELEMENT_ERROR (gme, STREAM, DEMUX, (NULL), (gme_err));
+    GST_ELEMENT_ERROR (gme, STREAM, DEMUX, (NULL), ("%s", gme_err));
 
     return FALSE;
   }
 
   gme_err = gme_track_info (gme->player, &info, 0);
 
-  taglist = gst_tag_list_new ();
+  taglist = gst_tag_list_new_empty ();
 
   if (info->song && *info->song)
     gst_tag_list_add (taglist, GST_TAG_MERGE_REPLACE, GST_TAG_TITLE,
@@ -474,12 +439,14 @@ gme_setup (GstGmeDec * gme)
         info->system, NULL);
 
   gme->total_duration = total_duration =
-      gst_util_uint64_scale_int (info->play_length, GST_MSECOND, 1);
+      gst_util_uint64_scale_int (info->play_length + (info->loop_length >
+          0 ? 8000 : 0), GST_MSECOND, 1);
+  fade_time = info->loop_length > 0 ? info->play_length : 0;
 
   gst_tag_list_add (taglist, GST_TAG_MERGE_REPLACE,
       GST_TAG_DURATION, total_duration, NULL);
 
-  gst_element_found_tags_for_pad (GST_ELEMENT (gme), gme->srcpad, taglist);
+  gst_pad_push_event (gme->srcpad, gst_event_new_tag (taglist));
 
   g_free (info);
 
@@ -488,11 +455,14 @@ gme_setup (GstGmeDec * gme)
   gme_enable_accuracy (gme->player, 1);
 #endif
   gme_start_track (gme->player, 0);
+  if (fade_time)
+    gme_set_fade (gme->player, fade_time);
 
-  gst_pad_push_event (gme->srcpad, gst_event_new_new_segment (FALSE, 1.0,
-          GST_FORMAT_TIME, 0, -1, 0));
+  gst_segment_init (&seg, GST_FORMAT_TIME);
+  gst_pad_push_event (gme->srcpad, gst_event_new_segment (&seg));
 
-  gst_pad_start_task (gme->srcpad, (GstTaskFunction) gst_gme_play, gme->srcpad);
+  gst_pad_start_task (gme->srcpad, (GstTaskFunction) gst_gme_play, gme->srcpad,
+      NULL);
 
   gme->initialized = TRUE;
   gme->seeking = FALSE;
@@ -540,6 +510,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "gmedec",
+    gmedec,
     "GME Audio Decoder",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,49 +30,16 @@
 #include "gstv4l2tuner.h"
 #include "gstv4l2object.h"
 #include "v4l2_calls.h"
-#include "v4l2src_calls.h"
 
-static void gst_v4l2_tuner_channel_class_init (GstV4l2TunerChannelClass *
-    klass);
-static void gst_v4l2_tuner_channel_init (GstV4l2TunerChannel * channel);
+G_DEFINE_TYPE (GstV4l2TunerChannel, gst_v4l2_tuner_channel,
+    GST_TYPE_TUNER_CHANNEL);
 
-static void gst_v4l2_tuner_norm_class_init (GstV4l2TunerNormClass * klass);
-static void gst_v4l2_tuner_norm_init (GstV4l2TunerNorm * norm);
+G_DEFINE_TYPE (GstV4l2TunerNorm, gst_v4l2_tuner_norm, GST_TYPE_TUNER_NORM);
 
-static GstTunerNormClass *norm_parent_class = NULL;
-static GstTunerChannelClass *channel_parent_class = NULL;
-
-GType
-gst_v4l2_tuner_channel_get_type (void)
-{
-  static GType gst_v4l2_tuner_channel_type = 0;
-
-  if (!gst_v4l2_tuner_channel_type) {
-    static const GTypeInfo v4l2_tuner_channel_info = {
-      sizeof (GstV4l2TunerChannelClass),
-      NULL,
-      NULL,
-      (GClassInitFunc) gst_v4l2_tuner_channel_class_init,
-      NULL,
-      NULL,
-      sizeof (GstV4l2TunerChannel),
-      0,
-      (GInstanceInitFunc) gst_v4l2_tuner_channel_init,
-      NULL
-    };
-
-    gst_v4l2_tuner_channel_type =
-        g_type_register_static (GST_TYPE_TUNER_CHANNEL,
-        "GstV4l2TunerChannel", &v4l2_tuner_channel_info, 0);
-  }
-
-  return gst_v4l2_tuner_channel_type;
-}
 
 static void
 gst_v4l2_tuner_channel_class_init (GstV4l2TunerChannelClass * klass)
 {
-  channel_parent_class = g_type_class_peek_parent (klass);
 }
 
 static void
@@ -83,37 +50,9 @@ gst_v4l2_tuner_channel_init (GstV4l2TunerChannel * channel)
   channel->audio = (guint32) - 1;
 }
 
-GType
-gst_v4l2_tuner_norm_get_type (void)
-{
-  static GType gst_v4l2_tuner_norm_type = 0;
-
-  if (!gst_v4l2_tuner_norm_type) {
-    static const GTypeInfo v4l2_tuner_norm_info = {
-      sizeof (GstV4l2TunerNormClass),
-      NULL,
-      NULL,
-      (GClassInitFunc) gst_v4l2_tuner_norm_class_init,
-      NULL,
-      NULL,
-      sizeof (GstV4l2TunerNorm),
-      0,
-      (GInstanceInitFunc) gst_v4l2_tuner_norm_init,
-      NULL
-    };
-
-    gst_v4l2_tuner_norm_type =
-        g_type_register_static (GST_TYPE_TUNER_NORM,
-        "GstV4l2TunerNorm", &v4l2_tuner_norm_info, 0);
-  }
-
-  return gst_v4l2_tuner_norm_type;
-}
-
 static void
 gst_v4l2_tuner_norm_class_init (GstV4l2TunerNormClass * klass)
 {
-  norm_parent_class = g_type_class_peek_parent (klass);
 }
 
 static void
@@ -237,7 +176,6 @@ gst_v4l2_tuner_set_norm (GstV4l2Object * v4l2object, GstTunerNorm * norm)
 GstTunerNorm *
 gst_v4l2_tuner_get_norm (GstV4l2Object * v4l2object)
 {
-  GList *item;
   v4l2_std_id norm;
 
   /* assert that we're opened and that we're using a known item */
@@ -245,12 +183,34 @@ gst_v4l2_tuner_get_norm (GstV4l2Object * v4l2object)
 
   gst_v4l2_get_norm (v4l2object, &norm);
 
+  return gst_v4l2_tuner_get_norm_by_std_id (v4l2object, norm);
+}
+
+GstTunerNorm *
+gst_v4l2_tuner_get_norm_by_std_id (GstV4l2Object * v4l2object, v4l2_std_id norm)
+{
+  GList *item;
+
   for (item = v4l2object->norms; item != NULL; item = item->next) {
     if (norm & GST_V4L2_TUNER_NORM (item->data)->index)
       return (GstTunerNorm *) item->data;
   }
 
   return NULL;
+}
+
+v4l2_std_id
+gst_v4l2_tuner_get_std_id_by_norm (GstV4l2Object * v4l2object,
+    GstTunerNorm * norm)
+{
+  GList *item;
+
+  for (item = v4l2object->norms; item != NULL; item = item->next) {
+    if (norm == GST_TUNER_NORM (item->data))
+      return GST_V4L2_TUNER_NORM (item->data)->index;
+  }
+
+  return 0;
 }
 
 void

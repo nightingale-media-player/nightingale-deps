@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include "gstasfobjects.h"
@@ -63,18 +63,16 @@ const Guid guids[] = {
  *
  * Returns: The generated GUID
  */
-Guid
-gst_asf_generate_file_id ()
+void
+gst_asf_generate_file_id (Guid * guid)
 {
   guint32 aux;
-  Guid guid;
-  guid.v1 = g_random_int ();
-  aux = g_random_int ();
-  guid.v2 = (guint16) (aux & 0x0000FFFF);
-  guid.v3 = (guint16) (aux >> 16);
-  guid.v4 = (((guint64) g_random_int ()) << 32) | (guint64) g_random_int ();
 
-  return guid;
+  guid->v1 = g_random_int ();
+  aux = g_random_int ();
+  guid->v2 = (guint16) (aux & 0x0000FFFF);
+  guid->v3 = (guint16) (aux >> 16);
+  guid->v4 = (((guint64) g_random_int ()) << 32) | (guint64) g_random_int ();
 }
 
 /**
@@ -168,11 +166,13 @@ gst_asf_get_var_size_field_len (guint8 field_type)
 
 /**
  * gst_asf_file_info_new:
+ *
  * Creates a new #GstAsfFileInfo
+ * 
  * Returns: the created struct
  */
 GstAsfFileInfo *
-gst_asf_file_info_new ()
+gst_asf_file_info_new (void)
 {
   return g_new0 (GstAsfFileInfo, 1);
 }
@@ -180,6 +180,7 @@ gst_asf_file_info_new ()
 /**
  * gst_asf_file_info_reset:
  * @info: the #GstAsfFileInfo to be reset
+ * 
  * resets the data of a #GstFileInfo
  */
 void
@@ -212,7 +213,7 @@ gst_asf_file_info_free (GstAsfFileInfo * info)
 guint32
 gst_asf_payload_get_size (AsfPayload * payload)
 {
-  return ASF_MULTIPLE_PAYLOAD_HEADER_SIZE + GST_BUFFER_SIZE (payload->data);
+  return ASF_MULTIPLE_PAYLOAD_HEADER_SIZE + gst_buffer_get_size (payload->data);
 }
 
 /**
@@ -237,7 +238,7 @@ gst_asf_payload_free (AsfPayload * payload)
  * Returns:
  */
 guint64
-gst_asf_get_current_time ()
+gst_asf_get_current_time (void)
 {
   GTimeVal timeval;
   guint64 secs;
@@ -284,7 +285,7 @@ gst_asf_match_guid (const guint8 * data, const Guid * guid)
 void
 gst_asf_put_i32 (guint8 * buf, gint32 data)
 {
-  *(gint32 *) buf = data;
+  GST_WRITE_UINT32_LE (buf, (guint32) data);
 }
 
 /**
@@ -337,9 +338,9 @@ gst_asf_put_payload (guint8 * buf, AsfPayload * payload)
   GST_WRITE_UINT8 (buf + 6, payload->replicated_data_length);
   GST_WRITE_UINT32_LE (buf + 7, payload->media_object_size);
   GST_WRITE_UINT32_LE (buf + 11, payload->presentation_time);
-  GST_WRITE_UINT16_LE (buf + 15, (guint16) GST_BUFFER_SIZE (payload->data));
-  memcpy (buf + 17, GST_BUFFER_DATA (payload->data),
-      GST_BUFFER_SIZE (payload->data));
+  GST_WRITE_UINT16_LE (buf + 15, (guint16) gst_buffer_get_size (payload->data));
+  gst_buffer_extract (payload->data, 0, buf + 17,
+      gst_buffer_get_size (payload->data));
 
   payload->packet_count++;
 }
@@ -376,17 +377,15 @@ gst_asf_put_subpayload (guint8 * buf, AsfPayload * payload, guint16 size)
   GST_WRITE_UINT32_LE (buf + 7, payload->media_object_size);
   GST_WRITE_UINT32_LE (buf + 11, payload->presentation_time);
   size -= ASF_MULTIPLE_PAYLOAD_HEADER_SIZE;
-  payload_size = size < GST_BUFFER_SIZE (payload->data) ?
-      size : GST_BUFFER_SIZE (payload->data);
+  payload_size = size < gst_buffer_get_size (payload->data) ?
+      size : gst_buffer_get_size (payload->data);
   GST_WRITE_UINT16_LE (buf + 15, payload_size);
-  memcpy (buf + 17, GST_BUFFER_DATA (payload->data), payload_size);
+  gst_buffer_extract (payload->data, 0, buf + 17, payload_size);
 
   /* updates the payload to the remaining data */
   payload->offset_in_media_obj += payload_size;
-  newbuf = gst_buffer_create_sub (payload->data, payload_size,
-      GST_BUFFER_SIZE (payload->data) - payload_size);
-  gst_buffer_copy_metadata (payload->data, newbuf, GST_BUFFER_COPY_FLAGS |
-      GST_BUFFER_COPY_CAPS);
+  newbuf = gst_buffer_copy_region (payload->data, GST_BUFFER_COPY_ALL,
+      payload_size, gst_buffer_get_size (payload->data) - payload_size);
   GST_BUFFER_TIMESTAMP (newbuf) = GST_BUFFER_TIMESTAMP (payload->data);
   gst_buffer_unref (payload->data);
   payload->data = newbuf;
@@ -420,6 +419,33 @@ gst_asf_match_and_peek_obj_size (const guint8 * data, const Guid * guid)
   }
   /* return the object size */
   return GST_READ_UINT64_LE (data + ASF_GUID_SIZE);
+}
+
+/**
+ * gst_asf_match_and_peek_obj_size_buf:
+ * @buf: buffer to be peeked at
+ * @guid: pointer to a guid
+ *
+ * Compares the first bytes of buf against the guid parameter and
+ * if they match gets the object size (that are right after the guid in
+ * asf objects).
+ *
+ * In case the guids don't match, 0 is returned.
+ * If the guid is NULL the match is assumed to be true.
+ *
+ * Returns: The size of the object in case the guid matches, 0 otherwise
+ */
+guint64
+gst_asf_match_and_peek_obj_size_buf (GstBuffer * buf, const Guid * guid)
+{
+  GstMapInfo map;
+  guint64 res;
+
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  res = gst_asf_match_and_peek_obj_size (map.data, guid);
+  gst_buffer_unmap (buf, &map);
+
+  return res;
 }
 
 /**
@@ -516,9 +542,29 @@ gst_asf_parse_single_payload (GstByteReader * reader, gboolean * has_keyframe)
 
 gboolean
 gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
-    gboolean trust_delta_flag)
+    gboolean trust_delta_flag, guint packet_size)
 {
-  GstByteReader *reader;
+  gboolean ret;
+  GstMapInfo map;
+
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  ret = gst_asf_parse_packet_from_data (map.data, map.size, buffer, packet,
+      trust_delta_flag, packet_size);
+  gst_buffer_unmap (buffer, &map);
+
+  return ret;
+}
+
+gboolean
+gst_asf_parse_packet_from_data (guint8 * data, gsize size, GstBuffer * buffer,
+    GstAsfPacketInfo * packet, gboolean trust_delta_flag, guint packet_size)
+{
+/* Might be useful in future:
+  guint8 rep_data_len_type;
+  guint8 mo_number_len_type;
+  guint8 mo_offset_type;
+*/
+  GstByteReader reader;
   gboolean ret = TRUE;
   guint8 first = 0;
   guint8 err_length = 0;        /* length of the error fields */
@@ -526,9 +572,6 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
   guint8 packet_len_type;
   guint8 padding_len_type;
   guint8 seq_len_type;
-  guint8 rep_data_len_type;
-  guint8 mo_number_len_type;
-  guint8 mo_offset_type;
   gboolean mult_payloads;
   guint32 packet_len;
   guint32 padd_len;
@@ -536,10 +579,15 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
   guint16 duration = 0;
   gboolean has_keyframe;
 
-  reader = gst_byte_reader_new_from_buffer (buffer);
+  if (packet_size != 0 && size != packet_size) {
+    GST_WARNING ("ASF packets should be aligned with buffers");
+    return FALSE;
+  }
 
-  GST_LOG ("Starting packet parsing, size: %u", GST_BUFFER_SIZE (buffer));
-  if (!gst_byte_reader_get_uint8 (reader, &first))
+  gst_byte_reader_init (&reader, data, size);
+
+  GST_LOG ("Starting packet parsing, size: %" G_GSIZE_FORMAT, size);
+  if (!gst_byte_reader_get_uint8 (&reader, &first))
     goto error;
 
   if (first & 0x80) {           /* error correction present */
@@ -549,16 +597,16 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
     if (first & 0x60) {
       GST_ERROR ("Error correction data length should be "
           "set to 0 and is reserved for future use.");
-      return FALSE;
+      goto error;
     }
     err_cor_len = (first & 0x0F);
     err_length += err_cor_len;
     GST_DEBUG ("Error correction data length: %d", (gint) err_cor_len);
-    if (!gst_byte_reader_skip (reader, err_cor_len))
+    if (!gst_byte_reader_skip (&reader, err_cor_len))
       goto error;
 
     /* put payload parsing info first byte in aux var */
-    if (!gst_byte_reader_get_uint8 (reader, &aux))
+    if (!gst_byte_reader_get_uint8 (&reader, &aux))
       goto error;
   } else {
     aux = first;
@@ -578,35 +626,57 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
     GST_DEBUG ("Packet contains multiple payloads");
   }
 
-  if (!gst_byte_reader_get_uint8 (reader, &aux))
+  if (!gst_byte_reader_get_uint8 (&reader, &aux))
     goto error;
+
+/*
   rep_data_len_type = aux & 0x3;
   mo_offset_type = (aux >> 2) & 0x3;
   mo_number_len_type = (aux >> 4) & 0x3;
+*/
 
   /* gets the fields lengths */
   GST_LOG ("Getting packet and padding length");
-  if (!gst_byte_reader_get_asf_var_size_field (reader,
+  if (!gst_byte_reader_get_asf_var_size_field (&reader,
           packet_len_type, &packet_len))
     goto error;
-  if (!gst_byte_reader_skip (reader,
+  if (!gst_byte_reader_skip (&reader,
           gst_asf_get_var_size_field_len (seq_len_type)))
     goto error;
-  if (!gst_byte_reader_get_asf_var_size_field (reader,
+  if (!gst_byte_reader_get_asf_var_size_field (&reader,
           padding_len_type, &padd_len))
     goto error;
 
-  if (packet_len_type != ASF_FIELD_TYPE_NONE &&
-      packet_len != GST_BUFFER_SIZE (buffer)) {
-    GST_WARNING ("ASF packets should be aligned with buffers");
-    ret = FALSE;
-    goto end;
+  /* some packet size validation */
+  if (packet_size != 0 && packet_len_type != ASF_FIELD_TYPE_NONE) {
+    if (padding_len_type != ASF_FIELD_TYPE_NONE &&
+        packet_len + padd_len != packet_size) {
+      GST_WARNING ("Packet size (payload=%u + padding=%u) doesn't "
+          "match expected size %u", packet_len, padd_len, packet_size);
+      ret = FALSE;
+    }
+
+    /* Be forgiving if packet_len has the full packet size
+     * as the spec isn't really clear on its meaning.
+     *
+     * I had been taking it as the full packet size (fixed)
+     * until bug #607555, that convinced me that it is more likely
+     * the actual payloaded data size.
+     */
+    if (packet_len == packet_size) {
+      GST_DEBUG ("This packet's length field represents the full "
+          "packet and not the payloaded data length");
+      ret = TRUE;
+    }
+
+    if (!ret)
+      goto end;
   }
 
   GST_LOG ("Getting send time and duration");
-  if (!gst_byte_reader_get_uint32_le (reader, &send_time))
+  if (!gst_byte_reader_get_uint32_le (&reader, &send_time))
     goto error;
-  if (!gst_byte_reader_get_uint16_le (reader, &duration))
+  if (!gst_byte_reader_get_uint16_le (&reader, &duration))
     goto error;
 
   has_keyframe = FALSE;
@@ -615,9 +685,9 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
     has_keyframe = GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DELTA_UNIT);
   } else {
     if (mult_payloads) {
-      ret = gst_asf_parse_mult_payload (reader, &has_keyframe);
+      ret = gst_asf_parse_mult_payload (&reader, &has_keyframe);
     } else {
-      ret = gst_asf_parse_single_payload (reader, &has_keyframe);
+      ret = gst_asf_parse_single_payload (&reader, &has_keyframe);
     }
   }
 
@@ -642,14 +712,12 @@ gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
   packet->seq_field_type = seq_len_type;
   packet->err_cor_len = err_length;
 
-  gst_byte_reader_free (reader);
   return ret;
 
 error:
   ret = FALSE;
   GST_WARNING ("Error while parsing data packet");
 end:
-  gst_byte_reader_free (reader);
   return ret;
 }
 
@@ -702,13 +770,27 @@ gst_asf_parse_file_properties_obj (GstByteReader * reader,
 gboolean
 gst_asf_parse_headers (GstBuffer * buffer, GstAsfFileInfo * file_info)
 {
+  GstMapInfo map;
+  gboolean ret;
+
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  ret = gst_asf_parse_headers_from_data (map.data, map.size, file_info);
+  gst_buffer_unmap (buffer, &map);
+
+  return ret;
+}
+
+gboolean
+gst_asf_parse_headers_from_data (guint8 * data, guint size,
+    GstAsfFileInfo * file_info)
+{
   gboolean ret = TRUE;
   guint32 header_objects = 0;
   guint32 i;
-  GstByteReader *reader;
+  GstByteReader reader;
   guint64 object_size;
 
-  object_size = gst_asf_match_and_peek_obj_size (GST_BUFFER_DATA (buffer),
+  object_size = gst_asf_match_and_peek_obj_size (data,
       &(guids[ASF_HEADER_OBJECT_INDEX]));
   if (object_size == 0) {
     GST_WARNING ("ASF: Cannot parse, header guid not found at the beginning "
@@ -716,32 +798,33 @@ gst_asf_parse_headers (GstBuffer * buffer, GstAsfFileInfo * file_info)
     return FALSE;
   }
 
-  reader = gst_byte_reader_new_from_buffer (buffer);
+  gst_byte_reader_init (&reader, data, size);
 
-  if (!gst_byte_reader_skip (reader, ASF_GUID_OBJSIZE_SIZE))
+  if (!gst_byte_reader_skip (&reader, ASF_GUID_OBJSIZE_SIZE))
     goto error;
-  if (!gst_byte_reader_get_uint32_le (reader, &header_objects))
+  if (!gst_byte_reader_get_uint32_le (&reader, &header_objects))
     goto error;
   GST_DEBUG ("ASF: Header has %" G_GUINT32_FORMAT " child"
       " objects", header_objects);
   /* skip reserved bytes */
-  if (!gst_byte_reader_skip (reader, 2))
+  if (!gst_byte_reader_skip (&reader, 2))
     goto error;
 
   /* iterate through childs of header object */
   for (i = 0; i < header_objects; i++) {
     const guint8 *guid = NULL;
     guint64 obj_size = 0;
-    if (!gst_byte_reader_get_data (reader, ASF_GUID_SIZE, &guid))
+
+    if (!gst_byte_reader_get_data (&reader, ASF_GUID_SIZE, &guid))
       goto error;
-    if (!gst_byte_reader_get_uint64_le (reader, &obj_size))
+    if (!gst_byte_reader_get_uint64_le (&reader, &obj_size))
       goto error;
 
     if (gst_asf_match_guid (guid, &guids[ASF_FILE_PROPERTIES_OBJECT_INDEX])) {
-      ret = gst_asf_parse_file_properties_obj (reader, file_info);
+      ret = gst_asf_parse_file_properties_obj (&reader, file_info);
     } else {
       /* we don't know/care about this object */
-      if (!gst_byte_reader_skip (reader, obj_size - ASF_GUID_OBJSIZE_SIZE))
+      if (!gst_byte_reader_skip (&reader, obj_size - ASF_GUID_OBJSIZE_SIZE))
         goto error;
     }
 
@@ -754,7 +837,6 @@ error:
   ret = FALSE;
   GST_WARNING ("ASF: Error while parsing headers");
 end:
-  gst_byte_reader_free (reader);
   return ret;
 }
 

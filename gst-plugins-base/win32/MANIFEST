@@ -3,13 +3,8 @@ win32/common/_stdint.h
 win32/common/config.h
 win32/common/gstrtsp-enumtypes.c
 win32/common/gstrtsp-enumtypes.h
-win32/common/interfaces-enumtypes.c
-win32/common/interfaces-enumtypes.h
 win32/common/libgstapp.def
 win32/common/libgstaudio.def
-win32/common/libgstcdda.def
-win32/common/libgstinterfaces.def
-win32/common/libgstnetbuffer.def
 win32/common/libgstpbutils.def
 win32/common/libgstriff.def
 win32/common/libgstrtp.def
@@ -32,14 +27,11 @@ win32/vs6/libgstaudiorate.dsp
 win32/vs6/libgstaudioresample.dsp
 win32/vs6/libgstaudioscale.dsp
 win32/vs6/libgstaudiotestsrc.dsp
-win32/vs6/libgstcdda.dsp
 win32/vs6/libgstdecodebin2.dsp
 win32/vs6/libgstdecodebin.dsp
-win32/vs6/libgstffmpegcolorspace.dsp
 win32/vs6/libgstfft.dsp
 win32/vs6/libgstgdp.dsp
 win32/vs6/libgstinterfaces.dsp
-win32/vs6/libgstnetbuffer.dsp
 win32/vs6/libgstogg.dsp
 win32/vs6/libgstpbutils.dsp
 win32/vs6/libgstplaybin.dsp
@@ -66,7 +58,6 @@ win32/vs8/libgstaudiorate.vcproj
 win32/vs8/libgstaudioresample.vcproj
 win32/vs8/libgstaudiotestsrc.vcproj
 win32/vs8/libgstdecodebin.vcproj
-win32/vs8/libgstffmpegcolorspace.vcproj
 win32/vs8/libgstinterfaces.vcproj
 win32/vs8/libgstogg.vcproj
 win32/vs8/libgstplaybin.vcproj

@@ -54,6 +54,7 @@ PACKAGE="$1"
 
 DOMAINS_TO_ADD=""
 DOMAINS_UPDATED=""
+DOMAINS_NOT_IN_LINGUAS=""
 
 echo "Downloading latest translation files for package $PACKAGE ..."
 echo
@@ -64,16 +65,40 @@ do
   PO_URL="$PACKAGE_PO_URL_BASE/$d.po"
   PO_FILENAME="$PACKAGE.$d.po"
   if wget -q -nc -O $PO_FILENAME $PO_URL; then
+    # we want all .po files in UTF-8 format really, so convert if needed..
+    CHARSET=`grep Content-Type $PO_FILENAME | sed -e 's/.*charset=\(.*\)\\\\n.*/\1/'`
+    if test "x$CHARSET" != "xUTF-8" -a "x$CHARSET" != "xutf-8"; then
+      # note: things like the bugs address will be added back by make update-po
+      if msguniq $PO_FILENAME --no-location \
+                              --output-file=$PO_FILENAME.utf8 \
+                              --to-code=UTF-8; then
+        mv $PO_FILENAME.utf8 $PO_FILENAME
+      else
+        echo "**** $d: conversion from $CHARSET to UTF-8 failed ****"
+      fi
+    fi
     if [ -f "po/$d.po" ]; then
       # ./po/foo.po exists, so let's check if ours matches the latest from the
       # translation project website
-      if diff $PO_FILENAME "po/$d.po" >/dev/null; then
+      REVDATE_NEW=`grep PO-Revision-Date $PO_FILENAME`;
+      REVDATE_OLD=`grep PO-Revision-Date po/$d.po`;
+      CHARSET_OLD=`grep Content-Type po/$d.po | sed -e 's/.*charset=\(.*\)\\\\n.*/\1/'`
+      if test "x$REVDATE_NEW" = "x$REVDATE_OLD" -a "x$CHARSET_OLD" = "xUTF-8"; then
+        # note: source code line markers will be removed later by make upload-po
         echo "$d.po: up-to-date"
         rm -f $PO_FILENAME
       else
         mv $PO_FILENAME "po/$d.po"
-        echo "$d.po: updated"
+        if test "x$CHARSET_OLD" != "xUTF-8" -a "x$CHARSET_OLD" != "xutf-8"; then
+          echo "$d.po: update (and charset converted from $CHARSET_OLD to UTF-8)"
+        else
+          echo "$d.po: updated"
+        fi
         DOMAINS_UPDATED="$DOMAINS_UPDATED $d"
+      fi
+      # make sure domain is listed in LINGUAS
+      if ! grep $d "po/LINGUAS" >/dev/null 2>/dev/null; then
+        DOMAINS_NOT_IN_LINGUAS="$DOMAINS_NOT_IN_LINGUAS $d"
       fi
     else
       # ./po/foo.po doesn't exist, but foo.po exists on the translation project
@@ -113,6 +138,15 @@ if [ -n "$DOMAINS_UPDATED" ]; then
     echo
   fi
   echo "===================================================================="
+fi
+
+if [ -n "$DOMAINS_NOT_IN_LINGUAS" ]; then
+  echo
+  echo "Existing domains missing from the po/LINGUAS file:"
+  echo
+  echo "  $DOMAINS_NOT_IN_LINGUAS"
+  echo
+  echo
 fi
 
 

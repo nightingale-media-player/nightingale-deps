@@ -1,27 +1,33 @@
 plugin_LTLIBRARIES = libgstdeinterlace.la
 
+ORC_SOURCE=tvtime
+include $(top_srcdir)/common/orc.mak
+
 libgstdeinterlace_la_SOURCES = \
 	gstdeinterlace.c \
+	gstdeinterlacemethod.c \
+	tvtime/tomsmocomp.c \
 	tvtime/greedy.c \
 	tvtime/greedyh.c \
 	tvtime/vfir.c \
-	tvtime/tomsmocomp.c \
 	tvtime/weavetff.c \
 	tvtime/weavebff.c \
 	tvtime/weave.c \
 	tvtime/linear.c \
 	tvtime/linearblend.c \
 	tvtime/scalerbob.c
+nodist_libgstdeinterlace_la_SOURCES = $(ORC_NODIST_SOURCES)
 
-libgstdeinterlace_la_CFLAGS = $(GST_CFLAGS) \
-	$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(LIBOIL_CFLAGS)
-libgstdeinterlace_la_LIBADD = $(GST_LIBS) \
-	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_MAJORMINOR) $(GST_BASE_LIBS) $(LIBOIL_LIBS)
+libgstdeinterlace_la_CFLAGS = \
+	$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(ORC_CFLAGS)
+libgstdeinterlace_la_LIBADD = \
+	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) $(GST_BASE_LIBS) $(GST_LIBS) $(ORC_LIBS)
 libgstdeinterlace_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstdeinterlace_la_LIBTOOLFLAGS = --tag=disable-static
+libgstdeinterlace_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = \
 	gstdeinterlace.h \
+	gstdeinterlacemethod.h \
 	tvtime/mmx.h \
 	tvtime/sse.h \
 	tvtime/greedyh.asm \
@@ -45,4 +51,3 @@ noinst_HEADERS = \
 	tvtime/tomsmocomp/TomsMoCompAll.inc \
 	tvtime/tomsmocomp/tomsmocompmacros.h \
 	tvtime/tomsmocomp/WierdBob.inc
-

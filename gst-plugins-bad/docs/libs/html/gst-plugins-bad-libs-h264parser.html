@@ -1,0 +1,2593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>h264parser: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="codecparsers.html" title="Bitstream parsing Library">
+<link rel="prev" href="codecparsers.html" title="Bitstream parsing Library">
+<link rel="next" href="gst-plugins-bad-libs-jpegparser.html" title="jpegparser">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-h264parser.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="codecparsers.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="codecparsers.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-jpegparser.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-h264parser"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-h264parser.top_of_page"></a>h264parser</span></h2>
+<p>h264parser — Convenience library for h264 video
+bitstream parsing.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-IS-P-SLICE:CAPS" title="GST_H264_IS_P_SLICE()">GST_H264_IS_P_SLICE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-IS-B-SLICE:CAPS" title="GST_H264_IS_B_SLICE()">GST_H264_IS_B_SLICE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-IS-I-SLICE:CAPS" title="GST_H264_IS_I_SLICE()">GST_H264_IS_I_SLICE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-IS-SP-SLICE:CAPS" title="GST_H264_IS_SP_SLICE()">GST_H264_IS_SP_SLICE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-IS-SI-SLICE:CAPS" title="GST_H264_IS_SI_SLICE()">GST_H264_IS_SI_SLICE</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-identify-nalu" title="gst_h264_parser_identify_nalu ()">gst_h264_parser_identify_nalu</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-identify-nalu-avc" title="gst_h264_parser_identify_nalu_avc ()">gst_h264_parser_identify_nalu_avc</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-nal" title="gst_h264_parser_parse_nal ()">gst_h264_parser_parse_nal</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-slice-hdr" title="gst_h264_parser_parse_slice_hdr ()">gst_h264_parser_parse_slice_hdr</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-sps" title="gst_h264_parser_parse_sps ()">gst_h264_parser_parse_sps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-pps" title="gst_h264_parser_parse_pps ()">gst_h264_parser_parse_pps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-sei" title="gst_h264_parser_parse_sei ()">gst_h264_parser_parse_sei</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="returnvalue">GstH264NalParser</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-nal-parser-new" title="gst_h264_nal_parser_new ()">gst_h264_nal_parser_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-nal-parser-free" title="gst_h264_nal_parser_free ()">gst_h264_nal_parser_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parse-sps" title="gst_h264_parse_sps ()">gst_h264_parse_sps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parse-pps" title="gst_h264_parse_pps ()">gst_h264_parse_pps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-pps-clear" title="gst_h264_pps_clear ()">gst_h264_pps_clear</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-quant-matrix-8x8-get-zigzag-from-raster" title="gst_h264_quant_matrix_8x8_get_zigzag_from_raster ()">gst_h264_quant_matrix_8x8_get_zigzag_from_raster</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-quant-matrix-8x8-get-raster-from-zigzag" title="gst_h264_quant_matrix_8x8_get_raster_from_zigzag ()">gst_h264_quant_matrix_8x8_get_raster_from_zigzag</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-quant-matrix-4x4-get-zigzag-from-raster" title="gst_h264_quant_matrix_4x4_get_zigzag_from_raster ()">gst_h264_quant_matrix_4x4_get_zigzag_from_raster</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-quant-matrix-4x4-get-raster-from-zigzag" title="gst_h264_quant_matrix_4x4_get_raster_from_zigzag ()">gst_h264_quant_matrix_4x4_get_raster_from_zigzag</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-video-calculate-framerate" title="gst_h264_video_calculate_framerate ()">gst_h264_video_calculate_framerate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-MAX-SPS-COUNT:CAPS" title="GST_H264_MAX_SPS_COUNT">GST_H264_MAX_SPS_COUNT</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-MAX-PPS-COUNT:CAPS" title="GST_H264_MAX_PPS_COUNT">GST_H264_MAX_PPS_COUNT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnitType" title="enum GstH264NalUnitType">GstH264NalUnitType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult">GstH264ParserResult</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SEIPayloadType" title="enum GstH264SEIPayloadType">GstH264SEIPayloadType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SEIPicStructType" title="enum GstH264SEIPicStructType">GstH264SEIPicStructType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SliceType" title="enum GstH264SliceType">GstH264SliceType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser">GstH264NalParser</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit">GstH264NalUnit</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS">GstH264SPS</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS">GstH264PPS</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264HRDParams" title="struct GstH264HRDParams">GstH264HRDParams</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264VUIParams" title="struct GstH264VUIParams">GstH264VUIParams</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264DecRefPicMarking" title="struct GstH264DecRefPicMarking">GstH264DecRefPicMarking</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264RefPicMarking" title="struct GstH264RefPicMarking">GstH264RefPicMarking</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PredWeightTable" title="struct GstH264PredWeightTable">GstH264PredWeightTable</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SliceHdr" title="struct GstH264SliceHdr">GstH264SliceHdr</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ClockTimestamp" title="struct GstH264ClockTimestamp">GstH264ClockTimestamp</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PicTiming" title="struct GstH264PicTiming">GstH264PicTiming</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264BufferingPeriod" title="struct GstH264BufferingPeriod">GstH264BufferingPeriod</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SEIMessage" title="struct GstH264SEIMessage">GstH264SEIMessage</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/codecparsers/gsth264parser.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.description"></a><h2>Description</h2>
+<p>It offers you bitstream parsing in AVC mode or not. To identify Nals in a bitstream and
+parse its headers, you should call:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-identify-nalu" title="gst_h264_parser_identify_nalu ()"><span class="type">gst_h264_parser_identify_nalu</span></a> to identify the following nalu in not AVC bitstreams
+  </li>
+<li class="listitem">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-identify-nalu-avc" title="gst_h264_parser_identify_nalu_avc ()"><span class="type">gst_h264_parser_identify_nalu_avc</span></a> to identify the nalu in AVC bitstreams
+  </li>
+</ul></div>
+<p>Then, depending on the <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnitType" title="enum GstH264NalUnitType"><span class="type">GstH264NalUnitType</span></a> of the newly parsed <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a>, you should
+call the differents functions to parse the structure:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+     From <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SLICE:CAPS"><span class="type">GST_H264_NAL_SLICE</span></a> to <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SLICE-IDR:CAPS"><span class="type">GST_H264_NAL_SLICE_IDR</span></a>: <a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-slice-hdr" title="gst_h264_parser_parse_slice_hdr ()"><span class="type">gst_h264_parser_parse_slice_hdr</span></a>
+</li>
+<li class="listitem">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SEI:CAPS"><span class="type">GST_H264_NAL_SEI</span></a>: <a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-sei" title="gst_h264_parser_parse_sei ()"><span class="type">gst_h264_parser_parse_sei</span></a>
+</li>
+<li class="listitem">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SPS:CAPS"><span class="type">GST_H264_NAL_SPS</span></a>: <a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-sps" title="gst_h264_parser_parse_sps ()"><span class="type">gst_h264_parser_parse_sps</span></a>
+</li>
+<li class="listitem">
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-PPS:CAPS"><span class="type">GST_H264_NAL_PPS</span></a>: <a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-pps" title="gst_h264_parser_parse_pps ()"><span class="type">gst_h264_parser_parse_pps</span></a>
+</li>
+<li class="listitem">
+     Any other: <a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-parser-parse-nal" title="gst_h264_parser_parse_nal ()"><span class="type">gst_h264_parser_parse_nal</span></a>
+</li>
+</ul></div>
+<p>Note: You should always call gst_h264_parser_parse_nal if you don't actually need
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnitType" title="enum GstH264NalUnitType"><span class="type">GstH264NalUnitType</span></a> to be parsed for your personnal use, in order to guarantee that the
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> is always up to date.</p>
+<p>For more details about the structures, look at the ITU-T H.264 and ISO/IEC 14496-10 – MPEG-4
+Part 10 specifications, you can download them from:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+    ITU-T H.264: http://www.itu.int/rec/T-REC-H.264
+  </li>
+<li class="listitem">
+    ISO/IEC 14496-10: http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=56538
+  </li>
+</ul></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GST-H264-IS-P-SLICE:CAPS"></a><h3>GST_H264_IS_P_SLICE()</h3>
+<pre class="programlisting">#define GST_H264_IS_P_SLICE(slice)  (((slice)-&gt;type % 5) == GST_H264_P_SLICE)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-H264-IS-B-SLICE:CAPS"></a><h3>GST_H264_IS_B_SLICE()</h3>
+<pre class="programlisting">#define GST_H264_IS_B_SLICE(slice)  (((slice)-&gt;type % 5) == GST_H264_B_SLICE)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-H264-IS-I-SLICE:CAPS"></a><h3>GST_H264_IS_I_SLICE()</h3>
+<pre class="programlisting">#define GST_H264_IS_I_SLICE(slice)  (((slice)-&gt;type % 5) == GST_H264_I_SLICE)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-H264-IS-SP-SLICE:CAPS"></a><h3>GST_H264_IS_SP_SLICE()</h3>
+<pre class="programlisting">#define GST_H264_IS_SP_SLICE(slice) (((slice)-&gt;type % 5) == GST_H264_SP_SLICE)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-H264-IS-SI-SLICE:CAPS"></a><h3>GST_H264_IS_SI_SLICE()</h3>
+<pre class="programlisting">#define GST_H264_IS_SI_SLICE(slice) (((slice)-&gt;type % 5) == GST_H264_SI_SLICE)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-identify-nalu"></a><h3>gst_h264_parser_identify_nalu ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_identify_nalu (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                               <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> offset</code></em>,
+                               <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+ and fills <em class="parameter"><code>nalu</code></em>
+ from the next nalu data from <em class="parameter"><code>data</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>offset</p></td>
+<td class="parameter_description"><p>the offset from which to parse <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> where to store parsed nal headers</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.7.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-identify-nalu-avc"></a><h3>gst_h264_parser_identify_nalu_avc ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_identify_nalu_avc (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                                   <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> offset</code></em>,
+                                   <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                   <em class="parameter"><code><span class="type">guint8</span> nal_length_size</code></em>,
+                                   <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+ and sets <em class="parameter"><code>nalu</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>The data to parse, must be the beging of the Nal unit</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>offset</p></td>
+<td class="parameter_description"><p>the offset from which to parse <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nal_length_size</p></td>
+<td class="parameter_description"><p>the size in bytes of the AVC nal length prefix.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> where to store parsed nal headers</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.8.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-parse-nal"></a><h3>gst_h264_parser_parse_nal ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_parse_nal (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>);</pre>
+<p>This function should be called in the case one doesn't need to
+parse a specific structure. It is necessary to do so to make
+sure <em class="parameter"><code>nalparser</code></em>
+ is up to date.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.9.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-parse-slice-hdr"></a><h3>gst_h264_parser_parse_slice_hdr ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_parse_slice_hdr (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                                 <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                                 <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SliceHdr" title="struct GstH264SliceHdr"><span class="type">GstH264SliceHdr</span></a> *slice</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> parse_pred_weight_table</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> parse_dec_ref_pic_marking</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills the <em class="parameter"><code>slice</code></em>
+ structure.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SLICE:CAPS"><span class="type">GST_H264_NAL_SLICE</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>slice</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SliceHdr" title="struct GstH264SliceHdr"><span class="type">GstH264SliceHdr</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>parse_pred_weight_table</p></td>
+<td class="parameter_description"><p>Whether to parse the pred_weight_table or not</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>parse_dec_ref_pic_marking</p></td>
+<td class="parameter_description"><p>Whether to parse the dec_ref_pic_marking or not</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.10.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-parse-sps"></a><h3>gst_h264_parser_parse_sps ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_parse_sps (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS"><span class="type">GstH264SPS</span></a> *sps</code></em>,
+                           <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> parse_vui_params</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills the <em class="parameter"><code>sps</code></em>
+ structure.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SPS:CAPS"><span class="type">GST_H264_NAL_SPS</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>sps</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS"><span class="type">GstH264SPS</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>parse_vui_params</p></td>
+<td class="parameter_description"><p>Whether to parse the vui_params or not</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.11.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-parse-pps"></a><h3>gst_h264_parser_parse_pps ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_parse_pps (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> *pps</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills the <em class="parameter"><code>pps</code></em>
+ structure.</p>
+<p>The resulting <em class="parameter"><code>pps</code></em>
+ data structure shall be deallocated with the
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-pps-clear" title="gst_h264_pps_clear ()"><code class="function">gst_h264_pps_clear()</code></a> function when it is no longer needed, or prior
+to parsing a new PPS NAL unit.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.12.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-PPS:CAPS"><span class="type">GST_H264_NAL_PPS</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>pps</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.12.7"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parser-parse-sei"></a><h3>gst_h264_parser_parse_sei ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parser_parse_sei (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                           <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> **messages</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, create and fills the <em class="parameter"><code>messages</code></em>
+ array.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SEI:CAPS"><span class="type">GST_H264_NAL_SEI</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>messages</p></td>
+<td class="parameter_description"><p>The GArray of <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SEIMessage" title="struct GstH264SEIMessage"><span class="type">GstH264SEIMessage</span></a> to fill. The caller must free it when done.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.13.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-nal-parser-new"></a><h3>gst_h264_nal_parser_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="returnvalue">GstH264NalParser</span></a> *
+gst_h264_nal_parser_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a>. It should be freed with
+gst_h264_nal_parser_free after use.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.14.5"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-nal-parser-free"></a><h3>gst_h264_nal_parser_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_nal_parser_free (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>);</pre>
+<p>Frees <em class="parameter"><code>nalparser</code></em>
+ and sets it to <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> to free</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parse-sps"></a><h3>gst_h264_parse_sps ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parse_sps (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                    <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS"><span class="type">GstH264SPS</span></a> *sps</code></em>,
+                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> parse_vui_params</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills the <em class="parameter"><code>sps</code></em>
+ structure.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-SPS:CAPS"><span class="type">GST_H264_NAL_SPS</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>sps</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS"><span class="type">GstH264SPS</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>parse_vui_params</p></td>
+<td class="parameter_description"><p>Whether to parse the vui_params or not</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.16.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-parse-pps"></a><h3>gst_h264_parse_pps ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="returnvalue">GstH264ParserResult</span></a>
+gst_h264_parse_pps (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a> *nalparser</code></em>,
+                    <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> *nalu</code></em>,
+                    <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> *pps</code></em>);</pre>
+<p>Parses <em class="parameter"><code>data</code></em>
+, and fills the <em class="parameter"><code>pps</code></em>
+ structure.</p>
+<p>The resulting <em class="parameter"><code>pps</code></em>
+ data structure shall be deallocated with the
+<a class="link" href="gst-plugins-bad-libs-h264parser.html#gst-h264-pps-clear" title="gst_h264_pps_clear ()"><code class="function">gst_h264_pps_clear()</code></a> function when it is no longer needed, or prior
+to parsing a new PPS NAL unit.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.17.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nalparser</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalParser" title="struct GstH264NalParser"><span class="type">GstH264NalParser</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nalu</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GST-H264-NAL-PPS:CAPS"><span class="type">GST_H264_NAL_PPS</span></a> <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnit" title="struct GstH264NalUnit"><span class="type">GstH264NalUnit</span></a> to parse</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>pps</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> to fill.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.17.7"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264ParserResult" title="enum GstH264ParserResult"><span class="type">GstH264ParserResult</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-pps-clear"></a><h3>gst_h264_pps_clear ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_pps_clear (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> *pps</code></em>);</pre>
+<p>Clears all <em class="parameter"><code>pps</code></em>
+ internal resources.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>pps</p></td>
+<td class="parameter_description"><p>The <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PPS" title="struct GstH264PPS"><span class="type">GstH264PPS</span></a> to free</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-quant-matrix-8x8-get-zigzag-from-raster"></a><h3>gst_h264_quant_matrix_8x8_get_zigzag_from_raster ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_quant_matrix_8x8_get_zigzag_from_raster
+                               (<em class="parameter"><code><span class="type">guint8</span> out_quant[64]</code></em>,
+                                <em class="parameter"><code>const <span class="type">guint8</span> quant[64]</code></em>);</pre>
+<p>Converts quantization matrix <em class="parameter"><code>quant</code></em>
+ from raster scan order to
+zigzag scan order and store the resulting factors into <em class="parameter"><code>out_quant</code></em>
+.</p>
+<p>Note: it is an error to pass the same table in both <em class="parameter"><code>quant</code></em>
+ and
+<em class="parameter"><code>out_quant</code></em>
+ arguments.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.19.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>out_quant</p></td>
+<td class="parameter_description"><p> The resulting quantization matrix. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>quant</p></td>
+<td class="parameter_description"><p>The source quantization matrix</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-quant-matrix-8x8-get-raster-from-zigzag"></a><h3>gst_h264_quant_matrix_8x8_get_raster_from_zigzag ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_quant_matrix_8x8_get_raster_from_zigzag
+                               (<em class="parameter"><code><span class="type">guint8</span> out_quant[64]</code></em>,
+                                <em class="parameter"><code>const <span class="type">guint8</span> quant[64]</code></em>);</pre>
+<p>Converts quantization matrix <em class="parameter"><code>quant</code></em>
+ from zigzag scan order to
+raster scan order and store the resulting factors into <em class="parameter"><code>out_quant</code></em>
+.</p>
+<p>Note: it is an error to pass the same table in both <em class="parameter"><code>quant</code></em>
+ and
+<em class="parameter"><code>out_quant</code></em>
+ arguments.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.20.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>out_quant</p></td>
+<td class="parameter_description"><p> The resulting quantization matrix. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>quant</p></td>
+<td class="parameter_description"><p>The source quantization matrix</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-quant-matrix-4x4-get-zigzag-from-raster"></a><h3>gst_h264_quant_matrix_4x4_get_zigzag_from_raster ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_quant_matrix_4x4_get_zigzag_from_raster
+                               (<em class="parameter"><code><span class="type">guint8</span> out_quant[16]</code></em>,
+                                <em class="parameter"><code>const <span class="type">guint8</span> quant[16]</code></em>);</pre>
+<p>Converts quantization matrix <em class="parameter"><code>quant</code></em>
+ from raster scan order to
+zigzag scan order and store the resulting factors into <em class="parameter"><code>out_quant</code></em>
+.</p>
+<p>Note: it is an error to pass the same table in both <em class="parameter"><code>quant</code></em>
+ and
+<em class="parameter"><code>out_quant</code></em>
+ arguments.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.21.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>out_quant</p></td>
+<td class="parameter_description"><p> The resulting quantization matrix. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>quant</p></td>
+<td class="parameter_description"><p>The source quantization matrix</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-quant-matrix-4x4-get-raster-from-zigzag"></a><h3>gst_h264_quant_matrix_4x4_get_raster_from_zigzag ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_quant_matrix_4x4_get_raster_from_zigzag
+                               (<em class="parameter"><code><span class="type">guint8</span> out_quant[16]</code></em>,
+                                <em class="parameter"><code>const <span class="type">guint8</span> quant[16]</code></em>);</pre>
+<p>Converts quantization matrix <em class="parameter"><code>quant</code></em>
+ from zigzag scan order to
+raster scan order and store the resulting factors into <em class="parameter"><code>out_quant</code></em>
+.</p>
+<p>Note: it is an error to pass the same table in both <em class="parameter"><code>quant</code></em>
+ and
+<em class="parameter"><code>out_quant</code></em>
+ arguments.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.22.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>out_quant</p></td>
+<td class="parameter_description"><p> The resulting quantization matrix. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>quant</p></td>
+<td class="parameter_description"><p>The source quantization matrix</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-h264-video-calculate-framerate"></a><h3>gst_h264_video_calculate_framerate ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_h264_video_calculate_framerate (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264SPS" title="struct GstH264SPS"><span class="type">GstH264SPS</span></a> *sps</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> field_pic_flag</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> pic_struct</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *fps_num</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *fps_den</code></em>);</pre>
+<p>Calculate framerate of a video sequence using <em class="parameter"><code>sps</code></em>
+ VUI information,
+<em class="parameter"><code>field_pic_flag</code></em>
+ from a slice header and <em class="parameter"><code>pic_struct</code></em>
+ from <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264PicTiming" title="struct GstH264PicTiming"><span class="type">GstH264PicTiming</span></a> SEI
+message.</p>
+<p>If framerate is variable or can't be determined, <em class="parameter"><code>fps_num</code></em>
+ will be set to 0
+and <em class="parameter"><code>fps_den</code></em>
+ to 1.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.7.23.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>sps</p></td>
+<td class="parameter_description"><p>Current Sequence Parameter Set</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>field_pic_flag</p></td>
+<td class="parameter_description"><p>Current <em class="parameter"><code>field_pic_flag</code></em>
+, obtained from latest slice header</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>pic_struct</p></td>
+<td class="parameter_description"><p><em class="parameter"><code>pic_struct</code></em>
+value if available, 0 otherwise</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fps_num</p></td>
+<td class="parameter_description"><p> The resulting fps numerator. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fps_den</p></td>
+<td class="parameter_description"><p> The resulting fps denominator. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-h264parser.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GST-H264-MAX-SPS-COUNT:CAPS"></a><h3>GST_H264_MAX_SPS_COUNT</h3>
+<pre class="programlisting">#define GST_H264_MAX_SPS_COUNT   32
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-H264-MAX-PPS-COUNT:CAPS"></a><h3>GST_H264_MAX_PPS_COUNT</h3>
+<pre class="programlisting">#define GST_H264_MAX_PPS_COUNT   256
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264NalUnitType"></a><h3>enum GstH264NalUnitType</h3>
+<p>Indicates the type of H264 Nal Units</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-UNKNOWN:CAPS"></a>GST_H264_NAL_UNKNOWN</p></td>
+<td class="enum_member_description">
+<p>Unknown nal type</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE:CAPS"></a>GST_H264_NAL_SLICE</p></td>
+<td class="enum_member_description">
+<p>Slice nal</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-DPA:CAPS"></a>GST_H264_NAL_SLICE_DPA</p></td>
+<td class="enum_member_description">
+<p>DPA slice nal</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-DPB:CAPS"></a>GST_H264_NAL_SLICE_DPB</p></td>
+<td class="enum_member_description">
+<p>DPB slice nal</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-DPC:CAPS"></a>GST_H264_NAL_SLICE_DPC</p></td>
+<td class="enum_member_description">
+<p>DPC slice nal</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-IDR:CAPS"></a>GST_H264_NAL_SLICE_IDR</p></td>
+<td class="enum_member_description">
+<p>DPR slice nal</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SEI:CAPS"></a>GST_H264_NAL_SEI</p></td>
+<td class="enum_member_description">
+<p>Supplemental enhancement information (SEI) nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SPS:CAPS"></a>GST_H264_NAL_SPS</p></td>
+<td class="enum_member_description">
+<p>Sequence parameter set (SPS) nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-PPS:CAPS"></a>GST_H264_NAL_PPS</p></td>
+<td class="enum_member_description">
+<p>Picture parameter set (PPS) nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-AU-DELIMITER:CAPS"></a>GST_H264_NAL_AU_DELIMITER</p></td>
+<td class="enum_member_description">
+<p>Access unit (AU) delimiter nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SEQ-END:CAPS"></a>GST_H264_NAL_SEQ_END</p></td>
+<td class="enum_member_description">
+<p>End of sequence nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-STREAM-END:CAPS"></a>GST_H264_NAL_STREAM_END</p></td>
+<td class="enum_member_description">
+<p>End of stream nal unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-FILLER-DATA:CAPS"></a>GST_H264_NAL_FILLER_DATA</p></td>
+<td class="enum_member_description">
+<p>Filler data nal lunit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SPS-EXT:CAPS"></a>GST_H264_NAL_SPS_EXT</p></td>
+<td class="enum_member_description">
+<p>Sequence parameter set (SPS) extension NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-PREFIX-UNIT:CAPS"></a>GST_H264_NAL_PREFIX_UNIT</p></td>
+<td class="enum_member_description">
+<p>Prefix NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SUBSET-SPS:CAPS"></a>GST_H264_NAL_SUBSET_SPS</p></td>
+<td class="enum_member_description">
+<p>Subset sequence parameter set (SSPS) NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-DEPTH-SPS:CAPS"></a>GST_H264_NAL_DEPTH_SPS</p></td>
+<td class="enum_member_description">
+<p>Depth parameter set (DPS) NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-AUX:CAPS"></a>GST_H264_NAL_SLICE_AUX</p></td>
+<td class="enum_member_description">
+<p>Auxiliary coded picture without partitioning NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-EXT:CAPS"></a>GST_H264_NAL_SLICE_EXT</p></td>
+<td class="enum_member_description">
+<p>Coded slice extension NAL unit</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-NAL-SLICE-DEPTH:CAPS"></a>GST_H264_NAL_SLICE_DEPTH</p></td>
+<td class="enum_member_description">
+<p>Coded slice extension for depth or 3D-AVC texture view</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264ParserResult"></a><h3>enum GstH264ParserResult</h3>
+<p>The result of parsing H264 data.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.5.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-OK:CAPS"></a>GST_H264_PARSER_OK</p></td>
+<td class="enum_member_description">
+<p>The parsing succeded</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-BROKEN-DATA:CAPS"></a>GST_H264_PARSER_BROKEN_DATA</p></td>
+<td class="enum_member_description">
+<p>The data to parse is broken</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-BROKEN-LINK:CAPS"></a>GST_H264_PARSER_BROKEN_LINK</p></td>
+<td class="enum_member_description">
+<p>The link to structure needed for the parsing couldn't be found</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-ERROR:CAPS"></a>GST_H264_PARSER_ERROR</p></td>
+<td class="enum_member_description">
+<p>An error occured when parsing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-NO-NAL:CAPS"></a>GST_H264_PARSER_NO_NAL</p></td>
+<td class="enum_member_description">
+<p>No nal found during the parsing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-PARSER-NO-NAL-END:CAPS"></a>GST_H264_PARSER_NO_NAL_END</p></td>
+<td class="enum_member_description">
+<p>Start of the nal found, but not the end.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SEIPayloadType"></a><h3>enum GstH264SEIPayloadType</h3>
+<p>The type of SEI message.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.6.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-BUF-PERIOD:CAPS"></a>GST_H264_SEI_BUF_PERIOD</p></td>
+<td class="enum_member_description">
+<p>Buffering Period SEI Message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-TIMING:CAPS"></a>GST_H264_SEI_PIC_TIMING</p></td>
+<td class="enum_member_description">
+<p>Picture Timing SEI Message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-RECOVERY-POINT:CAPS"></a>GST_H264_SEI_RECOVERY_POINT</p></td>
+<td class="enum_member_description">
+<p>Recovery Point SEI Message (D.2.7)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-STEREO-VIDEO-INFO:CAPS"></a>GST_H264_SEI_STEREO_VIDEO_INFO</p></td>
+<td class="enum_member_description">
+<p>stereo video info SEI message (Since: 1.6)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-FRAME-PACKING:CAPS"></a>GST_H264_SEI_FRAME_PACKING</p></td>
+<td class="enum_member_description">
+<p>Frame Packing Arrangement (FPA) message that
+    contains the 3D arrangement for stereoscopic 3D video (Since: 1.6)
+...</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SEIPicStructType"></a><h3>enum GstH264SEIPicStructType</h3>
+<p>SEI pic_struct type</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.7.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-FRAME:CAPS"></a>GST_H264_SEI_PIC_STRUCT_FRAME</p></td>
+<td class="enum_member_description">
+<p>Picture is a frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-TOP-FIELD:CAPS"></a>GST_H264_SEI_PIC_STRUCT_TOP_FIELD</p></td>
+<td class="enum_member_description">
+<p>Top field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-BOTTOM-FIELD:CAPS"></a>GST_H264_SEI_PIC_STRUCT_BOTTOM_FIELD</p></td>
+<td class="enum_member_description">
+<p>Botom field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-TOP-BOTTOM:CAPS"></a>GST_H264_SEI_PIC_STRUCT_TOP_BOTTOM</p></td>
+<td class="enum_member_description">
+<p>Top bottom field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-BOTTOM-TOP:CAPS"></a>GST_H264_SEI_PIC_STRUCT_BOTTOM_TOP</p></td>
+<td class="enum_member_description">
+<p>bottom top field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-TOP-BOTTOM-TOP:CAPS"></a>GST_H264_SEI_PIC_STRUCT_TOP_BOTTOM_TOP</p></td>
+<td class="enum_member_description">
+<p>top bottom top field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-BOTTOM-TOP-BOTTOM:CAPS"></a>GST_H264_SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM</p></td>
+<td class="enum_member_description">
+<p>bottom top bottom field of frame</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-FRAME-DOUBLING:CAPS"></a>GST_H264_SEI_PIC_STRUCT_FRAME_DOUBLING</p></td>
+<td class="enum_member_description">
+<p>indicates that the frame should
+ be displayed two times consecutively</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SEI-PIC-STRUCT-FRAME-TRIPLING:CAPS"></a>GST_H264_SEI_PIC_STRUCT_FRAME_TRIPLING</p></td>
+<td class="enum_member_description">
+<p>indicates that the frame should be
+ displayed three times consecutively</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SliceType"></a><h3>enum GstH264SliceType</h3>
+<p>Type of Picture slice</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.8.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-P-SLICE:CAPS"></a>GST_H264_P_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-B-SLICE:CAPS"></a>GST_H264_B_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-I-SLICE:CAPS"></a>GST_H264_I_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SP-SLICE:CAPS"></a>GST_H264_SP_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-SI-SLICE:CAPS"></a>GST_H264_SI_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-S-P-SLICE:CAPS"></a>GST_H264_S_P_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-S-B-SLICE:CAPS"></a>GST_H264_S_B_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-S-I-SLICE:CAPS"></a>GST_H264_S_I_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-S-SP-SLICE:CAPS"></a>GST_H264_S_SP_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-H264-S-SI-SLICE:CAPS"></a>GST_H264_S_SI_SLICE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264NalParser"></a><h3>struct GstH264NalParser</h3>
+<pre class="programlisting">struct GstH264NalParser {
+};
+</pre>
+<p>H264 NAL Parser (opaque structure).</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264NalUnit"></a><h3>struct GstH264NalUnit</h3>
+<pre class="programlisting">struct GstH264NalUnit {
+  guint16 ref_idc;
+  guint16 type;
+
+  /* calculated values */
+  guint8 idr_pic_flag;
+  guint size;
+  guint offset;
+  guint sc_offset;
+  gboolean valid;
+
+  guint8 *data;
+
+  guint8 header_bytes;
+  guint8 extension_type;
+  union {
+    GstH264NalUnitExtensionMVC mvc;
+  } extension;
+};
+</pre>
+<p>Structure defining the Nal unit headers</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.10.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstH264NalUnit.ref-idc"></a>ref_idc</code></em>;</p></td>
+<td class="struct_member_description"><p>not equal to 0 specifies that the content of the NAL unit
+contains a sequence parameter set, a sequence parameter set
+extension, a subset sequence parameter set, a picture parameter
+set, a slice of a reference picture, a slice data partition of a
+reference picture, or a prefix NAL unit preceding a slice of a
+reference picture.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstH264NalUnit.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>A <a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264NalUnitType" title="enum GstH264NalUnitType"><span class="type">GstH264NalUnitType</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264NalUnit.idr-pic-flag"></a>idr_pic_flag</code></em>;</p></td>
+<td class="struct_member_description"><p>calculated idr_pic_flag</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstH264NalUnit.size"></a>size</code></em>;</p></td>
+<td class="struct_member_description"><p>The size of the nal unit starting from <em class="parameter"><code>offset</code></em>
+, thus
+including the header bytes. e.g. <em class="parameter"><code>type</code></em>
+(nal_unit_type)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstH264NalUnit.offset"></a>offset</code></em>;</p></td>
+<td class="struct_member_description"><p>The offset of the actual start of the nal unit, thus
+including the header bytes</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstH264NalUnit.sc-offset"></a>sc_offset</code></em>;</p></td>
+<td class="struct_member_description"><p>The offset of the start code of the nal unit</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstH264NalUnit.valid"></a>valid</code></em>;</p></td>
+<td class="struct_member_description"><p>If the nal unit is valid, which means it has
+already been parsed</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstH264NalUnit.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p>The data from which the Nalu has been parsed</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264NalUnit.header-bytes"></a>header_bytes</code></em>;</p></td>
+<td class="struct_member_description"><p>The size of the NALU header in bytes (Since 1.6)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264NalUnit.extension-type"></a>extension_type</code></em>;</p></td>
+<td class="struct_member_description"><p>the extension type (Since 1.6)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SPS"></a><h3>struct GstH264SPS</h3>
+<pre class="programlisting">struct GstH264SPS {
+  gint id;
+
+  guint8 profile_idc;
+  guint8 constraint_set0_flag;
+  guint8 constraint_set1_flag;
+  guint8 constraint_set2_flag;
+  guint8 constraint_set3_flag;
+  guint8 constraint_set4_flag;
+  guint8 constraint_set5_flag;
+  guint8 level_idc;
+
+  guint8 chroma_format_idc;
+  guint8 separate_colour_plane_flag;
+  guint8 bit_depth_luma_minus8;
+  guint8 bit_depth_chroma_minus8;
+  guint8 qpprime_y_zero_transform_bypass_flag;
+
+  guint8 scaling_matrix_present_flag;
+  guint8 scaling_lists_4x4[6][16];
+  guint8 scaling_lists_8x8[6][64];
+
+  guint8 log2_max_frame_num_minus4;
+  guint8 pic_order_cnt_type;
+
+  /* if pic_order_cnt_type == 0 */
+  guint8 log2_max_pic_order_cnt_lsb_minus4;
+
+  /* else if pic_order_cnt_type == 1 */
+  guint8 delta_pic_order_always_zero_flag;
+  gint32 offset_for_non_ref_pic;
+  gint32 offset_for_top_to_bottom_field;
+  guint8 num_ref_frames_in_pic_order_cnt_cycle;
+  gint32 offset_for_ref_frame[255];
+
+  guint32 num_ref_frames;
+  guint8 gaps_in_frame_num_value_allowed_flag;
+  guint32 pic_width_in_mbs_minus1;
+  guint32 pic_height_in_map_units_minus1;
+  guint8 frame_mbs_only_flag;
+
+  guint8 mb_adaptive_frame_field_flag;
+
+  guint8 direct_8x8_inference_flag;
+
+  guint8 frame_cropping_flag;
+
+  /* if frame_cropping_flag */
+  guint32 frame_crop_left_offset;
+  guint32 frame_crop_right_offset;
+  guint32 frame_crop_top_offset;
+  guint32 frame_crop_bottom_offset;
+
+  guint8 vui_parameters_present_flag;
+  /* if vui_parameters_present_flag */
+  GstH264VUIParams vui_parameters;
+
+  /* calculated values */
+  guint8 chroma_array_type;
+  guint32 max_frame_num;
+  gint width, height;
+  gint crop_rect_width, crop_rect_height;
+  gint crop_rect_x, crop_rect_y;
+  gint fps_num, fps_den;
+  gboolean valid;
+
+  /* Subset SPS extensions */
+  guint8 extension_type;
+  union {
+    GstH264SPSExtMVC mvc;
+  } extension;
+};
+</pre>
+<p>H264 Sequence Parameter Set (SPS)</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.11.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.id"></a>id</code></em>;</p></td>
+<td class="struct_member_description"><p>The ID of the sequence parameter set</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.profile-idc"></a>profile_idc</code></em>;</p></td>
+<td class="struct_member_description"><p>indicate the profile to which the coded video sequence conforms</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set0-flag"></a>constraint_set0_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set1-flag"></a>constraint_set1_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set2-flag"></a>constraint_set2_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set3-flag"></a>constraint_set3_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set4-flag"></a>constraint_set4_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.constraint-set5-flag"></a>constraint_set5_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.level-idc"></a>level_idc</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.chroma-format-idc"></a>chroma_format_idc</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.separate-colour-plane-flag"></a>separate_colour_plane_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.bit-depth-luma-minus8"></a>bit_depth_luma_minus8</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.bit-depth-chroma-minus8"></a>bit_depth_chroma_minus8</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.qpprime-y-zero-transform-bypass-flag"></a>qpprime_y_zero_transform_bypass_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.scaling-matrix-present-flag"></a>scaling_matrix_present_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.scaling-lists-4x4"></a>scaling_lists_4x4</code></em>[6][16];</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.scaling-lists-8x8"></a>scaling_lists_8x8</code></em>[6][64];</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.log2-max-frame-num-minus4"></a>log2_max_frame_num_minus4</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.pic-order-cnt-type"></a>pic_order_cnt_type</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.log2-max-pic-order-cnt-lsb-minus4"></a>log2_max_pic_order_cnt_lsb_minus4</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.delta-pic-order-always-zero-flag"></a>delta_pic_order_always_zero_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gint32</span> <em class="structfield"><code><a name="GstH264SPS.offset-for-non-ref-pic"></a>offset_for_non_ref_pic</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gint32</span> <em class="structfield"><code><a name="GstH264SPS.offset-for-top-to-bottom-field"></a>offset_for_top_to_bottom_field</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.num-ref-frames-in-pic-order-cnt-cycle"></a>num_ref_frames_in_pic_order_cnt_cycle</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gint32</span> <em class="structfield"><code><a name="GstH264SPS.offset-for-ref-frame"></a>offset_for_ref_frame</code></em>[255];</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.num-ref-frames"></a>num_ref_frames</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.gaps-in-frame-num-value-allowed-flag"></a>gaps_in_frame_num_value_allowed_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.pic-width-in-mbs-minus1"></a>pic_width_in_mbs_minus1</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.pic-height-in-map-units-minus1"></a>pic_height_in_map_units_minus1</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.frame-mbs-only-flag"></a>frame_mbs_only_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.mb-adaptive-frame-field-flag"></a>mb_adaptive_frame_field_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.direct-8x8-inference-flag"></a>direct_8x8_inference_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.frame-cropping-flag"></a>frame_cropping_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.frame-crop-left-offset"></a>frame_crop_left_offset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.frame-crop-right-offset"></a>frame_crop_right_offset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.frame-crop-top-offset"></a>frame_crop_top_offset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.frame-crop-bottom-offset"></a>frame_crop_bottom_offset</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.vui-parameters-present-flag"></a>vui_parameters_present_flag</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264VUIParams" title="struct GstH264VUIParams"><span class="type">GstH264VUIParams</span></a> <em class="structfield"><code><a name="GstH264SPS.vui-parameters"></a>vui_parameters</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.chroma-array-type"></a>chroma_array_type</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264SPS.max-frame-num"></a>max_frame_num</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.width"></a>width</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.height"></a>height</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.crop-rect-width"></a>crop_rect_width</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.crop-rect-height"></a>crop_rect_height</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.crop-rect-x"></a>crop_rect_x</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.crop-rect-y"></a>crop_rect_y</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.fps-num"></a>fps_num</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstH264SPS.fps-den"></a>fps_den</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstH264SPS.valid"></a>valid</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264SPS.extension-type"></a>extension_type</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264PPS"></a><h3>struct GstH264PPS</h3>
+<pre class="programlisting">struct GstH264PPS {
+  gint id;
+
+  GstH264SPS *sequence;
+
+  guint8 entropy_coding_mode_flag;
+  guint8 pic_order_present_flag;
+
+  guint32 num_slice_groups_minus1;
+
+  /* if num_slice_groups_minus1 &gt; 0 */
+  guint8 slice_group_map_type;
+  /* and if slice_group_map_type == 0 */
+  guint32 run_length_minus1[8];
+  /* or if slice_group_map_type == 2 */
+  guint32 top_left[8];
+  guint32 bottom_right[8];
+  /* or if slice_group_map_type == (3, 4, 5) */
+  guint8 slice_group_change_direction_flag;
+  guint32 slice_group_change_rate_minus1;
+  /* or if slice_group_map_type == 6 */
+  guint32 pic_size_in_map_units_minus1;
+  guint8 *slice_group_id;
+
+  guint8 num_ref_idx_l0_active_minus1;
+  guint8 num_ref_idx_l1_active_minus1;
+  guint8 weighted_pred_flag;
+  guint8 weighted_bipred_idc;
+  gint8 pic_init_qp_minus26;
+  gint8 pic_init_qs_minus26;
+  gint8 chroma_qp_index_offset;
+  guint8 deblocking_filter_control_present_flag;
+  guint8 constrained_intra_pred_flag;
+  guint8 redundant_pic_cnt_present_flag;
+
+  guint8 transform_8x8_mode_flag;
+
+  guint8 scaling_lists_4x4[6][16];
+  guint8 scaling_lists_8x8[6][64];
+
+  guint8 second_chroma_qp_index_offset;
+
+  gboolean valid;
+};
+</pre>
+<p>H264 Picture Parameter Set</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264HRDParams"></a><h3>struct GstH264HRDParams</h3>
+<pre class="programlisting">struct GstH264HRDParams {
+  guint8 cpb_cnt_minus1;
+  guint8 bit_rate_scale;
+  guint8 cpb_size_scale;
+
+  guint32 bit_rate_value_minus1[32];
+  guint32 cpb_size_value_minus1[32];
+  guint8 cbr_flag[32];
+
+  guint8 initial_cpb_removal_delay_length_minus1;
+  guint8 cpb_removal_delay_length_minus1;
+  guint8 dpb_output_delay_length_minus1;
+  guint8 time_offset_length;
+};
+</pre>
+<p>Defines the HRD parameters</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.13.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.cpb-cnt-minus1"></a>cpb_cnt_minus1</code></em>;</p></td>
+<td class="struct_member_description"><p>plus 1 specifies the number of alternative
+CPB specifications in the bitstream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.bit-rate-scale"></a>bit_rate_scale</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the maximum input bit rate of the
+SchedSelIdx-th CPB</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.cpb-size-scale"></a>cpb_size_scale</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the CPB size of the SchedSelIdx-th CPB
+<em class="parameter"><code>guint32</code></em>
+bit_rate_value_minus1: specifies the maximum input bit rate for the
+SchedSelIdx-th CPB</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264HRDParams.bit-rate-value-minus1"></a>bit_rate_value_minus1</code></em>[32];</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264HRDParams.cpb-size-value-minus1"></a>cpb_size_value_minus1</code></em>[32];</p></td>
+<td class="struct_member_description"><p>is used together with cpb_size_scale to specify the
+SchedSelIdx-th CPB size</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.cbr-flag"></a>cbr_flag</code></em>[32];</p></td>
+<td class="struct_member_description"><p>Specifies if running in itermediate bitrate mode or constant</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.initial-cpb-removal-delay-length-minus1"></a>initial_cpb_removal_delay_length_minus1</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the length in bits of
+the cpb_removal_delay syntax element</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.cpb-removal-delay-length-minus1"></a>cpb_removal_delay_length_minus1</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the length in bits of the
+dpb_output_delay syntax element</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.dpb-output-delay-length-minus1"></a>dpb_output_delay_length_minus1</code></em>;</p></td>
+<td class="struct_member_description"><div class="blockquote"><blockquote class="blockquote"><p>0 specifies the length in bits of the time_offset syntax element.
+=0 specifies that the time_offset syntax element is not present</p></blockquote></div></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264HRDParams.time-offset-length"></a>time_offset_length</code></em>;</p></td>
+<td class="struct_member_description"><p>Length of the time offset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264VUIParams"></a><h3>struct GstH264VUIParams</h3>
+<pre class="programlisting">struct GstH264VUIParams {
+  guint8 aspect_ratio_info_present_flag;
+  guint8 aspect_ratio_idc;
+  /* if aspect_ratio_idc == 255 */
+  guint16 sar_width;
+  guint16 sar_height;
+
+  guint8 overscan_info_present_flag;
+  /* if overscan_info_present_flag */
+  guint8 overscan_appropriate_flag;
+
+  guint8 video_signal_type_present_flag;
+  guint8 video_format;
+  guint8 video_full_range_flag;
+  guint8 colour_description_present_flag;
+  guint8 colour_primaries;
+  guint8 transfer_characteristics;
+  guint8 matrix_coefficients;
+
+  guint8 chroma_loc_info_present_flag;
+  guint8 chroma_sample_loc_type_top_field;
+  guint8 chroma_sample_loc_type_bottom_field;
+
+  guint8 timing_info_present_flag;
+  /* if timing_info_present_flag */
+  guint32 num_units_in_tick;
+  guint32 time_scale;
+  guint8 fixed_frame_rate_flag;
+
+  guint8 nal_hrd_parameters_present_flag;
+  /* if nal_hrd_parameters_present_flag */
+  GstH264HRDParams nal_hrd_parameters;
+
+  guint8 vcl_hrd_parameters_present_flag;
+  /* if vcl_hrd_parameters_present_flag */
+  GstH264HRDParams vcl_hrd_parameters;
+
+  guint8 low_delay_hrd_flag;
+  guint8 pic_struct_present_flag;
+
+  guint8 bitstream_restriction_flag;
+  /*  if bitstream_restriction_flag */
+  guint8 motion_vectors_over_pic_boundaries_flag;
+  guint32 max_bytes_per_pic_denom;
+  guint32 max_bits_per_mb_denom;
+  guint32 log2_max_mv_length_horizontal;
+  guint32 log2_max_mv_length_vertical;
+  guint32 num_reorder_frames;
+  guint32 max_dec_frame_buffering;
+
+  /* calculated values */
+  guint par_n;
+  guint par_d;
+};
+</pre>
+<p>The structure representing the VUI parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.4.3.8.14.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.aspect-ratio-info-present-flag"></a>aspect_ratio_info_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that aspect_ratio_idc is present.
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> specifies that aspect_ratio_idc is not present
+<em class="parameter"><code>aspect_ratio_idc</code></em>
+specifies the value of the sample aspect ratio of the luma samples
+<em class="parameter"><code>sar_width</code></em>
+indicates the horizontal size of the sample aspect ratio
+<em class="parameter"><code>sar_height</code></em>
+indicates the vertical size of the sample aspect ratio</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.aspect-ratio-idc"></a>aspect_ratio_idc</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstH264VUIParams.sar-width"></a>sar_width</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstH264VUIParams.sar-height"></a>sar_height</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.overscan-info-present-flag"></a>overscan_info_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> overscan_appropriate_flag is present <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwize</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.overscan-appropriate-flag"></a>overscan_appropriate_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> indicates that the cropped decoded pictures
+output are suitable for display using overscan. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> the cropped decoded pictures
+output contain visually important information</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.video-signal-type-present-flag"></a>video_signal_type_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that video_format, video_full_range_flag and
+colour_description_present_flag are present.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.video-format"></a>video_format</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the representation of the picture</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.video-full-range-flag"></a>video_full_range_flag</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the black level and range of the luma and chroma signals</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.colour-description-present-flag"></a>colour_description_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that colour_primaries,
+transfer_characteristics and matrix_coefficients are present</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.colour-primaries"></a>colour_primaries</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the chromaticity coordinates of the source primaries</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.transfer-characteristics"></a>transfer_characteristics</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the opto-electronic transfer characteristic</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.matrix-coefficients"></a>matrix_coefficients</code></em>;</p></td>
+<td class="struct_member_description"><p>describes the matrix coefficients used in deriving luma and chroma signals</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.chroma-loc-info-present-flag"></a>chroma_loc_info_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that chroma_sample_loc_type_top_field and
+chroma_sample_loc_type_bottom_field are present, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwize</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.chroma-sample-loc-type-top-field"></a>chroma_sample_loc_type_top_field</code></em>;</p></td>
+<td class="struct_member_description"><p>specify the location of chroma for top field
+<em class="parameter"><code>chroma_sample_loc_type_bottom_field</code></em>
+specify the location of chroma for bottom field</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.chroma-sample-loc-type-bottom-field"></a>chroma_sample_loc_type_bottom_field</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.timing-info-present-flag"></a>timing_info_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that num_units_in_tick,
+time_scale and fixed_frame_rate_flag are present in the bitstream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.num-units-in-tick"></a>num_units_in_tick</code></em>;</p></td>
+<td class="struct_member_description"><p>is the number of time units of a clock operating at the frequency time_scale Hz
+time_scale: is the number of time units that pass in one second</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.time-scale"></a>time_scale</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.fixed-frame-rate-flag"></a>fixed_frame_rate_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> indicates that the temporal distance between the HRD output times
+of any two consecutive pictures in output order is constrained as specified in the spec, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
+otherwize.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.nal-hrd-parameters-present-flag"></a>nal_hrd_parameters_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if nal hrd parameters present in the bitstream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264HRDParams" title="struct GstH264HRDParams"><span class="type">GstH264HRDParams</span></a> <em class="structfield"><code><a name="GstH264VUIParams.nal-hrd-parameters"></a>nal_hrd_parameters</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.vcl-hrd-parameters-present-flag"></a>vcl_hrd_parameters_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if nal vlc hrd parameters present in the bitstream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-bad-libs-h264parser.html#GstH264HRDParams" title="struct GstH264HRDParams"><span class="type">GstH264HRDParams</span></a> <em class="structfield"><code><a name="GstH264VUIParams.vcl-hrd-parameters"></a>vcl_hrd_parameters</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.low-delay-hrd-flag"></a>low_delay_hrd_flag</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the HRD operational mode</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.pic-struct-present-flag"></a>pic_struct_present_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that picture timing SEI messages are present or not</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.bitstream-restriction-flag"></a>bitstream_restriction_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> specifies that the following coded video sequence bitstream restriction
+parameters are present</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstH264VUIParams.motion-vectors-over-pic-boundaries-flag"></a>motion_vectors_over_pic_boundaries_flag</code></em>;</p></td>
+<td class="struct_member_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> indicates that no sample outside the
+picture boundaries and no sample at a fractional sample position, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> indicates that one or more
+samples outside picture boundaries may be used in inter prediction</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.max-bytes-per-pic-denom"></a>max_bytes_per_pic_denom</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates a number of bytes not exceeded by the sum of the sizes of
+the VCL NAL units associated with any coded picture in the coded video sequence.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.max-bits-per-mb-denom"></a>max_bits_per_mb_denom</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the maximum number of coded bits of macroblock_layer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.log2-max-mv-length-horizontal"></a>log2_max_mv_length_horizontal</code></em>;</p></td>
+<td class="struct_member_description"><p>indicate the maximum absolute value of a decoded horizontal
+motion vector component</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.log2-max-mv-length-vertical"></a>log2_max_mv_length_vertical</code></em>;</p></td>
+<td class="struct_member_description"><p>indicate the maximum absolute value of a decoded vertical
+motion vector component</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.num-reorder-frames"></a>num_reorder_frames</code></em>;</p></td>
+<td class="struct_member_description"><p>indicates the maximum number of frames, complementary field pairs,
+or non-paired fields that precede any frame,</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstH264VUIParams.max-dec-frame-buffering"></a>max_dec_frame_buffering</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the required size of the HRD decoded picture buffer in
+units of frame buffers.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstH264VUIParams.par-n"></a>par_n</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstH264VUIParams.par-d"></a>par_d</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264DecRefPicMarking"></a><h3>struct GstH264DecRefPicMarking</h3>
+<pre class="programlisting">struct GstH264DecRefPicMarking {
+  /* if slice-&gt;nal_unit.IdrPicFlag */
+  guint8 no_output_of_prior_pics_flag;
+  guint8 long_term_reference_flag;
+
+  guint8 adaptive_ref_pic_marking_mode_flag;
+  GstH264RefPicMarking ref_pic_marking[10];
+  guint8 n_ref_pic_marking;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264RefPicMarking"></a><h3>struct GstH264RefPicMarking</h3>
+<pre class="programlisting">struct GstH264RefPicMarking {
+  guint8 memory_management_control_operation;
+
+  guint32 difference_of_pic_nums_minus1;
+  guint32 long_term_pic_num;
+  guint32 long_term_frame_idx;
+  guint32 max_long_term_frame_idx_plus1;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264PredWeightTable"></a><h3>struct GstH264PredWeightTable</h3>
+<pre class="programlisting">struct GstH264PredWeightTable {
+  guint8 luma_log2_weight_denom;
+  guint8 chroma_log2_weight_denom;
+
+  gint16 luma_weight_l0[32];
+  gint8 luma_offset_l0[32];
+
+  /* if seq-&gt;ChromaArrayType != 0 */
+  gint16 chroma_weight_l0[32][2];
+  gint8 chroma_offset_l0[32][2];
+
+  /* if slice-&gt;slice_type % 5 == 1 */
+  gint16 luma_weight_l1[32];
+  gint8 luma_offset_l1[32];
+
+  /* and if seq-&gt;ChromaArrayType != 0 */
+  gint16 chroma_weight_l1[32][2];
+  gint8 chroma_offset_l1[32][2];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SliceHdr"></a><h3>struct GstH264SliceHdr</h3>
+<pre class="programlisting">struct GstH264SliceHdr {
+  guint32 first_mb_in_slice;
+  guint32 type;
+  GstH264PPS *pps;
+
+  /* if seq-&gt;separate_colour_plane_flag */
+  guint8 colour_plane_id;
+
+  guint16 frame_num;
+
+  guint8 field_pic_flag;
+  guint8 bottom_field_flag;
+
+  /* if nal_unit.type == 5 */
+  guint16 idr_pic_id;
+
+  /* if seq-&gt;pic_order_cnt_type == 0 */
+  guint16 pic_order_cnt_lsb;
+  /* if seq-&gt;pic_order_present_flag &amp;&amp; !field_pic_flag */
+  gint32 delta_pic_order_cnt_bottom;
+
+  gint32 delta_pic_order_cnt[2];
+  guint8 redundant_pic_cnt;
+
+  /* if slice_type == B_SLICE */
+  guint8 direct_spatial_mv_pred_flag;
+
+  guint8 num_ref_idx_l0_active_minus1;
+  guint8 num_ref_idx_l1_active_minus1;
+
+  guint8 ref_pic_list_modification_flag_l0;
+  guint8 n_ref_pic_list_modification_l0;
+  GstH264RefPicListModification ref_pic_list_modification_l0[32];
+  guint8 ref_pic_list_modification_flag_l1;
+  guint8 n_ref_pic_list_modification_l1;
+  GstH264RefPicListModification ref_pic_list_modification_l1[32];
+
+  GstH264PredWeightTable pred_weight_table;
+  /* if nal_unit.ref_idc != 0 */
+  GstH264DecRefPicMarking dec_ref_pic_marking;
+
+  guint8 cabac_init_idc;
+  gint8 slice_qp_delta;
+  gint8 slice_qs_delta;
+
+  guint8 disable_deblocking_filter_idc;
+  gint8 slice_alpha_c0_offset_div2;
+  gint8 slice_beta_offset_div2;
+
+  guint16 slice_group_change_cycle;
+
+  /* calculated values */
+  guint32 max_pic_num;
+  gboolean valid;
+
+  /* Size of the slice_header() in bits */
+  guint header_size;
+
+  /* Number of emulation prevention bytes (EPB) in this slice_header() */
+  guint n_emulation_prevention_bytes;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264ClockTimestamp"></a><h3>struct GstH264ClockTimestamp</h3>
+<pre class="programlisting">struct GstH264ClockTimestamp {
+  guint8 ct_type;
+  guint8 nuit_field_based_flag;
+  guint8 counting_type;
+  guint8 discontinuity_flag;
+  guint8 cnt_dropped_flag;
+  guint8 n_frames;
+
+  guint8 seconds_flag;
+  guint8 seconds_value;
+
+  guint8 minutes_flag;
+  guint8 minutes_value;
+
+  guint8 hours_flag;
+  guint8 hours_value;
+
+  guint32 time_offset;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264PicTiming"></a><h3>struct GstH264PicTiming</h3>
+<pre class="programlisting">struct GstH264PicTiming {
+  guint32 cpb_removal_delay;
+  guint32 dpb_output_delay;
+
+  guint8 pic_struct_present_flag;
+  /* if pic_struct_present_flag */
+  guint8 pic_struct;
+
+  guint8 clock_timestamp_flag[3];
+  GstH264ClockTimestamp clock_timestamp[3];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264BufferingPeriod"></a><h3>struct GstH264BufferingPeriod</h3>
+<pre class="programlisting">struct GstH264BufferingPeriod {
+  GstH264SPS *sps;
+
+  /* seq-&gt;vui_parameters-&gt;nal_hrd_parameters_present_flag */
+  guint32 nal_initial_cpb_removal_delay[32];
+  guint32 nal_initial_cpb_removal_delay_offset[32];
+
+  /* seq-&gt;vui_parameters-&gt;vcl_hrd_parameters_present_flag */
+  guint32 vcl_initial_cpb_removal_delay[32];
+  guint32 vcl_initial_cpb_removal_delay_offset[32];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstH264SEIMessage"></a><h3>struct GstH264SEIMessage</h3>
+<pre class="programlisting">struct GstH264SEIMessage {
+  GstH264SEIPayloadType payloadType;
+
+  union {
+    GstH264BufferingPeriod buffering_period;
+    GstH264PicTiming pic_timing;
+    GstH264RecoveryPoint recovery_point;
+    GstH264StereoVideoInfo stereo_video_info;
+    GstH264FramePacking frame_packing;
+    /* ... could implement more */
+  } payload;
+};
+</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

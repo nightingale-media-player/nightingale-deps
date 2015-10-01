@@ -32,8 +32,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * GPL:
  *
@@ -49,7 +49,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * MIT:
  *
@@ -83,8 +83,12 @@
 
 #include <string.h>
 
+#include <gst/mpegts/mpegts.h>
+
 #include "tsmuxcommon.h"
 #include "tsmuxstream.h"
+
+#define GST_CAT_DEFAULT mpegtsmux_debug
 
 static guint8 tsmux_stream_pes_header_length (TsMuxStream * stream);
 static void tsmux_stream_write_pes_header (TsMuxStream * stream, guint8 * data);
@@ -100,6 +104,10 @@ struct TsMuxStreamBuffer
   gint64 pts;
   gint64 dts;
 
+  /* data represents random access point */
+  gboolean random_access;
+
+  /* user_data for release function */
   void *user_data;
 };
 
@@ -169,13 +177,36 @@ tsmux_stream_new (guint16 pid, TsMuxStreamType stream_type)
           TSMUX_PACKET_FLAG_PES_FULL_HEADER |
           TSMUX_PACKET_FLAG_PES_EXT_STREAMID;
       break;
+    case TSMUX_ST_PS_TELETEXT:
+      /* needs fixes PES header length */
+      stream->pi.pes_header_length = 36;
+      /* fall through */
+    case TSMUX_ST_PS_DVB_SUBPICTURE:
+      /* private stream 1 */
+      stream->id = 0xBD;
+      stream->is_dvb_sub = TRUE;
+      stream->stream_type = TSMUX_ST_PRIVATE_DATA;
+      stream->pi.flags |=
+          TSMUX_PACKET_FLAG_PES_FULL_HEADER |
+          TSMUX_PACKET_FLAG_PES_DATA_ALIGNMENT;
+
+      break;
+    case TSMUX_ST_PS_KLV:
+      /* FIXME: assign sequential extended IDs? */
+      stream->id = 0xBD;
+      stream->stream_type = TSMUX_ST_PRIVATE_DATA;
+      stream->is_meta = TRUE;
+      stream->pi.flags |=
+          TSMUX_PACKET_FLAG_PES_FULL_HEADER |
+          TSMUX_PACKET_FLAG_PES_DATA_ALIGNMENT;
+      break;
     default:
       g_critical ("Stream type 0x%0x not yet implemented", stream_type);
       break;
   }
 
-  stream->last_pts = -1;
-  stream->last_dts = -1;
+  stream->last_pts = GST_CLOCK_STIME_NONE;
+  stream->last_dts = GST_CLOCK_STIME_NONE;
 
   stream->pcr_ref = 0;
   stream->last_pcr = -1;
@@ -208,7 +239,19 @@ tsmux_stream_get_pid (TsMuxStream * stream)
 void
 tsmux_stream_free (TsMuxStream * stream)
 {
+  GList *cur;
+
   g_return_if_fail (stream != NULL);
+
+  /* free buffers */
+  for (cur = stream->buffers; cur; cur = cur->next) {
+    TsMuxStreamBuffer *tmbuf = (TsMuxStreamBuffer *) cur->data;
+
+    if (stream->buffer_release)
+      stream->buffer_release (tmbuf->data, tmbuf->user_data);
+    g_slice_free (TsMuxStreamBuffer, tmbuf);
+  }
+  g_list_free (stream->buffers);
 
   g_slice_free (TsMuxStream, stream);
 }
@@ -245,10 +288,10 @@ tsmux_stream_consume (TsMuxStream * stream, guint len)
   if (stream->cur_buffer_consumed == 0)
     return;
 
-  if (stream->cur_buffer->pts != -1) {
+  if (GST_CLOCK_STIME_IS_VALID (stream->cur_buffer->pts)) {
     stream->last_pts = stream->cur_buffer->pts;
     stream->last_dts = stream->cur_buffer->dts;
-  } else if (stream->cur_buffer->dts != -1)
+  } else if (GST_CLOCK_STIME_IS_VALID (stream->cur_buffer->dts))
     stream->last_dts = stream->cur_buffer->dts;
 
   if (stream->cur_buffer_consumed == stream->cur_buffer->size) {
@@ -294,8 +337,8 @@ tsmux_stream_at_pes_start (TsMuxStream * stream)
  *
  * Returns: The number of bytes available.
  */
-gint
-tsmux_stream_bytes_avail (TsMuxStream * stream)
+static inline gint
+_tsmux_stream_bytes_avail (TsMuxStream * stream)
 {
   gint bytes_avail;
 
@@ -304,15 +347,23 @@ tsmux_stream_bytes_avail (TsMuxStream * stream)
   if (stream->cur_pes_payload_size != 0)
     bytes_avail = stream->cur_pes_payload_size - stream->pes_bytes_written;
   else
-    bytes_avail = tsmux_stream_bytes_in_buffer (stream);
+    bytes_avail = stream->bytes_avail;
 
-  bytes_avail = MIN (bytes_avail, tsmux_stream_bytes_in_buffer (stream));
+  bytes_avail = MIN (bytes_avail, stream->bytes_avail);
 
   /* Calculate the number of bytes available in the current PES */
   if (stream->state == TSMUX_STREAM_STATE_HEADER)
     bytes_avail += tsmux_stream_pes_header_length (stream);
 
   return bytes_avail;
+}
+
+gint
+tsmux_stream_bytes_avail (TsMuxStream * stream)
+{
+  g_return_val_if_fail (stream != NULL, 0);
+
+  return _tsmux_stream_bytes_avail (stream);
 }
 
 /**
@@ -329,6 +380,60 @@ tsmux_stream_bytes_in_buffer (TsMuxStream * stream)
   g_return_val_if_fail (stream != NULL, 0);
 
   return stream->bytes_avail;
+}
+
+/**
+ * tsmux_stream_initialize_pes_packet:
+ * @stream: a #TsMuxStream
+ *
+ * Initializes the PES packet.
+ *
+ * Returns: TRUE if we the packet was initialized.
+ */
+gboolean
+tsmux_stream_initialize_pes_packet (TsMuxStream * stream)
+{
+  if (stream->state != TSMUX_STREAM_STATE_HEADER)
+    return TRUE;
+
+  if (stream->pes_payload_size != 0) {
+    /* Use prescribed fixed PES payload size */
+    stream->cur_pes_payload_size = stream->pes_payload_size;
+    tsmux_stream_find_pts_dts_within (stream, stream->cur_pes_payload_size,
+        &stream->pts, &stream->dts);
+  } else if (stream->is_video_stream) {
+    /* Unbounded for video streams */
+    stream->cur_pes_payload_size = 0;
+    tsmux_stream_find_pts_dts_within (stream, stream->bytes_avail, &stream->pts,
+        &stream->dts);
+  } else {
+    /* Output a PES packet of all currently available bytes otherwise */
+    stream->cur_pes_payload_size = stream->bytes_avail;
+    tsmux_stream_find_pts_dts_within (stream, stream->cur_pes_payload_size,
+        &stream->pts, &stream->dts);
+  }
+
+  stream->pi.flags &= ~(TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS |
+      TSMUX_PACKET_FLAG_PES_WRITE_PTS);
+
+  if (GST_CLOCK_STIME_IS_VALID (stream->pts)
+      && GST_CLOCK_STIME_IS_VALID (stream->dts)
+      && stream->pts != stream->dts)
+    stream->pi.flags |= TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS;
+  else {
+    if (GST_CLOCK_STIME_IS_VALID (stream->pts))
+      stream->pi.flags |= TSMUX_PACKET_FLAG_PES_WRITE_PTS;
+  }
+
+  if (stream->buffers) {
+    TsMuxStreamBuffer *buf = (TsMuxStreamBuffer *) (stream->buffers->data);
+    if (buf->random_access) {
+      stream->pi.flags |= TSMUX_PACKET_FLAG_RANDOM_ACCESS;
+      stream->pi.flags |= TSMUX_PACKET_FLAG_ADAPTATION;
+    }
+  }
+
+  return TRUE;
 }
 
 /**
@@ -350,33 +455,6 @@ tsmux_stream_get_data (TsMuxStream * stream, guint8 * buf, guint len)
   if (stream->state == TSMUX_STREAM_STATE_HEADER) {
     guint8 pes_hdr_length;
 
-    if (stream->pes_payload_size != 0) {
-      /* Use prescribed fixed PES payload size */
-      stream->cur_pes_payload_size = stream->pes_payload_size;
-      tsmux_stream_find_pts_dts_within (stream, stream->cur_pes_payload_size,
-          &stream->pts, &stream->dts);
-    } else if (stream->is_video_stream) {
-      /* Unbounded for video streams */
-      stream->cur_pes_payload_size = 0;
-      tsmux_stream_find_pts_dts_within (stream,
-          tsmux_stream_bytes_in_buffer (stream), &stream->pts, &stream->dts);
-    } else {
-      /* Output a PES packet of all currently available bytes otherwise */
-      stream->cur_pes_payload_size = tsmux_stream_bytes_in_buffer (stream);
-      tsmux_stream_find_pts_dts_within (stream, stream->cur_pes_payload_size,
-          &stream->pts, &stream->dts);
-    }
-
-    stream->pi.flags &= ~(TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS |
-        TSMUX_PACKET_FLAG_PES_WRITE_PTS);
-
-    if (stream->pts != -1 && stream->dts != -1)
-      stream->pi.flags |= TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS;
-    else {
-      if (stream->pts != -1)
-        stream->pi.flags |= TSMUX_PACKET_FLAG_PES_WRITE_PTS;
-    }
-
     pes_hdr_length = tsmux_stream_pes_header_length (stream);
 
     /* Submitted buffer must be at least as large as the PES header */
@@ -393,7 +471,7 @@ tsmux_stream_get_data (TsMuxStream * stream, guint8 * buf, guint len)
     stream->state = TSMUX_STREAM_STATE_PACKET;
   }
 
-  if (len > (guint) tsmux_stream_bytes_avail (stream))
+  if (len > (guint) _tsmux_stream_bytes_avail (stream))
     return FALSE;
 
   stream->pes_bytes_written += len;
@@ -461,6 +539,11 @@ tsmux_stream_pes_header_length (TsMuxStream * stream)
        * length + extended stream id */
       packet_len += 3;
     }
+    if (stream->pi.pes_header_length) {
+      /* check for consistency, then we can add stuffing */
+      g_assert (packet_len <= stream->pi.pes_header_length + 6 + 3);
+      packet_len = stream->pi.pes_header_length + 6 + 3;
+    }
   }
 
   return packet_len;
@@ -474,11 +557,10 @@ tsmux_stream_find_pts_dts_within (TsMuxStream * stream, guint bound,
 {
   GList *cur;
 
-  *pts = -1;
-  *dts = -1;
+  *pts = GST_CLOCK_STIME_NONE;
+  *dts = GST_CLOCK_STIME_NONE;
 
-  for (cur = g_list_first (stream->buffers); cur != NULL;
-      cur = g_list_next (cur)) {
+  for (cur = stream->buffers; cur; cur = cur->next) {
     TsMuxStreamBuffer *curbuf = cur->data;
 
     /* FIXME: This isn't quite correct - if the 'bound' is within this
@@ -491,7 +573,8 @@ tsmux_stream_find_pts_dts_within (TsMuxStream * stream, guint bound,
     }
 
     /* Have we found a buffer with pts/dts set? */
-    if (curbuf->pts != -1 || curbuf->dts != -1) {
+    if (GST_CLOCK_STIME_IS_VALID (curbuf->pts)
+        || GST_CLOCK_STIME_IS_VALID (curbuf->dts)) {
       *pts = curbuf->pts;
       *dts = curbuf->dts;
       return;
@@ -506,6 +589,7 @@ tsmux_stream_write_pes_header (TsMuxStream * stream, guint8 * data)
 {
   guint16 length_to_write;
   guint8 hdr_len = tsmux_stream_pes_header_length (stream);
+  guint8 *orig_data = data;
 
   /* start_code prefix + stream_id + pes_packet_length = 6 bytes */
   data[0] = 0x00;
@@ -528,7 +612,11 @@ tsmux_stream_write_pes_header (TsMuxStream * stream, guint8 * data)
     guint8 flags = 0;
 
     /* Not scrambled, original, not-copyrighted, data_alignment not specified */
-    *data++ = 0x81;
+    flags = 0x81;
+    if (stream->pi.flags & TSMUX_PACKET_FLAG_PES_DATA_ALIGNMENT)
+      flags |= 0x4;
+    *data++ = flags;
+    flags = 0;
 
     /* Flags */
     if (stream->pi.flags & TSMUX_PACKET_FLAG_PES_WRITE_PTS_DTS)
@@ -561,6 +649,10 @@ tsmux_stream_write_pes_header (TsMuxStream * stream, guint8 * data)
       /* Write the extended streamID */
       *data++ = stream->id_extended;
     }
+    /* write stuffing bytes if fixed PES header length requested */
+    if (stream->pi.pes_header_length)
+      while (data < orig_data + stream->pi.pes_header_length + 9)
+        *data++ = 0xff;
   }
 }
 
@@ -572,17 +664,18 @@ tsmux_stream_write_pes_header (TsMuxStream * stream, guint8 * data)
  * @user_data: user data to pass to release func
  * @pts: PTS of access unit in @data
  * @dts: DTS of access unit in @data
+ * @random_access: TRUE if random access point (keyframe)
  *
  * Submit @len bytes of @data into @stream. @pts and @dts can be set to the
  * timestamp (against a 90Hz clock) of the first access unit in @data. A
- * timestamp of -1 for @pts or @dts means unknown.
+ * timestamp of GST_CLOCK_STIME_NNOE for @pts or @dts means unknown.
  *
  * @user_data will be passed to the release function as set with
  * tsmux_stream_set_buffer_release_func() when @data can be freed.
  */
 void
 tsmux_stream_add_data (TsMuxStream * stream, guint8 * data, guint len,
-    void *user_data, gint64 pts, gint64 dts)
+    void *user_data, gint64 pts, gint64 dts, gboolean random_access)
 {
   TsMuxStreamBuffer *packet;
 
@@ -592,6 +685,7 @@ tsmux_stream_add_data (TsMuxStream * stream, guint8 * data, guint len,
   packet->data = data;
   packet->size = len;
   packet->user_data = user_data;
+  packet->random_access = random_access;
 
   packet->pts = pts;
   packet->dts = dts;
@@ -615,22 +709,16 @@ tsmux_stream_add_data (TsMuxStream * stream, guint8 * data, guint len,
  * @buf and @len must be at least #TSMUX_MIN_ES_DESC_LEN.
  */
 void
-tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
+tsmux_stream_get_es_descrs (TsMuxStream * stream,
+    GstMpegtsPMTStream * pmt_stream)
 {
-  guint8 *pos;
+  GstMpegtsDescriptor *descriptor;
 
   g_return_if_fail (stream != NULL);
-
-  if (buf == NULL) {
-    if (len != NULL)
-      *len = 0;
-    return;
-  }
+  g_return_if_fail (pmt_stream != NULL);
 
   /* Based on the stream type, write out any descriptors to go in the 
    * PMT ES_info field */
-  pos = buf;
-
   /* tag (registration_descriptor), length, format_identifier */
   switch (stream->stream_type) {
     case TSMUX_ST_AUDIO_AAC:
@@ -640,34 +728,26 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
       /* FIXME */
       break;
     case TSMUX_ST_VIDEO_H264:
-      *pos++ = 0x05;
-      *pos++ = 8;
-      *pos++ = 0x48;            /* 'H' */
-      *pos++ = 0x44;            /* 'D' */
-      *pos++ = 0x4D;            /* 'M' */
-      *pos++ = 0x56;            /* 'V' */
+    {
       /* FIXME : Not sure about this additional_identification_info */
-      *pos++ = 0xFF;
-      *pos++ = 0x1B;
-      *pos++ = 0x44;
-      *pos++ = 0x3F;
+      guint8 add_info[] = { 0xFF, 0x1B, 0x44, 0x3F };
+
+      descriptor = gst_mpegts_descriptor_from_registration ("HDMV",
+          add_info, 4);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
       break;
+    }
     case TSMUX_ST_VIDEO_DIRAC:
-      *pos++ = 0x05;
-      *pos++ = 4;
-      *pos++ = 0x64;            /* 'd' */
-      *pos++ = 0x72;            /* 'r' */
-      *pos++ = 0x61;            /* 'a' */
-      *pos++ = 0x63;            /* 'c' */
+      descriptor = gst_mpegts_descriptor_from_registration ("drac", NULL, 0);
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
       break;
     case TSMUX_ST_PS_AUDIO_AC3:
     {
-      *pos++ = 0x05;
-      *pos++ = 4;
-      *pos++ = 0x41;            /* 'A' */
-      *pos++ = 0x43;            /* 'C' */
-      *pos++ = 0x2D;            /* '-' */
-      *pos++ = 0x33;            /* '3' */
+      guint8 add_info[6];
+      guint8 *pos;
+
+      pos = add_info;
 
       /* audio_stream_descriptor () | ATSC A/52-2001 Annex A
        *
@@ -791,6 +871,11 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
 
       *pos++ = 0x00;
 
+      descriptor = gst_mpegts_descriptor_from_registration ("AC-3",
+          add_info, 6);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
+
       break;
     }
     case TSMUX_ST_PS_AUDIO_DTS:
@@ -799,12 +884,40 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
     case TSMUX_ST_PS_AUDIO_LPCM:
       /* FIXME */
       break;
+    case TSMUX_ST_PS_TELETEXT:
+      /* FIXME empty descriptor for now;
+       * should be provided by upstream in event or so ? */
+      descriptor =
+          gst_mpegts_descriptor_from_custom (GST_MTS_DESC_DVB_TELETEXT, 0, 1);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
+      break;
+    case TSMUX_ST_PS_DVB_SUBPICTURE:
+      /* falltrough ...
+       * that should never happen anyway as
+       * dvb subtitles are private data */
+    case TSMUX_ST_PRIVATE_DATA:
+      if (stream->is_dvb_sub) {
+        GST_DEBUG ("Stream language %s", stream->language);
+        /* Simple DVB subtitles with no monitor aspect ratio critical
+           FIXME, how do we make it settable? */
+        /* Default composition page ID */
+        /* Default ancillary_page_id */
+        descriptor =
+            gst_mpegts_descriptor_from_dvb_subtitling (stream->language, 0x10,
+            0x0001, 0x0152);
+
+        g_ptr_array_add (pmt_stream->descriptors, descriptor);
+        break;
+      }
+      if (stream->is_meta) {
+        descriptor = gst_mpegts_descriptor_from_registration ("KLVA", NULL, 0);
+        GST_ERROR ("adding KLVA registration descriptor!");
+        g_ptr_array_add (pmt_stream->descriptors, descriptor);
+      }
     default:
       break;
   }
-
-  if (len)
-    *len = (pos - buf);
 }
 
 /**
@@ -861,7 +974,7 @@ tsmux_stream_is_pcr (TsMuxStream * stream)
 guint64
 tsmux_stream_get_pts (TsMuxStream * stream)
 {
-  g_return_val_if_fail (stream != NULL, -1);
+  g_return_val_if_fail (stream != NULL, GST_CLOCK_STIME_NONE);
 
   return stream->last_pts;
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <libavc1394/avc1394.h>
@@ -25,7 +25,8 @@
 #include <gst/gst.h>
 
 #include "gst1394probe.h"
-#include "gst/interfaces/propertyprobe.h"
+
+#if 0
 
 static GValueArray *
 gst_1394_get_guid_array (void)
@@ -138,3 +139,5 @@ gst_1394_type_add_property_probe_interface (GType type)
   g_type_add_interface_static (type, GST_TYPE_PROPERTY_PROBE,
       &probe_iface_info);
 }
+
+#endif

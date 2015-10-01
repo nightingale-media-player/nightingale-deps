@@ -23,15 +23,10 @@
 
 #include <unistd.h>
 
+#include <gst/glib-compat-private.h>
+
 GST_DEBUG_CATEGORY_EXTERN (sdl_debug);
 #define GST_CAT_DEFAULT sdl_debug
-
-/* elementfactory information */
-static const GstElementDetails gst_sdlaudio_sink_details =
-GST_ELEMENT_DETAILS ("SDL audio sink",
-    "Sink/Audio",
-    "Output to a sound card via SDLAUDIO",
-    "Edgard Lima <edgard.lima@indt.org.br>");
 
 static void gst_sdlaudio_sink_dispose (GObject * object);
 
@@ -151,24 +146,24 @@ gst_sdlaudio_sink_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &gst_sdlaudio_sink_details);
+  gst_element_class_set_static_metadata (element_class, "SDL audio sink",
+      "Sink/Audio",
+      "Output to a sound card via SDLAUDIO",
+      "Edgard Lima <edgard.lima@indt.org.br>");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sdlaudiosink_sink_factory));
 }
+
 static void
 gst_sdlaudio_sink_class_init (GstSDLAudioSinkClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
-  GstBaseAudioSinkClass *gstbaseaudiosink_class;
   GstAudioSinkClass *gstaudiosink_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
-  gstbaseaudiosink_class = (GstBaseAudioSinkClass *) klass;
   gstaudiosink_class = (GstAudioSinkClass *) klass;
 
   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_sdlaudio_sink_dispose);
@@ -209,14 +204,8 @@ gst_sdlaudio_sink_init (GstSDLAudioSink * sdlaudiosink,
 static GstCaps *
 gst_sdlaudio_sink_getcaps (GstBaseSink * bsink)
 {
-  GstSDLAudioSink *sdlaudiosink;
-  GstCaps *caps = NULL;
-
-  sdlaudiosink = GST_SDLAUDIOSINK (bsink);
-
-  caps = gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD
+  return gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD
           (bsink)));
-  return caps;
 }
 
 static gint
@@ -303,7 +292,7 @@ gst_sdlaudio_sink_write (GstAudioSink * asink, gpointer data, guint length)
 }
 
 
-void
+static void
 mixaudio (void *unused, Uint8 * stream, int len)
 {
   GstSDLAudioSink *sdlaudio;

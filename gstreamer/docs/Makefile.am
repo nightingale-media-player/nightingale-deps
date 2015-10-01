@@ -21,8 +21,11 @@ DIST_SUBDIRS = design gst libs plugins faq manual pwg slides xsl
 
 EXTRA_DIST = \
 	manuals.mak htmlinstall.mak \
-	image-png image-pdf image-eps url.entities version.entities.in
+	image-png image-pdf image-eps url.entities version.entities.in list-ulink.xsl
 
 upload:
 	@if test "x$(SUBDIRS)" != x; then for a in $(SUBDIRS); do cd $$a; make upload; cd ..; done; fi
 
+libs: gst
+
+include $(top_srcdir)/common/parallel-subdirs.mak

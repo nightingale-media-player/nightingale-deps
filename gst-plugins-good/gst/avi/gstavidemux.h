@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_AVI_DEMUX_H__
@@ -27,6 +27,7 @@
 #include "gst/riff/riff-ids.h"
 #include "gst/riff/riff-read.h"
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 
 G_BEGIN_DECLS
 
@@ -56,11 +57,6 @@ typedef struct {
   guint64        total;   /* total bytes before */
 } GstAviIndexEntry;
 
-#define GST_AVI_KEYFRAME 1
-#define ENTRY_IS_KEYFRAME(e) ((e)->flags == GST_AVI_KEYFRAME)
-#define ENTRY_SET_KEYFRAME(e) ((e)->flags = GST_AVI_KEYFRAME)
-#define ENTRY_UNSET_KEYFRAME(e) ((e)->flags = 0)
-
 typedef struct {
   /* index of this streamcontext */
   guint          num;
@@ -68,7 +64,6 @@ typedef struct {
   /* pad*/
   GstPad        *pad;
   gboolean       exposed;
-  gboolean       has_eos;
 
   /* stream info and headers */
   gst_riff_strh *strh;
@@ -79,6 +74,7 @@ typedef struct {
     gpointer     data;
   } strf;
   GstBuffer     *extradata, *initdata;
+  GstBuffer     *rgb8_palette;
   gchar         *name;
 
   /* the start/step/stop entries */
@@ -95,7 +91,6 @@ typedef struct {
   guint64        current_offset;
   guint64        current_offset_end;
 
-  GstFlowReturn  last_flow;
   gboolean       discont;
 
   /* stream length */
@@ -124,12 +119,14 @@ typedef struct {
   GstTagList	*taglist;
 
   gint           index_id;
+  gboolean is_raw;
 } GstAviStream;
 
 typedef enum {
   GST_AVI_DEMUX_START,
   GST_AVI_DEMUX_HEADER,
   GST_AVI_DEMUX_MOVI,
+  GST_AVI_DEMUX_SEEK,
 } GstAviDemuxState;
 
 typedef enum {
@@ -163,9 +160,15 @@ typedef struct _GstAviDemux {
   guint          num_streams;
   guint          num_v_streams;
   guint          num_a_streams;
-  guint          num_t_streams;  /* subtitle text streams */
+  guint          num_t_streams;   /* subtitle text streams */
+  guint          num_sp_streams;  /* subpicture streams */
 
   guint          main_stream; /* used for seeking */
+
+  GstFlowCombiner *flowcombiner;
+
+  gboolean       have_group_id;
+  guint          group_id;
 
   /* for streaming mode */
   gboolean       streaming;
@@ -179,17 +182,30 @@ typedef struct _GstAviDemux {
 
   /* segment in TIME */
   GstSegment     segment;
-  gboolean       segment_running;
 
   /* pending tags/events */
   GstEvent      *seg_event;
   GstTagList	*globaltags;
   gboolean	 got_tags;
 
+#if 0
   /* gst index support */
   GstIndex      *element_index;
   gint           index_id;
+#endif
+
   gboolean       seekable;
+
+  guint64        first_movi_offset;
+  guint64        idx1_offset; /* offset in file of list/chunk after movi */
+  GstEvent      *seek_event;
+
+  gboolean       building_index;
+  guint          odml_stream;
+  guint          odml_subidx;
+  guint64       *odml_subidxs;
+
+  guint64        seek_kf_offset; /* offset of the keyframe to which we want to seek */
 } GstAviDemux;
 
 typedef struct _GstAviDemuxClass {

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_BIN_H__
@@ -23,6 +23,8 @@
 #include <gst/gst.h>
 
 #include "rtpsession.h"
+#include "gstrtpsession.h"
+#include "rtpjitterbuffer.h"
 
 #define GST_TYPE_RTP_BIN \
   (gst_rtp_bin_get_type())
@@ -35,6 +37,13 @@
 #define GST_IS_RTP_BIN_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_RTP_BIN))
 
+typedef enum
+{
+  GST_RTP_BIN_RTCP_SYNC_ALWAYS,
+  GST_RTP_BIN_RTCP_SYNC_INITIAL,
+  GST_RTP_BIN_RTCP_SYNC_RTP
+} GstRTCPSync;
+
 typedef struct _GstRtpBin GstRtpBin;
 typedef struct _GstRtpBinClass GstRtpBinClass;
 typedef struct _GstRtpBinPrivate GstRtpBinPrivate;
@@ -44,8 +53,23 @@ struct _GstRtpBin {
 
   /*< private >*/
   /* default latency for sessions */
-  guint           latency;
+  guint           latency_ms;
+  guint64         latency_ns;
+  gboolean        drop_on_latency;
   gboolean        do_lost;
+  gboolean        ignore_pt;
+  gboolean        ntp_sync;
+  gint            rtcp_sync;
+  guint           rtcp_sync_interval;
+  RTPJitterBufferMode buffer_mode;
+  gboolean        buffering;
+  gboolean        use_pipeline_clock;
+  GstRtpNtpTimeSource ntp_time_source;
+  gboolean        send_sync_event;
+  GstClockTime    buffer_start;
+  gboolean        do_retransmission;
+  GstRTPProfile   rtp_profile;
+
   /* a list of session */
   GSList         *sessions;
 
@@ -65,10 +89,14 @@ struct _GstRtpBinClass {
   /* get the caps for pt */
   GstCaps*    (*request_pt_map)       (GstRtpBin *rtpbin, guint session, guint pt);
 
+  void        (*payload_type_change)  (GstRtpBin *rtpbin, guint session, guint pt);
+
+  void        (*new_jitterbuffer)     (GstRtpBin *rtpbin, GstElement *jitterbuffer, guint session, guint32 ssrc);
+
   /* action signals */
   void        (*clear_pt_map)         (GstRtpBin *rtpbin);
   void        (*reset_sync)           (GstRtpBin *rtpbin);
-  RTPSession* (*get_internal_session) (GstRtpBin *rtpbin, guint session_id);
+  RTPSession* (*get_internal_session) (GstRtpBin *rtpbin, guint session);
 
   /* session manager signals */
   void     (*on_new_ssrc)       (GstRtpBin *rtpbin, guint session, guint32 ssrc);
@@ -81,6 +109,14 @@ struct _GstRtpBinClass {
   void     (*on_timeout)        (GstRtpBin *rtpbin, guint session, guint32 ssrc);
   void     (*on_sender_timeout) (GstRtpBin *rtpbin, guint session, guint32 ssrc);
   void     (*on_npt_stop)       (GstRtpBin *rtpbin, guint session, guint32 ssrc);
+
+  GstElement* (*request_rtp_encoder)  (GstRtpBin *rtpbin, guint session);
+  GstElement* (*request_rtp_decoder)  (GstRtpBin *rtpbin, guint session);
+  GstElement* (*request_rtcp_encoder) (GstRtpBin *rtpbin, guint session);
+  GstElement* (*request_rtcp_decoder) (GstRtpBin *rtpbin, guint session);
+
+  GstElement* (*request_aux_sender)   (GstRtpBin *rtpbin, guint session);
+  GstElement* (*request_aux_receiver) (GstRtpBin *rtpbin, guint session);
 };
 
 GType gst_rtp_bin_get_type (void);

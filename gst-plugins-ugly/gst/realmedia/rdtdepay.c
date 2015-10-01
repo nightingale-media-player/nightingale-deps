@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,13 +30,6 @@
 GST_DEBUG_CATEGORY_STATIC (rdtdepay_debug);
 #define GST_CAT_DEFAULT rdtdepay_debug
 
-/* elementfactory information */
-static const GstElementDetails gst_rdtdepay_details =
-GST_ELEMENT_DETAILS ("RDT packet parser",
-    "Codec/Depayloader/Network",
-    "Extracts RealMedia from RDT packets",
-    "Lutz Mueller <lutz at topfrose dot de>, " "Wim Taymans <wim@fluendo.com>");
-
 /* RDTDepay signals and args */
 enum
 {
@@ -46,7 +39,7 @@ enum
 
 enum
 {
-  ARG_0,
+  PROP_0,
 };
 
 static GstStaticPadTemplate gst_rdt_depay_src_template =
@@ -71,32 +64,18 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     )
     );
 
-GST_BOILERPLATE (GstRDTDepay, gst_rdt_depay, GstElement, GST_TYPE_ELEMENT);
+#define gst_rdt_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRDTDepay, gst_rdt_depay, GST_TYPE_ELEMENT);
 
 static void gst_rdt_depay_finalize (GObject * object);
 
 static GstStateChangeReturn gst_rdt_depay_change_state (GstElement *
     element, GstStateChange transition);
 
-static gboolean gst_rdt_depay_setcaps (GstPad * pad, GstCaps * caps);
-static gboolean gst_rdt_depay_sink_event (GstPad * pad, GstEvent * event);
-static GstFlowReturn gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf);
-
-static void
-gst_rdt_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rdtdepay_details);
-
-  GST_DEBUG_CATEGORY_INIT (rdtdepay_debug, "rdtdepay",
-      0, "Depayloader for RDT RealMedia packets");
-}
+static gboolean gst_rdt_depay_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static GstFlowReturn gst_rdt_depay_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buf);
 
 static void
 gst_rdt_depay_class_init (GstRDTDepayClass * klass)
@@ -112,16 +91,29 @@ gst_rdt_depay_class_init (GstRDTDepayClass * klass)
   gobject_class->finalize = gst_rdt_depay_finalize;
 
   gstelement_class->change_state = gst_rdt_depay_change_state;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RDT packet parser",
+      "Codec/Depayloader/Network",
+      "Extracts RealMedia from RDT packets",
+      "Lutz Mueller <lutz at topfrose dot de>, "
+      "Wim Taymans <wim@fluendo.com>");
+
+  GST_DEBUG_CATEGORY_INIT (rdtdepay_debug, "rdtdepay",
+      0, "Depayloader for RDT RealMedia packets");
 }
 
 static void
-gst_rdt_depay_init (GstRDTDepay * rdtdepay, GstRDTDepayClass * klass)
+gst_rdt_depay_init (GstRDTDepay * rdtdepay)
 {
   rdtdepay->sinkpad =
       gst_pad_new_from_static_template (&gst_rdt_depay_sink_template, "sink");
   gst_pad_set_chain_function (rdtdepay->sinkpad, gst_rdt_depay_chain);
   gst_pad_set_event_function (rdtdepay->sinkpad, gst_rdt_depay_sink_event);
-  gst_pad_set_setcaps_function (rdtdepay->sinkpad, gst_rdt_depay_setcaps);
   gst_element_add_pad (GST_ELEMENT_CAST (rdtdepay), rdtdepay->sinkpad);
 
   rdtdepay->srcpad =
@@ -202,7 +194,7 @@ gst_rdt_depay_setcaps (GstPad * pad, GstCaps * caps)
   rdtdepay->clock_rate = clock_rate;
 
   /* set caps on pad and on header */
-  srccaps = gst_caps_new_simple ("application/vnd.rn-realmedia", NULL);
+  srccaps = gst_caps_new_empty_simple ("application/vnd.rn-realmedia");
   gst_pad_set_caps (rdtdepay->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
@@ -221,14 +213,23 @@ no_header:
 }
 
 static gboolean
-gst_rdt_depay_sink_event (GstPad * pad, GstEvent * event)
+gst_rdt_depay_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstRDTDepay *depay;
   gboolean res = TRUE;
 
-  depay = GST_RDT_DEPAY (GST_OBJECT_PARENT (pad));
+  depay = GST_RDT_DEPAY (parent);
 
   switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      res = gst_rdt_depay_setcaps (pad, caps);
+      gst_event_unref (event);
+      break;
+    }
     case GST_EVENT_FLUSH_STOP:
       res = gst_pad_push_event (depay->srcpad, event);
 
@@ -236,19 +237,9 @@ gst_rdt_depay_sink_event (GstPad * pad, GstEvent * event)
       depay->need_newsegment = TRUE;
       depay->next_seqnum = -1;
       break;
-    case GST_EVENT_NEWSEGMENT:
+    case GST_EVENT_SEGMENT:
     {
-      gboolean update;
-      gdouble rate;
-      GstFormat fmt;
-      gint64 start, stop, position;
-
-      gst_event_parse_new_segment (event, &update, &rate, &fmt, &start, &stop,
-          &position);
-
-      gst_segment_set_newsegment (&depay->segment, update, rate, fmt,
-          start, stop, position);
-
+      gst_event_copy_segment (event, &depay->segment);
       /* don't pass the event downstream, we generate our own segment
        * including the NTP time and other things we receive in caps */
       gst_event_unref (event);
@@ -266,19 +257,21 @@ static GstEvent *
 create_segment_event (GstRDTDepay * depay, gboolean update,
     GstClockTime position)
 {
-  GstEvent *event;
-  GstClockTime stop;
+  GstSegment segment;
+
+  gst_segment_init (&segment, GST_FORMAT_TIME);
+  segment.rate = depay->play_speed;
+  segment.applied_rate = depay->play_scale;
+  segment.start = position;
 
   if (depay->npt_stop != -1)
-    stop = depay->npt_stop - depay->npt_start;
+    segment.stop = depay->npt_stop - depay->npt_start;
   else
-    stop = -1;
+    segment.stop = -1;
 
-  event = gst_event_new_new_segment_full (update, depay->play_speed,
-      depay->play_scale, GST_FORMAT_TIME, position, stop,
-      position + depay->npt_start);
+  segment.time = position + depay->npt_start;
 
-  return event;
+  return gst_event_new_segment (&segment);
 }
 
 static GstFlowReturn
@@ -295,8 +288,6 @@ gst_rdt_depay_push (GstRDTDepay * rdtdepay, GstBuffer * buffer)
     rdtdepay->need_newsegment = FALSE;
   }
 
-  gst_buffer_set_caps (buffer, GST_PAD_CAPS (rdtdepay->srcpad));
-
   if (rdtdepay->discont) {
     GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DISCONT);
     rdtdepay->discont = FALSE;
@@ -312,6 +303,7 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
 {
   GstFlowReturn ret;
   GstBuffer *outbuf;
+  GstMapInfo outmap;
   guint8 *data, *outdata;
   guint size;
   guint16 stream_id;
@@ -322,10 +314,9 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
   guint16 outflags;
 
   /* get pointers to the packet data */
-  gst_rdt_packet_data_peek_data (packet, &data, &size);
+  data = gst_rdt_packet_data_map (packet, &size);
 
   outbuf = gst_buffer_new_and_alloc (12 + size);
-  outdata = GST_BUFFER_DATA (outbuf);
   GST_BUFFER_TIMESTAMP (outbuf) = outtime;
 
   GST_DEBUG_OBJECT (rdtdepay, "have size %u", size);
@@ -375,12 +366,18 @@ gst_rdt_depay_handle_data (GstRDTDepay * rdtdepay, GstClockTime outtime,
   else
     outflags = 0;
 
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
+  outdata = outmap.data;
   GST_WRITE_UINT16_BE (outdata + 0, 0); /* version   */
   GST_WRITE_UINT16_BE (outdata + 2, size + 12); /* length    */
   GST_WRITE_UINT16_BE (outdata + 4, stream_id); /* stream    */
   GST_WRITE_UINT32_BE (outdata + 6, timestamp); /* timestamp */
   GST_WRITE_UINT16_BE (outdata + 10, outflags); /* flags     */
   memcpy (outdata + 12, data, size);
+  gst_buffer_unmap (outbuf, &outmap);
+  gst_buffer_resize (outbuf, 0, 12 + size);
+
+  gst_rdt_packet_data_unmap (packet);
 
   GST_DEBUG_OBJECT (rdtdepay, "Pushing packet, outtime %" GST_TIME_FORMAT,
       GST_TIME_ARGS (outtime));
@@ -398,7 +395,7 @@ dropping:
 }
 
 static GstFlowReturn
-gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf)
+gst_rdt_depay_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstRDTDepay *rdtdepay;
   GstFlowReturn ret;
@@ -406,7 +403,7 @@ gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf)
   gboolean more;
   GstRDTPacket packet;
 
-  rdtdepay = GST_RDT_DEPAY (GST_PAD_PARENT (pad));
+  rdtdepay = GST_RDT_DEPAY (parent);
 
   if (GST_BUFFER_IS_DISCONT (buf)) {
     GST_LOG_OBJECT (rdtdepay, "received discont");
@@ -454,6 +451,8 @@ gst_rdt_depay_chain (GstPad * pad, GstBuffer * buf)
 
     more = gst_rdt_packet_move_to_next (&packet);
   }
+
+  gst_buffer_unref (buf);
 
   return ret;
 }

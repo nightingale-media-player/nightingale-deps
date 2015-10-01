@@ -1,0 +1,1005 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstGLShader: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gl.html" title="OpenGL Helper Library">
+<link rel="prev" href="gst-plugins-bad-libs-gstglmemory.html" title="GstGLMemory">
+<link rel="next" href="gst-plugins-bad-libs-GstGLSyncMeta.html" title="GstGLSyncMeta">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-gstglshader.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-gstglshader.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-libs-gstglshader.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gl.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-gstglmemory.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-GstGLSyncMeta.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-gstglshader"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-gstglshader.top_of_page"></a>GstGLShader</span></h2>
+<p>GstGLShader</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-error-quark" title="gst_gl_shader_error_quark ()">gst_gl_shader_error_quark</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GST-GL-SHADER-ERROR:CAPS" title="GST_GL_SHADER_ERROR">GST_GL_SHADER_ERROR</a></td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shadervariable-set" title="gst_gl_shadervariable_set ()">gst_gl_shadervariable_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shadervariables-parse" title="gst_gl_shadervariables_parse ()">gst_gl_shadervariables_parse</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="returnvalue">GstGLShader</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-new" title="gst_gl_shader_new ()">gst_gl_shader_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-vertex-source" title="gst_gl_shader_set_vertex_source ()">gst_gl_shader_set_vertex_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-fragment-source" title="gst_gl_shader_set_fragment_source ()">gst_gl_shader_set_fragment_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-get-vertex-source" title="gst_gl_shader_get_vertex_source ()">gst_gl_shader_get_vertex_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-get-fragment-source" title="gst_gl_shader_get_fragment_source ()">gst_gl_shader_get_fragment_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-get-program-handle" title="gst_gl_shader_get_program_handle ()">gst_gl_shader_get_program_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-active" title="gst_gl_shader_set_active ()">gst_gl_shader_set_active</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-is-compiled" title="gst_gl_shader_is_compiled ()">gst_gl_shader_is_compiled</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile" title="gst_gl_shader_compile ()">gst_gl_shader_compile</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile-and-check" title="gst_gl_shader_compile_and_check ()">gst_gl_shader_compile_and_check</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile-all-with-attribs-and-check" title="gst_gl_shader_compile_all_with_attribs_and_check ()">gst_gl_shader_compile_all_with_attribs_and_check</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile-with-default-f-and-check" title="gst_gl_shader_compile_with_default_f_and_check ()">gst_gl_shader_compile_with_default_f_and_check</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile-with-default-v-and-check" title="gst_gl_shader_compile_with_default_v_and_check ()">gst_gl_shader_compile_with_default_v_and_check</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-compile-with-default-vf-and-check" title="gst_gl_shader_compile_with_default_vf_and_check ()">gst_gl_shader_compile_with_default_vf_and_check</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-release" title="gst_gl_shader_release ()">gst_gl_shader_release</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-use" title="gst_gl_shader_use ()">gst_gl_shader_use</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-1i" title="gst_gl_shader_set_uniform_1i ()">gst_gl_shader_set_uniform_1i</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-1f" title="gst_gl_shader_set_uniform_1f ()">gst_gl_shader_set_uniform_1f</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-1fv" title="gst_gl_shader_set_uniform_1fv ()">gst_gl_shader_set_uniform_1fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-1iv" title="gst_gl_shader_set_uniform_1iv ()">gst_gl_shader_set_uniform_1iv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-2f" title="gst_gl_shader_set_uniform_2f ()">gst_gl_shader_set_uniform_2f</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-2fv" title="gst_gl_shader_set_uniform_2fv ()">gst_gl_shader_set_uniform_2fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-2i" title="gst_gl_shader_set_uniform_2i ()">gst_gl_shader_set_uniform_2i</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-2iv" title="gst_gl_shader_set_uniform_2iv ()">gst_gl_shader_set_uniform_2iv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-3f" title="gst_gl_shader_set_uniform_3f ()">gst_gl_shader_set_uniform_3f</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-3fv" title="gst_gl_shader_set_uniform_3fv ()">gst_gl_shader_set_uniform_3fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-3i" title="gst_gl_shader_set_uniform_3i ()">gst_gl_shader_set_uniform_3i</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-3iv" title="gst_gl_shader_set_uniform_3iv ()">gst_gl_shader_set_uniform_3iv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-4f" title="gst_gl_shader_set_uniform_4f ()">gst_gl_shader_set_uniform_4f</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-4fv" title="gst_gl_shader_set_uniform_4fv ()">gst_gl_shader_set_uniform_4fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-4i" title="gst_gl_shader_set_uniform_4i ()">gst_gl_shader_set_uniform_4i</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-4iv" title="gst_gl_shader_set_uniform_4iv ()">gst_gl_shader_set_uniform_4iv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-2fv" title="gst_gl_shader_set_uniform_matrix_2fv ()">gst_gl_shader_set_uniform_matrix_2fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-2x3fv" title="gst_gl_shader_set_uniform_matrix_2x3fv ()">gst_gl_shader_set_uniform_matrix_2x3fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-2x4fv" title="gst_gl_shader_set_uniform_matrix_2x4fv ()">gst_gl_shader_set_uniform_matrix_2x4fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-3fv" title="gst_gl_shader_set_uniform_matrix_3fv ()">gst_gl_shader_set_uniform_matrix_3fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-3x2fv" title="gst_gl_shader_set_uniform_matrix_3x2fv ()">gst_gl_shader_set_uniform_matrix_3x2fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-3x4fv" title="gst_gl_shader_set_uniform_matrix_3x4fv ()">gst_gl_shader_set_uniform_matrix_3x4fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-4fv" title="gst_gl_shader_set_uniform_matrix_4fv ()">gst_gl_shader_set_uniform_matrix_4fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-4x2fv" title="gst_gl_shader_set_uniform_matrix_4x2fv ()">gst_gl_shader_set_uniform_matrix_4x2fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-set-uniform-matrix-4x3fv" title="gst_gl_shader_set_uniform_matrix_4x3fv ()">gst_gl_shader_set_uniform_matrix_4x3fv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-get-attribute-location" title="gst_gl_shader_get_attribute_location ()">gst_gl_shader_get_attribute_location</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shader-bind-attribute-location" title="gst_gl_shader_bind_attribute_location ()">gst_gl_shader_bind_attribute_location</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader--active" title="The “active” property">active</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader--compiled" title="The “compiled” property">compiled</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader--fragment-src" title="The “fragment-src” property">fragment-src</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader--vertex-src" title="The “vertex-src” property">vertex-src</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstGLShader"></a><div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShaderError" title="enum GstGLShaderError">GstGLShaderError</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShaderSourceType" title="enum GstGLShaderSourceType">GstGLShaderSourceType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#gst-gl-shadervariable-desc" title="struct gst_gl_shadervariable_desc">gst_gl_shadervariable_desc</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader-struct" title="GstGLShader">GstGLShader</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> GstGLShader
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-gl-shader-error-quark"></a><h3>gst_gl_shader_error_quark ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Quarks.html#GQuark"><span class="returnvalue">GQuark</span></a>
+gst_gl_shader_error_quark (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-GL-SHADER-ERROR:CAPS"></a><h3>GST_GL_SHADER_ERROR</h3>
+<pre class="programlisting">#define GST_GL_SHADER_ERROR (gst_gl_shader_error_quark ())
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shadervariable-set"></a><h3>gst_gl_shadervariable_set ()</h3>
+<pre class="programlisting"><span class="returnvalue">int</span>
+gst_gl_shadervariable_set (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                           <em class="parameter"><code><span class="type">struct gst_gl_shadervariable_desc</span> *ret</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shadervariables-parse"></a><h3>gst_gl_shadervariables_parse ()</h3>
+<pre class="programlisting"><span class="returnvalue">int</span>
+gst_gl_shadervariables_parse (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code><span class="type">char</span> *variables</code></em>,
+                              <em class="parameter"><code><span class="type">int</span> (*_setvariable) (GstGLShader * shader, struct gst_gl_shadervariable_desc * v)</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-new"></a><h3>gst_gl_shader_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="returnvalue">GstGLShader</span></a> *
+gst_gl_shader_new (<em class="parameter"><code><a class="link" href="GstGLContext.html" title="GstGLContext"><span class="type">GstGLContext</span></a> *context</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-vertex-source"></a><h3>gst_gl_shader_set_vertex_source ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_vertex_source (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                 <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *src</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-fragment-source"></a><h3>gst_gl_shader_set_fragment_source ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_fragment_source (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                   <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *src</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-get-vertex-source"></a><h3>gst_gl_shader_get_vertex_source ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_gl_shader_get_vertex_source (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-get-fragment-source"></a><h3>gst_gl_shader_get_fragment_source ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_gl_shader_get_fragment_source (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-get-program-handle"></a><h3>gst_gl_shader_get_program_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">int</span>
+gst_gl_shader_get_program_handle (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-active"></a><h3>gst_gl_shader_set_active ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_active (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                          <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-is-compiled"></a><h3>gst_gl_shader_is_compiled ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_is_compiled (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile"></a><h3>gst_gl_shader_compile ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                       <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile-and-check"></a><h3>gst_gl_shader_compile_and_check ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile_and_check (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                 <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *source</code></em>,
+                                 <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShaderSourceType" title="enum GstGLShaderSourceType"><span class="type">GstGLShaderSourceType</span></a> type</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile-all-with-attribs-and-check"></a><h3>gst_gl_shader_compile_all_with_attribs_and_check ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile_all_with_attribs_and_check
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *v_src</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *f_src</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n_attribs</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *attrib_names[]</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> attrib_locs[]</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile-with-default-f-and-check"></a><h3>gst_gl_shader_compile_with_default_f_and_check ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile_with_default_f_and_check
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *v_src</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n_attribs</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *attrib_names[]</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> attrib_locs[]</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile-with-default-v-and-check"></a><h3>gst_gl_shader_compile_with_default_v_and_check ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile_with_default_v_and_check
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *f_src</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> *pos_loc</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> *tex_loc</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-compile-with-default-vf-and-check"></a><h3>gst_gl_shader_compile_with_default_vf_and_check ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_shader_compile_with_default_vf_and_check
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> *pos_loc</code></em>,
+                                <em class="parameter"><code><span class="type">GLint</span> *tex_loc</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-release"></a><h3>gst_gl_shader_release ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_release (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-use"></a><h3>gst_gl_shader_use ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_use (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-1i"></a><h3>gst_gl_shader_set_uniform_1i ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_1i (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-1f"></a><h3>gst_gl_shader_set_uniform_1f ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_1f (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-1fv"></a><h3>gst_gl_shader_set_uniform_1fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_1fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-1iv"></a><h3>gst_gl_shader_set_uniform_1iv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_1iv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-2f"></a><h3>gst_gl_shader_set_uniform_2f ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_2f (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v1</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-2fv"></a><h3>gst_gl_shader_set_uniform_2fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_2fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-2i"></a><h3>gst_gl_shader_set_uniform_2i ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_2i (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v1</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-2iv"></a><h3>gst_gl_shader_set_uniform_2iv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_2iv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-3f"></a><h3>gst_gl_shader_set_uniform_3f ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_3f (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v1</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v2</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-3fv"></a><h3>gst_gl_shader_set_uniform_3fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_3fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-3i"></a><h3>gst_gl_shader_set_uniform_3i ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_3i (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v1</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v2</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-3iv"></a><h3>gst_gl_shader_set_uniform_3iv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_3iv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-4f"></a><h3>gst_gl_shader_set_uniform_4f ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_4f (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v1</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v2</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> v3</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-4fv"></a><h3>gst_gl_shader_set_uniform_4fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_4fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-4i"></a><h3>gst_gl_shader_set_uniform_4i ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_4i (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v0</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v1</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v2</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v3</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-4iv"></a><h3>gst_gl_shader_set_uniform_4iv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_4iv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                               <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> count</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-2fv"></a><h3>gst_gl_shader_set_uniform_matrix_2fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_2fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-2x3fv"></a><h3>gst_gl_shader_set_uniform_matrix_2x3fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_2x3fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-2x4fv"></a><h3>gst_gl_shader_set_uniform_matrix_2x4fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_2x4fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-3fv"></a><h3>gst_gl_shader_set_uniform_matrix_3fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_3fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-3x2fv"></a><h3>gst_gl_shader_set_uniform_matrix_3x2fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_3x2fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-3x4fv"></a><h3>gst_gl_shader_set_uniform_matrix_3x4fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_3x4fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-4fv"></a><h3>gst_gl_shader_set_uniform_matrix_4fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_4fv (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-4x2fv"></a><h3>gst_gl_shader_set_uniform_matrix_4x2fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_4x2fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-set-uniform-matrix-4x3fv"></a><h3>gst_gl_shader_set_uniform_matrix_4x3fv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_set_uniform_matrix_4x3fv
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> transpose</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> *value</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-get-attribute-location"></a><h3>gst_gl_shader_get_attribute_location ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+gst_gl_shader_get_attribute_location (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shader-bind-attribute-location"></a><h3>gst_gl_shader_bind_attribute_location ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_shader_bind_attribute_location (<em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>,
+                                       <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> index</code></em>,
+                                       <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstGLShaderError"></a><h3>enum GstGLShaderError</h3>
+<div class="refsect3">
+<a name="id-1.2.9.18.10.2.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-SHADER-ERROR-COMPILE:CAPS"></a>GST_GL_SHADER_ERROR_COMPILE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-SHADER-ERROR-LINK:CAPS"></a>GST_GL_SHADER_ERROR_LINK</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-SHADER-ERROR-PROGRAM:CAPS"></a>GST_GL_SHADER_ERROR_PROGRAM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLShaderSourceType"></a><h3>enum GstGLShaderSourceType</h3>
+<div class="refsect3">
+<a name="id-1.2.9.18.10.3.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-SHADER-FRAGMENT-SOURCE:CAPS"></a>GST_GL_SHADER_FRAGMENT_SOURCE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-GL-SHADER-VERTEX-SOURCE:CAPS"></a>GST_GL_SHADER_VERTEX_SOURCE</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-shadervariable-desc"></a><h3>struct gst_gl_shadervariable_desc</h3>
+<pre class="programlisting">struct gst_gl_shadervariable_desc;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLShader-struct"></a><h3>GstGLShader</h3>
+<pre class="programlisting">typedef struct _GstGLShader GstGLShader;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-gstglshader.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstGLShader--active"></a><h3>The <code class="literal">“active”</code> property</h3>
+<pre class="programlisting">  “active”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Enable/Disable the shader.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLShader--compiled"></a><h3>The <code class="literal">“compiled”</code> property</h3>
+<pre class="programlisting">  “compiled”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Shader compile and link status.</p>
+<p>Flags: Read</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLShader--fragment-src"></a><h3>The <code class="literal">“fragment-src”</code> property</h3>
+<pre class="programlisting">  “fragment-src”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>GLSL Fragment Shader source code.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLShader--vertex-src"></a><h3>The <code class="literal">“vertex-src”</code> property</h3>
+<pre class="programlisting">  “vertex-src”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>GLSL Vertex Shader source code.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

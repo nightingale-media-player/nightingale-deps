@@ -7,9 +7,9 @@ libgstgsm_la_CFLAGS = \
 	$(GST_BASE_CFLAGS)
 libgstgsm_la_LIBADD = \
 	$(GSM_LIBS) \
-	$(GST_PLUGINS_BASE_LIBS) -lgstaudio-@GST_MAJORMINOR@ \
+	$(GST_PLUGINS_BASE_LIBS) -lgstaudio-@GST_API_VERSION@ \
 	$(GST_BASE_LIBS)
 libgstgsm_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstgsm_la_LIBTOOLFLAGS = --tag=disable-static
+libgstgsm_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 
 noinst_HEADERS = gstgsmenc.h gstgsmdec.h

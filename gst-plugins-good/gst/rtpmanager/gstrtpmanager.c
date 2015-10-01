@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,29 +25,48 @@
 #include "gstrtpjitterbuffer.h"
 #include "gstrtpptdemux.h"
 #include "gstrtpsession.h"
+#include "gstrtprtxqueue.h"
+#include "gstrtprtxreceive.h"
+#include "gstrtprtxsend.h"
 #include "gstrtpssrcdemux.h"
+#include "gstrtpdtmfmux.h"
+#include "gstrtpmux.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  if (!gst_element_register (plugin, "gstrtpbin", GST_RANK_NONE,
-          GST_TYPE_RTP_BIN))
+  if (!gst_element_register (plugin, "rtpbin", GST_RANK_NONE, GST_TYPE_RTP_BIN))
     return FALSE;
 
-  if (!gst_element_register (plugin, "gstrtpjitterbuffer", GST_RANK_NONE,
+  if (!gst_element_register (plugin, "rtpjitterbuffer", GST_RANK_NONE,
           GST_TYPE_RTP_JITTER_BUFFER))
     return FALSE;
 
-  if (!gst_element_register (plugin, "gstrtpptdemux", GST_RANK_NONE,
+  if (!gst_element_register (plugin, "rtpptdemux", GST_RANK_NONE,
           GST_TYPE_RTP_PT_DEMUX))
     return FALSE;
 
-  if (!gst_element_register (plugin, "gstrtpsession", GST_RANK_NONE,
+  if (!gst_element_register (plugin, "rtpsession", GST_RANK_NONE,
           GST_TYPE_RTP_SESSION))
     return FALSE;
 
-  if (!gst_element_register (plugin, "gstrtpssrcdemux", GST_RANK_NONE,
+  if (!gst_rtp_rtx_queue_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_rtx_receive_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_rtx_send_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_element_register (plugin, "rtpssrcdemux", GST_RANK_NONE,
           GST_TYPE_RTP_SSRC_DEMUX))
+    return FALSE;
+
+  if (!gst_rtp_mux_plugin_init (plugin))
+    return FALSE;
+
+  if (!gst_rtp_dtmf_mux_plugin_init (plugin))
     return FALSE;
 
   return TRUE;
@@ -55,6 +74,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "gstrtpmanager",
+    rtpmanager,
     "RTP session management plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

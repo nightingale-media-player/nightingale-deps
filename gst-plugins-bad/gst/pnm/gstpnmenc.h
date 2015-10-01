@@ -1,4 +1,5 @@
-/* GStreamer
+/* GStreamer PNM encoder
+ * Copyright (C) 2009 Lutz Mueller <lutz@users.sourceforge.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -12,14 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PNMENC_H__
 #define __GST_PNMENC_H__
 
-#include <gst/gstelement.h>
+#include <gst/gst.h>
+#include <gst/video/video.h>
 
 #include "gstpnmutils.h"
 
@@ -36,8 +38,8 @@ typedef struct _GstPnmencClass GstPnmencClass;
 
 struct _GstPnmenc
 {
-  GstElement element;
-
+  GstVideoEncoder parent;
+  GstVideoCodecState *input_state;
   GstPnmInfo info;
 
   GstPad *src;
@@ -45,7 +47,7 @@ struct _GstPnmenc
 
 struct _GstPnmencClass
 {
-  GstElementClass parent_class;
+  GstVideoEncoderClass parent;
 };
 
 GType gst_pnmenc_get_type (void) G_GNUC_CONST;

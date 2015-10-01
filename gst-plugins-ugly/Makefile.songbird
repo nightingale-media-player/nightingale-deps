@@ -1,12 +1,12 @@
 ################################################################################
 ################################################################################
 #
-# BEGIN SONGBIRD GPL
+# BEGIN NIGHTINGALE GPL
 # 
-# This file is part of the Songbird web player.
+# This file is part of the Nightingale Media Player.
 #
-# Copyright(c) 2007 POTI, Inc.
-# http://www.songbirdnest.com
+# Copyright(c) 2014
+# http://www.getnightingale.com
 # 
 # This file may be licensed under the terms of of the
 # GNU General Public License Version 2 (the "GPL").
@@ -21,17 +21,17 @@
 # or write to the Free Software Foundation, Inc., 
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # 
-# END SONGBIRD GPL
+# END NIGHTINGALE GPL
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: gstreamer (core)
+# Makefile for building Nightingale vendor: gstreamer (core)
 #
 ################################################################################
 ################################################################################
 
 SB_VENDOR_TARGET = gst-plugins-ugly
-SB_VENDOR_TARGET_VERSION = 0.10.20
+SB_VENDOR_TARGET_VERSION = 1.6.0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -51,11 +51,11 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
   SB_CC = $(CURDIR)/../clwrapper.py
   SB_CXX = $(CURDIR)/../clwrapper.py
-  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
+  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE -Dinline=__inline
   SB_USE_MOZCRT = 1
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
-  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+  $(addsuffix -1.0, $(sort $(GST_BASE_DYLIBS))))
 
 include $(CURDIR)/../songbird-vendor-rules.mk

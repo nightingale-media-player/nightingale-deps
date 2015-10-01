@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -31,7 +31,7 @@
  * <refsect2>
  * <title>Sample pipelines</title>
  * |[
- * gst-launch -v videotestsrc pattern=1 ! smpte name=s border=20000 type=234 duration=2000000000 ! ffmpegcolorspace ! ximagesink videotestsrc ! s.
+ * gst-launch-1.0 -v videotestsrc pattern=1 ! smpte name=s border=20000 type=234 duration=2000000000 ! videoconvert ! ximagesink videotestsrc ! s.
  * ]| A pipeline to demonstrate the smpte transition.
  * It shows a pinwheel transition a from a snow videotestsrc to an smpte
  * pattern videotestsrc. The transition will take 2 seconds to complete. The
@@ -44,24 +44,16 @@
 #endif
 #include <string.h>
 #include "gstsmpte.h"
-#include <gst/video/video.h>
 #include "paint.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_smpte_debug);
 #define GST_CAT_DEFAULT gst_smpte_debug
 
-/* elementfactory information */
-static const GstElementDetails smpte_details =
-GST_ELEMENT_DETAILS ("SMPTE transitions",
-    "Filter/Editor/Video",
-    "Apply the standard SMPTE transitions on video images",
-    "Wim Taymans <wim.taymans@chello.be>");
-
 static GstStaticPadTemplate gst_smpte_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420")
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("I420")
     )
     );
 
@@ -69,7 +61,7 @@ static GstStaticPadTemplate gst_smpte_sink1_template =
 GST_STATIC_PAD_TEMPLATE ("sink1",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420")
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("I420")
     )
     );
 
@@ -77,7 +69,7 @@ static GstStaticPadTemplate gst_smpte_sink2_template =
 GST_STATIC_PAD_TEMPLATE ("sink2",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420")
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("I420")
     )
     );
 
@@ -92,8 +84,8 @@ enum
 #define DEFAULT_PROP_TYPE	1
 #define DEFAULT_PROP_BORDER	0
 #define DEFAULT_PROP_DEPTH	16
-#define DEFAULT_PROP_FPS	0.
 #define DEFAULT_PROP_DURATION	GST_SECOND
+#define DEFAULT_PROP_INVERT   FALSE
 
 enum
 {
@@ -101,11 +93,11 @@ enum
   PROP_TYPE,
   PROP_BORDER,
   PROP_DEPTH,
-  PROP_FPS,
   PROP_DURATION,
-  PROP_LAST,
+  PROP_INVERT
 };
 
+/* FIXME: should use video meta etc. */
 #define I420_Y_ROWSTRIDE(width) (GST_ROUND_UP_4(width))
 #define I420_U_ROWSTRIDE(width) (GST_ROUND_UP_8(width)/2)
 #define I420_V_ROWSTRIDE(width) ((GST_ROUND_UP_8(I420_Y_ROWSTRIDE(width)))/2)
@@ -152,9 +144,6 @@ gst_smpte_transition_type_get_type (void)
 }
 
 
-static void gst_smpte_class_init (GstSMPTEClass * klass);
-static void gst_smpte_base_init (GstSMPTEClass * klass);
-static void gst_smpte_init (GstSMPTE * smpte);
 static void gst_smpte_finalize (GstSMPTE * smpte);
 
 static GstFlowReturn gst_smpte_collected (GstCollectPads * pads,
@@ -168,47 +157,10 @@ static void gst_smpte_get_property (GObject * object, guint prop_id,
 static GstStateChangeReturn gst_smpte_change_state (GstElement * element,
     GstStateChange transition);
 
-static GstElementClass *parent_class = NULL;
-
 /*static guint gst_smpte_signals[LAST_SIGNAL] = { 0 }; */
 
-static GType
-gst_smpte_get_type (void)
-{
-  static GType smpte_type = 0;
-
-  if (!smpte_type) {
-    static const GTypeInfo smpte_info = {
-      sizeof (GstSMPTEClass),
-      (GBaseInitFunc) gst_smpte_base_init,
-      NULL,
-      (GClassInitFunc) gst_smpte_class_init,
-      NULL,
-      NULL,
-      sizeof (GstSMPTE),
-      0,
-      (GInstanceInitFunc) gst_smpte_init,
-    };
-
-    smpte_type =
-        g_type_register_static (GST_TYPE_ELEMENT, "GstSMPTE", &smpte_info, 0);
-  }
-  return smpte_type;
-}
-
-static void
-gst_smpte_base_init (GstSMPTEClass * klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_smpte_sink1_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_smpte_sink2_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_smpte_src_template));
-  gst_element_class_set_details (element_class, &smpte_details);
-}
+#define gst_smpte_parent_class parent_class
+G_DEFINE_TYPE (GstSMPTE, gst_smpte, GST_TYPE_ELEMENT);
 
 static void
 gst_smpte_class_init (GstSMPTEClass * klass)
@@ -230,24 +182,35 @@ gst_smpte_class_init (GstSMPTEClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_TYPE,
       g_param_spec_enum ("type", "Type", "The type of transition to use",
           GST_TYPE_SMPTE_TRANSITION_TYPE, DEFAULT_PROP_TYPE,
-          G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_FPS,
-      g_param_spec_float ("fps", "FPS",
-          "Frames per second if no input files are given (deprecated)", 0.,
-          G_MAXFLOAT, DEFAULT_PROP_FPS, G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_BORDER,
       g_param_spec_int ("border", "Border",
           "The border width of the transition", 0, G_MAXINT,
-          DEFAULT_PROP_BORDER, G_PARAM_READWRITE));
+          DEFAULT_PROP_BORDER, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DEPTH,
       g_param_spec_int ("depth", "Depth", "Depth of the mask in bits", 1, 24,
-          DEFAULT_PROP_DEPTH, G_PARAM_READWRITE));
+          DEFAULT_PROP_DEPTH, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DURATION,
       g_param_spec_uint64 ("duration", "Duration",
           "Duration of the transition effect in nanoseconds", 0, G_MAXUINT64,
-          DEFAULT_PROP_DURATION, G_PARAM_READWRITE));
+          DEFAULT_PROP_DURATION, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_INVERT,
+      g_param_spec_boolean ("invert", "Invert",
+          "Invert transition mask", DEFAULT_PROP_INVERT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_smpte_change_state);
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_smpte_sink1_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_smpte_sink2_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_smpte_src_template));
+  gst_element_class_set_static_metadata (gstelement_class, "SMPTE transitions",
+      "Filter/Editor/Video",
+      "Apply the standard SMPTE transitions on video images",
+      "Wim Taymans <wim.taymans@chello.be>");
 }
 
 /*                              wht  yel  cya  grn  mag  red  blu  blk   -I    Q */
@@ -270,25 +233,27 @@ fill_i420 (guint8 * data, gint width, gint height, gint color)
 }
 
 static gboolean
-gst_smpte_update_mask (GstSMPTE * smpte, gint type, gint depth, gint width,
-    gint height)
+gst_smpte_update_mask (GstSMPTE * smpte, gint type, gboolean invert,
+    gint depth, gint width, gint height)
 {
   GstMask *newmask;
 
   if (smpte->mask) {
     if (smpte->type == type &&
+        smpte->invert == invert &&
         smpte->depth == depth &&
         smpte->width == width && smpte->height == height)
       return TRUE;
   }
 
-  newmask = gst_mask_factory_new (type, depth, width, height);
+  newmask = gst_mask_factory_new (type, invert, depth, width, height);
   if (newmask) {
     if (smpte->mask) {
       gst_mask_destroy (smpte->mask);
     }
     smpte->mask = newmask;
     smpte->type = type;
+    smpte->invert = invert;
     smpte->depth = depth;
     smpte->width = width;
     smpte->height = height;
@@ -302,22 +267,19 @@ static gboolean
 gst_smpte_setcaps (GstPad * pad, GstCaps * caps)
 {
   GstSMPTE *smpte;
-  GstStructure *structure;
   gboolean ret;
+  GstVideoInfo vinfo;
 
   smpte = GST_SMPTE (GST_PAD_PARENT (pad));
 
-  structure = gst_caps_get_structure (caps, 0);
-
-  ret = gst_structure_get_int (structure, "width", &smpte->width);
-  ret &= gst_structure_get_int (structure, "height", &smpte->height);
-  ret &= gst_structure_get_fraction (structure, "framerate",
-      &smpte->fps_num, &smpte->fps_denom);
-  if (!ret)
+  gst_video_info_init (&vinfo);
+  if (!gst_video_info_from_caps (&vinfo, caps))
     return FALSE;
 
-  /* for backward compat, we store these here */
-  smpte->fps = ((gdouble) smpte->fps_num) / smpte->fps_denom;
+  smpte->width = GST_VIDEO_INFO_WIDTH (&vinfo);
+  smpte->height = GST_VIDEO_INFO_HEIGHT (&vinfo);
+  smpte->fps_num = GST_VIDEO_INFO_FPS_N (&vinfo);
+  smpte->fps_denom = GST_VIDEO_INFO_FPS_D (&vinfo);
 
   /* figure out the duration in frames */
   smpte->end_position = gst_util_uint64_scale (smpte->duration,
@@ -325,8 +287,47 @@ gst_smpte_setcaps (GstPad * pad, GstCaps * caps)
 
   GST_DEBUG_OBJECT (smpte, "duration: %d frames", smpte->end_position);
 
-  ret = gst_smpte_update_mask (smpte, smpte->type, smpte->depth, smpte->width,
-      smpte->height);
+  ret =
+      gst_smpte_update_mask (smpte, smpte->type, smpte->invert, smpte->depth,
+      smpte->width, smpte->height);
+
+  if (pad == smpte->sinkpad1) {
+    GST_DEBUG_OBJECT (smpte, "setting pad1 info");
+    smpte->vinfo1 = vinfo;
+  } else {
+    GST_DEBUG_OBJECT (smpte, "setting pad2 info");
+    smpte->vinfo2 = vinfo;
+  }
+
+  return ret;
+}
+
+static gboolean
+gst_smpte_sink_event (GstCollectPads * pads,
+    GstCollectData * data, GstEvent * event, gpointer user_data)
+{
+  GstPad *pad;
+  gboolean ret = FALSE;
+
+  pad = data->pad;
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
+
+      gst_event_parse_caps (event, &caps);
+      ret = gst_smpte_setcaps (pad, caps);
+      gst_event_unref (event);
+      event = NULL;
+      break;
+    }
+    default:
+      break;
+  }
+
+  if (event != NULL)
+    return gst_collect_pads_event_default (pads, data, event, FALSE);
 
   return ret;
 }
@@ -336,18 +337,12 @@ gst_smpte_init (GstSMPTE * smpte)
 {
   smpte->sinkpad1 =
       gst_pad_new_from_static_template (&gst_smpte_sink1_template, "sink1");
-  gst_pad_set_setcaps_function (smpte->sinkpad1,
-      GST_DEBUG_FUNCPTR (gst_smpte_setcaps));
-  gst_pad_set_getcaps_function (smpte->sinkpad1,
-      GST_DEBUG_FUNCPTR (gst_pad_proxy_getcaps));
+  GST_PAD_SET_PROXY_CAPS (smpte->sinkpad1);
   gst_element_add_pad (GST_ELEMENT (smpte), smpte->sinkpad1);
 
   smpte->sinkpad2 =
       gst_pad_new_from_static_template (&gst_smpte_sink2_template, "sink2");
-  gst_pad_set_setcaps_function (smpte->sinkpad2,
-      GST_DEBUG_FUNCPTR (gst_smpte_setcaps));
-  gst_pad_set_getcaps_function (smpte->sinkpad2,
-      GST_DEBUG_FUNCPTR (gst_pad_proxy_getcaps));
+  GST_PAD_SET_PROXY_CAPS (smpte->sinkpad2);
   gst_element_add_pad (GST_ELEMENT (smpte), smpte->sinkpad2);
 
   smpte->srcpad =
@@ -357,18 +352,19 @@ gst_smpte_init (GstSMPTE * smpte)
   smpte->collect = gst_collect_pads_new ();
   gst_collect_pads_set_function (smpte->collect,
       (GstCollectPadsFunction) GST_DEBUG_FUNCPTR (gst_smpte_collected), smpte);
-  gst_collect_pads_start (smpte->collect);
+  gst_collect_pads_set_event_function (smpte->collect,
+      GST_DEBUG_FUNCPTR (gst_smpte_sink_event), smpte);
 
   gst_collect_pads_add_pad (smpte->collect, smpte->sinkpad1,
-      sizeof (GstCollectData));
+      sizeof (GstCollectData), NULL, TRUE);
   gst_collect_pads_add_pad (smpte->collect, smpte->sinkpad2,
-      sizeof (GstCollectData));
+      sizeof (GstCollectData), NULL, TRUE);
 
-  smpte->fps = DEFAULT_PROP_FPS;
   smpte->type = DEFAULT_PROP_TYPE;
   smpte->border = DEFAULT_PROP_BORDER;
   smpte->depth = DEFAULT_PROP_DEPTH;
   smpte->duration = DEFAULT_PROP_DURATION;
+  smpte->invert = DEFAULT_PROP_INVERT;
   smpte->fps_num = 0;
   smpte->fps_denom = 1;
 }
@@ -390,19 +386,19 @@ gst_smpte_reset (GstSMPTE * smpte)
   smpte->height = -1;
   smpte->position = 0;
   smpte->end_position = 0;
+  smpte->send_stream_start = TRUE;
 }
 
 static void
-gst_smpte_blend_i420 (guint8 * in1, guint8 * in2, guint8 * out, GstMask * mask,
-    gint width, gint height, gint border, gint pos)
+gst_smpte_blend_i420 (GstVideoFrame * frame1, GstVideoFrame * frame2,
+    GstVideoFrame * oframe, GstMask * mask, gint border, gint pos)
 {
   guint32 *maskp;
   gint value;
   gint i, j;
   gint min, max;
-  guint8 *in1u, *in1v, *in2u, *in2v, *outu, *outv;
-  gint lumsize = width * height;
-  gint chromsize = lumsize >> 2;
+  guint8 *in1, *in2, *out, *in1u, *in1v, *in2u, *in2v, *outu, *outv;
+  gint width, height;
 
   if (border == 0)
     border++;
@@ -410,12 +406,19 @@ gst_smpte_blend_i420 (guint8 * in1, guint8 * in2, guint8 * out, GstMask * mask,
   min = pos - border;
   max = pos;
 
-  in1u = in1 + lumsize;
-  in1v = in1u + chromsize;
-  in2u = in2 + lumsize;
-  in2v = in2u + chromsize;
-  outu = out + lumsize;
-  outv = outu + chromsize;
+  width = GST_VIDEO_FRAME_WIDTH (frame1);
+  height = GST_VIDEO_FRAME_HEIGHT (frame1);
+
+  in1 = GST_VIDEO_FRAME_COMP_DATA (frame1, 0);
+  in2 = GST_VIDEO_FRAME_COMP_DATA (frame2, 0);
+  out = GST_VIDEO_FRAME_COMP_DATA (oframe, 0);
+
+  in1u = GST_VIDEO_FRAME_COMP_DATA (frame1, 1);
+  in1v = GST_VIDEO_FRAME_COMP_DATA (frame1, 2);
+  in2u = GST_VIDEO_FRAME_COMP_DATA (frame2, 1);
+  in2v = GST_VIDEO_FRAME_COMP_DATA (frame2, 2);
+  outu = GST_VIDEO_FRAME_COMP_DATA (oframe, 1);
+  outv = GST_VIDEO_FRAME_COMP_DATA (oframe, 2);
 
   maskp = mask->data;
 
@@ -424,11 +427,26 @@ gst_smpte_blend_i420 (guint8 * in1, guint8 * in2, guint8 * out, GstMask * mask,
       value = *maskp++;
       value = ((CLAMP (value, min, max) - min) << 8) / border;
 
-      *out++ = ((*in1++ * value) + (*in2++ * (256 - value))) >> 8;
+      out[j] = ((in1[j] * value) + (in2[j] * (256 - value))) >> 8;
       if (!(i & 1) && !(j & 1)) {
-        *outu++ = ((*in1u++ * value) + (*in2u++ * (256 - value))) >> 8;
-        *outv++ = ((*in1v++ * value) + (*in2v++ * (256 - value))) >> 8;
+        outu[j / 2] =
+            ((in1u[j / 2] * value) + (in2u[j / 2] * (256 - value))) >> 8;
+        outv[j / 2] =
+            ((in1v[j / 2] * value) + (in2v[j / 2] * (256 - value))) >> 8;
       }
+    }
+
+    in1 += GST_VIDEO_FRAME_COMP_STRIDE (frame1, 0);
+    in2 += GST_VIDEO_FRAME_COMP_STRIDE (frame2, 0);
+    out += GST_VIDEO_FRAME_COMP_STRIDE (oframe, 0);
+
+    if (!(i & 1)) {
+      in1u += GST_VIDEO_FRAME_COMP_STRIDE (frame1, 1);
+      in2u += GST_VIDEO_FRAME_COMP_STRIDE (frame2, 1);
+      in1v += GST_VIDEO_FRAME_COMP_STRIDE (frame1, 2);
+      in2v += GST_VIDEO_FRAME_COMP_STRIDE (frame1, 2);
+      outu += GST_VIDEO_FRAME_COMP_STRIDE (oframe, 1);
+      outv += GST_VIDEO_FRAME_COMP_STRIDE (oframe, 2);
     }
   }
 }
@@ -440,12 +458,27 @@ gst_smpte_collected (GstCollectPads * pads, GstSMPTE * smpte)
   GstClockTime ts;
   GstBuffer *in1 = NULL, *in2 = NULL;
   GSList *collected;
+  GstMapInfo map;
+  GstVideoFrame frame1, frame2, oframe;
 
   if (G_UNLIKELY (smpte->fps_num == 0))
     goto not_negotiated;
 
-  if (!GST_PAD_CAPS (smpte->sinkpad1) || !GST_PAD_CAPS (smpte->sinkpad2))
+  if (!gst_pad_has_current_caps (smpte->sinkpad1) ||
+      !gst_pad_has_current_caps (smpte->sinkpad2))
     goto not_negotiated;
+
+  if (!gst_video_info_is_equal (&smpte->vinfo1, &smpte->vinfo2))
+    goto input_formats_do_not_match;
+
+  if (smpte->send_stream_start) {
+    gchar s_id[32];
+
+    /* stream-start (FIXME: create id based on input ids) */
+    g_snprintf (s_id, sizeof (s_id), "smpte-%08x", g_random_int ());
+    gst_pad_push_event (smpte->srcpad, gst_event_new_stream_start (s_id));
+    smpte->send_stream_start = FALSE;
+  }
 
   ts = gst_util_uint64_scale_int (smpte->position * GST_SECOND,
       smpte->fps_denom, smpte->fps_num);
@@ -464,48 +497,45 @@ gst_smpte_collected (GstCollectPads * pads, GstSMPTE * smpte)
   if (in1 == NULL) {
     /* if no input, make picture black */
     in1 = gst_buffer_new_and_alloc (I420_SIZE (smpte->width, smpte->height));
-    fill_i420 (GST_BUFFER_DATA (in1), smpte->width, smpte->height, 7);
+    gst_buffer_map (in1, &map, GST_MAP_WRITE);
+    fill_i420 (map.data, smpte->width, smpte->height, 7);
+    gst_buffer_unmap (in1, &map);
   }
   if (in2 == NULL) {
     /* if no input, make picture white */
     in2 = gst_buffer_new_and_alloc (I420_SIZE (smpte->width, smpte->height));
-    fill_i420 (GST_BUFFER_DATA (in2), smpte->width, smpte->height, 0);
+    gst_buffer_map (in2, &map, GST_MAP_WRITE);
+    fill_i420 (map.data, smpte->width, smpte->height, 0);
+    gst_buffer_unmap (in2, &map);
   }
-
-  if (GST_BUFFER_SIZE (in1) != GST_BUFFER_SIZE (in2))
-    goto input_formats_do_not_match;
 
   if (smpte->position < smpte->end_position) {
     outbuf = gst_buffer_new_and_alloc (I420_SIZE (smpte->width, smpte->height));
 
     /* set caps if not done yet */
-    if (!GST_PAD_CAPS (smpte->srcpad)) {
+    if (!gst_pad_has_current_caps (smpte->srcpad)) {
       GstCaps *caps;
+      GstSegment segment;
 
-      caps =
-          gst_caps_copy (gst_static_caps_get
-          (&gst_smpte_src_template.static_caps));
-      gst_caps_set_simple (caps, "width", G_TYPE_INT, smpte->width, "height",
-          G_TYPE_INT, smpte->height, "framerate", GST_TYPE_FRACTION,
-          smpte->fps_num, smpte->fps_denom, NULL);
+      caps = gst_video_info_to_caps (&smpte->vinfo1);
 
       gst_pad_set_caps (smpte->srcpad, caps);
+      gst_caps_unref (caps);
 
-      gst_pad_push_event (smpte->srcpad,
-          gst_event_new_new_segment_full (FALSE,
-              1.0, 1.0, GST_FORMAT_TIME, 0, -1, 0));
-
+      gst_segment_init (&segment, GST_FORMAT_TIME);
+      gst_pad_push_event (smpte->srcpad, gst_event_new_segment (&segment));
     }
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (smpte->srcpad));
 
-    gst_smpte_blend_i420 (GST_BUFFER_DATA (in1),
-        GST_BUFFER_DATA (in2),
-        GST_BUFFER_DATA (outbuf),
-        smpte->mask, smpte->width, smpte->height,
-        smpte->border,
+    gst_video_frame_map (&frame1, &smpte->vinfo1, in1, GST_MAP_READ);
+    gst_video_frame_map (&frame2, &smpte->vinfo2, in2, GST_MAP_READ);
+    /* re-use either info, now know they are essentially identical */
+    gst_video_frame_map (&oframe, &smpte->vinfo1, outbuf, GST_MAP_WRITE);
+    gst_smpte_blend_i420 (&frame1, &frame2, &oframe, smpte->mask, smpte->border,
         ((1 << smpte->depth) + smpte->border) *
         smpte->position / smpte->end_position);
-
+    gst_video_frame_unmap (&frame1);
+    gst_video_frame_unmap (&frame2);
+    gst_video_frame_unmap (&oframe);
   } else {
     outbuf = in2;
     gst_buffer_ref (in2);
@@ -531,9 +561,15 @@ not_negotiated:
   }
 input_formats_do_not_match:
   {
+    GstCaps *caps1, *caps2;
+
+    caps1 = gst_pad_get_current_caps (smpte->sinkpad1);
+    caps2 = gst_pad_get_current_caps (smpte->sinkpad2);
     GST_ELEMENT_ERROR (smpte, CORE, NEGOTIATION, (NULL),
         ("input formats don't match: %" GST_PTR_FORMAT " vs. %" GST_PTR_FORMAT,
-            GST_PAD_CAPS (smpte->sinkpad1), GST_PAD_CAPS (smpte->sinkpad2)));
+            caps1, caps2));
+    gst_caps_unref (caps1);
+    gst_caps_unref (caps2);
     return GST_FLOW_ERROR;
   }
 }
@@ -553,14 +589,14 @@ gst_smpte_set_property (GObject * object, guint prop_id,
     case PROP_BORDER:
       smpte->border = g_value_get_int (value);
       break;
-    case PROP_FPS:
-      smpte->fps = g_value_get_float (value);
-      break;
     case PROP_DEPTH:
       smpte->depth = g_value_get_int (value);
       break;
     case PROP_DURATION:
       smpte->duration = g_value_get_uint64 (value);
+      break;
+    case PROP_INVERT:
+      smpte->invert = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -580,9 +616,6 @@ gst_smpte_get_property (GObject * object, guint prop_id,
     case PROP_TYPE:
       g_value_set_enum (value, smpte->type);
       break;
-    case PROP_FPS:
-      g_value_set_float (value, smpte->fps);
-      break;
     case PROP_BORDER:
       g_value_set_int (value, smpte->border);
       break;
@@ -591,6 +624,9 @@ gst_smpte_get_property (GObject * object, guint prop_id,
       break;
     case PROP_DURATION:
       g_value_set_uint64 (value, smpte->duration);
+      break;
+    case PROP_INVERT:
+      g_value_set_boolean (value, smpte->invert);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -620,7 +656,7 @@ gst_smpte_change_state (GstElement * element, GstStateChange transition)
       break;
   }
 
-  ret = parent_class->change_state (element, transition);
+  ret = GST_ELEMENT_CLASS (parent_class)->change_state (element, transition);
 
   switch (transition) {
     case GST_STATE_CHANGE_PAUSED_TO_READY:

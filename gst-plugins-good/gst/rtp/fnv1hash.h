@@ -13,20 +13,20 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_FNV1_HASH_H__
 #define __GST_FNV1_HASH_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
 
-guint32 fnv1_hash_32_new ();
+guint32 fnv1_hash_32_new (void);
 guint32 fnv1_hash_32_update (guint32 hash, const guchar *data, guint length);
 guint32 fnv1_hash_32_to_24 (guint32 hash);
 

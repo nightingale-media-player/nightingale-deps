@@ -13,8 +13,24 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+/**
+ * SECTION:element-rtpL16depay
+ * @see_also: rtpL16pay
+ *
+ * Extract raw audio from RTP packets according to RFC 3551.
+ * For detailed information see: http://www.rfc-editor.org/rfc/rfc3551.txt
+ *
+ * <refsect2>
+ * <title>Example pipeline</title>
+ * |[
+ * gst-launch-1.0 udpsrc caps='application/x-rtp, media=(string)audio, clock-rate=(int)44100, encoding-name=(string)L16, encoding-params=(string)1, channels=(int)1, payload=(int)96' ! rtpL16depay ! pulsesink
+ * ]| This example pipeline will depayload an RTP raw audio stream. Refer to
+ * the rtpL16pay example to create the RTP stream.
+ * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,30 +41,21 @@
 #include <stdlib.h>
 
 #include <gst/audio/audio.h>
-#include <gst/audio/multichannel.h>
 
 #include "gstrtpL16depay.h"
 #include "gstrtpchannels.h"
+#include "gstrtputils.h"
 
 GST_DEBUG_CATEGORY_STATIC (rtpL16depay_debug);
 #define GST_CAT_DEFAULT (rtpL16depay_debug)
-
-/* elementfactory information */
-static const GstElementDetails gst_rtp_L16_depay_details =
-GST_ELEMENT_DETAILS ("RTP audio depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts raw audio from RTP packets",
-    "Zeeshan Ali <zak147@yahoo.com>," "Wim Taymans <wim.taymans@gmail.com>");
 
 static GstStaticPadTemplate gst_rtp_L16_depay_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "endianness = (int) BIG_ENDIAN, "
-        "signed = (boolean) true, "
-        "width = (int) 16, "
-        "depth = (int) 16, "
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) S16BE, "
+        "layout = (string) interleaved, "
         "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, MAX ]")
     );
 
@@ -57,9 +64,7 @@ static GstStaticPadTemplate gst_rtp_L16_depay_sink_template =
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-rtp, "
-        "media = (string) \"audio\", "
-        "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
-        "clock-rate = (int) [ 1, MAX ], "
+        "media = (string) \"audio\", " "clock-rate = (int) [ 1, MAX ], "
         /* "channels = (int) [1, MAX]"  */
         /* "emphasis = (string) ANY" */
         /* "channel-order = (string) ANY" */
@@ -74,48 +79,43 @@ static GstStaticPadTemplate gst_rtp_L16_depay_sink_template =
     )
     );
 
-GST_BOILERPLATE (GstRtpL16Depay, gst_rtp_L16_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+#define gst_rtp_L16_depay_parent_class parent_class
+G_DEFINE_TYPE (GstRtpL16Depay, gst_rtp_L16_depay, GST_TYPE_RTP_BASE_DEPAYLOAD);
 
-static gboolean gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload,
+static gboolean gst_rtp_L16_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_L16_depay_process (GstBaseRTPDepayload * depayload,
-    GstBuffer * buf);
-
-static void
-gst_rtp_L16_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_L16_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_L16_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_L16_depay_details);
-}
+static GstBuffer *gst_rtp_L16_depay_process (GstRTPBaseDepayload * depayload,
+    GstRTPBuffer * rtp);
 
 static void
 gst_rtp_L16_depay_class_init (GstRtpL16DepayClass * klass)
 {
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
+  gstrtpbasedepayload_class->set_caps = gst_rtp_L16_depay_setcaps;
+  gstrtpbasedepayload_class->process_rtp_packet = gst_rtp_L16_depay_process;
 
-  gstbasertpdepayload_class->set_caps = gst_rtp_L16_depay_setcaps;
-  gstbasertpdepayload_class->process = gst_rtp_L16_depay_process;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_L16_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_L16_depay_sink_template));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP audio depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts raw audio from RTP packets",
+      "Zeeshan Ali <zak147@yahoo.com>," "Wim Taymans <wim.taymans@gmail.com>");
 
   GST_DEBUG_CATEGORY_INIT (rtpL16depay_debug, "rtpL16depay", 0,
       "Raw Audio RTP Depayloader");
 }
 
 static void
-gst_rtp_L16_depay_init (GstRtpL16Depay * rtpL16depay,
-    GstRtpL16DepayClass * klass)
+gst_rtp_L16_depay_init (GstRtpL16Depay * rtpL16depay)
 {
-  /* needed because of GST_BOILERPLATE */
 }
 
 static gint
@@ -135,7 +135,7 @@ gst_rtp_L16_depay_parse_int (GstStructure * structure, const gchar * field,
 }
 
 static gboolean
-gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_L16_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstStructure *structure;
   GstRtpL16Depay *rtpL16depay;
@@ -145,6 +145,7 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   gboolean res;
   const gchar *channel_order;
   const GstRTPChannelOrder *order;
+  GstAudioInfo *info;
 
   rtpL16depay = GST_RTP_L16_DEPAY (depayload);
 
@@ -162,7 +163,7 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
       clock_rate = 44100;
       break;
     default:
-      /* no fixed mapping, we need channels and clock-rate */
+      /* no fixed mapping, we need clock-rate */
       channels = 0;
       clock_rate = 0;
       break;
@@ -174,40 +175,43 @@ gst_rtp_L16_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
   if (clock_rate == 0)
     goto no_clockrate;
 
-  channels = gst_rtp_L16_depay_parse_int (structure, "channels", channels);
-  if (channels == 0)
-    goto no_channels;
+  channels =
+      gst_rtp_L16_depay_parse_int (structure, "encoding-params", channels);
+  if (channels == 0) {
+    channels = gst_rtp_L16_depay_parse_int (structure, "channels", channels);
+    if (channels == 0) {
+      /* channels defaults to 1 otherwise */
+      channels = 1;
+    }
+  }
 
   depayload->clock_rate = clock_rate;
-  rtpL16depay->rate = clock_rate;
-  rtpL16depay->channels = channels;
 
-  srccaps = gst_caps_new_simple ("audio/x-raw-int",
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16,
-      "rate", G_TYPE_INT, clock_rate, "channels", G_TYPE_INT, channels, NULL);
+  info = &rtpL16depay->info;
+  gst_audio_info_init (info);
+  info->finfo = gst_audio_format_get_info (GST_AUDIO_FORMAT_S16BE);
+  info->rate = clock_rate;
+  info->channels = channels;
+  info->bpf = (info->finfo->width / 8) * channels;
 
   /* add channel positions */
   channel_order = gst_structure_get_string (structure, "channel-order");
 
   order = gst_rtp_channels_get_by_order (channels, channel_order);
+  rtpL16depay->order = order;
   if (order) {
-    gst_audio_set_channel_positions (gst_caps_get_structure (srccaps, 0),
-        order->pos);
+    memcpy (info->position, order->pos,
+        sizeof (GstAudioChannelPosition) * channels);
+    gst_audio_channel_positions_to_valid_order (info->position, info->channels);
   } else {
-    GstAudioChannelPosition *pos;
-
     GST_ELEMENT_WARNING (rtpL16depay, STREAM, DECODE,
         (NULL), ("Unknown channel order '%s' for %d channels",
             GST_STR_NULL (channel_order), channels));
     /* create default NONE layout */
-    pos = gst_rtp_channels_create_default (channels);
-    gst_audio_set_channel_positions (gst_caps_get_structure (srccaps, 0), pos);
-    g_free (pos);
+    gst_rtp_channels_create_default (channels, info->position);
   }
 
+  srccaps = gst_audio_info_to_caps (info);
   res = gst_pad_set_caps (depayload->srcpad, srccaps);
   gst_caps_unref (srccaps);
 
@@ -219,15 +223,10 @@ no_clockrate:
     GST_ERROR_OBJECT (depayload, "no clock-rate specified");
     return FALSE;
   }
-no_channels:
-  {
-    GST_ERROR_OBJECT (depayload, "no channels specified");
-    return FALSE;
-  }
 }
 
 static GstBuffer *
-gst_rtp_L16_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_L16_depay_process (GstRTPBaseDepayload * depayload, GstRTPBuffer * rtp)
 {
   GstRtpL16Depay *rtpL16depay;
   GstBuffer *outbuf;
@@ -236,20 +235,31 @@ gst_rtp_L16_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
 
   rtpL16depay = GST_RTP_L16_DEPAY (depayload);
 
-  payload_len = gst_rtp_buffer_get_payload_len (buf);
+  payload_len = gst_rtp_buffer_get_payload_len (rtp);
 
   if (payload_len <= 0)
     goto empty_packet;
 
   GST_DEBUG_OBJECT (rtpL16depay, "got payload of %d bytes", payload_len);
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
-  marker = gst_rtp_buffer_get_marker (buf);
+  outbuf = gst_rtp_buffer_get_payload_buffer (rtp);
+  marker = gst_rtp_buffer_get_marker (rtp);
 
   if (marker) {
-    /* mark talk spurt with DISCONT */
-    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+    /* mark talk spurt with RESYNC */
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_RESYNC);
   }
+
+  outbuf = gst_buffer_make_writable (outbuf);
+  if (rtpL16depay->order &&
+      !gst_audio_buffer_reorder_channels (outbuf,
+          rtpL16depay->info.finfo->format, rtpL16depay->info.channels,
+          rtpL16depay->info.position, rtpL16depay->order->pos)) {
+    goto reorder_failed;
+  }
+
+  gst_rtp_drop_meta (GST_ELEMENT_CAST (rtpL16depay), outbuf,
+      g_quark_from_static_string (GST_META_TAG_AUDIO_STR));
 
   return outbuf;
 
@@ -260,11 +270,17 @@ empty_packet:
         ("Empty Payload."), (NULL));
     return NULL;
   }
+reorder_failed:
+  {
+    GST_ELEMENT_ERROR (rtpL16depay, STREAM, DECODE,
+        ("Channel reordering failed."), (NULL));
+    return NULL;
+  }
 }
 
 gboolean
 gst_rtp_L16_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpL16depay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_L16_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_L16_DEPAY);
 }

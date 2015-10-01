@@ -15,15 +15,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef _SIREN7_DCT4_H_
 #define _SIREN7_DCT4_H_
 
-extern void siren_dct4_init();
+extern void siren_dct4_init(void);
 extern void siren_dct4(float *Source, float *Destination, int dct_length);
 
 

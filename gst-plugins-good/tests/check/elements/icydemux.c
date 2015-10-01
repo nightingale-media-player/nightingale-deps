@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -72,6 +72,27 @@ typefind_succeed (GstTypeFind * tf, gpointer private)
   }
 }
 
+static gboolean
+test_event_func (GstPad * pad, GstObject * parent, GstEvent * event)
+{
+  GST_LOG_OBJECT (pad, "%s event: %" GST_PTR_FORMAT,
+      GST_EVENT_TYPE_NAME (event), event);
+
+  /* a sink would post tag events as messages, so do the same here,
+   * esp. since we're polling on the bus waiting for TAG messages.. */
+  if (GST_EVENT_TYPE (event) == GST_EVENT_TAG) {
+    GstTagList *taglist;
+
+    gst_event_parse_tag (event, &taglist);
+
+    gst_bus_post (bus, gst_message_new_tag (GST_OBJECT (pad),
+            gst_tag_list_copy (taglist)));
+  }
+
+  gst_event_unref (event);
+  return TRUE;
+}
+
 static void
 icydemux_found_pad (GstElement * src, GstPad * pad, gpointer data)
 {
@@ -86,6 +107,7 @@ icydemux_found_pad (GstElement * src, GstPad * pad, gpointer data)
   srcpad = gst_element_get_static_pad (icydemux, "src");
   fail_if (srcpad == NULL, "Failed to get srcpad from icydemux");
   gst_pad_set_chain_function (sinkpad, gst_check_chain_func);
+  gst_pad_set_event_function (sinkpad, test_event_func);
 
   GST_DEBUG ("checking srcpad %p refcount", srcpad);
   /* 1 from element, 1 from signal, 1 from us */
@@ -103,7 +125,9 @@ static GstElement *
 create_icydemux (void)
 {
   icydemux = gst_check_setup_element ("icydemux");
-  srcpad = gst_check_setup_src_pad (icydemux, &srctemplate, NULL);
+  srcpad = gst_check_setup_src_pad (icydemux, &srctemplate);
+
+  gst_pad_set_active (srcpad, TRUE);
 
   g_signal_connect (icydemux, "pad-added", G_CALLBACK (icydemux_found_pad),
       NULL);
@@ -135,13 +159,12 @@ cleanup_icydemux (void)
 }
 
 static void
-push_data (const guint8 * data, int len, GstCaps * caps, gint64 offset)
+push_data (const guint8 * data, int len, gint64 offset)
 {
   GstFlowReturn res;
   GstBuffer *buffer = gst_buffer_new_and_alloc (len);
 
-  memcpy (GST_BUFFER_DATA (buffer), data, len);
-  gst_buffer_set_caps (buffer, caps);
+  gst_buffer_fill (buffer, 0, data, len);
 
   GST_BUFFER_OFFSET (buffer) = offset;
 
@@ -167,8 +190,9 @@ GST_START_TEST (test_demux)
   caps = gst_caps_from_string (ICYCAPS);
 
   create_icydemux ();
+  gst_check_setup_events (srcpad, icydemux, caps, GST_FORMAT_TIME);
 
-  push_data ((guint8 *) ICY_DATA, sizeof (ICY_DATA), caps, -1);
+  push_data ((guint8 *) ICY_DATA, sizeof (ICY_DATA), -1);
 
   message = gst_bus_poll (bus, GST_MESSAGE_TAG, -1);
   fail_unless (message != NULL);
@@ -184,7 +208,7 @@ GST_START_TEST (test_demux)
 
   fail_unless_equals_string (TEST_METADATA, (char *) tag);
 
-  gst_tag_list_free (tags);
+  gst_tag_list_unref (tags);
   gst_message_unref (message);
   gst_caps_unref (caps);
 
@@ -211,12 +235,14 @@ GST_START_TEST (test_first_buf_offset_when_merged_for_typefinding)
 
   icy_caps = gst_caps_from_string (ICYCAPS);
 
-  push_data (buf1, G_N_ELEMENTS (buf1), icy_caps, 0);
+  gst_check_setup_events (srcpad, icydemux, icy_caps, GST_FORMAT_TIME);
+
+  push_data (buf1, G_N_ELEMENTS (buf1), 0);
 
   /* one byte isn't really enough for typefinding, can't have a srcpad yet */
   fail_unless (gst_element_get_static_pad (icydemux, "src") == NULL);
 
-  push_data (buf2, G_N_ELEMENTS (buf2), icy_caps, -1);
+  push_data (buf2, G_N_ELEMENTS (buf2), -1);
 
   /* should have been enough to create a audio/x-musepack source pad .. */
   icy_srcpad = gst_element_get_static_pad (icydemux, "src");
@@ -228,9 +254,6 @@ GST_START_TEST (test_first_buf_offset_when_merged_for_typefinding)
   /* first buffer should have offset 0 even after it was merged with 2nd buf */
   fail_unless (GST_BUFFER_OFFSET (GST_BUFFER_CAST (buffers->data)) == 0);
 
-  /* first buffer should have caps set */
-  fail_unless (GST_BUFFER_CAPS (GST_BUFFER_CAST (buffers->data)) != NULL);
-
   gst_caps_unref (icy_caps);
 
   cleanup_icydemux ();
@@ -241,8 +264,13 @@ GST_END_TEST;
 GST_START_TEST (test_not_negotiated)
 {
   GstBuffer *buf;
+  GstSegment segment;
 
   create_icydemux ();
+
+  gst_segment_init (&segment, GST_FORMAT_BYTES);
+  gst_pad_push_event (srcpad, gst_event_new_stream_start ("test"));
+  gst_pad_push_event (srcpad, gst_event_new_segment (&segment));
 
   buf = gst_buffer_new_and_alloc (0);
   GST_BUFFER_OFFSET (buf) = 0;

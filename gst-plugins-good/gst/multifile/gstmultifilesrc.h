@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MULTIFILESRC_H__
@@ -46,12 +46,18 @@ struct _GstMultiFileSrc
   GstPushSrc parent;
 
   gchar *filename;
+  int start_index;
+  int stop_index;
   int index;
 
   int offset;
 
+  gboolean loop;
+
   GstCaps *caps;
   gboolean successful_read;
+
+  gint fps_n, fps_d;
 };
 
 struct _GstMultiFileSrcClass

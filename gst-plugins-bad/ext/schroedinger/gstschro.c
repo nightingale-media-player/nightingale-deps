@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,7 +26,6 @@
 
 GType gst_schro_enc_get_type (void);
 GType gst_schro_dec_get_type (void);
-GType gst_schro_parse_get_type (void);
 
 GST_DEBUG_CATEGORY (schro_debug);
 #define GST_CAT_DEFAULT schro_debug
@@ -39,8 +38,6 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (schro_debug, "schro", 0, "Schroedinger");
   gst_element_register (plugin, "schrodec", GST_RANK_PRIMARY,
       gst_schro_dec_get_type ());
-  gst_element_register (plugin, "schroparse", GST_RANK_NONE,
-      gst_schro_parse_get_type ());
   gst_element_register (plugin, "schroenc", GST_RANK_PRIMARY,
       gst_schro_enc_get_type ());
 
@@ -49,6 +46,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "schro",
+    schro,
     "Schroedinger plugin",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

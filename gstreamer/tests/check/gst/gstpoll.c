@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <unistd.h>
@@ -25,7 +25,7 @@
 
 #ifdef G_OS_WIN32
 #include <winsock2.h>
-#define EINPROGRESS WSAEINPROGRESS
+#include <fcntl.h>
 #else
 #include <sys/socket.h>
 #endif
@@ -275,6 +275,7 @@ delayed_control (gpointer data)
   gst_poll_fd_ctl_write (set, &fd, TRUE);
   gst_poll_restart (set);
 
+  g_mutex_lock (&mutex);
   THREAD_SYNCHRONIZE ();
 
   g_usleep (500000);
@@ -327,12 +328,22 @@ gst_poll_suite (void)
   tcase_set_timeout (tc_chain, 60);
 
   suite_add_tcase (s, tc_chain);
+
+#ifndef G_OS_WIN32
   tcase_add_test (tc_chain, test_poll_basic);
   tcase_add_test (tc_chain, test_poll_wait);
   tcase_add_test (tc_chain, test_poll_wait_stop);
   tcase_add_test (tc_chain, test_poll_wait_restart);
   tcase_add_test (tc_chain, test_poll_wait_flush);
   tcase_add_test (tc_chain, test_poll_controllable);
+#else
+  tcase_skip_broken_test (tc_chain, test_poll_basic);
+  tcase_skip_broken_test (tc_chain, test_poll_wait);
+  tcase_skip_broken_test (tc_chain, test_poll_wait_stop);
+  tcase_skip_broken_test (tc_chain, test_poll_wait_restart);
+  tcase_skip_broken_test (tc_chain, test_poll_wait_flush);
+  tcase_skip_broken_test (tc_chain, test_poll_controllable);
+#endif
 
   return s;
 }

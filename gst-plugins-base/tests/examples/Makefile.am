@@ -4,10 +4,12 @@ else
 FT2_SUBDIRS =
 endif
 
-if USE_GIO
-GIO_SUBDIRS = gio
+if HAVE_GTK
+GTK_SUBDIRS = playback
 endif
 
-SUBDIRS = app $(FT2_SUBDIRS) $(GIO_SUBDIRS) volume dynamic v4l
+SUBDIRS = app audio dynamic fft $(FT2_SUBDIRS) $(GTK_SUBDIRS) gio overlay playrec encoding
+DIST_SUBDIRS = app audio dynamic fft gio playback overlay seek snapshot playrec encoding
 
-DIST_SUBDIRS = app seek volume dynamic snapshot gio v4l
+include $(top_srcdir)/common/parallel-subdirs.mak
+

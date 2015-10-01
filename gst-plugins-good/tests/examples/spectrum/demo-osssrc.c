@@ -13,14 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -39,7 +40,7 @@ static GtkWidget *drawingarea = NULL;
 static GstClock *sync_clock = NULL;
 
 static void
-on_window_destroy (GtkObject * object, gpointer user_data)
+on_window_destroy (GObject * object, gpointer user_data)
 {
   drawingarea = NULL;
   gtk_main_quit ();
@@ -66,18 +67,25 @@ draw_spectrum (gfloat * data)
 {
   gint i;
   GdkRectangle rect = { 0, 0, spect_bands, spect_height };
+  cairo_t *cr;
 
   if (!drawingarea)
     return;
 
-  gdk_window_begin_paint_rect (drawingarea->window, &rect);
-  gdk_draw_rectangle (drawingarea->window, drawingarea->style->black_gc,
-      TRUE, 0, 0, spect_bands, spect_height);
+  gdk_window_begin_paint_rect (gtk_widget_get_window (drawingarea), &rect);
+  cr = gdk_cairo_create (gtk_widget_get_window (drawingarea));
+
+  cairo_set_source_rgb (cr, 0, 0, 0);
+  cairo_rectangle (cr, 0, 0, spect_bands, spect_height);
+  cairo_fill (cr);
+  cairo_set_source_rgb (cr, 1, 1, 1);
   for (i = 0; i < spect_bands; i++) {
-    gdk_draw_rectangle (drawingarea->window, drawingarea->style->white_gc,
-        TRUE, i, -data[i], 1, spect_height + data[i]);
+    cairo_rectangle (cr, i, -data[i], 1, spect_height + data[i]);
+    cairo_fill (cr);
   }
-  gdk_window_end_paint (drawingarea->window);
+  cairo_destroy (cr);
+
+  gdk_window_end_paint (gtk_widget_get_window (drawingarea));
 }
 
 /* process delayed message */
@@ -137,7 +145,7 @@ message_handler (GstBus * bus, GstMessage * message, gpointer data)
         clock_id =
             gst_clock_new_single_shot_id (sync_clock, waittime + basetime);
         gst_clock_id_wait_async (clock_id, delayed_spectrum_update,
-            (gpointer) spect);
+            (gpointer) spect, NULL);
         gst_clock_id_unref (clock_id);
       }
     }
@@ -162,7 +170,7 @@ main (int argc, char *argv[])
 
   spectrum = gst_element_factory_make ("spectrum", "spectrum");
   g_object_set (G_OBJECT (spectrum), "bands", spect_bands, "threshold", -80,
-      "message", TRUE, NULL);
+      "post-messages", TRUE, NULL);
 
   sink = gst_element_factory_make ("fakesink", "sink");
 

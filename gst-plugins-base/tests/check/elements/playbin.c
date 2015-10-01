@@ -14,9 +14,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -31,24 +35,56 @@
 static GType gst_red_video_src_get_type (void);
 static GType gst_codec_src_get_type (void);
 
-#define DEFINE_TEST(func) \
-    static void func (void);                            \
-    \
-    GST_START_TEST(func ## _decodebin1)                  \
-    { g_unsetenv("USE_DECODEBIN2"); func(); }            \
-    GST_END_TEST;                                        \
-    \
-    GST_START_TEST(func ## _decodebin2)                  \
-    { g_setenv("USE_DECODEBIN2", "1", TRUE); func(); }   \
-    GST_END_TEST;
+GST_START_TEST (test_uri)
+{
+  GstElement *playbin, *fakesink;
+  gchar *uri;
 
-DEFINE_TEST (test_sink_usage_video_only_stream)
+  fail_unless (gst_element_register (NULL, "redvideosrc", GST_RANK_PRIMARY,
+          gst_red_video_src_get_type ()));
+
+  playbin = gst_element_factory_make ("playbin", "playbin");
+  fail_unless (playbin != NULL, "Failed to create playbin element");
+
+  fakesink = gst_element_factory_make ("fakesink", "fakesink");
+  fail_unless (fakesink != NULL, "Failed to create fakesink element");
+
+  g_object_set (playbin, "video-sink", fakesink, NULL);
+
+  g_object_set (playbin, "uri", "redvideo://", NULL);
+  g_object_get (playbin, "uri", &uri, NULL);
+
+  fail_unless_equals_string (uri, "redvideo://");
+  g_free (uri);
+
+  g_object_get (playbin, "current-uri", &uri, NULL);
+  fail_unless_equals_string (uri, NULL);
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PAUSED),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (playbin, NULL, NULL, -1),
+      GST_STATE_CHANGE_SUCCESS);
+
+  g_object_get (playbin, "uri", &uri, NULL);
+  fail_unless_equals_string (uri, NULL);
+  g_object_get (playbin, "current-uri", &uri, NULL);
+  fail_unless_equals_string (uri, "redvideo://");
+  g_free (uri);
+
+  gst_element_set_state (playbin, GST_STATE_NULL);
+  gst_object_unref (playbin);
+}
+
+GST_END_TEST;
 
 /* make sure the audio sink is not touched for video-only streams */
-     static void test_sink_usage_video_only_stream (void)
+GST_START_TEST (test_sink_usage_video_only_stream)
 {
   GstElement *playbin, *fakevideosink, *fakeaudiosink;
   GstState cur_state, pending_state;
+  GstElement *source;
+  GstSample *last_sample;
+  gint nstreams;
 
   fail_unless (gst_element_register (NULL, "redvideosrc", GST_RANK_PRIMARY,
           gst_red_video_src_get_type ()));
@@ -62,8 +98,8 @@ DEFINE_TEST (test_sink_usage_video_only_stream)
   fakeaudiosink = gst_element_factory_make ("fakesink", "fakeaudiosink");
   fail_unless (fakeaudiosink != NULL, "Failed to create fakeaudiosink element");
 
-  /* video-only stream, audiosink will error out in null => ready if used */
-  g_object_set (fakeaudiosink, "state-error", 1, NULL);
+  /* video-only stream, audiosink will error out in ready => paused if used */
+  g_object_set (fakeaudiosink, "state-error", 2, NULL);
 
   g_object_set (playbin, "video-sink", fakevideosink, NULL);
   g_object_set (playbin, "audio-sink", fakeaudiosink, NULL);
@@ -82,23 +118,31 @@ DEFINE_TEST (test_sink_usage_video_only_stream)
   fail_unless_equals_int (cur_state, GST_STATE_NULL);
   fail_unless_equals_int (pending_state, GST_STATE_VOID_PENDING);
 
-  {
-    GValueArray *stream_info = NULL;
+  g_object_get (playbin, "n-video", &nstreams, NULL);
+  fail_unless_equals_int (nstreams, 1);
 
-    g_object_get (playbin, "stream-info-value-array", &stream_info, NULL);
-    fail_unless (stream_info != NULL);
-    fail_unless_equals_int (stream_info->n_values, 1);
-    g_value_array_free (stream_info);
-  }
+  g_object_get (playbin, "n-audio", &nstreams, NULL);
+  fail_unless_equals_int (nstreams, 0);
+
+  g_object_get (playbin, "n-text", &nstreams, NULL);
+  fail_unless_equals_int (nstreams, 0);
+
+  g_object_get (playbin, "source", &source, NULL);
+  fail_unless (G_TYPE_FROM_INSTANCE (source) == gst_red_video_src_get_type ());
+  gst_object_unref (source);
+
+  g_object_get (playbin, "sample", &last_sample, NULL);
+  fail_unless (GST_IS_SAMPLE (last_sample));
+  gst_sample_unref (last_sample);
 
   gst_element_set_state (playbin, GST_STATE_NULL);
   gst_object_unref (playbin);
 }
 
-/* this tests async error handling when setting up the subbin */
-DEFINE_TEST (test_suburi_error_unknowntype)
+GST_END_TEST;
 
-     static void test_suburi_error_unknowntype (void)
+/* this tests async error handling when setting up the subbin */
+GST_START_TEST (test_suburi_error_unknowntype)
 {
   GstElement *playbin, *fakesink;
 
@@ -130,9 +174,9 @@ DEFINE_TEST (test_suburi_error_unknowntype)
   gst_object_unref (playbin);
 }
 
-DEFINE_TEST (test_suburi_error_invalidfile)
+GST_END_TEST;
 
-     static void test_suburi_error_invalidfile (void)
+GST_START_TEST (test_suburi_error_invalidfile)
 {
   GstElement *playbin, *fakesink;
 
@@ -163,9 +207,9 @@ DEFINE_TEST (test_suburi_error_invalidfile)
   gst_object_unref (playbin);
 }
 
-DEFINE_TEST (test_suburi_error_wrongproto)
+GST_END_TEST;
 
-     static void test_suburi_error_wrongproto (void)
+GST_START_TEST (test_suburi_error_wrongproto)
 {
   GstElement *playbin, *fakesink;
 
@@ -196,6 +240,8 @@ DEFINE_TEST (test_suburi_error_wrongproto)
   gst_object_unref (playbin);
 }
 
+GST_END_TEST;
+
 static GstElement *
 create_playbin (const gchar * uri)
 {
@@ -222,9 +268,7 @@ create_playbin (const gchar * uri)
   return playbin;
 }
 
-DEFINE_TEST (test_missing_urisource_handler)
-
-     static void test_missing_urisource_handler (void)
+GST_START_TEST (test_missing_urisource_handler)
 {
   GstStructure *s;
   GstMessage *msg;
@@ -245,8 +289,8 @@ DEFINE_TEST (test_missing_urisource_handler)
 
   msg = gst_bus_poll (bus, GST_MESSAGE_ELEMENT | GST_MESSAGE_ERROR, -1);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  s = (GstStructure *) gst_message_get_structure (msg);
+  fail_unless (s != NULL);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "detail", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "detail"),
@@ -273,9 +317,9 @@ DEFINE_TEST (test_missing_urisource_handler)
   gst_object_unref (playbin);
 }
 
-DEFINE_TEST (test_missing_suburisource_handler)
+GST_END_TEST;
 
-     static void test_missing_suburisource_handler (void)
+GST_START_TEST (test_missing_suburisource_handler)
 {
   GstStructure *s;
   GstMessage *msg;
@@ -289,8 +333,7 @@ DEFINE_TEST (test_missing_suburisource_handler)
 
   fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_READY),
       GST_STATE_CHANGE_SUCCESS);
-  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PAUSED),
-      GST_STATE_CHANGE_FAILURE);
+  gst_element_set_state (playbin, GST_STATE_PAUSED);
 
   /* there should be at least a missing-plugin message on the bus now and an
    * error message; the missing-plugin message should be first */
@@ -298,8 +341,8 @@ DEFINE_TEST (test_missing_suburisource_handler)
 
   msg = gst_bus_poll (bus, GST_MESSAGE_ELEMENT | GST_MESSAGE_ERROR, -1);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  s = (GstStructure *) gst_message_get_structure (msg);
+  fail_unless (s != NULL);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "detail", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "detail"), "cookie");
@@ -307,11 +350,11 @@ DEFINE_TEST (test_missing_suburisource_handler)
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "urisource");
   gst_message_unref (msg);
 
-  msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, -1);
-  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ERROR);
+  msg = gst_bus_poll (bus, GST_MESSAGE_WARNING, -1);
+  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_WARNING);
 
-  /* make sure the error is a CORE MISSING_PLUGIN one */
-  gst_message_parse_error (msg, &err, NULL);
+  /* make sure the *warning* is a CORE MISSING_PLUGIN one */
+  gst_message_parse_warning (msg, &err, NULL);
   fail_unless (err != NULL);
   fail_unless (err->domain == GST_CORE_ERROR, "error has wrong error domain "
       "%s instead of core-error-quark", g_quark_to_string (err->domain));
@@ -319,14 +362,31 @@ DEFINE_TEST (test_missing_suburisource_handler)
       "code %u instead of GST_CORE_ERROR_MISSING_PLUGIN", err->code);
   g_error_free (err);
   gst_message_unref (msg);
+
+  msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, -1);
+  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ERROR);
+
+  /* make sure the error is a RESOURCE NOT_FOUND one */
+  gst_message_parse_error (msg, &err, NULL);
+  fail_unless (err != NULL);
+  fail_unless (err->domain == GST_RESOURCE_ERROR,
+      "error has wrong error domain " "%s instead of resource-error-quark",
+      g_quark_to_string (err->domain));
+  fail_unless (err->code == GST_RESOURCE_ERROR_NOT_FOUND,
+      "error has wrong " "code %u instead of GST_RESOURCE_ERROR_NOT_FOUND",
+      err->code);
+  g_error_free (err);
+  gst_message_unref (msg);
+
   gst_object_unref (bus);
 
   gst_element_set_state (playbin, GST_STATE_NULL);
   gst_object_unref (playbin);
 }
 
-DEFINE_TEST (test_missing_primary_decoder)
-     static void test_missing_primary_decoder (void)
+GST_END_TEST;
+
+GST_START_TEST (test_missing_primary_decoder)
 {
   GstStructure *s;
   GstMessage *msg;
@@ -350,19 +410,19 @@ DEFINE_TEST (test_missing_primary_decoder)
 
   msg = gst_bus_poll (bus, GST_MESSAGE_ELEMENT | GST_MESSAGE_ERROR, -1);
   fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ELEMENT);
-  fail_unless (msg->structure != NULL);
-  s = msg->structure;
+  s = (GstStructure *) gst_message_get_structure (msg);
+  fail_unless (s != NULL);
   fail_unless (gst_structure_has_name (s, "missing-plugin"));
   fail_unless (gst_structure_has_field_typed (s, "type", G_TYPE_STRING));
   fail_unless_equals_string (gst_structure_get_string (s, "type"), "decoder");
   fail_unless (gst_structure_has_field_typed (s, "detail", GST_TYPE_CAPS));
   gst_message_unref (msg);
 
-  msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, -1);
-  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ERROR);
+  msg = gst_bus_poll (bus, GST_MESSAGE_WARNING, -1);
+  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_WARNING);
 
-  /* make sure the error is a STREAM CODEC_NOT_FOUND one */
-  gst_message_parse_error (msg, &err, NULL);
+  /* make sure the *warning* is a STREAM CODEC_NOT_FOUND one */
+  gst_message_parse_warning (msg, &err, NULL);
   fail_unless (err != NULL);
   fail_unless (err->domain == GST_STREAM_ERROR, "error has wrong error domain "
       "%s instead of stream-error-quark", g_quark_to_string (err->domain));
@@ -370,35 +430,154 @@ DEFINE_TEST (test_missing_primary_decoder)
       "code %u instead of GST_STREAM_ERROR_CODEC_NOT_FOUND", err->code);
   g_error_free (err);
   gst_message_unref (msg);
+
+  msg = gst_bus_poll (bus, GST_MESSAGE_ERROR, -1);
+  fail_unless_equals_int (GST_MESSAGE_TYPE (msg), GST_MESSAGE_ERROR);
+
+  /* make sure the error is a CORE MISSING_PLUGIN one */
+  gst_message_parse_error (msg, &err, NULL);
+  fail_unless (err != NULL);
+  fail_unless (err->domain == GST_CORE_ERROR, "error has wrong error domain "
+      "%s instead of core-error-quark", g_quark_to_string (err->domain));
+  fail_unless (err->code == GST_CORE_ERROR_MISSING_PLUGIN, "error has wrong "
+      "code %u instead of GST_CORE_ERROR_MISSING_PLUGIN", err->code);
+  g_error_free (err);
+  gst_message_unref (msg);
+
   gst_object_unref (bus);
 
   gst_element_set_state (playbin, GST_STATE_NULL);
   gst_object_unref (playbin);
 }
 
+GST_END_TEST;
+
+GST_START_TEST (test_refcount)
+{
+  GstElement *playbin, *audiosink, *videosink, *vis;
+
+  fail_unless (gst_element_register (NULL, "redvideosrc", GST_RANK_PRIMARY,
+          gst_red_video_src_get_type ()));
+
+  playbin = gst_element_factory_make ("playbin", NULL);
+  audiosink = gst_element_factory_make ("fakesink", "myaudiosink");
+  videosink = gst_element_factory_make ("fakesink", "myvideosink");
+  vis = gst_element_factory_make ("identity", "myvis");
+
+  /* ref because we need them after we unref playbin */
+  gst_object_ref (audiosink);
+  gst_object_ref (videosink);
+  gst_object_ref (vis);
+
+  /* Sinks have floating ref only, setting the properties takes ownership. */
+  g_object_set (playbin,
+      "audio-sink", audiosink,
+      "video-sink", videosink,
+      "vis-plugin", vis, "flags", 0x01 | 0x02 | 0x08, NULL);
+
+  g_object_set (playbin, "uri", "redvideo://", NULL);
+  //"uri", "file:///home/wim/data/cdda.ogg", NULL);
+
+  ASSERT_OBJECT_REFCOUNT (playbin, "playbin", 1);
+
+  /* we have 3 refs now, one from ourselves, one from playbin and one from playsink */
+  ASSERT_OBJECT_REFCOUNT (audiosink, "myaudiosink", 3);
+  ASSERT_OBJECT_REFCOUNT (videosink, "myvideosink", 3);
+  ASSERT_OBJECT_REFCOUNT (vis, "myvis", 2);
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PAUSED),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (playbin, NULL, NULL,
+          GST_CLOCK_TIME_NONE), GST_STATE_CHANGE_SUCCESS);
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_NULL),
+      GST_STATE_CHANGE_SUCCESS);
+
+  ASSERT_OBJECT_REFCOUNT (playbin, "playbin", 1);
+  /* refcount of our elements is undefined, playbin might keep additional refs
+   * because it cached the elements in bins */
+  gst_object_unref (playbin);
+
+  /* now we are back to our refs */
+  ASSERT_OBJECT_REFCOUNT (audiosink, "myaudiosink", 1);
+  ASSERT_OBJECT_REFCOUNT (videosink, "myvideosink", 1);
+  ASSERT_OBJECT_REFCOUNT (vis, "myvis", 1);
+
+  gst_object_unref (audiosink);
+  gst_object_unref (videosink);
+  gst_object_unref (vis);
+}
+
+GST_END_TEST;
+
+static void
+source_setup (GstElement * playbin, GstElement * source, GstElement ** p_src)
+{
+  GST_LOG ("source-setup called, source = %s", G_OBJECT_TYPE_NAME (source));
+  *p_src = gst_object_ref (source);
+  GST_LOG ("here");
+}
+
+GST_START_TEST (test_source_setup)
+{
+  GstElement *playbin, *videosink;
+  GstElement *src = NULL;
+
+  if (!gst_registry_check_feature_version (gst_registry_get (), "redvideosrc",
+          0, 10, 0)) {
+    fail_unless (gst_element_register (NULL, "redvideosrc", GST_RANK_PRIMARY,
+            gst_red_video_src_get_type ()));
+  }
+
+  playbin = gst_element_factory_make ("playbin", NULL);
+  g_object_set (playbin, "uri", "redvideo://", NULL);
+
+  videosink = gst_element_factory_make ("fakesink", "myvideosink");
+  g_object_set (playbin, "video-sink", videosink, NULL);
+
+  g_signal_connect (playbin, "source-setup", G_CALLBACK (source_setup), &src);
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PAUSED),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (playbin, NULL, NULL,
+          GST_CLOCK_TIME_NONE), GST_STATE_CHANGE_SUCCESS);
+
+  fail_unless (src != NULL);
+  fail_unless (G_OBJECT_TYPE (src) == gst_red_video_src_get_type ());
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_NULL),
+      GST_STATE_CHANGE_SUCCESS);
+
+  gst_object_unref (playbin);
+  gst_object_unref (src);
+}
+
+GST_END_TEST;
+
 /*** redvideo:// source ***/
 
 static GstURIType
-gst_red_video_src_uri_get_type (void)
+gst_red_video_src_uri_get_type (GType type)
 {
   return GST_URI_SRC;
 }
-static gchar **
-gst_red_video_src_uri_get_protocols (void)
+
+static const gchar *const *
+gst_red_video_src_uri_get_protocols (GType type)
 {
-  static gchar *protocols[] = { "redvideo", NULL };
+  static const gchar *protocols[] = { "redvideo", NULL };
 
   return protocols;
 }
 
-static const gchar *
+static gchar *
 gst_red_video_src_uri_get_uri (GstURIHandler * handler)
 {
-  return "redvideo://";
+  return g_strdup ("redvideo://");
 }
 
 static gboolean
-gst_red_video_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
+gst_red_video_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
+    GError ** error)
 {
   return (uri != NULL && g_str_has_prefix (uri, "redvideo:"));
 }
@@ -427,87 +606,88 @@ gst_red_video_src_init_type (GType type)
 typedef GstPushSrc GstRedVideoSrc;
 typedef GstPushSrcClass GstRedVideoSrcClass;
 
-GST_BOILERPLATE_FULL (GstRedVideoSrc, gst_red_video_src, GstPushSrc,
-    GST_TYPE_PUSH_SRC, gst_red_video_src_init_type);
-
-static void
-gst_red_video_src_base_init (gpointer klass)
-{
-  static const GstElementDetails details =
-      GST_ELEMENT_DETAILS ("Red Video Src", "Source/Video", "yep", "me");
-  static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
-      GST_PAD_SRC, GST_PAD_ALWAYS,
-      GST_STATIC_CAPS ("video/x-raw-yuv, format=(fourcc)I420")
-      );
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_templ));
-  gst_element_class_set_details (element_class, &details);
-}
+G_DEFINE_TYPE_WITH_CODE (GstRedVideoSrc, gst_red_video_src,
+    GST_TYPE_PUSH_SRC, gst_red_video_src_init_type (g_define_type_id));
 
 static GstFlowReturn
 gst_red_video_src_create (GstPushSrc * src, GstBuffer ** p_buf)
 {
   GstBuffer *buf;
-  GstCaps *caps;
-  guint8 *data;
+  GstMapInfo map;
   guint w = 64, h = 64;
   guint size;
 
   size = w * h * 3 / 2;
   buf = gst_buffer_new_and_alloc (size);
-  data = GST_BUFFER_DATA (buf);
-  memset (data, 76, w * h);
-  memset (data + (w * h), 85, (w * h) / 4);
-  memset (data + (w * h) + ((w * h) / 4), 255, (w * h) / 4);
-
-  caps = gst_caps_new_simple ("video/x-raw-yuv", "format", GST_TYPE_FOURCC,
-      GST_MAKE_FOURCC ('I', '4', '2', '0'), "width", G_TYPE_INT, w, "height",
-      G_TYPE_INT, h, "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  memset (map.data, 76, w * h);
+  memset (map.data + (w * h), 85, (w * h) / 4);
+  memset (map.data + (w * h) + ((w * h) / 4), 255, (w * h) / 4);
+  gst_buffer_unmap (buf, &map);
 
   *p_buf = buf;
   return GST_FLOW_OK;
+}
+
+static GstCaps *
+gst_red_video_src_get_caps (GstBaseSrc * src, GstCaps * filter)
+{
+  guint w = 64, h = 64;
+  return gst_caps_new_simple ("video/x-raw", "format", G_TYPE_STRING,
+      "I420", "width", G_TYPE_INT, w, "height",
+      G_TYPE_INT, h, "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
 }
 
 static void
 gst_red_video_src_class_init (GstRedVideoSrcClass * klass)
 {
   GstPushSrcClass *pushsrc_class = GST_PUSH_SRC_CLASS (klass);
+  GstBaseSrcClass *basesrc_class = GST_BASE_SRC_CLASS (klass);
+  static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
+      GST_PAD_SRC, GST_PAD_ALWAYS,
+      GST_STATIC_CAPS ("video/x-raw, format=(string)I420")
+      );
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_templ));
+  gst_element_class_set_metadata (element_class,
+      "Red Video Src", "Source/Video", "yep", "me");
 
   pushsrc_class->create = gst_red_video_src_create;
+  basesrc_class->get_caps = gst_red_video_src_get_caps;
 }
 
 static void
-gst_red_video_src_init (GstRedVideoSrc * src, GstRedVideoSrcClass * klass)
+gst_red_video_src_init (GstRedVideoSrc * src)
 {
 }
 
 /*** codec:// source ***/
 
 static GstURIType
-gst_codec_src_uri_get_type (void)
+gst_codec_src_uri_get_type (GType type)
 {
   return GST_URI_SRC;
 }
-static gchar **
-gst_codec_src_uri_get_protocols (void)
+
+static const gchar *const *
+gst_codec_src_uri_get_protocols (GType type)
 {
-  static gchar *protocols[] = { "codec", NULL };
+  static const gchar *protocols[] = { (char *) "codec", NULL };
 
   return protocols;
 }
 
-static const gchar *
+static gchar *
 gst_codec_src_uri_get_uri (GstURIHandler * handler)
 {
-  return "codec://";
+  return g_strdup ("codec://");
 }
 
 static gboolean
-gst_codec_src_uri_set_uri (GstURIHandler * handler, const gchar * uri)
+gst_codec_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
+    GError ** error)
 {
   return (uri != NULL && g_str_has_prefix (uri, "codec:"));
 }
@@ -539,14 +719,32 @@ gst_codec_src_init_type (GType type)
 typedef GstPushSrc GstCodecSrc;
 typedef GstPushSrcClass GstCodecSrcClass;
 
-GST_BOILERPLATE_FULL (GstCodecSrc, gst_codec_src, GstPushSrc,
-    GST_TYPE_PUSH_SRC, gst_codec_src_init_type);
+G_DEFINE_TYPE_WITH_CODE (GstCodecSrc, gst_codec_src,
+    GST_TYPE_PUSH_SRC, gst_codec_src_init_type (g_define_type_id));
+
+static GstFlowReturn
+gst_codec_src_create (GstPushSrc * src, GstBuffer ** p_buf)
+{
+  GstBuffer *buf;
+
+  buf = gst_buffer_new_and_alloc (20);
+  gst_buffer_memset (buf, 0, 0, 20);
+
+  *p_buf = buf;
+  return GST_FLOW_OK;
+}
+
+static GstCaps *
+gst_codec_src_get_caps (GstBaseSrc * src, GstCaps * filter)
+{
+  return gst_caps_new_empty_simple ("application/x-codec");
+}
 
 static void
-gst_codec_src_base_init (gpointer klass)
+gst_codec_src_class_init (GstCodecSrcClass * klass)
 {
-  static const GstElementDetails details =
-      GST_ELEMENT_DETAILS ("Codec Src", "Source/Video", "yep", "me");
+  GstPushSrcClass *pushsrc_class = GST_PUSH_SRC_CLASS (klass);
+  GstBaseSrcClass *basesrc_class = GST_BASE_SRC_CLASS (klass);
   static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
       GST_PAD_SRC, GST_PAD_ALWAYS,
       GST_STATIC_CAPS ("application/x-codec")
@@ -555,38 +753,81 @@ gst_codec_src_base_init (gpointer klass)
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_templ));
-  gst_element_class_set_details (element_class, &details);
-}
-
-static GstFlowReturn
-gst_codec_src_create (GstPushSrc * src, GstBuffer ** p_buf)
-{
-  GstBuffer *buf;
-  GstCaps *caps;
-
-  buf = gst_buffer_new_and_alloc (20);
-  memset (GST_BUFFER_DATA (buf), 0, GST_BUFFER_SIZE (buf));
-
-  caps = gst_caps_new_simple ("application/x-codec", NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
-
-  *p_buf = buf;
-  return GST_FLOW_OK;
-}
-
-static void
-gst_codec_src_class_init (GstCodecSrcClass * klass)
-{
-  GstPushSrcClass *pushsrc_class = GST_PUSH_SRC_CLASS (klass);
+  gst_element_class_set_metadata (element_class,
+      "Codec Src", "Source/Video", "yep", "me");
 
   pushsrc_class->create = gst_codec_src_create;
+  basesrc_class->get_caps = gst_codec_src_get_caps;
 }
 
 static void
-gst_codec_src_init (GstCodecSrc * src, GstCodecSrcClass * klass)
+gst_codec_src_init (GstCodecSrc * src)
 {
 }
+
+#if 0
+GST_START_TEST (test_appsink_twice)
+{
+  GstElement *playbin, *appsink;
+  GstSample *sample;
+  gchar *fn, *uri;
+  int flags;
+
+  fn = g_build_filename (GST_TEST_FILES_PATH, "theora-vorbis.ogg", NULL);
+  uri = gst_filename_to_uri (fn, NULL);
+  g_free (fn);
+
+  playbin = gst_element_factory_make ("playbin", NULL);
+  g_object_set (playbin, "uri", uri, NULL);
+  g_free (uri);
+
+  /* disable video decoding/rendering (doesn't actually work yet though) */
+  g_object_get (playbin, "flags", &flags, NULL);
+  g_object_set (playbin, "flags", flags & ~1, NULL);
+
+  appsink = gst_element_factory_make ("appsink", "appsink");
+  g_object_set (playbin, "audio-sink", appsink, NULL);
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PLAYING),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (playbin, NULL, NULL,
+          GST_CLOCK_TIME_NONE), GST_STATE_CHANGE_SUCCESS);
+
+  do {
+    g_signal_emit_by_name (appsink, "pull-sample", &sample);
+    GST_LOG ("got sample: %p", sample);
+    if (sample)
+      gst_sample_unref (sample);
+  }
+  while (sample != NULL);
+
+  GST_INFO ("got first EOS");
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_NULL),
+      GST_STATE_CHANGE_SUCCESS);
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_PLAYING),
+      GST_STATE_CHANGE_ASYNC);
+  fail_unless_equals_int (gst_element_get_state (playbin, NULL, NULL,
+          GST_CLOCK_TIME_NONE), GST_STATE_CHANGE_SUCCESS);
+
+  do {
+    g_signal_emit_by_name (appsink, "pull-sample", &sample);
+    GST_LOG ("got sample: %p", sample);
+    if (sample)
+      gst_sample_unref (sample);
+  }
+  while (sample != NULL);
+
+  GST_INFO ("got second EOS");
+
+  fail_unless_equals_int (gst_element_set_state (playbin, GST_STATE_NULL),
+      GST_STATE_CHANGE_SUCCESS);
+
+  gst_object_unref (playbin);
+}
+
+GST_END_TEST;
+#endif
 
 #endif /* GST_DISABLE_REGISTRY */
 
@@ -600,26 +841,28 @@ playbin_suite (void)
   suite_add_tcase (s, tc_chain);
 
 #ifndef GST_DISABLE_REGISTRY
-  /* with the old decodebin */
-  tcase_add_test (tc_chain, test_sink_usage_video_only_stream_decodebin1);
-  tcase_add_test (tc_chain, test_suburi_error_wrongproto_decodebin1);
-  tcase_add_test (tc_chain, test_suburi_error_invalidfile_decodebin1);
-  tcase_add_test (tc_chain, test_suburi_error_unknowntype_decodebin1);
-  tcase_add_test (tc_chain, test_missing_urisource_handler_decodebin1);
-  tcase_add_test (tc_chain, test_missing_suburisource_handler_decodebin1);
-  tcase_add_test (tc_chain, test_missing_primary_decoder_decodebin1);
+  tcase_add_test (tc_chain, test_uri);
+  tcase_add_test (tc_chain, test_sink_usage_video_only_stream);
+  tcase_add_test (tc_chain, test_suburi_error_wrongproto);
+  tcase_add_test (tc_chain, test_suburi_error_invalidfile);
+  tcase_add_test (tc_chain, test_suburi_error_unknowntype);
+  tcase_add_test (tc_chain, test_missing_urisource_handler);
+  tcase_add_test (tc_chain, test_missing_suburisource_handler);
+  tcase_add_test (tc_chain, test_missing_primary_decoder);
+  tcase_add_test (tc_chain, test_refcount);
+  tcase_add_test (tc_chain, test_source_setup);
 
-  /* and again with decodebin2 */
-  if (0) {
-    /* THIS TEST DOES NOT PASS WITH DECODEBIN2 */
-    tcase_add_test (tc_chain, test_missing_primary_decoder_decodebin2);
+#if 0
+  {
+    GstRegistry *reg = gst_registry_get ();
+
+    if (gst_registry_check_feature_version (reg, "oggdemux", 1, 0, 0) &&
+        gst_registry_check_feature_version (reg, "theoradec", 1, 0, 0) &&
+        gst_registry_check_feature_version (reg, "vorbisdec", 1, 0, 0)) {
+      tcase_add_test (tc_chain, test_appsink_twice);
+    }
   }
-  tcase_add_test (tc_chain, test_sink_usage_video_only_stream_decodebin2);
-  tcase_add_test (tc_chain, test_suburi_error_wrongproto_decodebin2);
-  tcase_add_test (tc_chain, test_suburi_error_invalidfile_decodebin2);
-  tcase_add_test (tc_chain, test_suburi_error_unknowntype_decodebin2);
-  tcase_add_test (tc_chain, test_missing_urisource_handler_decodebin2);
-  tcase_add_test (tc_chain, test_missing_suburisource_handler_decodebin2);
+#endif
 
   /* one day we might also want to have the following checks:
    * tcase_add_test (tc_chain, test_missing_secondary_decoder_one_fatal);

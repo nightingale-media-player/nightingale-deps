@@ -1,8 +1,9 @@
-lib_LTLIBRARIES = libgstfft-@GST_MAJORMINOR@.la
+lib_LTLIBRARIES = libgstfft-@GST_API_VERSION@.la
 
-libgstfft_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/fft
+libgstfft_@GST_API_VERSION@_includedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/fft
 
-libgstfft_@GST_MAJORMINOR@_include_HEADERS = \
+libgstfft_@GST_API_VERSION@_include_HEADERS = \
+	fft.h \
 	gstfft.h \
 	gstffts16.h \
 	gstffts32.h \
@@ -23,7 +24,7 @@ noinst_HEADERS = \
 	_kiss_fft_guts_f32.h \
 	_kiss_fft_guts_f64.h
 
-libgstfft_@GST_MAJORMINOR@_la_SOURCES = \
+libgstfft_@GST_API_VERSION@_la_SOURCES = \
 	gstfft.c \
 	gstffts16.c \
 	gstffts32.c \
@@ -38,30 +39,34 @@ libgstfft_@GST_MAJORMINOR@_la_SOURCES = \
 	kiss_fftr_f32.c \
 	kiss_fftr_f64.c
 
-libgstfft_@GST_MAJORMINOR@_la_LIBADD = $(GST_LIBS) $(LIBM)
-libgstfft_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS)
-libgstfft_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
+libgstfft_@GST_API_VERSION@_la_LIBADD = $(GST_LIBS) $(LIBM)
+libgstfft_@GST_API_VERSION@_la_CFLAGS =  $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+libgstfft_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
 EXTRA_DIST = kiss_version
 
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES = GstFft-@GST_MAJORMINOR@.gir
+BUILT_GIRSOURCES = GstFft-@GST_API_VERSION@.gir
 
-gir_headers=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_MAJORMINOR@_include_HEADERS))
-gir_sources=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_MAJORMINOR@_la_SOURCES))
-gir_cincludes=$(patsubst %,--c-include='gst/fft/%',$(libgstfft_@GST_MAJORMINOR@_include_HEADERS))
+gir_headers=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_API_VERSION@_include_HEADERS))
+gir_sources=$(patsubst %,$(srcdir)/%, $(libgstfft_@GST_API_VERSION@_la_SOURCES))
 
-GstFft-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstfft-@GST_MAJORMINOR@.la
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH):$(top_builddir)/pkgconfig" \
+GstFft-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstfft-@GST_API_VERSION@.la
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" GI_SCANNER_DISABLE_CACHE=yes\
+		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstFft \
-		--nsversion=@GST_MAJORMINOR@ \
+		--nsversion=@GST_API_VERSION@ \
 		--strip-prefix=Gst \
-		$(gir_cincludes) \
-		--add-include-path=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst \
-		--library=gstfft-0.10 \
-		--include=Gst-0.10 \
+		--warn-all \
+		--c-include "gst/fft/fft.h" \
+		-I$(top_srcdir)/gst-libs \
+		-I$(top_builddir)/gst-libs \
+		--add-include-path=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
+		--library=libgstfft-@GST_API_VERSION@.la \
+		--include=Gst-@GST_API_VERSION@ \
 		--libtool="$(top_builddir)/libtool" \
-		--pkg gstreamer-0.10 \
+		--pkg gstreamer-@GST_API_VERSION@ \
+		--pkg-export gstreamer-fft-@GST_API_VERSION@ \
 		--output $@ \
 		$(gir_headers) \
 		$(gir_sources)
@@ -76,7 +81,12 @@ typelibsdir = $(libdir)/girepository-1.0/
 typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
 
 %.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=$(builddir) --includedir=`$(PKG_CONFIG) --variable=libdir gstreamer-0.10`/gst $(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+	$(AM_V_GEN)PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" \
+		$(INTROSPECTION_COMPILER) \
+		--includedir=$(srcdir) \
+		--includedir=$(builddir) \
+		--includedir=`PKG_CONFIG_PATH="$(GST_PKG_CONFIG_PATH)" $(PKG_CONFIG) --variable=girdir gstreamer-@GST_API_VERSION@` \
+		$(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
 
 CLEANFILES = $(BUILT_GIRSOURCES) $(typelibs_DATA)
 endif

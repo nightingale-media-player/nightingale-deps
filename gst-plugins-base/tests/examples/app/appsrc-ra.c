@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -71,8 +71,6 @@ feed_data (GstElement * appsrc, guint size, App * app)
   GstBuffer *buffer;
   GstFlowReturn ret;
 
-  buffer = gst_buffer_new ();
-
   if (app->offset >= app->length) {
     /* we are EOS, send end-of-stream */
     g_signal_emit_by_name (app->appsrc, "end-of-stream", &ret);
@@ -80,11 +78,15 @@ feed_data (GstElement * appsrc, guint size, App * app)
   }
 
   /* read the amount of data, we are allowed to return less if we are EOS */
+  buffer = gst_buffer_new ();
+
   if (app->offset + size > app->length)
     size = app->length - app->offset;
 
-  GST_BUFFER_DATA (buffer) = app->data + app->offset;
-  GST_BUFFER_SIZE (buffer) = size;
+  gst_buffer_append_memory (buffer,
+      gst_memory_new_wrapped (GST_MEMORY_FLAG_READONLY,
+          app->data, app->length, app->offset, size, NULL, NULL));
+
   /* we need to set an offset for random access */
   GST_BUFFER_OFFSET (buffer) = app->offset;
   GST_BUFFER_OFFSET_END (buffer) = app->offset + size;
@@ -110,8 +112,8 @@ seek_data (GstElement * appsrc, guint64 position, App * app)
   return TRUE;
 }
 
-/* this callback is called when playbin2 has constructed a source object to read
- * from. Since we provided the appsrc:// uri to playbin2, this will be the
+/* this callback is called when playbin has constructed a source object to read
+ * from. Since we provided the appsrc:// uri to playbin, this will be the
  * appsrc that we must handle. We set up some signals to push data into appsrc
  * and one to perform a seek. */
 static void
@@ -188,7 +190,7 @@ main (int argc, char *argv[])
   /* create a mainloop to get messages */
   app->loop = g_main_loop_new (NULL, TRUE);
 
-  app->playbin = gst_element_factory_make ("playbin2", NULL);
+  app->playbin = gst_element_factory_make ("playbin", NULL);
   g_assert (app->playbin);
 
   bus = gst_pipeline_get_bus (GST_PIPELINE (app->playbin));
@@ -215,7 +217,7 @@ main (int argc, char *argv[])
   gst_element_set_state (app->playbin, GST_STATE_NULL);
 
   /* free the file */
-  g_mapped_file_free (app->file);
+  g_mapped_file_unref (app->file);
 
   gst_object_unref (bus);
   g_main_loop_unref (app->loop);

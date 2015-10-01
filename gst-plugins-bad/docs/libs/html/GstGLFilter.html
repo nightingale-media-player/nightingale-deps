@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstGLFilter: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gl.html" title="OpenGL Helper Library">
+<link rel="prev" href="GstGLBaseFilter.html" title="GstGLBaseFilter">
+<link rel="next" href="GstGLFramebuffer.html" title="GstGLFramebuffer">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GstGLFilter.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GstGLFilter.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gl.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GstGLBaseFilter.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GstGLFramebuffer.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstGLFilter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstGLFilter.top_of_page"></a>GstGLFilter</span></h2>
+<p>GstGLFilter</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstGLFilter.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLFilter.html#gst-gl-filter-draw-texture" title="gst_gl_filter_draw_texture ()">gst_gl_filter_draw_texture</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLFilter.html#gst-gl-filter-render-to-target" title="gst_gl_filter_render_to_target ()">gst_gl_filter_render_to_target</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLFilter.html#gst-gl-filter-render-to-target-with-shader" title="gst_gl_filter_render_to_target_with_shader ()">gst_gl_filter_render_to_target_with_shader</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstGLFilter.html#gst-gl-filter-filter-texture" title="gst_gl_filter_filter_texture ()">gst_gl_filter_filter_texture</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstGLFilter.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstGLFilter.html#GstGLFilter-struct" title="GstGLFilter">GstGLFilter</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstGLFilter.html#GstGLFilterClass" title="GstGLFilterClass">GstGLFilterClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstGLFilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a class="link" href="GstGLBaseFilter.html" title="GstGLBaseFilter">GstGLBaseFilter</a>
+                        <span class="lineart">╰──</span> GstGLFilter
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstGLFilter.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="GstGLFilter.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-gl-filter-draw-texture"></a><h3>gst_gl_filter_draw_texture ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_filter_draw_texture (<em class="parameter"><code><a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a> *filter</code></em>,
+                            <em class="parameter"><code><span class="type">GLuint</span> texture</code></em>,
+                            <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> width</code></em>,
+                            <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> height</code></em>);</pre>
+<p>Draws <em class="parameter"><code>texture</code></em>
+ into the OpenGL scene at the specified <em class="parameter"><code>width</code></em>
+ and <em class="parameter"><code>height</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.15.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>texture</p></td>
+<td class="parameter_description"><p>the texture to draw</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>width of <em class="parameter"><code>texture</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>height of texture</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-filter-render-to-target"></a><h3>gst_gl_filter_render_to_target ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_filter_render_to_target (<em class="parameter"><code><a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a> *filter</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> resize</code></em>,
+                                <em class="parameter"><code><span class="type">GLuint</span> input</code></em>,
+                                <em class="parameter"><code><span class="type">GLuint</span> target</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Utilities.html#GLCB:CAPS" title="GLCB ()"><span class="type">GLCB</span></a> func</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<p>Transforms <em class="parameter"><code>input</code></em>
+ into <em class="parameter"><code>output</code></em>
+ using <em class="parameter"><code>func</code></em>
+ on through FBO.  <em class="parameter"><code>resize</code></em>
+ should
+only ever be <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> whenever <em class="parameter"><code>input</code></em>
+ is the input texture of <em class="parameter"><code>filter</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.15.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>resize</p></td>
+<td class="parameter_description"><p>whether to automatically resize the texture between the input size
+and the output size</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>input</p></td>
+<td class="parameter_description"><p>the input texture</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>target</p></td>
+<td class="parameter_description"><p>the output texture</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>func</p></td>
+<td class="parameter_description"><p>the function to transform <em class="parameter"><code>input</code></em>
+into <em class="parameter"><code>output</code></em>
+. called with <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data associated with <em class="parameter"><code>func</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-filter-render-to-target-with-shader"></a><h3>gst_gl_filter_render_to_target_with_shader ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_gl_filter_render_to_target_with_shader
+                               (<em class="parameter"><code><a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a> *filter</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> resize</code></em>,
+                                <em class="parameter"><code><span class="type">GLuint</span> input</code></em>,
+                                <em class="parameter"><code><span class="type">GLuint</span> target</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-gstglshader.html#GstGLShader"><span class="type">GstGLShader</span></a> *shader</code></em>);</pre>
+<p>Transforms <em class="parameter"><code>input</code></em>
+ into <em class="parameter"><code>output</code></em>
+ using <em class="parameter"><code>shader</code></em>
+ on FBO.  <em class="parameter"><code>resize</code></em>
+ should
+only ever be <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> whenever <em class="parameter"><code>input</code></em>
+ is the input texture of <em class="parameter"><code>filter</code></em>
+.</p>
+<p>See also: <a class="link" href="GstGLFilter.html#gst-gl-filter-render-to-target" title="gst_gl_filter_render_to_target ()"><code class="function">gst_gl_filter_render_to_target()</code></a></p>
+<div class="refsect3">
+<a name="id-1.2.9.15.7.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>resize</p></td>
+<td class="parameter_description"><p>whether to automatically resize the texture between the input size
+and the output size</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>input</p></td>
+<td class="parameter_description"><p>the input texture</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>target</p></td>
+<td class="parameter_description"><p>the output texture</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>shader</p></td>
+<td class="parameter_description"><p>the shader to use.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-gl-filter-filter-texture"></a><h3>gst_gl_filter_filter_texture ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_gl_filter_filter_texture (<em class="parameter"><code><a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a> *filter</code></em>,
+                              <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *inbuf</code></em>,
+                              <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *outbuf</code></em>);</pre>
+<p>Perform automatic upload if needed, call filter_texture vfunc and then an
+automatic download if needed.</p>
+<div class="refsect3">
+<a name="id-1.2.9.15.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>inbuf</p></td>
+<td class="parameter_description"><p>an input buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>outbuf</p></td>
+<td class="parameter_description"><p>an output buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.15.7.5.6"></a><h4>Returns</h4>
+<p> whether the transformation succeeded</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstGLFilter.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstGLFilter-struct"></a><h3>GstGLFilter</h3>
+<pre class="programlisting">typedef struct _GstGLFilter GstGLFilter;</pre>
+<p><a class="link" href="GstGLFilter.html" title="GstGLFilter"><span class="type">GstGLFilter</span></a> is a base class that provides the logic of getting the GL context
+from downstream and automatic upload/download for non-<a class="link" href="gst-plugins-bad-libs-gstglmemory.html#GstGLMemory" title="GstGLMemory"><span class="type">GstGLMemory</span></a>
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a>s.</p>
+<div class="refsect3">
+<a name="id-1.2.9.15.8.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstGLFilterClass"></a><h3>GstGLFilterClass</h3>
+<pre class="programlisting">typedef struct {
+  GstGLBaseFilterClass parent_class;
+
+  gboolean (*set_caps)          (GstGLFilter* filter, GstCaps* incaps, GstCaps* outcaps);
+  gboolean (*filter)            (GstGLFilter *filter, GstBuffer *inbuf, GstBuffer *outbuf);
+  gboolean (*filter_texture)    (GstGLFilter *filter, guint in_tex, guint out_tex);
+  gboolean (*init_fbo)          (GstGLFilter *filter);
+
+  GstCaps *(*transform_internal_caps) (GstGLFilter *filter,
+    GstPadDirection direction, GstCaps * caps, GstCaps * filter_caps);
+
+  /* useful to init and cleanup custom gl resources */
+  void (*display_init_cb)       (GstGLFilter *filter);
+  void (*display_reset_cb)      (GstGLFilter *filter);
+} GstGLFilterClass;
+</pre>
+<div class="refsect3">
+<a name="id-1.2.9.15.8.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstGLBaseFilter.html#GstGLBaseFilterClass" title="GstGLBaseFilterClass"><span class="type">GstGLBaseFilterClass</span></a> <em class="structfield"><code><a name="GstGLFilterClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.set-caps"></a>set_caps</code></em> ()</p></td>
+<td class="struct_member_description"><p>mirror from <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html"><span class="type">GstBaseTransform</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.filter"></a>filter</code></em> ()</p></td>
+<td class="struct_member_description"><p>perform operations on the input and output buffers.  In general,
+you should avoid using this method if at all possible. One valid
+use-case for using this is keeping previous buffers for future calculations.
+Note: If <em class="parameter"><code>filter</code></em>
+exists, then <em class="parameter"><code>filter_texture</code></em>
+is not run</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.filter-texture"></a>filter_texture</code></em> ()</p></td>
+<td class="struct_member_description"><p>given <em class="parameter"><code>in_tex</code></em>
+, transform it into <em class="parameter"><code>out_tex</code></em>
+.  Not used
+if <em class="parameter"><code>filter</code></em>
+exists</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.init-fbo"></a>init_fbo</code></em> ()</p></td>
+<td class="struct_member_description"><p>perform initialization when the Framebuffer object is created</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.transform-internal-caps"></a>transform_internal_caps</code></em> ()</p></td>
+<td class="struct_member_description"><p>Perform sub-class specific modifications of the
+caps to be processed between upload on input and before download for output.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.display-init-cb"></a>display_init_cb</code></em> ()</p></td>
+<td class="struct_member_description"><p>execute arbitrary gl code on start</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstGLFilterClass.display-reset-cb"></a>display_reset_cb</code></em> ()</p></td>
+<td class="struct_member_description"><p>execute arbitrary gl code at stop</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

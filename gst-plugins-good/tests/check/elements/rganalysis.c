@@ -60,13 +60,13 @@
  */
 
 #include <gst/check/gstcheck.h>
-
-GList *buffers = NULL;
+#include <gst/audio/audio.h>
 
 /* For ease of programming we use globals to keep refs for our floating src and
  * sink pads we create; otherwise we always have to do get_pad, get_peer, and
  * then remove references in every test function */
 static GstPad *mysrcpad, *mysinkpad;
+static GstBus *mybus;
 
 /* Mapping from supported sample rates to the correct result gain for the
  * following test waveform: 20 * 512 samples with a quarter-full amplitude of
@@ -125,17 +125,15 @@ get_expected_gain (guint sample_rate)
   "rate = (int) { 8000, 11025, 12000, 16000, 22050, "   \
   "24000, 32000, 44100, 48000 }"
 
-#define RG_ANALYSIS_CAPS_TEMPLATE_STRING  \
-  "audio/x-raw-float, "                   \
-  "width = (int) 32, "                    \
-  "endianness = (int) BYTE_ORDER, "       \
-  REPLAY_GAIN_CAPS                        \
-  "; "                                    \
-  "audio/x-raw-int, "                     \
-  "width = (int) 16, "                    \
-  "depth = (int) [ 1, 16 ], "             \
-  "signed = (boolean) true, "             \
-  "endianness = (int) BYTE_ORDER, "       \
+#define RG_ANALYSIS_CAPS_TEMPLATE_STRING      \
+  "audio/x-raw, "                             \
+  "format = (string) "GST_AUDIO_NE (F32) ", " \
+  "layout = (string) interleaved, "           \
+  REPLAY_GAIN_CAPS                            \
+  "; "                                        \
+  "audio/x-raw, "                             \
+  "format = (string) "GST_AUDIO_NE (S16) ", " \
+  "layout = (string) interleaved, "           \
   REPLAY_GAIN_CAPS
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -149,28 +147,50 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (RG_ANALYSIS_CAPS_TEMPLATE_STRING)
     );
 
-GstElement *
-setup_rganalysis ()
+static gboolean
+mysink_event_func (GstPad * pad, GstObject * parent, GstEvent * event)
+{
+  GST_LOG_OBJECT (pad, "%s event: %" GST_PTR_FORMAT,
+      GST_EVENT_TYPE_NAME (event), event);
+
+  /* a sink would post tag events as messages, so do the same here,
+   * esp. since we're polling on the bus waiting for TAG messages.. */
+  if (GST_EVENT_TYPE (event) == GST_EVENT_TAG) {
+    GstTagList *taglist;
+
+    gst_event_parse_tag (event, &taglist);
+
+    gst_bus_post (mybus, gst_message_new_tag (GST_OBJECT (mysinkpad),
+            gst_tag_list_copy (taglist)));
+  }
+
+  gst_event_unref (event);
+  return TRUE;
+}
+
+static GstElement *
+setup_rganalysis (void)
 {
   GstElement *analysis;
   GstBus *bus;
 
   GST_DEBUG ("setup_rganalysis");
   analysis = gst_check_setup_element ("rganalysis");
-  mysrcpad = gst_check_setup_src_pad (analysis, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (analysis, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (analysis, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (analysis, &sinktemplate);
+  gst_pad_set_event_function (mysinkpad, mysink_event_func);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   bus = gst_bus_new ();
   gst_element_set_bus (analysis, bus);
-  /* gst_element_set_bus does not steal a reference. */
-  gst_object_unref (bus);
+
+  mybus = bus;                  /* keep ref */
 
   return analysis;
 }
 
-void
+static void
 cleanup_rganalysis (GstElement * element)
 {
   GST_DEBUG ("cleanup_rganalysis");
@@ -178,6 +198,9 @@ cleanup_rganalysis (GstElement * element)
   g_list_foreach (buffers, (GFunc) gst_mini_object_unref, NULL);
   g_list_free (buffers);
   buffers = NULL;
+
+  gst_object_unref (mybus);
+  mybus = NULL;
 
   /* The bus owns references to the element: */
   gst_element_set_bus (element, NULL);
@@ -198,14 +221,69 @@ set_playing_state (GstElement * element)
 }
 
 static void
+send_flush_events (GstElement * element)
+{
+  gboolean res;
+  GstPad *pad;
+
+  pad = mysrcpad;
+  res = gst_pad_push_event (pad, gst_event_new_flush_start ());
+  fail_unless (res, "flush-start even not handledt");
+  res = gst_pad_push_event (pad, gst_event_new_flush_stop (TRUE));
+  fail_unless (res, "flush-stop event not handled");
+}
+
+static void
+send_stream_start_event (GstElement * element)
+{
+  gboolean res;
+  GstPad *pad;
+
+  pad = mysrcpad;
+  res = gst_pad_push_event (pad, gst_event_new_stream_start ("test"));
+  fail_unless (res, "STREAM_START event not handled");
+}
+
+static void
+send_caps_event (const gchar * format, gint sample_rate, gint channels)
+{
+  GstCaps *caps;
+
+  caps = gst_caps_new_simple ("audio/x-raw",
+      "format", G_TYPE_STRING, format,
+      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, channels,
+      "layout", G_TYPE_STRING, "interleaved", NULL);
+  if (channels == 2) {
+    gst_caps_set_simple (caps,
+        "channel-mask", GST_TYPE_BITMASK,
+        G_GUINT64_CONSTANT (0x0000000000000003), NULL);
+  }
+  gst_pad_set_caps (mysrcpad, caps);
+  gst_caps_unref (caps);
+}
+
+static void
+send_segment_event (GstElement * element)
+{
+  GstSegment segment;
+  gboolean res;
+  GstPad *pad;
+
+  pad = mysrcpad;
+  gst_segment_init (&segment, GST_FORMAT_TIME);
+  res = gst_pad_push_event (pad, gst_event_new_segment (&segment));
+  fail_unless (res, "SEGMENT event not handled");
+}
+
+static void
 send_eos_event (GstElement * element)
 {
   GstBus *bus = gst_element_get_bus (element);
-  GstPad *pad = gst_element_get_static_pad (element, "sink");
-  GstEvent *event = gst_event_new_eos ();
+  GstPad *pad = mysrcpad;
+  gboolean res;
 
-  fail_unless (gst_pad_send_event (pad, event),
-      "Cannot send EOS event: Not handled.");
+  res = gst_pad_push_event (pad, gst_event_new_eos ());
+  fail_unless (res, "EOS event not handled");
 
   /* There is no sink element, so _we_ post the EOS message on the bus here.  Of
    * course we generate any EOS ourselves, but this allows us to poll for the
@@ -214,19 +292,16 @@ send_eos_event (GstElement * element)
   fail_unless (gst_bus_post (bus, gst_message_new_eos (NULL)));
 
   gst_object_unref (bus);
-  gst_object_unref (pad);
 }
 
 static void
 send_tag_event (GstElement * element, GstTagList * tag_list)
 {
-  GstPad *pad = gst_element_get_static_pad (element, "sink");
+  GstPad *pad = mysrcpad;
   GstEvent *event = gst_event_new_tag (tag_list);
 
-  fail_unless (gst_pad_send_event (pad, event),
+  fail_unless (gst_pad_push_event (pad, event),
       "Cannot send TAG event: Not handled.");
-
-  gst_object_unref (pad);
 }
 
 static void
@@ -245,11 +320,8 @@ poll_eos (GstElement * element)
   gst_object_unref (bus);
 }
 
-/* This also polls for EOS since the TAG message comes right before the end of
- * streams. */
-
 static GstTagList *
-poll_tags (GstElement * element)
+poll_tags_only (GstElement * element)
 {
   GstBus *bus = gst_element_get_bus (element);
   GstTagList *tag_list;
@@ -261,6 +333,17 @@ poll_tags (GstElement * element)
   gst_message_parse_tag (message, &tag_list);
   gst_message_unref (message);
   gst_object_unref (bus);
+
+  return tag_list;
+}
+
+/* This also polls for EOS since the TAG message comes right before the end of
+ * streams. */
+
+static GstTagList *
+poll_tags_followed_by_eos (GstElement * element)
+{
+  GstTagList *tag_list = poll_tags_only (element);
 
   poll_eos (element);
 
@@ -354,18 +437,15 @@ static GstBuffer *
 test_buffer_const_float_mono (gint sample_rate, gsize n_frames, gfloat value)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gfloat));
-  gfloat *data = (gfloat *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  GstMapInfo map;
+  gfloat *data;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gfloat *) map.data;
   for (i = n_frames; i--;)
     *data++ = value;
-
-  caps = gst_caps_new_simple ("audio/x-raw-float",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -377,20 +457,17 @@ test_buffer_const_float_stereo (gint sample_rate, gsize n_frames,
     gfloat value_l, gfloat value_r)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gfloat) * 2);
-  gfloat *data = (gfloat *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  GstMapInfo map;
+  gfloat *data;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gfloat *) map.data;
   for (i = n_frames; i--;) {
     *data++ = value_l;
     *data++ = value_r;
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-float",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -402,19 +479,15 @@ test_buffer_const_int16_mono (gint sample_rate, gint depth, gsize n_frames,
     gint16 value)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gint16));
-  gint16 *data = (gint16 *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gint16 *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gint16 *) map.data;
   for (i = n_frames; i--;)
     *data++ = value;
-
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, depth, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -426,21 +499,17 @@ test_buffer_const_int16_stereo (gint sample_rate, gint depth, gsize n_frames,
     gint16 value_l, gint16 value_r)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gint16) * 2);
-  gint16 *data = (gint16 *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gint16 *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gint16 *) map.data;
   for (i = n_frames; i--;) {
     *data++ = value_l;
     *data++ = value_r;
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, depth, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -455,10 +524,12 @@ test_buffer_square_float_mono (gint * accumulator, gint sample_rate,
     gsize n_frames, gfloat value)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gfloat));
-  gfloat *data = (gfloat *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gfloat *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gfloat *) map.data;
   for (i = n_frames; i--;) {
     *accumulator += 1;
     *accumulator %= 96;
@@ -468,12 +539,7 @@ test_buffer_square_float_mono (gint * accumulator, gint sample_rate,
     else
       *data++ = -value;
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-float",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -485,10 +551,12 @@ test_buffer_square_float_stereo (gint * accumulator, gint sample_rate,
     gsize n_frames, gfloat value_l, gfloat value_r)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gfloat) * 2);
-  gfloat *data = (gfloat *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gfloat *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gfloat *) map.data;
   for (i = n_frames; i--;) {
     *accumulator += 1;
     *accumulator %= 96;
@@ -501,12 +569,7 @@ test_buffer_square_float_stereo (gint * accumulator, gint sample_rate,
       *data++ = -value_r;
     }
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-float",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "width", G_TYPE_INT, 32, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -518,10 +581,12 @@ test_buffer_square_int16_mono (gint * accumulator, gint sample_rate,
     gint depth, gsize n_frames, gint16 value)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gint16));
-  gint16 *data = (gint16 *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gint16 *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gint16 *) map.data;
   for (i = n_frames; i--;) {
     *accumulator += 1;
     *accumulator %= 96;
@@ -531,13 +596,7 @@ test_buffer_square_int16_mono (gint * accumulator, gint sample_rate,
     else
       *data++ = -MAX (value, -32767);
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, depth, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -549,10 +608,12 @@ test_buffer_square_int16_stereo (gint * accumulator, gint sample_rate,
     gint depth, gsize n_frames, gint16 value_l, gint16 value_r)
 {
   GstBuffer *buf = gst_buffer_new_and_alloc (n_frames * sizeof (gint16) * 2);
-  gint16 *data = (gint16 *) GST_BUFFER_DATA (buf);
-  GstCaps *caps;
+  gint16 *data;
+  GstMapInfo map;
   gint i;
 
+  gst_buffer_map (buf, &map, GST_MAP_WRITE);
+  data = (gint16 *) map.data;
   for (i = n_frames; i--;) {
     *accumulator += 1;
     *accumulator %= 96;
@@ -565,13 +626,7 @@ test_buffer_square_int16_stereo (gint * accumulator, gint sample_rate,
       *data++ = -MAX (value_r, -32767);
     }
   }
-
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, sample_rate, "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_BYTE_ORDER, "signed", G_TYPE_BOOLEAN, TRUE,
-      "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, depth, NULL);
-  gst_buffer_set_caps (buf, caps);
-  gst_caps_unref (caps);
+  gst_buffer_unmap (buf, &map);
 
   ASSERT_BUFFER_REFCOUNT (buf, "buf", 1);
 
@@ -611,20 +666,28 @@ GST_START_TEST (test_no_buffer_album_1)
   set_playing_state (element);
 
   /* Single track: */
+  send_stream_start_event (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
 
   /* First album: */
   g_object_set (element, "num-tracks", 3, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 2);
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 0);
@@ -632,15 +695,21 @@ GST_START_TEST (test_no_buffer_album_1)
   /* Second album: */
   g_object_set (element, "num-tracks", 2, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 0);
 
   /* Single track: */
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 0);
@@ -661,7 +730,8 @@ GST_START_TEST (test_no_buffer_album_2)
   set_playing_state (element);
 
   /* No buffer for the first track. */
-
+  send_stream_start_event (element);
+  send_segment_event (element);
   send_eos_event (element);
   /* No tags should be posted, there was nothing to analyze: */
   poll_eos (element);
@@ -669,28 +739,33 @@ GST_START_TEST (test_no_buffer_album_2)
 
   /* A test waveform with known gain result as second track: */
 
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 1);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_mono (&accumulator, 44100, 512,
             0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, -6.20);
   /* Album is not finished yet: */
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
   /* No buffer for the last track. */
 
+  send_flush_events (element);
+  send_segment_event (element);
   send_eos_event (element);
 
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_album_peak (tag_list, 0.25);
   fail_unless_album_gain (tag_list, -6.20);
   /* No track tags should be posted, as there was no data for it: */
   fail_if_track_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   cleanup_rganalysis (element);
@@ -705,6 +780,9 @@ GST_START_TEST (test_empty_buffers)
   set_playing_state (element);
 
   /* Single track: */
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
@@ -712,11 +790,15 @@ GST_START_TEST (test_empty_buffers)
   /* First album: */
   g_object_set (element, "num-tracks", 2, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
@@ -724,12 +806,16 @@ GST_START_TEST (test_empty_buffers)
 
   /* Second album, with a single track: */
   g_object_set (element, "num-tracks", 1, NULL);
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
   fail_unless_num_tracks (element, 0);
 
   /* Single track: */
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (44100, 0, 0.0, 0.0));
   send_eos_event (element);
   poll_eos (element);
@@ -756,25 +842,33 @@ GST_START_TEST (test_peak_float)
   GstTagList *tag_list;
 
   set_playing_state (element);
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 512, -1.369, 0.0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.369);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Swapped channels. */
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 512, 0.0, -1.369));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.369);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Mono. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_mono (8000, 512, -1.369));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.369);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -789,46 +883,64 @@ GST_START_TEST (test_peak_int16_16)
   set_playing_state (element);
 
   /* Half amplitude. */
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 1 << 14, 0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Swapped channels. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 0, 1 << 14));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Mono. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_mono (8000, 16, 512, 1 << 14));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Half amplitude, negative variant. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, -1 << 14, 0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Swapped channels. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 0, -1 << 14));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Mono. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_mono (8000, 16, 512, -1 << 14));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
 
   /* Now check for correct normalization of the peak value: Sample
@@ -836,148 +948,65 @@ GST_START_TEST (test_peak_int16_16)
    * highest positive amplitude we do not reach 1.0, only for
    * -32768! */
 
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 32767, 0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 32767. / 32768.);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Swapped channels. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 0, 32767));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 32767. / 32768.);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Mono. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_mono (8000, 16, 512, 32767));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 32767. / 32768.);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
 
   /* Negative variant, reaching 1.0. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, -32768, 0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Swapped channels. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_stereo (8000, 16, 512, 0, -32768));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   /* Mono. */
+  send_flush_events (element);
+  send_caps_event (GST_AUDIO_NE (S16), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_int16_mono (8000, 16, 512, -32768));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
-
-  cleanup_rganalysis (element);
-}
-
-GST_END_TEST;
-
-/* Same as the test before, but with 8 bits (packed into 16 bits). */
-
-GST_START_TEST (test_peak_int16_8)
-{
-  GstElement *element = setup_rganalysis ();
-  GstTagList *tag_list;
-
-  set_playing_state (element);
-
-  /* Half amplitude. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, 1 << 6, 0));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-  /* Swapped channels. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, 0, 1 << 6));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-  /* Mono. */
-  push_buffer (test_buffer_const_int16_mono (8000, 8, 512, 1 << 6));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-
-  /* Half amplitude, negative variant. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, -1 << 6, 0));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-  /* Swapped channels. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, 0, -1 << 6));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-  /* Mono. */
-  push_buffer (test_buffer_const_int16_mono (8000, 8, 512, -1 << 6));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
-
-
-  /* Almost full amplitude (maximum positive value). */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, (1 << 7) - 1, 0));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.9921875);
-  gst_tag_list_free (tag_list);
-
-  /* Swapped channels. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, 0, (1 << 7) - 1));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.9921875);
-  gst_tag_list_free (tag_list);
-
-  /* Mono. */
-  push_buffer (test_buffer_const_int16_mono (8000, 8, 512, (1 << 7) - 1));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 0.9921875);
-  gst_tag_list_free (tag_list);
-
-
-  /* Full amplitude (maximum negative value). */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, -1 << 7, 0));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
-
-  /* Swapped channels. */
-  push_buffer (test_buffer_const_int16_stereo (8000, 8, 512, 0, -1 << 7));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
-
-  /* Mono. */
-  push_buffer (test_buffer_const_int16_mono (8000, 8, 512, -1 << 7));
-  send_eos_event (element);
-  tag_list = poll_tags (element);
-  fail_unless_track_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -992,57 +1021,70 @@ GST_START_TEST (test_peak_album)
   g_object_set (element, "num-tracks", 2, NULL);
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 1.0, 0.0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.0, 0.5));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
   fail_unless_album_peak (tag_list, 1.0);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   /* Try a second album: */
   g_object_set (element, "num-tracks", 3, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.4, 0.4));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.4);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 2);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.45, 0.45));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.45);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.2, 0.2));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.2);
   fail_unless_album_peak (tag_list, 0.45);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   /* And now a single track, not in album mode (num-tracks is 0
    * now): */
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.1, 0.1));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.1);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1058,20 +1100,25 @@ GST_START_TEST (test_peak_track_album)
 
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 1);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_mono (8000, 1024, 1.0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   g_object_set (element, "num-tracks", 1, NULL);
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_mono (8000, 1024, 0.5));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
   fail_unless_album_peak (tag_list, 0.5);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   cleanup_rganalysis (element);
@@ -1092,22 +1139,27 @@ GST_START_TEST (test_peak_album_abort_to_track)
   g_object_set (element, "num-tracks", 2, NULL);
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 1.0, 0.0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 1.0);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
   g_object_set (element, "num-tracks", 0, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   push_buffer (test_buffer_const_float_stereo (8000, 1024, 0.0, 0.5));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1126,43 +1178,49 @@ GST_START_TEST (test_gain_album)
 
   /* The three tracks are constructed such that if any of these is in fact
    * ignored for the album gain, the album gain will differ. */
-
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 8; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.75, 0.75));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.75);
   fail_unless_track_gain (tag_list, -15.70);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 12; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.5, 0.5));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.5);
   fail_unless_track_gain (tag_list, -12.22);
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 180; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
 
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, -6.20);
   fail_unless_album_peak (tag_list, 0.75);
   /* Strangely, wavegain reports -12.17 for the album, but the fixed
    * metaflac agrees to us.  Could be a 32767 vs. 32768 issue. */
   fail_unless_album_gain (tag_list, -12.18);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1181,7 +1239,10 @@ GST_START_TEST (test_forced)
   g_object_set (element, "forced", FALSE, NULL);
   set_playing_state (element);
 
-  tag_list = gst_tag_list_new ();
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
+  tag_list = gst_tag_list_new_empty ();
   /* Provided values are totally arbitrary. */
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 1.0, GST_TAG_TRACK_GAIN, 2.21, NULL);
@@ -1190,19 +1251,25 @@ GST_START_TEST (test_forced)
   for (i = 20; i--;)
     push_buffer (test_buffer_const_float_stereo (44100, 512, 0.5, 0.5));
   send_eos_event (element);
+
   /* This fails if a tag message is generated: */
-  poll_eos (element);
+  /* Same values as above */
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_gain (tag_list, 2.21);
+  fail_unless_track_peak (tag_list, 1.0);
+  gst_tag_list_unref (tag_list);
 
   /* Now back to a track without tags. */
-
+  send_flush_events (element);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100));
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1221,12 +1288,15 @@ GST_START_TEST (test_forced_separate)
   g_object_set (element, "forced", FALSE, NULL);
   set_playing_state (element);
 
-  tag_list = gst_tag_list_new ();
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
+  tag_list = gst_tag_list_new_empty ();
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND, GST_TAG_TRACK_GAIN, 2.21,
       NULL);
   send_tag_event (element, tag_list);
 
-  tag_list = gst_tag_list_new ();
+  tag_list = gst_tag_list_new_empty ();
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND, GST_TAG_TRACK_PEAK, 1.0,
       NULL);
   send_tag_event (element, tag_list);
@@ -1235,21 +1305,29 @@ GST_START_TEST (test_forced_separate)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.5, 0.5));
   send_eos_event (element);
-  /* This fails if a tag message is generated: */
-  poll_eos (element);
+
+  /* Same values as above */
+  tag_list = poll_tags_only (element);
+  fail_unless_track_gain (tag_list, 2.21);
+  gst_tag_list_unref (tag_list);
+
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_peak (tag_list, 1.0);
+  gst_tag_list_unref (tag_list);
 
   /* Now a track without tags. */
-
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100));
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1272,26 +1350,36 @@ GST_START_TEST (test_forced_after_data)
   g_object_set (element, "forced", FALSE, NULL);
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_const_float_stereo (8000, 512, 0.5, 0.5));
 
-  tag_list = gst_tag_list_new ();
+  tag_list = gst_tag_list_new_empty ();
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 1.0, GST_TAG_TRACK_GAIN, 2.21, NULL);
   send_tag_event (element, tag_list);
 
   send_eos_event (element);
-  poll_eos (element);
 
+  /* Same values as above */
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_gain (tag_list, 2.21);
+  fail_unless_track_peak (tag_list, 1.0);
+  gst_tag_list_unref (tag_list);
+
+  send_flush_events (element);
+  send_segment_event (element);
   /* Now back to a normal track, this one has no tags: */
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 8000, 512, 0.25,
             0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (8000));
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1311,7 +1399,10 @@ GST_START_TEST (test_forced_album)
   g_object_set (element, "forced", FALSE, NULL);
   set_playing_state (element);
 
-  tag_list = gst_tag_list_new ();
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
+  tag_list = gst_tag_list_new_empty ();
   /* Provided values are totally arbitrary. */
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 1.0, GST_TAG_TRACK_GAIN, 2.21, NULL);
@@ -1322,35 +1413,43 @@ GST_START_TEST (test_forced_album)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.5, 0.5));
   send_eos_event (element);
-  /* This fails if a tag message is generated: */
-  poll_eos (element);
+
+  /* Same values as above */
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_gain (tag_list, 2.21);
+  fail_unless_track_peak (tag_list, 1.0);
+  gst_tag_list_unref (tag_list);
 
   /* Now an album without tags. */
   g_object_set (element, "num-tracks", 2, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100));
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100));
   fail_unless_album_peak (tag_list, 0.25);
   fail_unless_album_gain (tag_list, get_expected_gain (44100));
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   cleanup_rganalysis (element);
@@ -1368,7 +1467,10 @@ GST_START_TEST (test_forced_album_skip)
   g_object_set (element, "forced", FALSE, "num-tracks", 2, NULL);
   set_playing_state (element);
 
-  tag_list = gst_tag_list_new ();
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
+  tag_list = gst_tag_list_new_empty ();
   /* Provided values are totally arbitrary. */
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 0.75, GST_TAG_TRACK_GAIN, 2.21,
@@ -1379,11 +1481,19 @@ GST_START_TEST (test_forced_album_skip)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 8000, 512, 0.25,
             0.25));
   send_eos_event (element);
-  poll_eos (element);
+
+  /* Same values as above */
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_gain (tag_list, 2.21);
+  fail_unless_track_peak (tag_list, 0.75);
+  gst_tag_list_unref (tag_list);
+
   fail_unless_num_tracks (element, 1);
 
   /* This track has no tags, but needs to be skipped anyways since we
    * are in album processing mode. */
+  send_flush_events (element);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_const_float_stereo (8000, 512, 0.0, 0.0));
   send_eos_event (element);
@@ -1391,16 +1501,18 @@ GST_START_TEST (test_forced_album_skip)
   fail_unless_num_tracks (element, 0);
 
   /* Normal track after the album.  Of course not to be skipped. */
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 8000, 512, 0.25,
             0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (8000));
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1417,20 +1529,25 @@ GST_START_TEST (test_forced_album_no_skip)
   g_object_set (element, "forced", FALSE, "num-tracks", 2, NULL);
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 8000, 512, 0.25,
             0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (8000));
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
   /* The second track has indeed full tags, but although being not forced, this
    * one has to be processed because album processing is on. */
-  tag_list = gst_tag_list_new ();
+  send_flush_events (element);
+  send_segment_event (element);
+  tag_list = gst_tag_list_new_empty ();
   /* Provided values are totally arbitrary. */
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 0.75, GST_TAG_TRACK_GAIN, 2.21,
@@ -1439,7 +1556,15 @@ GST_START_TEST (test_forced_album_no_skip)
   for (i = 20; i--;)
     push_buffer (test_buffer_const_float_stereo (8000, 512, 0.0, 0.0));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+
+  /* the first batch from the tags */
+  tag_list = poll_tags_only (element);
+  fail_unless_track_peak (tag_list, 0.75);
+  fail_unless_track_gain (tag_list, 2.21);
+  gst_tag_list_unref (tag_list);
+
+  /* the second from the processing */
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.0);
   fail_unless_track_gain (tag_list, SILENCE_GAIN);
   /* Second track was just silence so the album peak equals the first
@@ -1448,7 +1573,7 @@ GST_START_TEST (test_forced_album_no_skip)
   /* Statistical processing leads to the second track being
    * ignored for the gain (because it is so short): */
   fail_unless_album_gain (tag_list, get_expected_gain (8000));
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 0);
 
   cleanup_rganalysis (element);
@@ -1466,22 +1591,28 @@ GST_START_TEST (test_forced_abort_album_no_skip)
   g_object_set (element, "forced", FALSE, "num-tracks", 2, NULL);
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 8000, 2);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 8000, 512, 0.25,
             0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (8000));
   fail_if_album_tags (tag_list);
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
   fail_unless_num_tracks (element, 1);
 
   /* Disabling album processing before end of album: */
   g_object_set (element, "num-tracks", 0, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
+
   /* Processing a track that has to be skipped. */
-  tag_list = gst_tag_list_new ();
+  tag_list = gst_tag_list_new_empty ();
   /* Provided values are totally arbitrary. */
   gst_tag_list_add (tag_list, GST_TAG_MERGE_APPEND,
       GST_TAG_TRACK_PEAK, 0.75, GST_TAG_TRACK_GAIN, 2.21,
@@ -1490,7 +1621,11 @@ GST_START_TEST (test_forced_abort_album_no_skip)
   for (i = 20; i--;)
     push_buffer (test_buffer_const_float_stereo (8000, 512, 0.0, 0.0));
   send_eos_event (element);
-  poll_eos (element);
+
+  tag_list = poll_tags_followed_by_eos (element);
+  fail_unless_track_peak (tag_list, 0.75);
+  fail_unless_track_gain (tag_list, 2.21);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1507,40 +1642,47 @@ GST_START_TEST (test_reference_level)
 
   set_playing_state (element);
 
+  send_stream_start_event (element);
+  send_caps_event (GST_AUDIO_NE (F32), 44100, 2);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100));
   fail_if_album_tags (tag_list);
   fail_unless (gst_tag_list_get_double (tag_list, GST_TAG_REFERENCE_LEVEL,
           &ref_level) && MATCH_GAIN (ref_level, 89.),
       "Incorrect reference level tag");
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   g_object_set (element, "reference-level", 83., "num-tracks", 2, NULL);
 
+  send_flush_events (element);
+  send_segment_event (element);
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100) - 6.);
   fail_if_album_tags (tag_list);
   fail_unless (gst_tag_list_get_double (tag_list, GST_TAG_REFERENCE_LEVEL,
           &ref_level) && MATCH_GAIN (ref_level, 83.),
       "Incorrect reference level tag");
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
+  send_flush_events (element);
+  send_segment_event (element);
   accumulator = 0;
   for (i = 20; i--;)
     push_buffer (test_buffer_square_float_stereo (&accumulator, 44100, 512,
             0.25, 0.25));
   send_eos_event (element);
-  tag_list = poll_tags (element);
+  tag_list = poll_tags_followed_by_eos (element);
   fail_unless_track_peak (tag_list, 0.25);
   fail_unless_track_gain (tag_list, get_expected_gain (44100) - 6.);
   fail_unless_album_peak (tag_list, 0.25);
@@ -1550,7 +1692,7 @@ GST_START_TEST (test_reference_level)
   fail_unless (gst_tag_list_get_double (tag_list, GST_TAG_REFERENCE_LEVEL,
           &ref_level) && MATCH_GAIN (ref_level, 83.),
       "Incorrect reference level tag");
-  gst_tag_list_free (tag_list);
+  gst_tag_list_unref (tag_list);
 
   cleanup_rganalysis (element);
 }
@@ -1565,31 +1707,32 @@ GST_START_TEST (test_all_formats)
   gint i, j;
 
   set_playing_state (element);
+  send_stream_start_event (element);
   for (i = G_N_ELEMENTS (supported_rates); i--;) {
+    send_flush_events (element);
+    send_caps_event (GST_AUDIO_NE (F32), supported_rates[i].sample_rate, 2);
+    send_segment_event (element);
     accumulator = 0;
     for (j = 0; j < 4; j++)
       push_buffer (test_buffer_square_float_stereo (&accumulator,
               supported_rates[i].sample_rate, 512, 0.25, 0.25));
+    send_caps_event (GST_AUDIO_NE (F32), supported_rates[i].sample_rate, 1);
     for (j = 0; j < 3; j++)
       push_buffer (test_buffer_square_float_mono (&accumulator,
               supported_rates[i].sample_rate, 512, 0.25));
+    send_caps_event (GST_AUDIO_NE (S16), supported_rates[i].sample_rate, 2);
     for (j = 0; j < 4; j++)
       push_buffer (test_buffer_square_int16_stereo (&accumulator,
               supported_rates[i].sample_rate, 16, 512, 1 << 13, 1 << 13));
+    send_caps_event (GST_AUDIO_NE (S16), supported_rates[i].sample_rate, 1);
     for (j = 0; j < 3; j++)
       push_buffer (test_buffer_square_int16_mono (&accumulator,
               supported_rates[i].sample_rate, 16, 512, 1 << 13));
-    for (j = 0; j < 3; j++)
-      push_buffer (test_buffer_square_int16_stereo (&accumulator,
-              supported_rates[i].sample_rate, 8, 512, 1 << 5, 1 << 5));
-    for (j = 0; j < 3; j++)
-      push_buffer (test_buffer_square_int16_mono (&accumulator,
-              supported_rates[i].sample_rate, 8, 512, 1 << 5));
     send_eos_event (element);
-    tag_list = poll_tags (element);
+    tag_list = poll_tags_followed_by_eos (element);
     fail_unless_track_peak (tag_list, 0.25);
     fail_unless_track_gain (tag_list, supported_rates[i].gain);
-    gst_tag_list_free (tag_list);
+    gst_tag_list_unref (tag_list);
   }
 
   cleanup_rganalysis (element);
@@ -1611,16 +1754,19 @@ GST_END_TEST;
   gint i;                                                             \
                                                                       \
   set_playing_state (element);                                        \
+  send_stream_start_event (element);                                  \
+  send_caps_event (GST_AUDIO_NE (F32), sample_rate, 1);               \
+  send_segment_event (element);                                       \
                                                                       \
   for (i = 0; i < 20; i++)                                            \
     push_buffer (test_buffer_square_float_mono (&accumulator,         \
             sample_rate, 512, 0.25));                                 \
   send_eos_event (element);                                           \
-  tag_list = poll_tags (element);                                     \
+  tag_list = poll_tags_followed_by_eos (element);                                     \
   fail_unless_track_peak (tag_list, 0.25);                            \
   fail_unless_track_gain (tag_list,                                   \
       get_expected_gain (sample_rate));                               \
-  gst_tag_list_free (tag_list);                                       \
+  gst_tag_list_unref (tag_list);                                       \
                                                                       \
   cleanup_rganalysis (element);                                       \
 }                                                                     \
@@ -1636,16 +1782,19 @@ GST_END_TEST;
   gint i;                                                             \
                                                                       \
   set_playing_state (element);                                        \
+  send_stream_start_event (element);                                  \
+  send_caps_event (GST_AUDIO_NE (F32), sample_rate, 2);               \
+  send_segment_event (element);                                       \
                                                                       \
   for (i = 0; i < 20; i++)                                            \
     push_buffer (test_buffer_square_float_stereo (&accumulator,       \
             sample_rate, 512, 0.25, 0.25));                           \
   send_eos_event (element);                                           \
-  tag_list = poll_tags (element);                                     \
+  tag_list = poll_tags_followed_by_eos (element);                                     \
   fail_unless_track_peak (tag_list, 0.25);                            \
   fail_unless_track_gain (tag_list,                                   \
       get_expected_gain (sample_rate));                               \
-  gst_tag_list_free (tag_list);                                       \
+  gst_tag_list_unref (tag_list);                                       \
                                                                       \
   cleanup_rganalysis (element);                                       \
 }                                                                     \
@@ -1661,17 +1810,20 @@ GST_END_TEST;
   gint i;                                                             \
                                                                       \
   set_playing_state (element);                                        \
+  send_stream_start_event (element);                                  \
+  send_caps_event (GST_AUDIO_NE (S16), sample_rate, 1);               \
+  send_segment_event (element);                                       \
                                                                       \
   for (i = 0; i < 20; i++)                                            \
     push_buffer (test_buffer_square_int16_mono (&accumulator,         \
             sample_rate, depth, 512, 1 << (13 + depth - 16)));        \
                                                                       \
   send_eos_event (element);                                           \
-  tag_list = poll_tags (element);                                     \
+  tag_list = poll_tags_followed_by_eos (element);                                     \
   fail_unless_track_peak (tag_list, 0.25);                            \
   fail_unless_track_gain (tag_list,                                   \
       get_expected_gain (sample_rate));                               \
-  gst_tag_list_free (tag_list);                                       \
+  gst_tag_list_unref (tag_list);                                       \
                                                                       \
   cleanup_rganalysis (element);                                       \
 }                                                                     \
@@ -1687,17 +1839,20 @@ GST_END_TEST;
   gint i;                                                             \
                                                                       \
   set_playing_state (element);                                        \
+  send_stream_start_event (element);                                  \
+  send_caps_event (GST_AUDIO_NE (S16), sample_rate, 2);               \
+  send_segment_event (element);                                       \
                                                                       \
   for (i = 0; i < 20; i++)                                            \
     push_buffer (test_buffer_square_int16_stereo (&accumulator,       \
             sample_rate, depth, 512, 1 << (13 + depth - 16),          \
             1 << (13 + depth - 16)));                                 \
   send_eos_event (element);                                           \
-  tag_list = poll_tags (element);                                     \
+  tag_list = poll_tags_followed_by_eos (element);                                     \
   fail_unless_track_peak (tag_list, 0.25);                            \
   fail_unless_track_gain (tag_list,                                   \
       get_expected_gain (sample_rate));                               \
-  gst_tag_list_free (tag_list);                                       \
+  gst_tag_list_unref (tag_list);                                       \
                                                                       \
   cleanup_rganalysis (element);                                       \
 }                                                                     \
@@ -1744,27 +1899,7 @@ MAKE_GAIN_TEST_INT16_STEREO (32000, 16);
 MAKE_GAIN_TEST_INT16_STEREO (44100, 16);
 MAKE_GAIN_TEST_INT16_STEREO (48000, 16);
 
-MAKE_GAIN_TEST_INT16_MONO (8000, 8);
-MAKE_GAIN_TEST_INT16_MONO (11025, 8);
-MAKE_GAIN_TEST_INT16_MONO (12000, 8);
-MAKE_GAIN_TEST_INT16_MONO (16000, 8);
-MAKE_GAIN_TEST_INT16_MONO (22050, 8);
-MAKE_GAIN_TEST_INT16_MONO (24000, 8);
-MAKE_GAIN_TEST_INT16_MONO (32000, 8);
-MAKE_GAIN_TEST_INT16_MONO (44100, 8);
-MAKE_GAIN_TEST_INT16_MONO (48000, 8);
-
-MAKE_GAIN_TEST_INT16_STEREO (8000, 8);
-MAKE_GAIN_TEST_INT16_STEREO (11025, 8);
-MAKE_GAIN_TEST_INT16_STEREO (12000, 8);
-MAKE_GAIN_TEST_INT16_STEREO (16000, 8);
-MAKE_GAIN_TEST_INT16_STEREO (22050, 8);
-MAKE_GAIN_TEST_INT16_STEREO (24000, 8);
-MAKE_GAIN_TEST_INT16_STEREO (32000, 8);
-MAKE_GAIN_TEST_INT16_STEREO (44100, 8);
-MAKE_GAIN_TEST_INT16_STEREO (48000, 8);
-
-Suite *
+static Suite *
 rganalysis_suite (void)
 {
   Suite *s = suite_create ("rganalysis");
@@ -1779,7 +1914,6 @@ rganalysis_suite (void)
 
   tcase_add_test (tc_chain, test_peak_float);
   tcase_add_test (tc_chain, test_peak_int16_16);
-  tcase_add_test (tc_chain, test_peak_int16_8);
 
   tcase_add_test (tc_chain, test_peak_album);
   tcase_add_test (tc_chain, test_peak_track_album);
@@ -1839,42 +1973,7 @@ rganalysis_suite (void)
   tcase_add_test (tc_chain, test_gain_int16_16_stereo_44100);
   tcase_add_test (tc_chain, test_gain_int16_16_stereo_48000);
 
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_8000);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_11025);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_12000);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_16000);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_22050);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_24000);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_32000);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_44100);
-  tcase_add_test (tc_chain, test_gain_int16_8_mono_48000);
-
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_8000);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_11025);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_12000);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_16000);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_22050);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_24000);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_32000);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_44100);
-  tcase_add_test (tc_chain, test_gain_int16_8_stereo_48000);
-
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  gint nf;
-
-  Suite *s = rganalysis_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_ENV);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (rganalysis);

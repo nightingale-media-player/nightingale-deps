@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -52,13 +52,14 @@ struct _GstDVDemux {
   GstPad        *videosrcpad;
   GstPad        *audiosrcpad;
 
+  gboolean       have_group_id;
+  guint          group_id;
+
   dv_decoder_t  *decoder;
 
   GstAdapter    *adapter;
   gint           frame_len;
 
-  /* PAL or NTSC flag */
-  gboolean       PAL;
   /* video params */
   gint           framerate_numerator;
   gint           framerate_denominator;
@@ -68,8 +69,6 @@ struct _GstDVDemux {
   gint           frequency;
   gint           channels;
 
-  gint           framecount;
-  
   gint64         frame_offset;
   gint64         audio_offset;
   gint64         video_offset;
@@ -77,9 +76,9 @@ struct _GstDVDemux {
   GstDVDemuxSeekHandler seek_handler;
   GstSegment     byte_segment;
   GstSegment     time_segment;
-  gboolean       running;
   gboolean       need_segment;
   gboolean       new_media;
+  int            frames_since_new_media;
   
   gint           found_header; /* ATOMIC */
   GstEvent      *seek_event;

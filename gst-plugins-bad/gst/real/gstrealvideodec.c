@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,11 +30,6 @@
 
 GST_DEBUG_CATEGORY_STATIC (realvideode_debug);
 #define GST_CAT_DEFAULT realvideode_debug
-
-static GstElementDetails realvideode_details =
-GST_ELEMENT_DETAILS ("RealVideo decoder",
-    "Codec/Decoder/Video", "Decoder for RealVideo streams",
-    "Lutz Mueller <lutz@topfrose.de>");
 
 static GstStaticPadTemplate snk_t =
 GST_STATIC_PAD_TEMPLATE ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
@@ -254,7 +249,6 @@ gst_real_video_dec_getcaps (GstPad * pad)
     GValue version = { 0 };
 
     GST_LOG_OBJECT (dec, "constructing caps");
-    res = gst_caps_new_empty ();
 
     g_value_init (&versions, GST_TYPE_LIST);
     g_value_init (&version, G_TYPE_INT);
@@ -448,7 +442,7 @@ open_library (GstRealVideoDec * dec, GstRealVideoDecVersion version,
 {
   gpointer rv_custom_msg, rv_free, rv_init, rv_transform;
   GModule *module = NULL;
-  gchar *path, *names;
+  const gchar *path, *names;
   gchar **split_names, **split_path;
   int i, j;
 
@@ -635,7 +629,9 @@ gst_real_video_dec_base_init (gpointer g_class)
 
   gst_element_class_add_pad_template (ec, gst_static_pad_template_get (&snk_t));
   gst_element_class_add_pad_template (ec, gst_static_pad_template_get (&src_t));
-  gst_element_class_set_details (ec, &realvideode_details);
+  gst_element_class_set_static_metadata (ec, "RealVideo decoder",
+      "Codec/Decoder/Video", "Decoder for RealVideo streams",
+      "Lutz Mueller <lutz@topfrose.de>");
 }
 
 static void
@@ -753,20 +749,25 @@ gst_real_video_dec_class_init (GstRealVideoDecClass * klass)
       g_param_spec_string ("real-codecs-path",
           "Path where to search for RealPlayer codecs",
           "Path where to search for RealPlayer codecs",
-          DEFAULT_REAL_CODECS_PATH, G_PARAM_READWRITE));
+          DEFAULT_REAL_CODECS_PATH,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RV20_NAMES,
       g_param_spec_string ("rv20-names", "Names of rv20 driver",
-          "Names of rv20 driver", DEFAULT_RV20_NAMES, G_PARAM_READWRITE));
+          "Names of rv20 driver", DEFAULT_RV20_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RV30_NAMES,
       g_param_spec_string ("rv30-names", "Names of rv30 driver",
-          "Names of rv30 driver", DEFAULT_RV30_NAMES, G_PARAM_READWRITE));
+          "Names of rv30 driver", DEFAULT_RV30_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_RV40_NAMES,
       g_param_spec_string ("rv40-names", "Names of rv40 driver",
-          "Names of rv40 driver", DEFAULT_RV40_NAMES, G_PARAM_READWRITE));
+          "Names of rv40 driver", DEFAULT_RV40_NAMES,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (object_class, PROP_MAX_ERRORS,
       g_param_spec_int ("max-errors", "Max errors",
           "Maximum number of consecutive errors (0 = unlimited)",
-          0, G_MAXINT, DEFAULT_MAX_ERRORS, G_PARAM_READWRITE));
+          0, G_MAXINT, DEFAULT_MAX_ERRORS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   GST_DEBUG_CATEGORY_INIT (realvideode_debug, "realvideodec", 0,
       "RealVideo decoder");

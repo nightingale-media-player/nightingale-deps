@@ -8,12 +8,14 @@ insert/overwrite Short Description and Long Description
 
 # FIXME: right now it uses pygst and scans on its own;
 # we really should use inspect/*.xml instead since the result of
-# gst-xmlinspect.py is commited by the docs maintainer, who can be
+# gst-xmlinspect.py is committed by the docs maintainer, who can be
 # expected to have pygst, but this step should be done for every docs build,
 # so no pygst allowed
 
 # read in inspect/*.xml
 # for every tmpl/element-(name).xml: mangle with details from element
+
+from __future__ import print_function, unicode_literals
 
 import glob
 import re

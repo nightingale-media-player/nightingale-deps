@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -134,15 +134,11 @@ struct _GstFakeSrc {
   guint		parentsize;
   guint		parentoffset;
   guint8	 pattern_byte;
-  gchar		*pattern;
   GList		*patternlist;
   gint		 datarate;
   gboolean	 sync;
   GstClock	*clock;
 
-  gint		 num_buffers;
-  gint		 rt_num_buffers; /* we are going to change this at runtime */
-  gint64	 buffer_count;
   gboolean	 silent;
   gboolean	 signal_handoffs;
   gboolean	 dump;
@@ -162,7 +158,7 @@ struct _GstFakeSrcClass {
   void (*handoff) (GstElement *element, GstBuffer *buf, GstPad *pad);
 };
 
-GType gst_fake_src_get_type (void);
+G_GNUC_INTERNAL GType gst_fake_src_get_type (void);
 
 G_END_DECLS
 

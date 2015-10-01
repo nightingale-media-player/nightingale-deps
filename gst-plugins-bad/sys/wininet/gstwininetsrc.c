@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -23,7 +23,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-0.10 -v wininetsrc location="http://71.83.57.210:9000" ! application/x-icy,metadata-interval=0 ! icydemux ! mad ! audioconvert ! directsoundsink
+ * gst-launch-1.0 -v wininetsrc location="http://71.83.57.210:9000" ! application/x-icy,metadata-interval=0 ! icydemux ! mad ! audioconvert ! directsoundsink
  * ]| receive mp3 audio over http and play it back.
  * </refsect2>
  */
@@ -38,7 +38,7 @@
 
 #define DEFAULT_LOCATION "http://localhost/"
 #define DEFAULT_POLL_MODE FALSE
-#define DEFAULT_IRADIO_MODE FALSE
+#define DEFAULT_IRADIO_MODE TRUE
 
 enum
 {
@@ -86,7 +86,7 @@ gst_win_inet_src_base_init (gpointer gclass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_details_simple (element_class,
+  gst_element_class_set_static_metadata (element_class,
       "Windows Network Source", "Source/Network",
       "Receive data as a client over the network via HTTP or FTP",
       "Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>");
@@ -271,7 +271,7 @@ gst_win_inet_src_get_header_value_as_int (GstWinInetSrc * self,
         error_str = "ERROR_HTTP_HEADER_NOT_FOUND";
 
       GST_WARNING_OBJECT (self, "HttpQueryInfo for header '%s' failed: %s "
-          "(0x%08x)", header_name, error_str, error_code);
+          "(0x%08lx)", header_name, error_str, error_code);
     }
 
     return FALSE;
@@ -314,7 +314,7 @@ gst_win_inet_src_open (GstWinInetSrc * self)
 
 error:
   GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND, (NULL),
-      ("Could not open location \"%s\" for reading: 0x%08x",
+      ("Could not open location \"%s\" for reading: 0x%08lx",
           self->location, GetLastError ()));
   gst_win_inet_src_reset (self);
 
@@ -372,7 +372,7 @@ gst_win_inet_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
           }
         }
       } else {
-        GST_ERROR_OBJECT (self, "InternetReadFile failed: 0x%08x",
+        GST_ERROR_OBJECT (self, "InternetReadFile failed: 0x%08lx",
             GetLastError ());
 
         ret = GST_FLOW_ERROR;
@@ -403,12 +403,12 @@ gst_win_inet_src_uri_get_type (void)
 static gchar **
 gst_win_inet_src_uri_get_protocols (void)
 {
-  static gchar *protocols[] = { "http", "https", "ftp", NULL };
+  static const gchar *protocols[] = { "http", "https", "ftp", NULL };
 
-  return protocols;
+  return (gchar **) protocols;
 }
 
-static G_CONST_RETURN gchar *
+static const gchar *
 gst_win_inet_src_uri_get_uri (GstURIHandler * handler)
 {
   GstWinInetSrc *src = GST_WIN_INET_SRC (handler);
@@ -446,6 +446,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "wininet",
+    wininet,
     "Windows network plugins",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

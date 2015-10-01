@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_DSHOWVIDEOSRC_H__
@@ -25,13 +25,14 @@
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
-#include <gst/interfaces/propertyprobe.h>
 
 #include "gstdshow.h"
 #include "gstdshowfakesink.h"
 
 // 30323449-0000-0010-8000-00AA00389B71            MEDIASUBTYPE_I420
 DEFINE_GUID (MEDIASUBTYPE_I420, 0x30323449, 0x0000, 0x0010, 0x80, 0x00, 0x00,
+	0xAA, 0x00, 0x38, 0x9B, 0x71);
+DEFINE_GUID (MEDIASUBTYPE_UYVY, 0x59565955, 0x0000, 0x0010, 0x80, 0x00, 0x00,
     0xAA, 0x00, 0x38, 0x9B, 0x71);
 
 G_BEGIN_DECLS
@@ -70,13 +71,21 @@ struct _GstDshowVideoSrc
   IMediaFilter *media_filter;
   IFilterGraph *filter_graph;
 
+  IGraphBuilder	*graph_builder;
+  ICaptureGraphBuilder2 *capture_builder;
+  IAMVideoCompression *pVC;
+  //IAMVfwCaptureDialogs *pDlg;
+  //IAMStreamConfig *pASC;      // for audio cap
+  IAMStreamConfig *pVSC;      // for video cap
+
   /* the last buffer from DirectShow */
-  GCond *buffer_cond;
-  GMutex *buffer_mutex;
+  GCond buffer_cond;
+  GMutex buffer_mutex;
   GstBuffer *buffer;
   gboolean stop_requested;
 
   gboolean is_rgb;
+  gboolean is_running;
   gint width;
   gint height;
 };

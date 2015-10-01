@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -52,20 +52,26 @@ struct _GstSMPTEAlpha {
   gint           border;
   gint           depth;
   gdouble        position;
+  gboolean       invert;
 
   /* negotiated format */
-  GstVideoFormat format;
+  GstVideoFormat in_format, out_format;
   gint           width;
   gint           height;
 
   /* state of the effect */
   GstMask       *mask;
+
+  /* processing function */
+  void (*process) (GstSMPTEAlpha * smpte, const GstVideoFrame * in, GstVideoFrame * out,
+    GstMask * mask, gint border, gint pos);
 };
 
 struct _GstSMPTEAlphaClass {
   GstVideoFilterClass parent_class;
 };
 
+GType gst_smpte_alpha_get_type (void);
 gboolean gst_smpte_alpha_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS

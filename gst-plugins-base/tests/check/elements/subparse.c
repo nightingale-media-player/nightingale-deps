@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +28,7 @@
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("text/plain; text/x-pango-markup")
+    GST_STATIC_CAPS ("text/x-raw, format = { pango-markup, utf8 }")
     );
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -43,11 +43,14 @@ static GstBuffer *
 buffer_from_static_string (const gchar * s)
 {
   GstBuffer *buf;
+  gsize len;
+
+  len = strlen (s);
 
   buf = gst_buffer_new ();
-  GST_BUFFER_DATA (buf) = (guint8 *) s;
-  GST_BUFFER_SIZE (buf) = strlen (s);
-  GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_READONLY);
+  gst_buffer_append_memory (buf,
+      gst_memory_new_wrapped (GST_MEMORY_FLAG_READONLY,
+          (gpointer) s, len, 0, len, NULL, NULL));
 
   return buf;
 }
@@ -136,7 +139,7 @@ static SubParseInputChunk srt_input1[] = {
 static SubParseInputChunk srt_input2[] = {
   {
         "\xef\xbb\xbf" "1\n00:00:00,000 --> 00:00:03,50\nJust testing.\n\n",
-      0, 3 * GST_SECOND + 50 * GST_MSECOND, "Just testing."}
+      0, 3 * GST_SECOND + 500 * GST_MSECOND, "Just testing."}
 };
 
 /* starts with chunk number 0 and has less than three digits after the comma
@@ -154,12 +157,17 @@ static SubParseInputChunk srt_input3[] = {
 static void
 setup_subparse (void)
 {
+  GstSegment segment;
   subparse = gst_check_setup_element ("subparse");
 
-  mysrcpad = gst_check_setup_src_pad (subparse, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (subparse, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (subparse, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (subparse, &sinktemplate);
 
   gst_pad_set_active (mysrcpad, TRUE);
+
+  gst_segment_init (&segment, GST_FORMAT_BYTES);
+  gst_pad_push_event (mysrcpad, gst_event_new_stream_start ("test"));
+  gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment));
   gst_pad_set_active (mysinkpad, TRUE);
 
   fail_unless_equals_int (gst_element_set_state (subparse, GST_STATE_PLAYING),
@@ -189,6 +197,7 @@ static void
 test_srt_do_test (SubParseInputChunk * input, guint start_idx, guint num)
 {
   guint n;
+  GstCaps *outcaps;
 
   GST_LOG ("srt test: start_idx = %u, num = %u", start_idx, num);
 
@@ -205,11 +214,12 @@ test_srt_do_test (SubParseInputChunk * input, guint start_idx, guint num)
 
   fail_unless_equals_int (g_list_length (buffers), num);
 
+  outcaps = gst_pad_get_current_caps (mysinkpad);
+
   for (n = start_idx; n < start_idx + num; ++n) {
     const GstStructure *buffer_caps_struct;
     GstBuffer *buf;
-    gchar *out;
-    guint out_size;
+    GstMapInfo map;
 
     buf = g_list_nth_data (buffers, n - start_idx);
     fail_unless (buf != NULL);
@@ -218,22 +228,28 @@ test_srt_do_test (SubParseInputChunk * input, guint start_idx, guint num)
     fail_unless_equals_uint64 (GST_BUFFER_TIMESTAMP (buf), input[n].from_ts);
     fail_unless_equals_uint64 (GST_BUFFER_DURATION (buf),
         input[n].to_ts - input[n].from_ts);
-    out = (gchar *) GST_BUFFER_DATA (buf);
-    out_size = GST_BUFFER_SIZE (buf);
-    /* shouldn't have trailing newline characters */
-    fail_if (out_size > 0 && out[out_size - 1] == '\n');
-    /* shouldn't include NUL-terminator in data size */
-    fail_if (out_size > 0 && out[out_size - 1] == '\0');
-    /* but should still have a  NUL-terminator behind the declared data */
-    fail_unless_equals_int (out[out_size], '\0');
-    /* make sure out string matches expected string */
-    fail_unless_equals_string (out, input[n].out);
+
+    gst_buffer_map (buf, &map, GST_MAP_READ);
+    /* can be NULL */
+    if (map.data != NULL) {
+      /* shouldn't have trailing newline characters */
+      fail_if (map.size > 0 && map.data[map.size - 1] == '\n');
+      /* shouldn't include NUL-terminator in data size */
+      fail_if (map.size > 0 && map.data[map.size - 1] == '\0');
+      /* but should still have a  NUL-terminator behind the declared data */
+      fail_unless_equals_int (map.data[map.size], '\0');
+      /* make sure out string matches expected string */
+      fail_unless_equals_string ((gchar *) map.data, input[n].out);
+    }
+    gst_buffer_unmap (buf, &map);
     /* check caps */
-    fail_unless (GST_BUFFER_CAPS (buf) != NULL);
-    buffer_caps_struct = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
-    fail_unless_equals_string (gst_structure_get_name (buffer_caps_struct),
-        "text/x-pango-markup");
+    fail_unless (outcaps != NULL);
+    buffer_caps_struct = gst_caps_get_structure (outcaps, 0);
+    fail_unless (gst_structure_has_name (buffer_caps_struct, "text/x-raw"));
+    fail_unless_equals_string (gst_structure_get_string (buffer_caps_struct,
+            "format"), "pango-markup");
   }
+  gst_caps_unref (outcaps);
 
   teardown_subparse ();
 }
@@ -258,7 +274,7 @@ GST_START_TEST (test_srt)
   test_srt_do_test (srt_input1, 0, G_N_ELEMENTS (srt_input1));
 
   /* try with UTF-8 BOM at the start */
-  test_srt_do_test (srt_input1, 0, G_N_ELEMENTS (srt_input2));
+  test_srt_do_test (srt_input2, 0, G_N_ELEMENTS (srt_input2));
 
   /* try with fewer than three post-comma digits, and some extra spaces */
   test_srt_do_test (srt_input3, 0, G_N_ELEMENTS (srt_input3));
@@ -267,9 +283,10 @@ GST_START_TEST (test_srt)
 GST_END_TEST;
 
 static void
-do_test (SubParseInputChunk * input, guint num, const gchar * media_type)
+do_test (SubParseInputChunk * input, guint num, const gchar * format)
 {
   guint n;
+  GstCaps *outcaps;
 
   setup_subparse ();
 
@@ -284,11 +301,12 @@ do_test (SubParseInputChunk * input, guint num, const gchar * media_type)
 
   fail_unless_equals_int (g_list_length (buffers), num);
 
+  outcaps = gst_pad_get_current_caps (mysinkpad);
+
   for (n = 0; n < num; ++n) {
     const GstStructure *buffer_caps_struct;
     GstBuffer *buf;
-    gchar *out;
-    guint out_size;
+    GstMapInfo map;
 
     buf = g_list_nth_data (buffers, n);
     fail_unless (buf != NULL);
@@ -305,22 +323,27 @@ do_test (SubParseInputChunk * input, guint num, const gchar * media_type)
           input[n].to_ts - input[n].from_ts);
     }
 
-    out = (gchar *) GST_BUFFER_DATA (buf);
-    out_size = GST_BUFFER_SIZE (buf);
-    /* shouldn't have trailing newline characters */
-    fail_if (out_size > 0 && out[out_size - 1] == '\n');
-    /* shouldn't include NUL-terminator in data size */
-    fail_if (out_size > 0 && out[out_size - 1] == '\0');
-    /* but should still have a  NUL-terminator behind the declared data */
-    fail_unless_equals_int (out[out_size], '\0');
-    /* make sure out string matches expected string */
-    fail_unless_equals_string (out, input[n].out);
+    gst_buffer_map (buf, &map, GST_MAP_READ);
+    /* can be NULL */
+    if (map.data != NULL) {
+      /* shouldn't have trailing newline characters */
+      fail_if (map.size > 0 && map.data[map.size - 1] == '\n');
+      /* shouldn't include NUL-terminator in data size */
+      fail_if (map.size > 0 && map.data[map.size - 1] == '\0');
+      /* but should still have a  NUL-terminator behind the declared data */
+      fail_unless_equals_int (map.data[map.size], '\0');
+      /* make sure out string matches expected string */
+      fail_unless_equals_string ((gchar *) map.data, input[n].out);
+    }
+    gst_buffer_unmap (buf, &map);
     /* check caps */
-    fail_unless (GST_BUFFER_CAPS (buf) != NULL);
-    buffer_caps_struct = gst_caps_get_structure (GST_BUFFER_CAPS (buf), 0);
-    fail_unless_equals_string (gst_structure_get_name (buffer_caps_struct),
-        media_type);
+    fail_unless (outcaps != NULL);
+    buffer_caps_struct = gst_caps_get_structure (outcaps, 0);
+    fail_unless (gst_structure_has_name (buffer_caps_struct, "text/x-raw"));
+    fail_unless_equals_string (gst_structure_get_string (buffer_caps_struct,
+            "format"), format);
   }
+  gst_caps_unref (outcaps);
 
   teardown_subparse ();
 }
@@ -328,13 +351,13 @@ do_test (SubParseInputChunk * input, guint num, const gchar * media_type)
 static void
 test_tmplayer_do_test (SubParseInputChunk * input, guint num)
 {
-  do_test (input, num, "text/plain");
+  do_test (input, num, "utf8");
 }
 
 static void
 test_microdvd_do_test (SubParseInputChunk * input, guint num)
 {
-  do_test (input, num, "text/x-pango-markup");
+  do_test (input, num, "pango-markup");
 }
 
 GST_START_TEST (test_tmplayer_multiline)
@@ -559,7 +582,7 @@ GST_START_TEST (test_mpl2)
         "Normal\n<i>Italic</i>"}
   };
 
-  do_test (mpl2_input, G_N_ELEMENTS (mpl2_input), "text/x-pango-markup");
+  do_test (mpl2_input, G_N_ELEMENTS (mpl2_input), "pango-markup");
 }
 
 GST_END_TEST;
@@ -590,7 +613,7 @@ GST_START_TEST (test_subviewer)
         "The heavens shook as the armies\nof Falis, God of Light..."}
   };
 
-  do_test (subviewer_input, G_N_ELEMENTS (subviewer_input), "text/plain");
+  do_test (subviewer_input, G_N_ELEMENTS (subviewer_input), "utf8");
 }
 
 GST_END_TEST;
@@ -622,12 +645,28 @@ GST_START_TEST (test_subviewer2)
         "AND THE GREAT HERDS RUN FREE.\nSO WHAT?!"}
   };
 
-  do_test (subviewer2_input, G_N_ELEMENTS (subviewer2_input), "text/plain");
+  do_test (subviewer2_input, G_N_ELEMENTS (subviewer2_input), "utf8");
 }
 
 GST_END_TEST;
 
-#ifndef GST_DISABLE_XML
+GST_START_TEST (test_dks)
+{
+  SubParseInputChunk dks_input[] = {
+    {
+          "[00:00:07]THERE IS A PLACE ON EARTH WHERE IT[br]IS STILL THE MORNING OF LIFE...\n[00:00:12]\n",
+          7 * GST_SECOND, 12 * GST_SECOND,
+        "THERE IS A PLACE ON EARTH WHERE IT\nIS STILL THE MORNING OF LIFE..."}, {
+          "[00:00:13]AND THE GREAT HERDS RUN FREE.[br]SO WHAT?!\n[00:00:15]\n",
+          13 * GST_SECOND, 15 * GST_SECOND,
+        "AND THE GREAT HERDS RUN FREE.\nSO WHAT?!"}
+  };
+
+  do_test (dks_input, G_N_ELEMENTS (dks_input), "utf8");
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_sami)
 {
   SubParseInputChunk sami_input[] = {
@@ -659,11 +698,123 @@ GST_START_TEST (test_sami)
         "This is a third comment.\nThis is a fourth comment."}
   };
 
-  do_test (sami_input, G_N_ELEMENTS (sami_input), "text/x-pango-markup");
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
 }
 
 GST_END_TEST;
-#endif
+
+GST_START_TEST (test_sami_xml_entities)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=CC>\n" "            &lt;Hello&gt; &amp;\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "&lt;Hello&gt; &amp;"},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n"
+          "            &quot;World&apos;\n" "</BODY>\n" "</SAMI>\n",
+          2000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "&quot;World&apos;"}
+
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_sami_html_entities)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=CC>\n" "            &nbsp; &plusmn; &acute;\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "\xc2\xa0 \xc2\xb1 \xc2\xb4"},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n" "            &Alpha; &omega;\n",
+          2000 * GST_MSECOND, 3000 * GST_MSECOND,
+        "\xce\x91 \xcf\x89"},
+    {"    <SYNC Start=3000>\n"
+          "        <P Class=CC>\n"
+          "            &#xa0; &#177; &#180;\n" "</BODY>\n" "</SAMI>\n",
+          3000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "\xc2\xa0 \xc2\xb1 \xc2\xb4"}
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_sami_bad_entities)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=CC>\n" "            &nbsp &\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "\xc2\xa0 &amp;"},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n"
+          "            &#xa0 &#177 &#180;\n" "</BODY>\n" "</SAMI>\n",
+          2000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "\xc2\xa0 \xc2\xb1 \xc2\xb4"}
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_sami_comment)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<!--\n"
+          "=======\n"
+          "foo bar\n"
+          "=======\n"
+          "-->\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=\"C====\">\n" "            &nbsp &\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "\xc2\xa0 &amp;"},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n"
+          "            &#xa0 &#177 &#180;\n" "</BODY>\n" "</SAMI>\n",
+          2000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "\xc2\xa0 \xc2\xb1 \xc2\xb4"}
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_lrc)
+{
+  SubParseInputChunk lrc_input[] = {
+    {"[ar:123]\n" "[ti:Title]\n" "[al:Album]\n" "[00:02.23]Line 1\n",
+          2230 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 1"},
+    {"[00:05.10]Line 2\n",
+          5100 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 2"},
+    {"[00:06.123]Line 3\n",
+          6123 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 3"}
+  };
+
+  do_test (lrc_input, G_N_ELEMENTS (lrc_input), "utf8");
+}
+
+GST_END_TEST;
 
 /* TODO:
  *  - add/modify tests so that lines aren't dogfed to the parsers in complete
@@ -692,9 +843,13 @@ subparse_suite (void)
   tcase_add_test (tc_chain, test_mpl2);
   tcase_add_test (tc_chain, test_subviewer);
   tcase_add_test (tc_chain, test_subviewer2);
-#ifndef GST_DISABLE_XML
+  tcase_add_test (tc_chain, test_dks);
   tcase_add_test (tc_chain, test_sami);
-#endif
+  tcase_add_test (tc_chain, test_sami_xml_entities);
+  tcase_add_test (tc_chain, test_sami_html_entities);
+  tcase_add_test (tc_chain, test_sami_bad_entities);
+  tcase_add_test (tc_chain, test_sami_comment);
+  tcase_add_test (tc_chain, test_lrc);
   return s;
 }
 

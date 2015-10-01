@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_JPEG_PAY_H__
 #define __GST_RTP_JPEG_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 
 G_BEGIN_DECLS
 #define GST_TYPE_RTP_JPEG_PAY \
@@ -39,7 +39,7 @@ typedef struct _GstRtpJPEGPayClass GstRtpJPEGPayClass;
 
 struct _GstRtpJPEGPay
 {
-  GstBaseRTPPayload payload;
+  GstRTPBasePayload payload;
 
   guint8 quality;
   guint8 type;
@@ -47,15 +47,15 @@ struct _GstRtpJPEGPay
   gint height;
   gint width;
 
-  gboolean buffer_list;
-
   guint8 quant;
 };
 
 struct _GstRtpJPEGPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_jpeg_pay_get_type (void);
 
 gboolean gst_rtp_jpeg_pay_plugin_init (GstPlugin * plugin);
 

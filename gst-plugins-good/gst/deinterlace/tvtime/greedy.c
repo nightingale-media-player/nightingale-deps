@@ -4,7 +4,7 @@
  * Copyright (c) 2000 Tom Barry  All rights reserved.
  * mmx.h port copyright (c) 2002 Billy Biggs <vektor@dumbterm.net>.
  *
- * Copyright (C) 2008 Sebastian Dröge <slomo@collabora.co.uk>
+ * Copyright (C) 2008,2010 Sebastian Dröge <slomo@collabora.co.uk>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /*
@@ -32,10 +32,10 @@
 # include "config.h"
 #endif
 
-#include "_stdint.h"
-
-#include "gstdeinterlace.h"
+#include "gstdeinterlacemethod.h"
 #include <string.h>
+#include "tvtime.h"
+
 
 #define GST_TYPE_DEINTERLACE_METHOD_GREEDY_L	(gst_deinterlace_method_greedy_l_get_type ())
 #define GST_IS_DEINTERLACE_METHOD_GREEDY_L(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_DEINTERLACE_METHOD_GREEDY_L))
@@ -49,17 +49,12 @@ GType gst_deinterlace_method_greedy_l_get_type (void);
 
 typedef struct
 {
-  GstDeinterlaceMethod parent;
+  GstDeinterlaceSimpleMethod parent;
 
   guint max_comb;
 } GstDeinterlaceMethodGreedyL;
 
-typedef struct
-{
-  GstDeinterlaceMethodClass parent_class;
-  void (*scanline) (GstDeinterlaceMethodGreedyL * self, uint8_t * L2,
-      uint8_t * L1, uint8_t * L3, uint8_t * L2P, uint8_t * Dest, int size);
-} GstDeinterlaceMethodGreedyLClass;
+typedef GstDeinterlaceSimpleMethodClass GstDeinterlaceMethodGreedyLClass;
 
 // This is a simple lightweight DeInterlace method that uses little CPU time
 // but gives very good results for low or intermedite motion.
@@ -74,343 +69,77 @@ typedef struct
 // Blended Clip but this give too good results for the CPU to ignore here.
 
 static inline void
-deinterlace_greedy_packed422_scanline_c (GstDeinterlaceMethodGreedyL * self,
-    uint8_t * m0, uint8_t * t1,
-    uint8_t * b1, uint8_t * m2, uint8_t * output, int width)
+deinterlace_greedy_interpolate_scanline_orc (GstDeinterlaceSimpleMethod * self,
+    guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint size)
 {
-  int avg, l2_diff, lp2_diff, max, min, best;
-  guint max_comb = self->max_comb;
+  guint max_comb = GST_DEINTERLACE_METHOD_GREEDY_L (self)->max_comb;
 
-  // L2 == m0
-  // L1 == t1
-  // L3 == b1
-  // LP2 == m2
-
-  while (width--) {
-    avg = (*t1 + *b1) / 2;
-
-    l2_diff = ABS (*m0 - avg);
-    lp2_diff = ABS (*m2 - avg);
-
-    if (l2_diff > lp2_diff)
-      best = *m2;
-    else
-      best = *m0;
-
-    max = MAX (*t1, *b1);
-    min = MIN (*t1, *b1);
-
-    if (max < 256 - max_comb)
-      max += max_comb;
-    else
-      max = 255;
-
-    if (min > max_comb)
-      min -= max_comb;
-    else
-      min = 0;
-
-    *output = CLAMP (best, min, max);
-
-    // Advance to the next set of pixels.
-    output += 1;
-    m0 += 1;
-    t1 += 1;
-    b1 += 1;
-    m2 += 1;
-  }
-}
-
-#ifdef BUILD_X86_ASM
-#include "mmx.h"
-static void
-deinterlace_greedy_packed422_scanline_mmx (GstDeinterlaceMethodGreedyL * self,
-    uint8_t * m0, uint8_t * t1,
-    uint8_t * b1, uint8_t * m2, uint8_t * output, int width)
-{
-  mmx_t MaxComb;
-  mmx_t ShiftMask;
-
-  // How badly do we let it weave? 0-255
-  MaxComb.ub[0] = self->max_comb;
-  MaxComb.ub[1] = self->max_comb;
-  MaxComb.ub[2] = self->max_comb;
-  MaxComb.ub[3] = self->max_comb;
-  MaxComb.ub[4] = self->max_comb;
-  MaxComb.ub[5] = self->max_comb;
-  MaxComb.ub[6] = self->max_comb;
-  MaxComb.ub[7] = self->max_comb;
-
-  ShiftMask.ub[0] = 0x7f;
-  ShiftMask.ub[1] = 0x7f;
-  ShiftMask.ub[2] = 0x7f;
-  ShiftMask.ub[3] = 0x7f;
-  ShiftMask.ub[4] = 0x7f;
-  ShiftMask.ub[5] = 0x7f;
-  ShiftMask.ub[6] = 0x7f;
-  ShiftMask.ub[7] = 0x7f;
-
-  // L2 == m0
-  // L1 == t1
-  // L3 == b1
-  // LP2 == m2  
-
-  movq_m2r (MaxComb, mm6);
-
-  for (; width > 7; width -= 8) {
-    movq_m2r (*t1, mm1);        // L1
-    movq_m2r (*m0, mm2);        // L2
-    movq_m2r (*b1, mm3);        // L3
-    movq_m2r (*m2, mm0);        // LP2
-
-    // average L1 and L3 leave result in mm4
-    movq_r2r (mm1, mm4);        // L1
-    movq_r2r (mm3, mm5);        // L3
-    psrlw_i2r (1, mm4);         // L1/2
-    pand_m2r (ShiftMask, mm4);
-    psrlw_i2r (1, mm5);         // L3/2
-    pand_m2r (ShiftMask, mm5);
-    paddusb_r2r (mm5, mm4);     // (L1 + L3) / 2
-
-    // get abs value of possible L2 comb
-    movq_r2r (mm2, mm7);        // L2
-    psubusb_r2r (mm4, mm7);     // L2 - avg
-    movq_r2r (mm4, mm5);        // avg
-    psubusb_r2r (mm2, mm5);     // avg - L2
-    por_r2r (mm7, mm5);         // abs(avg-L2)
-
-    // get abs value of possible LP2 comb
-    movq_r2r (mm0, mm7);        // LP2
-    psubusb_r2r (mm4, mm7);     // LP2 - avg
-    psubusb_r2r (mm0, mm4);     // avg - LP2
-    por_r2r (mm7, mm4);         // abs(avg-LP2)
-
-    // use L2 or LP2 depending upon which makes smaller comb
-    psubusb_r2r (mm5, mm4);     // see if it goes to zero
-    psubusb_r2r (mm5, mm5);     // 0
-    pcmpeqb_r2r (mm5, mm4);     // if (mm4=0) then FF else 0
-    pcmpeqb_r2r (mm4, mm5);     // opposite of mm4
-
-    // if Comb(LP2) <= Comb(L2) then mm4=ff, mm5=0 else mm4=0, mm5 = 55
-    pand_r2r (mm2, mm5);        // use L2 if mm5 == ff, else 0
-    pand_r2r (mm0, mm4);        // use LP2 if mm4 = ff, else 0
-    por_r2r (mm5, mm4);         // may the best win
-
-    // Now lets clip our chosen value to be not outside of the range
-    // of the high/low range L1-L3 by more than abs(L1-L3)
-    // This allows some comb but limits the damages and also allows more
-    // detail than a boring oversmoothed clip.
-
-    movq_r2r (mm1, mm2);        // copy L1
-    psubusb_r2r (mm3, mm2);     // - L3, with saturation
-    paddusb_r2r (mm3, mm2);     // now = Max(L1,L3)
-
-    pcmpeqb_r2r (mm7, mm7);     // all ffffffff
-    psubusb_r2r (mm1, mm7);     // - L1 
-    paddusb_r2r (mm7, mm3);     // add, may sat at fff..
-    psubusb_r2r (mm7, mm3);     // now = Min(L1,L3)
-
-    // allow the value to be above the high or below the low by amt of MaxComb
-    paddusb_r2r (mm6, mm2);     // increase max by diff
-    psubusb_r2r (mm6, mm3);     // lower min by diff
-
-    psubusb_r2r (mm3, mm4);     // best - Min
-    paddusb_r2r (mm3, mm4);     // now = Max(best,Min(L1,L3)
-
-    pcmpeqb_r2r (mm7, mm7);     // all ffffffff
-    psubusb_r2r (mm4, mm7);     // - Max(best,Min(best,L3) 
-    paddusb_r2r (mm7, mm2);     // add may sat at FFF..
-    psubusb_r2r (mm7, mm2);     // now = Min( Max(best, Min(L1,L3), L2 )=L2 clipped
-
-    movq_r2m (mm2, *output);    // move in our clipped best
-
-    // Advance to the next set of pixels.
-    output += 8;
-    m0 += 8;
-    t1 += 8;
-    b1 += 8;
-    m2 += 8;
-  }
-  emms ();
-  if (width > 0)
-    deinterlace_greedy_packed422_scanline_c (self, m0, t1, b1, m2, output,
-        width);
-}
-
-#include "sse.h"
-
-static void
-deinterlace_greedy_packed422_scanline_mmxext (GstDeinterlaceMethodGreedyL *
-    self, uint8_t * m0, uint8_t * t1, uint8_t * b1, uint8_t * m2,
-    uint8_t * output, int width)
-{
-  mmx_t MaxComb;
-
-  // How badly do we let it weave? 0-255
-  MaxComb.ub[0] = self->max_comb;
-  MaxComb.ub[1] = self->max_comb;
-  MaxComb.ub[2] = self->max_comb;
-  MaxComb.ub[3] = self->max_comb;
-  MaxComb.ub[4] = self->max_comb;
-  MaxComb.ub[5] = self->max_comb;
-  MaxComb.ub[6] = self->max_comb;
-  MaxComb.ub[7] = self->max_comb;
-
-  // L2 == m0
-  // L1 == t1
-  // L3 == b1
-  // LP2 == m2
-
-  movq_m2r (MaxComb, mm6);
-
-  for (; width > 7; width -= 8) {
-    movq_m2r (*t1, mm1);        // L1
-    movq_m2r (*m0, mm2);        // L2
-    movq_m2r (*b1, mm3);        // L3
-    movq_m2r (*m2, mm0);        // LP2
-
-    // average L1 and L3 leave result in mm4
-    movq_r2r (mm1, mm4);        // L1
-    pavgb_r2r (mm3, mm4);       // (L1 + L3)/2
-
-    // get abs value of possible L2 comb
-    movq_r2r (mm2, mm7);        // L2
-    psubusb_r2r (mm4, mm7);     // L2 - avg
-    movq_r2r (mm4, mm5);        // avg
-    psubusb_r2r (mm2, mm5);     // avg - L2
-    por_r2r (mm7, mm5);         // abs(avg-L2)
-
-    // get abs value of possible LP2 comb
-    movq_r2r (mm0, mm7);        // LP2
-    psubusb_r2r (mm4, mm7);     // LP2 - avg
-    psubusb_r2r (mm0, mm4);     // avg - LP2
-    por_r2r (mm7, mm4);         // abs(avg-LP2)
-
-    // use L2 or LP2 depending upon which makes smaller comb
-    psubusb_r2r (mm5, mm4);     // see if it goes to zero
-    pxor_r2r (mm5, mm5);        // 0
-    pcmpeqb_r2r (mm5, mm4);     // if (mm4=0) then FF else 0
-    pcmpeqb_r2r (mm4, mm5);     // opposite of mm4
-
-    // if Comb(LP2) <= Comb(L2) then mm4=ff, mm5=0 else mm4=0, mm5 = 55
-    pand_r2r (mm2, mm5);        // use L2 if mm5 == ff, else 0
-    pand_r2r (mm0, mm4);        // use LP2 if mm4 = ff, else 0
-    por_r2r (mm5, mm4);         // may the best win
-
-    // Now lets clip our chosen value to be not outside of the range
-    // of the high/low range L1-L3 by more than abs(L1-L3)
-    // This allows some comb but limits the damages and also allows more
-    // detail than a boring oversmoothed clip.
-
-    movq_r2r (mm1, mm2);        // copy L1
-    pmaxub_r2r (mm3, mm2);      // now = Max(L1,L3)
-
-    pminub_r2r (mm1, mm3);      // now = Min(L1,L3)
-
-    // allow the value to be above the high or below the low by amt of MaxComb
-    paddusb_r2r (mm6, mm2);     // increase max by diff
-    psubusb_r2r (mm6, mm3);     // lower min by diff
-
-
-    pmaxub_r2r (mm3, mm4);      // now = Max(best,Min(L1,L3)
-    pminub_r2r (mm4, mm2);      // now = Min( Max(best, Min(L1,L3)), L2 )=L2 clipped
-
-    movq_r2m (mm2, *output);    // move in our clipped best
-
-    // Advance to the next set of pixels.
-    output += 8;
-    m0 += 8;
-    t1 += 8;
-    b1 += 8;
-    m2 += 8;
-  }
-  emms ();
-
-  if (width > 0)
-    deinterlace_greedy_packed422_scanline_c (self, m0, t1, b1, m2, output,
-        width);
-}
-
-#endif
-
-static void
-deinterlace_frame_di_greedy (GstDeinterlaceMethod * d_method,
-    GstDeinterlace * object, GstBuffer * outbuf)
-{
-  GstDeinterlaceMethodGreedyL *self =
-      GST_DEINTERLACE_METHOD_GREEDY_L (d_method);
-  GstDeinterlaceMethodGreedyLClass *klass =
-      GST_DEINTERLACE_METHOD_GREEDY_L_GET_CLASS (self);
-  int InfoIsOdd = 0;
-  int Line;
-  unsigned int Pitch = object->field_stride;
-  unsigned char *L1;            // ptr to Line1, of 3
-  unsigned char *L2;            // ptr to Line2, the weave line
-  unsigned char *L3;            // ptr to Line3
-
-  unsigned char *L2P;           // ptr to prev Line2
-  unsigned char *Dest = GST_BUFFER_DATA (outbuf);
-
-  // copy first even line no matter what, and the first odd line if we're
-  // processing an EVEN field. (note diff from other deint rtns.)
-
-  if (object->field_history[object->history_count - 1].flags ==
-      PICTURE_INTERLACED_BOTTOM) {
-    InfoIsOdd = 1;
-
-    L1 = GST_BUFFER_DATA (object->field_history[object->history_count - 2].buf);
-    L2 = GST_BUFFER_DATA (object->field_history[object->history_count - 1].buf);
-    L3 = L1 + Pitch;
-    L2P =
-        GST_BUFFER_DATA (object->field_history[object->history_count - 3].buf);
-
-    // copy first even line
-    oil_memcpy (Dest, L1, object->row_stride);
-    Dest += object->row_stride;
+  if (scanlines->m1 == NULL || scanlines->mp == NULL) {
+    deinterlace_line_linear (out, scanlines->t0, scanlines->b0, size);
   } else {
-    InfoIsOdd = 0;
-    L1 = GST_BUFFER_DATA (object->field_history[object->history_count - 2].buf);
-    L2 = GST_BUFFER_DATA (object->field_history[object->history_count -
-            1].buf) + Pitch;
-    L3 = L1 + Pitch;
-    L2P =
-        GST_BUFFER_DATA (object->field_history[object->history_count - 3].buf) +
-        Pitch;
-
-    // copy first even line
-    oil_memcpy (Dest, GST_BUFFER_DATA (object->field_history[0].buf),
-        object->row_stride);
-    Dest += object->row_stride;
-    // then first odd line
-    oil_memcpy (Dest, L1, object->row_stride);
-    Dest += object->row_stride;
-  }
-
-  for (Line = 0; Line < (object->field_height - 1); ++Line) {
-    klass->scanline (self, L2, L1, L3, L2P, Dest, object->row_stride);
-    Dest += object->row_stride;
-    oil_memcpy (Dest, L3, object->row_stride);
-    Dest += object->row_stride;
-
-    L1 += Pitch;
-    L2 += Pitch;
-    L3 += Pitch;
-    L2P += Pitch;
-  }
-
-  if (InfoIsOdd) {
-    oil_memcpy (Dest, L2, object->row_stride);
+    deinterlace_line_greedy (out, scanlines->m1, scanlines->t0, scanlines->b0,
+        scanlines->mp ? scanlines->mp : scanlines->m1, max_comb, size);
   }
 }
 
+static inline void
+deinterlace_greedy_interpolate_scanline_orc_planar_u (GstDeinterlaceSimpleMethod
+    * self, guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint
+    size)
+{
+  guint max_comb = GST_DEINTERLACE_METHOD_GREEDY_L (self)->max_comb;
+
+  if (scanlines->m1 == NULL || scanlines->mp == NULL) {
+    deinterlace_line_linear (out, scanlines->t0, scanlines->b0, size);
+  } else {
+    deinterlace_line_greedy (out, scanlines->m1, scanlines->t0, scanlines->b0,
+        scanlines->mp ? scanlines->mp : scanlines->m1, max_comb, size);
+  }
+}
+
+static inline void
+deinterlace_greedy_interpolate_scanline_orc_planar_v (GstDeinterlaceSimpleMethod
+    * self, guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint
+    size)
+{
+  guint max_comb = GST_DEINTERLACE_METHOD_GREEDY_L (self)->max_comb;
+
+  if (scanlines->m1 == NULL || scanlines->mp == NULL) {
+    deinterlace_line_linear (out, scanlines->t0, scanlines->b0, size);
+  } else {
+    deinterlace_line_greedy (out, scanlines->m1, scanlines->t0, scanlines->b0,
+        scanlines->mp ? scanlines->mp : scanlines->m1, max_comb, size);
+  }
+}
+
+static void
+deinterlace_greedy_copy_scanline (GstDeinterlaceSimpleMethod * self,
+    guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint size)
+{
+  memcpy (out, scanlines->m0, size);
+}
+
+static void
+deinterlace_greedy_copy_scanline_planar_u (GstDeinterlaceSimpleMethod * self,
+    guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint size)
+{
+  memcpy (out, scanlines->m0, size);
+}
+
+static void
+deinterlace_greedy_copy_scanline_planar_v (GstDeinterlaceSimpleMethod * self,
+    guint8 * out, const GstDeinterlaceScanlineData * scanlines, guint size)
+{
+  memcpy (out, scanlines->m0, size);
+}
 
 G_DEFINE_TYPE (GstDeinterlaceMethodGreedyL, gst_deinterlace_method_greedy_l,
-    GST_TYPE_DEINTERLACE_METHOD);
+    GST_TYPE_DEINTERLACE_SIMPLE_METHOD);
 
 enum
 {
-  ARG_0,
-  ARG_MAX_COMB
+  PROP_0,
+  PROP_MAX_COMB
 };
 
 static void
@@ -420,7 +149,7 @@ gst_deinterlace_method_greedy_l_set_property (GObject * object, guint prop_id,
   GstDeinterlaceMethodGreedyL *self = GST_DEINTERLACE_METHOD_GREEDY_L (object);
 
   switch (prop_id) {
-    case ARG_MAX_COMB:
+    case PROP_MAX_COMB:
       self->max_comb = g_value_get_uint (value);
       break;
     default:
@@ -435,7 +164,7 @@ gst_deinterlace_method_greedy_l_get_property (GObject * object, guint prop_id,
   GstDeinterlaceMethodGreedyL *self = GST_DEINTERLACE_METHOD_GREEDY_L (object);
 
   switch (prop_id) {
-    case ARG_MAX_COMB:
+    case PROP_MAX_COMB:
       g_value_set_uint (value, self->max_comb);
       break;
     default:
@@ -448,37 +177,66 @@ gst_deinterlace_method_greedy_l_class_init (GstDeinterlaceMethodGreedyLClass *
     klass)
 {
   GstDeinterlaceMethodClass *dim_class = (GstDeinterlaceMethodClass *) klass;
+  GstDeinterlaceSimpleMethodClass *dism_class =
+      (GstDeinterlaceSimpleMethodClass *) klass;
   GObjectClass *gobject_class = (GObjectClass *) klass;
-#ifdef BUILD_X86_ASM
-  guint cpu_flags = oil_cpu_get_flags ();
-#endif
 
   gobject_class->set_property = gst_deinterlace_method_greedy_l_set_property;
   gobject_class->get_property = gst_deinterlace_method_greedy_l_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_MAX_COMB,
+  g_object_class_install_property (gobject_class, PROP_MAX_COMB,
       g_param_spec_uint ("max-comb",
           "Max comb",
           "Max Comb", 0, 255, 15, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)
       );
 
-  dim_class->fields_required = 4;
-  dim_class->deinterlace_frame = deinterlace_frame_di_greedy;
+  dim_class->fields_required = 2;
   dim_class->name = "Motion Adaptive: Simple Detection";
   dim_class->nick = "greedyl";
   dim_class->latency = 1;
 
-#ifdef BUILD_X86_ASM
-  if (cpu_flags & OIL_IMPL_FLAG_MMXEXT) {
-    klass->scanline = deinterlace_greedy_packed422_scanline_mmxext;
-  } else if (cpu_flags & OIL_IMPL_FLAG_MMX) {
-    klass->scanline = deinterlace_greedy_packed422_scanline_mmx;
-  } else {
-    klass->scanline = deinterlace_greedy_packed422_scanline_c;
-  }
-#else
-  klass->scanline = deinterlace_greedy_packed422_scanline_c;
-#endif
+  dism_class->interpolate_scanline_ayuv =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_yuy2 =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_yvyu =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_uyvy =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_argb =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_abgr =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_rgba =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_bgra =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_rgb =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_bgr =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_planar_y =
+      deinterlace_greedy_interpolate_scanline_orc;
+  dism_class->interpolate_scanline_planar_u =
+      deinterlace_greedy_interpolate_scanline_orc_planar_u;
+  dism_class->interpolate_scanline_planar_v =
+      deinterlace_greedy_interpolate_scanline_orc_planar_v;
+
+  dism_class->copy_scanline_ayuv = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_yuy2 = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_yvyu = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_uyvy = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_argb = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_abgr = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_rgba = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_bgra = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_rgb = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_bgr = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_planar_y = deinterlace_greedy_copy_scanline;
+  dism_class->copy_scanline_planar_u =
+      deinterlace_greedy_copy_scanline_planar_u;
+  dism_class->copy_scanline_planar_v =
+      deinterlace_greedy_copy_scanline_planar_v;
 }
 
 static void

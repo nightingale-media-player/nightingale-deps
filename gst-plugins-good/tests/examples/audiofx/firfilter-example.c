@@ -13,13 +13,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* This small sample application creates a bandpass FIR filter
  * by transforming the frequency response to the filter kernel.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #include <string.h>
 #include <math.h>
@@ -90,7 +94,7 @@ on_rate_changed (GstElement * element, gint rate, gpointer user_data)
    * a better result than given from the rectangular window
    */
   for (i = 0; i < 32; i++)
-    filter_kernel[i] *= (0.54 - 0.46 * cos (2 * M_PI * i / 32));
+    filter_kernel[i] *= (0.54 - 0.46 * cos (2 * G_PI * i / 32));
 
   va = g_value_array_new (1);
 
@@ -104,7 +108,7 @@ on_rate_changed (GstElement * element, gint rate, gpointer user_data)
   /* Latency is 1/2 of the kernel length for this method of
    * calculating a filter kernel from the frequency response
    */
-  g_object_set (G_OBJECT (element), "latency", 32 / 2, NULL);
+  g_object_set (G_OBJECT (element), "latency", (gint64) (32 / 2), NULL);
   g_value_array_free (va);
 }
 

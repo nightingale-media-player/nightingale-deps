@@ -15,14 +15,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_WAVPACK_ENC_H__
 #define __GST_WAVPACK_ENC_H__
 
 #include <gst/gst.h>
+#include <gst/audio/gstaudioencoder.h>
 
 #include <wavpack/wavpack.h>
 
@@ -50,10 +51,9 @@ typedef struct
 
 struct _GstWavpackEnc
 {
-  GstElement element;
+  GstAudioEncoder element;
 
   /*< private > */
-  GstPad *sinkpad, *srcpad;
   GstPad *wvcsrcpad;
 
   GstFlowReturn srcpad_last_return;
@@ -86,6 +86,7 @@ struct _GstWavpackEnc
 
   GstBuffer *pending_buffer;
   gint32 pending_offset;
+  GstEvent *pending_segment;
 
   GstClockTime timestamp_offset;
   GstClockTime next_ts;
@@ -93,7 +94,7 @@ struct _GstWavpackEnc
 
 struct _GstWavpackEncClass
 {
-  GstElementClass parent;
+  GstAudioEncoderClass parent;
 };
 
 GType gst_wavpack_enc_get_type (void);

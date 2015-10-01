@@ -38,8 +38,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <string.h>
@@ -59,7 +59,7 @@ image_description_for_avc1 (GstBuffer * buf)
   /* write size in Big-Endian */
   GST_WRITE_UINT32_BE (pos, GST_BUFFER_SIZE (buf) + 8);
   GST_WRITE_UINT32_LE (pos + 4, QT_MAKE_FOURCC_BE ('a', 'v', 'c', 'C'));
-  g_memmove (pos + 8, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+  memmove (pos + 8, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
 
   return desc;
 }
@@ -126,7 +126,7 @@ image_description_for_mp4v (GstBuffer * buf)
   /*  size */
   QT_WRITE_UINT8 (location + 33, GST_BUFFER_SIZE (buf));
   /*  codec data */
-  g_memmove (location + 34, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
+  memmove (location + 34, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
   /*  end */
   QT_WRITE_UINT8 (location + 34 + GST_BUFFER_SIZE (buf), 0x06);
   QT_WRITE_UINT8 (location + 34 + GST_BUFFER_SIZE (buf) + 1, 0x01);

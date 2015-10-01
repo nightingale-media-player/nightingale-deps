@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OpenGL Helper Library: GStreamer Bad Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-plugins-bad.html" title="Part I. GStreamer Bad Plugins Libraries">
+<link rel="prev" href="gst-plugins-bad-libs-GstVideoAggregatorPad.html" title="GstVideoAggregatorPad">
+<link rel="next" href="gst-plugins-bad-libs-GstGLAPI.html" title="GstGLAPI">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-plugins-bad.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-libs-GstVideoAggregatorPad.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-libs-GstGLAPI.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="chapter">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="gl"></a>OpenGL Helper Library</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLAPI.html">GstGLAPI</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLBufferPool.html">GstGLBufferPool</a></span><span class="refpurpose"> — buffer pool for <span class="type">GstGLMemory</span> objects</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLColorConvert.html">GstGLColorConvert</a></span><span class="refpurpose"> — an object that converts between color spaces/formats</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLContext.html">GstGLContext</a></span><span class="refpurpose"> — OpenGL context abstraction</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLContextCocoa.html">GstGLContextCocoa</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLContextEGL.html">GstGLContextEGL</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLContextEagl.html">GstGLContextEagl</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLContextGLX.html">GstGLContextGLX</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLContextWGL.html">GstGLContextWGL</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLDisplay.html">GstGLDisplay</a></span><span class="refpurpose"> — window system display connection abstraction</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLDownload.html">GstGLDownload</a></span><span class="refpurpose"> — an object that downloads GL textures</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstEGLImageMemory.html">GstEGLImageMemory</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLBaseFilter.html">GstGLBaseFilter</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLFilter.html">GstGLFilter</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLFramebuffer.html">GstGLFramebuffer</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-gstglmemory.html">GstGLMemory</a></span><span class="refpurpose"> — memory subclass for GL textures</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-gstglshader.html">GstGLShader</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLSyncMeta.html">GstGLSyncMeta</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLUpload.html">GstGLUpload</a></span><span class="refpurpose"> — an object that uploads to GL textures</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLUploadMeta.html">GstGLUploadMeta</a></span><span class="refpurpose"> — an object that provides <span class="type">GstVideoGLTextureUploadMeta</span></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-Utilities.html">Utilities</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="GstGLWindow.html">GstGLWindow</a></span><span class="refpurpose"> — window/surface abstraction</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowAndroid.html">GstGLWindowAndroid</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowCocoa.html">GstGLWindowCocoa</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowDispmanx.html">GstGLWindowDispmanx</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowWayland.html">GstGLWindowWayland</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowWin32.html">GstGLWindowWin32</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-bad-libs-GstGLWindowX11.html">GstGLWindowX11</a></span><span class="refpurpose"></span>
+</dt>
+</dl></div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

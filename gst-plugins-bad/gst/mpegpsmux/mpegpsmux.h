@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -68,7 +68,9 @@ struct MpegPsMux {
 
   GstPad *srcpad;
 
-  GstCollectPads *collect; // pads collector
+  guint video_stream_id;   /* stream id of primary video stream */
+
+  GstCollectPads *collect; /* pads collector */
 
   PsMux *psmux;
 
@@ -76,6 +78,9 @@ struct MpegPsMux {
   GstFlowReturn last_flow_ret;
   
   GstClockTime last_ts;
+
+  GstBufferList *gop_list;
+  gboolean       aggregate_gops;
 };
 
 struct MpegPsMuxClass  {
@@ -89,9 +94,16 @@ struct MpegPsPadData {
   guint8 stream_id_ext; 
   PsMuxStream *stream;
 
-  GstBuffer *queued_buf; /* Currently pulled buffer */
-  GstClockTime cur_ts; /* Adjusted TS for the pulled buffer */
-  GstClockTime last_ts; /* Most recent valid TS for this stream */
+  /* Currently pulled buffer */
+  struct {
+    GstBuffer *buf;
+    GstClockTime ts;  /* adjusted TS = MIN (DTS, PTS) for the pulled buffer */
+    GstClockTime pts; /* adjusted PTS (running time) */
+    GstClockTime dts; /* adjusted DTS (running time) */
+  } queued;
+
+  /* Most recent valid TS (DTS or PTS) for this stream */
+  GstClockTime last_ts;
 
   GstBuffer * codec_data; /* Optional codec data available in the caps */
 
@@ -105,10 +117,10 @@ GType mpegpsmux_get_type (void);
 #define CLOCK_BASE 9LL
 #define CLOCK_FREQ (CLOCK_BASE * 10000)
 
-#define MPEGTIME_TO_GSTTIME(time) (gst_util_uint64_scale ((time), \
-                        GST_MSECOND/10, CLOCK_BASE))
-#define GSTTIME_TO_MPEGTIME(time) (gst_util_uint64_scale ((time), \
-                        CLOCK_BASE, GST_MSECOND/10))
+#define GSTTIME_TO_MPEGTIME(time) \
+    (GST_CLOCK_TIME_IS_VALID(time) ? \
+        gst_util_uint64_scale ((time), CLOCK_BASE, GST_MSECOND/10) : \
+            -1)
 
 #define NORMAL_TS_PACKET_LENGTH 188
 #define M2TS_PACKET_LENGTH      192

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* Implementation of SMPTE 383M - Mapping DV-DIF data into the MXF
@@ -23,7 +23,7 @@
 
 /* TODO:
  *  - playbin hangs on a lot of MXF/DV-DIF files (bug #563827)
- *  - decodebin2 creates loops inside the linking graph (bug #563828)
+ *  - decodebin creates loops inside the linking graph (bug #563828)
  *  - track descriptor might be multiple descriptor, one for sound, one for video
  *  - there might be 2 tracks for one essence, i.e. one audio/one video track
  */
@@ -102,6 +102,41 @@ mxf_dv_dif_handle_essence_element (const MXFUL * key, GstBuffer * buffer,
   return GST_FLOW_OK;
 }
 
+static MXFEssenceWrapping
+mxf_dv_dif_get_track_wrapping (const MXFMetadataTimelineTrack * track)
+{
+  guint i;
+
+  g_return_val_if_fail (track != NULL, MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING);
+
+  if (track->parent.descriptor == NULL) {
+    GST_ERROR ("No descriptor found for this track");
+    return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+  }
+
+  for (i = 0; i < track->parent.n_descriptor; i++) {
+    if (!track->parent.descriptor[i])
+      continue;
+
+    if (!MXF_IS_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR (track->
+            parent.descriptor[i]))
+      continue;
+
+    switch (track->parent.descriptor[i]->essence_container.u[15]) {
+      case 0x01:
+        return MXF_ESSENCE_WRAPPING_FRAME_WRAPPING;
+        break;
+      case 0x02:
+        return MXF_ESSENCE_WRAPPING_CLIP_WRAPPING;
+        break;
+      default:
+        return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+        break;
+    }
+  }
+
+  return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+}
 
 static GstCaps *
 mxf_dv_dif_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
@@ -142,7 +177,7 @@ mxf_dv_dif_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
     mxf_metadata_generic_picture_essence_descriptor_set_caps (d, caps);
 
   if (!*tags)
-    *tags = gst_tag_list_new ();
+    *tags = gst_tag_list_new_empty ();
 
   gst_tag_list_add (*tags, GST_TAG_MERGE_APPEND, GST_TAG_CODEC, "DV-DIF", NULL);
 
@@ -151,11 +186,12 @@ mxf_dv_dif_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
 
 static const MXFEssenceElementHandler mxf_dv_dif_essence_element_handler = {
   mxf_is_dv_dif_essence_track,
+  mxf_dv_dif_get_track_wrapping,
   mxf_dv_dif_create_caps
 };
 
 static GstFlowReturn
-mxf_dv_dif_write_func (GstBuffer * buffer, GstCaps * caps,
+mxf_dv_dif_write_func (GstBuffer * buffer,
     gpointer mapping_data, GstAdapter * adapter, GstBuffer ** outbuf,
     gboolean flush)
 {
@@ -175,14 +211,14 @@ mxf_dv_dif_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   MXFMetadataCDCIPictureEssenceDescriptor *ret;
 
   ret = (MXFMetadataCDCIPictureEssenceDescriptor *)
-      gst_mini_object_new (MXF_TYPE_METADATA_CDCI_PICTURE_ESSENCE_DESCRIPTOR);
+      g_object_new (MXF_TYPE_METADATA_CDCI_PICTURE_ESSENCE_DESCRIPTOR, NULL);
 
   memcpy (&ret->parent.parent.essence_container, &dv_dif_essence_container_ul,
       16);
 
   if (!mxf_metadata_generic_picture_essence_descriptor_from_caps (&ret->parent,
           caps)) {
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
   *handler = mxf_dv_dif_write_func;

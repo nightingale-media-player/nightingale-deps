@@ -13,24 +13,25 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __DSHOWVIDEOSINK_H__
 #define __DSHOWVIDEOSINK_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstbasesink.h>
+#include <gst/video/video.h>
+#include <gst/video/gstvideosink.h>
 
 #include "dshowvideofakesrc.h"
-
-#include "comtaskthread.h"
 
 #include <dshow.h>
 
 #include "d3d9.h"
 #include "vmr9.h"
+#include "evr.h"
+#include "mfidl.h"
 
 #pragma warning( disable : 4090 4024)
 
@@ -42,6 +43,9 @@ G_BEGIN_DECLS
 #define GST_IS_DSHOWVIDEOSINK_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DSHOWVIDEOSINK))
 typedef struct _GstDshowVideoSink GstDshowVideoSink;
 typedef struct _GstDshowVideoSinkClass GstDshowVideoSinkClass;
+
+#define GST_DSHOWVIDEOSINK_GRAPH_LOCK(sink)	g_mutex_lock (&GST_DSHOWVIDEOSINK (sink)->graph_lock)
+#define GST_DSHOWVIDEOSINK_GRAPH_UNLOCK(clock) g_mutex_unlock (&GST_DSHOWVIDEOSINK (sink)->graph_lock)
 
 /* Renderer-specific support classes */
 class RendererSupport
@@ -56,11 +60,12 @@ public:
   virtual void MoveWindow() = 0;
   virtual void DestroyWindow() = 0;
   virtual void DisplayModeChanged() = 0;
+  virtual void SetAspectRatioMode() = 0;
 };
 
 struct _GstDshowVideoSink
 {
-  GstBaseSink sink;
+  GstVideoSink sink;
 
   /* Preferred renderer to use: VM9 or VMR */
   char *preferredrenderer;
@@ -87,9 +92,12 @@ struct _GstDshowVideoSink
 
   /* The video window set through GstXOverlay */
   HWND window_id;
+  
+  /* If we created the window, it needs to be closed in ::stop() */
+  gboolean is_new_window;
 
   gboolean connected;
-  gboolean window_prepared;
+  gboolean graph_running;
 
   /* If we create our own window, we run it from another thread */
   GThread *window_thread;
@@ -98,13 +106,20 @@ struct _GstDshowVideoSink
   /* If we use an app-supplied window, we need to hook its WNDPROC */
   WNDPROC prevWndProc;
 
-  /* COM thread helper */ 
-  GstCOMTaskThread *comthread;
+  /* Lock for transitions */
+  GMutex graph_lock;
+
+  gboolean comInitialized;
+  GMutex   com_init_lock;
+  GMutex   com_deinit_lock;
+  GCond    com_initialized;
+  GCond    com_uninitialize;
+  GCond    com_uninitialized;
 };
 
 struct _GstDshowVideoSinkClass
 {
-  GstBaseSinkClass parent_class;
+  GstVideoSinkClass parent_class;
 };
 
 GType gst_dshowvideosink_get_type (void);

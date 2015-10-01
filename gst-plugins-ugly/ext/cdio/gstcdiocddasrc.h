@@ -13,14 +13,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_CDIO_CDDA_SRC_H__
 #define __GST_CDIO_CDDA_SRC_H__
 
-#include <gst/cdda/gstcddabasesrc.h>
+#include <gst/audio/gstaudiocdsrc.h>
 #include <cdio/cdio.h>
 
 #define GST_TYPE_CDIO_CDDA_SRC            (gst_cdio_cdda_src_get_type ())
@@ -34,19 +34,21 @@ typedef struct _GstCdioCddaSrcClass GstCdioCddaSrcClass;
 
 struct _GstCdioCddaSrc
 {
-  GstCddaBaseSrc cddabasesrc;
+  GstAudioCdSrc  audiocdsrc;
 
   gint           read_speed;    /* ATOMIC */
+
+  gboolean       swap_le_be;    /* Drive produces samples in other endianness */
 
   CdIo          *cdio;          /* NULL if not open */
 };
 
 struct _GstCdioCddaSrcClass
 {
-  GstCddaBaseSrcClass  cddabasesrc_class;
+  GstAudioCdSrcClass  audiocdsrc_class;
 };
 
-GType   gst_cdio_cdda_src_get_type ();
+GType   gst_cdio_cdda_src_get_type (void);
 
 #endif /* __GST_CDIO_CDDA_SRC_H__ */
 

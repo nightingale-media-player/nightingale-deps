@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -35,10 +35,16 @@ static GstElement *
 setup_appsink (void)
 {
   GstElement *appsink;
+  GstCaps *caps;
 
   GST_DEBUG ("setup_appsink");
   appsink = gst_check_setup_element ("appsink");
-  mysrcpad = gst_check_setup_src_pad (appsink, &srctemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (appsink, &srctemplate);
+  gst_pad_set_active (mysrcpad, TRUE);
+
+  caps = gst_caps_new_empty_simple ("application/x-gst-check");
+  gst_check_setup_events (mysrcpad, appsink, caps, GST_FORMAT_TIME);
+  gst_caps_unref (caps);
 
   return appsink;
 }
@@ -56,16 +62,10 @@ cleanup_appsink (GstElement * appsink)
  * The exact operation performed doesn't matter. Currently it multiplies with
  * two, but it could do anything. The idea is to use the function to verify
  * that the code calling it gets run. */
-gint
+static gint
 operate_on_data (gint indata)
 {
   return indata * 2;
-}
-
-void
-notify_test_function (gpointer userdata)
-{
-  global_testdata = operate_on_data (GPOINTER_TO_INT (userdata));
 }
 
 static GstFlowReturn
@@ -76,7 +76,7 @@ callback_function (GstAppSink * appsink, gpointer callback_data)
   return GST_FLOW_OK;
 }
 
-void
+static void
 notify_function (gpointer callback_data)
 {
   global_testdata = operate_on_data (*((gint *) callback_data));
@@ -86,16 +86,12 @@ GST_START_TEST (test_non_clients)
 {
   GstElement *sink;
   GstBuffer *buffer;
-  GstCaps *caps;
 
   sink = setup_appsink ();
 
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
-  caps = gst_caps_from_string ("application/x-gst-check");
   buffer = gst_buffer_new_and_alloc (4);
-  gst_buffer_set_caps (buffer, caps);
-  gst_caps_unref (caps);
   fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
 
   GST_DEBUG ("cleaning up appsink");
@@ -110,7 +106,6 @@ GST_START_TEST (test_handoff_callback)
 {
   GstElement *sink;
   GstBuffer *buffer;
-  GstCaps *caps;
   gint testdata;
   GstAppSinkCallbacks callbacks = { NULL };
 
@@ -119,16 +114,13 @@ GST_START_TEST (test_handoff_callback)
   global_testdata = 0;
   testdata = 5;                 /* Arbitrary value */
 
-  callbacks.new_buffer = callback_function;
+  callbacks.new_sample = callback_function;
 
   gst_app_sink_set_callbacks (GST_APP_SINK (sink), &callbacks, &testdata, NULL);
 
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
-  caps = gst_caps_from_string ("application/x-gst-check");
   buffer = gst_buffer_new_and_alloc (4);
-  gst_buffer_set_caps (buffer, caps);
-  gst_caps_unref (caps);
   /* Pushing a buffer should run our callback */
   fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
 
@@ -201,121 +193,154 @@ GST_START_TEST (test_notify1)
 
 GST_END_TEST;
 
-static GstBufferList *mylist;
-static GstCaps *mycaps;
+static const gint values[] = { 1, 2, 4 };
 
 static GstBufferList *
 create_buffer_list (void)
 {
-  GstBufferListIterator *it;
+  guint len;
   GstBuffer *buffer;
+  GstBufferList *mylist;
 
   mylist = gst_buffer_list_new ();
   fail_if (mylist == NULL);
 
-  mycaps = gst_caps_from_string ("application/x-gst-check");
-  fail_if (mycaps == NULL);
-
-  it = gst_buffer_list_iterate (mylist);
-  fail_if (it == NULL);
-
-  gst_buffer_list_iterator_add_group (it);
+  len = gst_buffer_list_length (mylist);
+  fail_if (len != 0);
 
   buffer = gst_buffer_new_and_alloc (sizeof (gint));
-  *(gint *) GST_BUFFER_DATA (buffer) = 1;
-  gst_buffer_set_caps (buffer, mycaps);
-  gst_buffer_list_iterator_add (it, buffer);
-
-  gst_buffer_list_iterator_add_group (it);
+  gst_buffer_fill (buffer, 0, &values[0], sizeof (gint));
+  gst_buffer_list_add (mylist, buffer);
 
   buffer = gst_buffer_new_and_alloc (sizeof (gint));
-  *(gint *) GST_BUFFER_DATA (buffer) = 2;
-  gst_buffer_set_caps (buffer, mycaps);
-  gst_buffer_list_iterator_add (it, buffer);
+  gst_buffer_fill (buffer, 0, &values[1], sizeof (gint));
+  gst_buffer_list_add (mylist, buffer);
 
   buffer = gst_buffer_new_and_alloc (sizeof (gint));
-  *(gint *) GST_BUFFER_DATA (buffer) = 4;
-  gst_buffer_set_caps (buffer, mycaps);
-  gst_buffer_list_iterator_add (it, buffer);
-
-  gst_buffer_list_iterator_free (it);
+  gst_buffer_fill (buffer, 0, &values[2], sizeof (gint));
+  gst_buffer_list_add (mylist, buffer);
 
   return mylist;
 }
 
-static void
-check_buffer_list (GstBufferList * list)
-{
-  GstBufferListIterator *it;
-  GstBuffer *buf;
-  GstCaps *caps;
-
-  fail_unless (list == mylist);
-  fail_unless (gst_buffer_list_n_groups (list) == 2);
-
-  it = gst_buffer_list_iterate (list);
-  fail_if (it == NULL);
-
-  fail_unless (gst_buffer_list_iterator_next_group (it));
-  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 1);
-  buf = gst_buffer_list_iterator_next (it);
-  fail_if (buf == NULL);
-  fail_unless (*(gint *) GST_BUFFER_DATA (buf) == 1);
-  caps = gst_buffer_get_caps (buf);
-  fail_unless (caps == mycaps);
-  fail_unless (gst_caps_is_equal (caps, mycaps));
-  gst_caps_unref (caps);
-
-  fail_unless (gst_buffer_list_iterator_next_group (it));
-  fail_unless (gst_buffer_list_iterator_n_buffers (it) == 2);
-  buf = gst_buffer_list_iterator_next (it);
-  fail_if (buf == NULL);
-  fail_unless (*(gint *) GST_BUFFER_DATA (buf) == 2);
-  caps = gst_buffer_get_caps (buf);
-  fail_unless (caps == mycaps);
-  gst_caps_unref (caps);
-
-  buf = gst_buffer_list_iterator_next (it);
-  fail_if (buf == NULL);
-  fail_unless (*(gint *) GST_BUFFER_DATA (buf) == 4);
-  caps = gst_buffer_get_caps (buf);
-  fail_unless (caps == mycaps);
-  gst_caps_unref (caps);
-
-  gst_buffer_list_iterator_free (it);
-}
-
 static GstFlowReturn
-callback_function_buffer_list (GstAppSink * appsink, gpointer callback_data)
+callback_function_sample (GstAppSink * appsink, gpointer p_counter)
 {
-  GstBufferList *list;
+  GstSample *sample;
+  GstBuffer *buf;
+  gint *p_int_counter = p_counter;
 
-  list = gst_app_sink_pull_buffer_list (appsink);
-  fail_unless (GST_IS_BUFFER_LIST (list));
+  sample = gst_app_sink_pull_sample (appsink);
+  buf = gst_sample_get_buffer (sample);
+  fail_unless (GST_IS_BUFFER (buf));
 
-  check_buffer_list (list);
+  /* buffer list has 3 buffers in two groups */
+  switch (*p_int_counter) {
+    case 0:
+      fail_unless_equals_int (gst_buffer_get_size (buf), sizeof (gint));
+      gst_check_buffer_data (buf, &values[0], sizeof (gint));
+      break;
+    case 1:
+      fail_unless_equals_int (gst_buffer_get_size (buf), sizeof (gint));
+      gst_check_buffer_data (buf, &values[1], sizeof (gint));
+      break;
+    case 2:
+      fail_unless_equals_int (gst_buffer_get_size (buf), sizeof (gint));
+      gst_check_buffer_data (buf, &values[2], sizeof (gint));
+      break;
+    default:
+      g_warn_if_reached ();
+      break;
+  }
 
-  gst_buffer_list_unref (list);
+  gst_sample_unref (sample);
+
+  *p_int_counter += 1;
 
   return GST_FLOW_OK;
 }
 
-GST_START_TEST (test_buffer_list)
+GST_START_TEST (test_buffer_list_fallback)
 {
   GstElement *sink;
   GstBufferList *list;
   GstAppSinkCallbacks callbacks = { NULL };
+  gint counter = 0;
 
   sink = setup_appsink ();
 
-  callbacks.new_buffer_list = callback_function_buffer_list;
+  callbacks.new_sample = callback_function_sample;
 
-  gst_app_sink_set_callbacks (GST_APP_SINK (sink), &callbacks, NULL, NULL);
+  gst_app_sink_set_callbacks (GST_APP_SINK (sink), &callbacks, &counter, NULL);
 
   ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
 
   list = create_buffer_list ();
   fail_unless (gst_pad_push_list (mysrcpad, list) == GST_FLOW_OK);
+
+  fail_unless_equals_int (counter, 3);
+
+  ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
+  cleanup_appsink (sink);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_buffer_list_fallback_signal)
+{
+  GstElement *sink;
+  GstBufferList *list;
+  gint counter = 0;
+
+  sink = setup_appsink ();
+
+  /* C calling convention to the rescue.. */
+  g_signal_connect (sink, "new-sample", G_CALLBACK (callback_function_sample),
+      &counter);
+
+  g_object_set (sink, "emit-signals", TRUE, NULL);
+
+  ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
+
+  list = create_buffer_list ();
+  fail_unless (gst_pad_push_list (mysrcpad, list) == GST_FLOW_OK);
+
+  fail_unless_equals_int (counter, 3);
+
+  ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
+  cleanup_appsink (sink);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_segment)
+{
+  GstElement *sink;
+  GstSegment segment;
+  GstBuffer *buffer;
+  GstSample *pulled_preroll;
+  GstSample *pulled_sample;
+
+  sink = setup_appsink ();
+
+  gst_segment_init (&segment, GST_FORMAT_TIME);
+  segment.start = 2 * GST_SECOND;
+  fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_segment (&segment)));
+
+  ASSERT_SET_STATE (sink, GST_STATE_PLAYING, GST_STATE_CHANGE_ASYNC);
+
+  buffer = gst_buffer_new_and_alloc (4);
+  fail_unless (gst_pad_push (mysrcpad, buffer) == GST_FLOW_OK);
+
+  g_signal_emit_by_name (sink, "pull-preroll", &pulled_preroll);
+  fail_unless (gst_segment_is_equal (&segment,
+          gst_sample_get_segment (pulled_preroll)));
+  gst_sample_unref (pulled_preroll);
+
+  g_signal_emit_by_name (sink, "pull-sample", &pulled_sample);
+  fail_unless (gst_segment_is_equal (&segment,
+          gst_sample_get_segment (pulled_sample)));
+  gst_sample_unref (pulled_sample);
 
   ASSERT_SET_STATE (sink, GST_STATE_NULL, GST_STATE_CHANGE_SUCCESS);
   cleanup_appsink (sink);
@@ -334,24 +359,11 @@ appsink_suite (void)
   tcase_add_test (tc_chain, test_handoff_callback);
   tcase_add_test (tc_chain, test_notify0);
   tcase_add_test (tc_chain, test_notify1);
-  tcase_add_test (tc_chain, test_buffer_list);
+  tcase_add_test (tc_chain, test_buffer_list_fallback);
+  tcase_add_test (tc_chain, test_buffer_list_fallback_signal);
+  tcase_add_test (tc_chain, test_segment);
 
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = appsink_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (appsink);

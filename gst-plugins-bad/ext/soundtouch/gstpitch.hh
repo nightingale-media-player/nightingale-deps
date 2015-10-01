@@ -21,6 +21,7 @@
 #define __GST_PITCH_H__
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -58,15 +59,20 @@ struct _GstPitch
                                  * > 1 makes the stream shorter
                                  */
 
+  gfloat   out_seg_rate;        /* change output segment rate 
+                                 * Affects playback when input
+                                 * segments have rate != out_rate
+                                 */
+
   gfloat   pitch;               /* change pitch 
                                  * change the pitch without affecting the
                                  * duration, stream length doesn't change
                                  */
 
+  gfloat  seg_arate;            /* Rate to apply from input segment */
+
   /* values extracted from caps */
-  gint          samplerate;      /* samplerate                           */
-  gint          channels;        /* number of audio channels             */
-  gsize         sample_size;     /* number of bytes for a single sample  */
+  GstAudioInfo  info;
 
   /* stream tracking */
   GstClockTime  next_buffer_time;

@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>gstrtpbasedepayload: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-rtp.html" title="RTP Library">
+<link rel="prev" href="gst-plugins-base-libs-gstrtpbaseaudiopayload.html" title="gstrtpbaseaudiopayload">
+<link rel="next" href="gst-plugins-base-libs-gstrtpbasepayload.html" title="gstrtpbasepayload">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstrtpbasedepayload.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstrtpbasedepayload.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstrtpbasedepayload.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-rtp.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstrtpbaseaudiopayload.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstrtpbasepayload.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtpbasedepayload.top_of_page"></a>gstrtpbasedepayload</span></h2>
+<p>gstrtpbasedepayload — Base class for RTP depayloader</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GST-RTP-BASE-DEPAYLOAD-SINKPAD:CAPS" title="GST_RTP_BASE_DEPAYLOAD_SINKPAD()">GST_RTP_BASE_DEPAYLOAD_SINKPAD</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GST-RTP-BASE-DEPAYLOAD-SRCPAD:CAPS" title="GST_RTP_BASE_DEPAYLOAD_SRCPAD()">GST_RTP_BASE_DEPAYLOAD_SRCPAD</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#gst-rtp-base-depayload-push" title="gst_rtp_base_depayload_push ()">gst_rtp_base_depayload_push</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#gst-rtp-base-depayload-push-list" title="gst_rtp_base_depayload_push_list ()">gst_rtp_base_depayload_push_list</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="type">GstStructure</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload--stats" title="The “stats” property">stats</a></td>
+<td class="property_flags">Read</td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstRTPBaseDepayload"></a><div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload-struct" title="struct GstRTPBaseDepayload">GstRTPBaseDepayload</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayloadClass" title="struct GstRTPBaseDepayloadClass">GstRTPBaseDepayloadClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstRTPBaseDepayload
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/rtp/gstrtpbasedepayload.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.description"></a><h2>Description</h2>
+<p>Provides a base class for RTP depayloaders</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GST-RTP-BASE-DEPAYLOAD-SINKPAD:CAPS"></a><h3>GST_RTP_BASE_DEPAYLOAD_SINKPAD()</h3>
+<pre class="programlisting">#define GST_RTP_BASE_DEPAYLOAD_SINKPAD(depayload) (GST_RTP_BASE_DEPAYLOAD_CAST (depayload)-&gt;sinkpad)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-RTP-BASE-DEPAYLOAD-SRCPAD:CAPS"></a><h3>GST_RTP_BASE_DEPAYLOAD_SRCPAD()</h3>
+<pre class="programlisting">#define GST_RTP_BASE_DEPAYLOAD_SRCPAD(depayload)  (GST_RTP_BASE_DEPAYLOAD_CAST (depayload)-&gt;srcpad)
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtp-base-depayload-push"></a><h3>gst_rtp_base_depayload_push ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_rtp_base_depayload_push (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload"><span class="type">GstRTPBaseDepayload</span></a> *filter</code></em>,
+                             <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a> *out_buf</code></em>);</pre>
+<p>Push <em class="parameter"><code>out_buf</code></em>
+ to the peer of <em class="parameter"><code>filter</code></em>
+. This function takes ownership of
+<em class="parameter"><code>out_buf</code></em>
+.</p>
+<p>This function will by default apply the last incomming timestamp on
+the outgoing buffer when it didn't have a timestamp already.</p>
+<div class="refsect3">
+<a name="id-1.2.9.4.10.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload"><span class="type">GstRTPBaseDepayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>out_buf</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBuffer.html"><span class="type">GstBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.4.10.4.7"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtp-base-depayload-push-list"></a><h3>gst_rtp_base_depayload_push_list ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_rtp_base_depayload_push_list (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload"><span class="type">GstRTPBaseDepayload</span></a> *filter</code></em>,
+                                  <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBufferList.html"><span class="type">GstBufferList</span></a> *out_list</code></em>);</pre>
+<p>Push <em class="parameter"><code>out_list</code></em>
+ to the peer of <em class="parameter"><code>filter</code></em>
+. This function takes ownership of
+<em class="parameter"><code>out_list</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.4.10.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstrtpbasedepayload.html#GstRTPBaseDepayload"><span class="type">GstRTPBaseDepayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>out_list</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBufferList.html"><span class="type">GstBufferList</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.4.10.5.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a>.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstRTPBaseDepayload-struct"></a><h3>struct GstRTPBaseDepayload</h3>
+<pre class="programlisting">struct GstRTPBaseDepayload;</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTPBaseDepayloadClass"></a><h3>struct GstRTPBaseDepayloadClass</h3>
+<pre class="programlisting">struct GstRTPBaseDepayloadClass {
+  GstElementClass parent_class;
+
+  /* virtuals, inform the subclass of the caps. */
+  gboolean (*set_caps) (GstRTPBaseDepayload *filter, GstCaps *caps);
+
+  /* pure virtual function, child must implement either this method
+   * or the process_rtp_packet virtual method to process incoming
+   * rtp packets. If the child returns a buffer without a valid timestamp,
+   * the timestamp of @in will be applied to the result buffer and the
+   * buffer will be pushed. If this function returns %NULL, nothing is
+   * pushed.  */
+  GstBuffer * (*process) (GstRTPBaseDepayload *base, GstBuffer *in);
+
+  /* non-pure function used to to signal the depayloader about packet loss. the
+   * timestamp and duration are the estimated values of the lost packet.
+   * The default implementation of this message pushes a segment update. */
+  gboolean (*packet_lost) (GstRTPBaseDepayload *filter, GstEvent *event);
+
+  /* the default implementation does the default actions for events but
+   * implementation can override. */
+  gboolean (*handle_event) (GstRTPBaseDepayload * filter, GstEvent * event);
+
+  /* Optional. Same as the process virtual function, but slightly more
+   * efficient, since it is passed the rtp buffer structure that has already
+   * been mapped (with GST_MAP_READ) by the base class and thus does not have
+   * to be mapped again by the subclass. Can be used by the subclass to process
+   * incoming rtp packets. If the subclass returns a buffer without a valid
+   * timestamp, the timestamp of the input buffer will be applied to the result
+   * buffer and the output buffer will be pushed out. If this function returns
+   * %NULL, nothing is pushed out.
+   *
+   * Since: 1.6
+   */
+  GstBuffer * (*process_rtp_packet) (GstRTPBaseDepayload *base, GstRTPBuffer * rtp_buffer);
+};
+</pre>
+<p>Base class for audio RTP payloader.</p>
+<div class="refsect3">
+<a name="id-1.2.9.4.11.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GstElementClass"><span class="type">GstElementClass</span></a> <em class="structfield"><code><a name="GstRTPBaseDepayloadClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent class</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstRTPBaseDepayloadClass.set-caps"></a>set_caps</code></em> ()</p></td>
+<td class="struct_member_description"><p>configure the depayloader</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstRTPBaseDepayloadClass.process"></a>process</code></em> ()</p></td>
+<td class="struct_member_description"><p>process incoming rtp packets</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstRTPBaseDepayloadClass.packet-lost"></a>packet_lost</code></em> ()</p></td>
+<td class="struct_member_description"><p>signal the depayloader about packet loss</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstRTPBaseDepayloadClass.handle-event"></a>handle_event</code></em> ()</p></td>
+<td class="struct_member_description"><p>custom event handling</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstRTPBaseDepayloadClass.process-rtp-packet"></a>process_rtp_packet</code></em> ()</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtpbasedepayload.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstRTPBaseDepayload--stats"></a><h3>The <code class="literal">“stats”</code> property</h3>
+<pre class="programlisting">  “stats”                    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="type">GstStructure</span></a> *</pre>
+<p>Various depayloader statistics retrieved atomically (and are therefore
+synchroized with each other). This property return a GstStructure named
+application/x-rtp-depayload-stats containing the following fields relating to
+the last processed buffer and current state of the stream being depayloaded:</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">clock-rate</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT:CAPS"><span class="type">G_TYPE_UINT</span></a>, clock-rate of the
+    stream</p></td>
+</tr>
+<tr>
+<td><p><span class="term">npt-start</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT64:CAPS"><span class="type">G_TYPE_UINT64</span></a>, time of playback start
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">npt-stop</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT64:CAPS"><span class="type">G_TYPE_UINT64</span></a>, time of playback stop
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">play-speed</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-DOUBLE:CAPS"><span class="type">G_TYPE_DOUBLE</span></a>, the playback speed
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">play-scale</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-DOUBLE:CAPS"><span class="type">G_TYPE_DOUBLE</span></a>, the playback scale
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">running-time-dts</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT64:CAPS"><span class="type">G_TYPE_UINT64</span></a>, the last running-time of the
+     last DTS
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">running-time-pts</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT64:CAPS"><span class="type">G_TYPE_UINT64</span></a>, the last running-time of the
+     last PTS
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">seqnum</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT:CAPS"><span class="type">G_TYPE_UINT</span></a>, the last seen seqnum
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term">timestamp</span></p></td>
+<td><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-UINT:CAPS"><span class="type">G_TYPE_UINT</span></a>, the last seen RTP timestamp
+    </p></td>
+</tr>
+</tbody>
+</table></div>
+<p>Flags: Read</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

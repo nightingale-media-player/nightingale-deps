@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /**
  * SECTION:element-audiotestsrc
@@ -25,11 +25,11 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch audiotestsrc ! audioconvert ! alsasink
+ * gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink
  * ]| This pipeline produces a sine with default frequency, 440 Hz, and the
  * default volume, 0.8 (relative to a maximum 1.0).
  * |[
- * gst-launch audiotestsrc wave=2 freq=200 ! audioconvert ! tee name=t ! queue ! alsasink t. ! queue ! libvisual_lv_scope ! ffmpegcolorspace ! xvimagesink
+ * gst-launch-1.0 audiotestsrc wave=2 freq=200 ! tee name=t ! queue ! audioconvert ! autoaudiosink t. ! queue ! audioconvert ! libvisual_lv_scope ! videoconvert ! autovideosink
  * ]| In this example a saw wave is generated. The wave is shown using a
  * scope visualizer from libvisual, allowing you to visually verify that
  * the saw wave is correct.
@@ -43,29 +43,14 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gst/controller/gstcontroller.h>
 
 #include "gstaudiotestsrc.h"
 
 
-#ifndef M_PI
-#define M_PI  3.14159265358979323846
-#endif
-
-#ifndef M_PI_2
-#define M_PI_2  1.57079632679489661923
-#endif
-
-#define M_PI_M2 ( M_PI + M_PI )
+#define M_PI_M2 ( G_PI + G_PI )
 
 GST_DEBUG_CATEGORY_STATIC (audio_test_src_debug);
 #define GST_CAT_DEFAULT audio_test_src_debug
-
-static const GstElementDetails gst_audio_test_src_details =
-GST_ELEMENT_DETAILS ("Audio test source",
-    "Source/Audio",
-    "Creates audio test signals of given frequency and volume",
-    "Stefan Kost <ensonic@users.sf.net>");
 
 #define DEFAULT_SAMPLES_PER_BUFFER   1024
 #define DEFAULT_WAVE                 GST_AUDIO_TEST_SRC_WAVE_SINE
@@ -86,38 +71,29 @@ enum
   PROP_IS_LIVE,
   PROP_TIMESTAMP_OFFSET,
   PROP_CAN_ACTIVATE_PUSH,
-  PROP_CAN_ACTIVATE_PULL,
-  PROP_LAST
+  PROP_CAN_ACTIVATE_PULL
 };
 
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+#define FORMAT_STR "{ S16LE, S32LE, F32LE, F64LE }"
+#define DEFAULT_FORMAT_STR "S16LE"
+#else
+#define FORMAT_STR "{ S16BE, S32BE, F32BE, F64BE }"
+#define DEFAULT_FORMAT_STR "S16BE"
+#endif
 
 static GstStaticPadTemplate gst_audio_test_src_src_template =
-    GST_STATIC_PAD_TEMPLATE ("src",
+GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("audio/x-raw-int, "
-        "endianness = (int) BYTE_ORDER, "
-        "signed = (boolean) true, "
-        "width = (int) 16, "
-        "depth = (int) 16, "
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, 2 ]; "
-        "audio/x-raw-int, "
-        "endianness = (int) BYTE_ORDER, "
-        "signed = (boolean) true, "
-        "width = (int) 32, "
-        "depth = (int) 32,"
-        "rate = (int) [ 1, MAX ], "
-        "channels = (int) [ 1, 2 ]; "
-        "audio/x-raw-float, "
-        "endianness = (int) BYTE_ORDER, "
-        "width = (int) { 32, 64 }, "
-        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, 2 ]")
+    GST_STATIC_CAPS ("audio/x-raw, "
+        "format = (string) " FORMAT_STR ", "
+        "layout = (string) interleaved, "
+        "rate = (int) [ 1, MAX ], " "channels = (int) [ 1, 2]")
     );
 
-
-GST_BOILERPLATE (GstAudioTestSrc, gst_audio_test_src, GstBaseSrc,
-    GST_TYPE_BASE_SRC);
+#define gst_audio_test_src_parent_class parent_class
+G_DEFINE_TYPE (GstAudioTestSrc, gst_audio_test_src, GST_TYPE_BASE_SRC);
 
 #define GST_TYPE_AUDIO_TEST_SRC_WAVE (gst_audiostestsrc_wave_get_type())
 static GType
@@ -136,6 +112,9 @@ gst_audiostestsrc_wave_get_type (void)
     {GST_AUDIO_TEST_SRC_WAVE_TICKS, "Periodic Ticks", "ticks"},
     {GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE, "White Gaussian noise",
         "gaussian-noise"},
+    {GST_AUDIO_TEST_SRC_WAVE_RED_NOISE, "Red (brownian) noise", "red-noise"},
+    {GST_AUDIO_TEST_SRC_WAVE_BLUE_NOISE, "Blue noise", "blue-noise"},
+    {GST_AUDIO_TEST_SRC_WAVE_VIOLET_NOISE, "Violet noise", "violet-noise"},
     {0, NULL, NULL},
   };
 
@@ -146,6 +125,8 @@ gst_audiostestsrc_wave_get_type (void)
   return audiostestsrc_wave_type;
 }
 
+static void gst_audio_test_src_finalize (GObject * object);
+
 static void gst_audio_test_src_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 static void gst_audio_test_src_get_property (GObject * object,
@@ -153,10 +134,9 @@ static void gst_audio_test_src_get_property (GObject * object,
 
 static gboolean gst_audio_test_src_setcaps (GstBaseSrc * basesrc,
     GstCaps * caps);
-static void gst_audio_test_src_src_fixate (GstPad * pad, GstCaps * caps);
+static GstCaps *gst_audio_test_src_fixate (GstBaseSrc * bsrc, GstCaps * caps);
 
 static gboolean gst_audio_test_src_is_seekable (GstBaseSrc * basesrc);
-static gboolean gst_audio_test_src_check_get_range (GstBaseSrc * basesrc);
 static gboolean gst_audio_test_src_do_seek (GstBaseSrc * basesrc,
     GstSegment * segment);
 static gboolean gst_audio_test_src_query (GstBaseSrc * basesrc,
@@ -168,31 +148,23 @@ static void gst_audio_test_src_get_times (GstBaseSrc * basesrc,
     GstBuffer * buffer, GstClockTime * start, GstClockTime * end);
 static gboolean gst_audio_test_src_start (GstBaseSrc * basesrc);
 static gboolean gst_audio_test_src_stop (GstBaseSrc * basesrc);
-static GstFlowReturn gst_audio_test_src_create (GstBaseSrc * basesrc,
-    guint64 offset, guint length, GstBuffer ** buffer);
-
-
-static void
-gst_audio_test_src_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_audio_test_src_src_template));
-  gst_element_class_set_details (element_class, &gst_audio_test_src_details);
-}
+static GstFlowReturn gst_audio_test_src_fill (GstBaseSrc * basesrc,
+    guint64 offset, guint length, GstBuffer * buffer);
 
 static void
 gst_audio_test_src_class_init (GstAudioTestSrcClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseSrcClass *gstbasesrc_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
   gstbasesrc_class = (GstBaseSrcClass *) klass;
 
   gobject_class->set_property = gst_audio_test_src_set_property;
   gobject_class->get_property = gst_audio_test_src_get_property;
+  gobject_class->finalize = gst_audio_test_src_finalize;
 
   g_object_class_install_property (gobject_class, PROP_SAMPLES_PER_BUFFER,
       g_param_spec_int ("samplesperbuffer", "Samples per buffer",
@@ -230,30 +202,29 @@ gst_audio_test_src_class_init (GstAudioTestSrcClass * klass)
           "Can activate in pull mode", DEFAULT_CAN_ACTIVATE_PULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_audio_test_src_src_template));
+  gst_element_class_set_static_metadata (gstelement_class,
+      "Audio test source", "Source/Audio",
+      "Creates audio test signals of given frequency and volume",
+      "Stefan Kost <ensonic@users.sf.net>");
+
   gstbasesrc_class->set_caps = GST_DEBUG_FUNCPTR (gst_audio_test_src_setcaps);
+  gstbasesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_audio_test_src_fixate);
   gstbasesrc_class->is_seekable =
       GST_DEBUG_FUNCPTR (gst_audio_test_src_is_seekable);
-  gstbasesrc_class->check_get_range =
-      GST_DEBUG_FUNCPTR (gst_audio_test_src_check_get_range);
   gstbasesrc_class->do_seek = GST_DEBUG_FUNCPTR (gst_audio_test_src_do_seek);
   gstbasesrc_class->query = GST_DEBUG_FUNCPTR (gst_audio_test_src_query);
   gstbasesrc_class->get_times =
       GST_DEBUG_FUNCPTR (gst_audio_test_src_get_times);
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_audio_test_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_audio_test_src_stop);
-  gstbasesrc_class->create = GST_DEBUG_FUNCPTR (gst_audio_test_src_create);
+  gstbasesrc_class->fill = GST_DEBUG_FUNCPTR (gst_audio_test_src_fill);
 }
 
 static void
-gst_audio_test_src_init (GstAudioTestSrc * src, GstAudioTestSrcClass * g_class)
+gst_audio_test_src_init (GstAudioTestSrc * src)
 {
-  GstPad *pad = GST_BASE_SRC_PAD (src);
-
-  gst_pad_set_fixatecaps_function (pad, gst_audio_test_src_src_fixate);
-
-  src->samplerate = 44100;
-  src->format = GST_AUDIO_TEST_SRC_FORMAT_NONE;
-
   src->volume = DEFAULT_VOLUME;
   src->freq = DEFAULT_FREQ;
 
@@ -266,84 +237,74 @@ gst_audio_test_src_init (GstAudioTestSrc * src, GstAudioTestSrcClass * g_class)
   src->timestamp_offset = DEFAULT_TIMESTAMP_OFFSET;
   src->can_activate_pull = DEFAULT_CAN_ACTIVATE_PULL;
 
+  src->gen = NULL;
+
   src->wave = DEFAULT_WAVE;
   gst_base_src_set_blocksize (GST_BASE_SRC (src), -1);
 }
 
 static void
-gst_audio_test_src_src_fixate (GstPad * pad, GstCaps * caps)
+gst_audio_test_src_finalize (GObject * object)
 {
-  GstAudioTestSrc *src = GST_AUDIO_TEST_SRC (GST_PAD_PARENT (pad));
-  const gchar *name;
+  GstAudioTestSrc *src = GST_AUDIO_TEST_SRC (object);
+
+  if (src->gen)
+    g_rand_free (src->gen);
+  src->gen = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static GstCaps *
+gst_audio_test_src_fixate (GstBaseSrc * bsrc, GstCaps * caps)
+{
+  GstAudioTestSrc *src = GST_AUDIO_TEST_SRC (bsrc);
   GstStructure *structure;
+
+  caps = gst_caps_make_writable (caps);
 
   structure = gst_caps_get_structure (caps, 0);
 
-  GST_DEBUG_OBJECT (src, "fixating samplerate to %d", src->samplerate);
+  GST_DEBUG_OBJECT (src, "fixating samplerate to %d", GST_AUDIO_DEF_RATE);
 
-  gst_structure_fixate_field_nearest_int (structure, "rate", src->samplerate);
+  gst_structure_fixate_field_nearest_int (structure, "rate",
+      GST_AUDIO_DEF_RATE);
 
-  name = gst_structure_get_name (structure);
-  if (strcmp (name, "audio/x-raw-int") == 0)
-    gst_structure_fixate_field_nearest_int (structure, "width", 32);
-  else if (strcmp (name, "audio/x-raw-float") == 0)
-    gst_structure_fixate_field_nearest_int (structure, "width", 64);
+  gst_structure_fixate_field_string (structure, "format", DEFAULT_FORMAT_STR);
 
   /* fixate to mono unless downstream requires stereo, for backwards compat */
   gst_structure_fixate_field_nearest_int (structure, "channels", 1);
+
+  caps = GST_BASE_SRC_CLASS (parent_class)->fixate (bsrc, caps);
+
+  return caps;
 }
 
 static gboolean
 gst_audio_test_src_setcaps (GstBaseSrc * basesrc, GstCaps * caps)
 {
   GstAudioTestSrc *src = GST_AUDIO_TEST_SRC (basesrc);
-  const GstStructure *structure;
-  const gchar *name;
-  gint width;
-  gboolean ret;
+  GstAudioInfo info;
 
-  structure = gst_caps_get_structure (caps, 0);
-  ret = gst_structure_get_int (structure, "rate", &src->samplerate);
+  if (!gst_audio_info_from_caps (&info, caps))
+    goto invalid_caps;
 
-  GST_DEBUG_OBJECT (src, "negotiated to samplerate %d", src->samplerate);
+  GST_DEBUG_OBJECT (src, "negotiated to caps %" GST_PTR_FORMAT, caps);
 
-  name = gst_structure_get_name (structure);
-  if (strcmp (name, "audio/x-raw-int") == 0) {
-    ret &= gst_structure_get_int (structure, "width", &width);
-    src->format = (width == 32) ? GST_AUDIO_TEST_SRC_FORMAT_S32 :
-        GST_AUDIO_TEST_SRC_FORMAT_S16;
-  } else {
-    ret &= gst_structure_get_int (structure, "width", &width);
-    src->format = (width == 32) ? GST_AUDIO_TEST_SRC_FORMAT_F32 :
-        GST_AUDIO_TEST_SRC_FORMAT_F64;
-  }
+  src->info = info;
 
-  /* allocate a new buffer suitable for this pad */
-  switch (src->format) {
-    case GST_AUDIO_TEST_SRC_FORMAT_S16:
-      src->sample_size = sizeof (gint16);
-      break;
-    case GST_AUDIO_TEST_SRC_FORMAT_S32:
-      src->sample_size = sizeof (gint32);
-      break;
-    case GST_AUDIO_TEST_SRC_FORMAT_F32:
-      src->sample_size = sizeof (gfloat);
-      break;
-    case GST_AUDIO_TEST_SRC_FORMAT_F64:
-      src->sample_size = sizeof (gdouble);
-      break;
-    default:
-      /* can't really happen */
-      ret = FALSE;
-      break;
-  }
-
-  ret &= gst_structure_get_int (structure, "channels", &src->channels);
-  GST_DEBUG_OBJECT (src, "negotiated to %d channels", src->channels);
-
+  gst_base_src_set_blocksize (basesrc,
+      GST_AUDIO_INFO_BPF (&info) * src->samples_per_buffer);
   gst_audio_test_src_change_wave (src);
 
-  return ret;
+  return TRUE;
+
+  /* ERROR */
+invalid_caps:
+  {
+    GST_ERROR_OBJECT (basesrc, "received invalid caps");
+    return FALSE;
+  }
 }
 
 static gboolean
@@ -359,42 +320,41 @@ gst_audio_test_src_query (GstBaseSrc * basesrc, GstQuery * query)
       gint64 src_val, dest_val;
 
       gst_query_parse_convert (query, &src_fmt, &src_val, &dest_fmt, &dest_val);
-      if (src_fmt == dest_fmt) {
-        dest_val = src_val;
-        goto done;
-      }
 
-      switch (src_fmt) {
-        case GST_FORMAT_DEFAULT:
-          switch (dest_fmt) {
-            case GST_FORMAT_TIME:
-              /* samples to time */
-              dest_val =
-                  gst_util_uint64_scale_int (src_val, GST_SECOND,
-                  src->samplerate);
-              break;
-            default:
-              goto error;
-          }
-          break;
-        case GST_FORMAT_TIME:
-          switch (dest_fmt) {
-            case GST_FORMAT_DEFAULT:
-              /* time to samples */
-              dest_val =
-                  gst_util_uint64_scale_int (src_val, src->samplerate,
-                  GST_SECOND);
-              break;
-            default:
-              goto error;
-          }
-          break;
-        default:
-          goto error;
-      }
-    done:
+      if (!gst_audio_info_convert (&src->info, src_fmt, src_val, dest_fmt,
+              &dest_val))
+        goto error;
+
       gst_query_set_convert (query, src_fmt, src_val, dest_fmt, dest_val);
       res = TRUE;
+      break;
+    }
+    case GST_QUERY_SCHEDULING:
+    {
+      /* if we can operate in pull mode */
+      gst_query_set_scheduling (query, GST_SCHEDULING_FLAG_SEEKABLE, 1, -1, 0);
+      gst_query_add_scheduling_mode (query, GST_PAD_MODE_PUSH);
+      if (src->can_activate_pull)
+        gst_query_add_scheduling_mode (query, GST_PAD_MODE_PULL);
+
+      res = TRUE;
+      break;
+    }
+    case GST_QUERY_LATENCY:
+    {
+      if (src->info.rate > 0) {
+        GstClockTime latency;
+
+        latency =
+            gst_util_uint64_scale (src->generate_samples_per_buffer, GST_SECOND,
+            src->info.rate);
+        gst_query_set_latency (query,
+            gst_base_src_is_live (GST_BASE_SRC_CAST (src)), latency,
+            GST_CLOCK_TIME_NONE);
+        GST_DEBUG_OBJECT (src, "Reporting latency of %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (latency));
+        res = TRUE;
+      }
       break;
     }
     default:
@@ -415,19 +375,20 @@ error:
 static void \
 gst_audio_test_src_create_sine_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble step, amp; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  step = M_PI_M2 * src->freq / GST_AUDIO_INFO_RATE (&src->info); \
   amp = src->volume * scale; \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
     src->accumulator += step; \
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    for (c = 0; c < src->channels; ++c) { \
+    for (c = 0; c < channels; ++c) { \
       samples[i++] = (g##type) (sin (src->accumulator) * amp); \
     } \
   } \
@@ -449,20 +410,21 @@ static const ProcessFunc sine_funcs[] = {
 static void \
 gst_audio_test_src_create_square_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble step, amp; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  step = M_PI_M2 * src->freq / GST_AUDIO_INFO_RATE (&src->info); \
   amp = src->volume * scale; \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
     src->accumulator += step; \
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    for (c = 0; c < src->channels; ++c) { \
-      samples[i++] = (g##type) ((src->accumulator < M_PI) ? amp : -amp); \
+    for (c = 0; c < channels; ++c) { \
+      samples[i++] = (g##type) ((src->accumulator < G_PI) ? amp : -amp); \
     } \
   } \
 }
@@ -483,23 +445,24 @@ static const ProcessFunc square_funcs[] = {
 static void \
 gst_audio_test_src_create_saw_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble step, amp; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
-  amp = (src->volume * scale) / M_PI; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  step = M_PI_M2 * src->freq / GST_AUDIO_INFO_RATE (&src->info); \
+  amp = (src->volume * scale) / G_PI; \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
     src->accumulator += step; \
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    if (src->accumulator < M_PI) { \
-      for (c = 0; c < src->channels; ++c) \
+    if (src->accumulator < G_PI) { \
+      for (c = 0; c < channels; ++c) \
         samples[i++] = (g##type) (src->accumulator * amp); \
     } else { \
-      for (c = 0; c < src->channels; ++c) \
+      for (c = 0; c < channels; ++c) \
         samples[i++] = (g##type) ((M_PI_M2 - src->accumulator) * -amp); \
     } \
   } \
@@ -521,26 +484,27 @@ static const ProcessFunc saw_funcs[] = {
 static void \
 gst_audio_test_src_create_triangle_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble step, amp; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
-  amp = (src->volume * scale) / M_PI_2; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  step = M_PI_M2 * src->freq / GST_AUDIO_INFO_RATE (&src->info); \
+  amp = (src->volume * scale) / G_PI_2; \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
     src->accumulator += step; \
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    if (src->accumulator < (M_PI * 0.5)) { \
-      for (c = 0; c < src->channels; ++c) \
+    if (src->accumulator < (G_PI_2)) { \
+      for (c = 0; c < channels; ++c) \
         samples[i++] = (g##type) (src->accumulator * amp); \
-    } else if (src->accumulator < (M_PI * 1.5)) { \
-      for (c = 0; c < src->channels; ++c) \
-        samples[i++] = (g##type) ((src->accumulator - M_PI) * -amp); \
+    } else if (src->accumulator < (G_PI * 1.5)) { \
+      for (c = 0; c < channels; ++c) \
+        samples[i++] = (g##type) ((src->accumulator - G_PI) * -amp); \
     } else { \
-      for (c = 0; c < src->channels; ++c) \
+      for (c = 0; c < channels; ++c) \
         samples[i++] = (g##type) ((M_PI_M2 - src->accumulator) * -amp); \
     } \
   } \
@@ -562,7 +526,7 @@ static const ProcessFunc triangle_funcs[] = {
 static void \
 gst_audio_test_src_create_silence_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  memset (samples, 0, src->generate_samples_per_buffer * sizeof (g##type) * src->channels); \
+  memset (samples, 0, src->generate_samples_per_buffer * sizeof (g##type) * src->info.channels); \
 }
 
 DEFINE_SILENCE (int16);
@@ -583,11 +547,12 @@ gst_audio_test_src_create_white_noise_##type (GstAudioTestSrc * src, g##type * s
 { \
   gint i, c; \
   gdouble amp = (src->volume * scale); \
+  gint channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
-    for (c = 0; c < src->channels; ++c) \
-      samples[i++] = (g##type) (amp * g_random_double_range (-1.0, 1.0)); \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
+    for (c = 0; c < channels; ++c) \
+      samples[i++] = (g##type) (amp * g_rand_double_range (src->gen, -1.0, 1.0)); \
   } \
 }
 
@@ -629,8 +594,9 @@ gst_audio_test_src_init_pink_noise (GstAudioTestSrc * src)
 
 /* Generate Pink noise values between -1.0 and +1.0 */
 static gdouble
-gst_audio_test_src_generate_pink_noise_value (GstPinkNoise * pink)
+gst_audio_test_src_generate_pink_noise_value (GstAudioTestSrc * src)
 {
+  GstPinkNoise *pink = &src->pink;
   glong new_random;
   glong sum;
 
@@ -654,13 +620,15 @@ gst_audio_test_src_generate_pink_noise_value (GstPinkNoise * pink)
      * values together. Only one changes each time.
      */
     pink->running_sum -= pink->rows[num_zeros];
-    new_random = 32768.0 - (65536.0 * (gulong) rand () / (RAND_MAX + 1.0));
+    new_random = 32768.0 - (65536.0 * (gulong) g_rand_int (src->gen)
+        / (G_MAXUINT32 + 1.0));
     pink->running_sum += new_random;
     pink->rows[num_zeros] = new_random;
   }
 
   /* Add extra white noise value. */
-  new_random = 32768.0 - (65536.0 * (gulong) rand () / (RAND_MAX + 1.0));
+  new_random = 32768.0 - (65536.0 * (gulong) g_rand_int (src->gen)
+      / (G_MAXUINT32 + 1.0));
   sum = pink->running_sum + new_random;
 
   /* Scale to range of -1.0 to 0.9999. */
@@ -671,16 +639,17 @@ gst_audio_test_src_generate_pink_noise_value (GstPinkNoise * pink)
 static void \
 gst_audio_test_src_create_pink_noise_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble amp; \
   \
   amp = src->volume * scale; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
-    for (c = 0; c < src->channels; ++c) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
+    for (c = 0; c < channels; ++c) { \
       samples[i++] = \
-        (g##type) (gst_audio_test_src_generate_pink_noise_value (&src->pink) * \
+        (g##type) (gst_audio_test_src_generate_pink_noise_value (src) * \
         amp); \
     } \
   } \
@@ -716,19 +685,20 @@ gst_audio_test_src_init_sine_table (GstAudioTestSrc * src)
 static void \
 gst_audio_test_src_create_sine_table_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels; \
   gdouble step, scl; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  step = M_PI_M2 * src->freq / GST_AUDIO_INFO_RATE (&src->info); \
   scl = 1024.0 / M_PI_M2; \
   \
   i = 0; \
-  while (i < (src->generate_samples_per_buffer * src->channels)) { \
+  while (i < (src->generate_samples_per_buffer * channels)) { \
     src->accumulator += step; \
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    for (c = 0; c < src->channels; ++c) \
+    for (c = 0; c < channels; ++c) \
       samples[i++] = (g##type) scale * src->wave_table[(gint) (src->accumulator * scl)]; \
   } \
 }
@@ -749,10 +719,12 @@ static const ProcessFunc sine_table_funcs[] = {
 static void \
 gst_audio_test_src_create_tick_##type (GstAudioTestSrc * src, g##type * samples) \
 { \
-  gint i, c; \
+  gint i, c, channels, samplerate; \
   gdouble step, scl; \
   \
-  step = M_PI_M2 * src->freq / src->samplerate; \
+  channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  samplerate = GST_AUDIO_INFO_RATE (&src->info); \
+  step = M_PI_M2 * src->freq / samplerate; \
   scl = 1024.0 / M_PI_M2; \
   \
   for (i = 0; i < src->generate_samples_per_buffer; i++) { \
@@ -760,12 +732,12 @@ gst_audio_test_src_create_tick_##type (GstAudioTestSrc * src, g##type * samples)
     if (src->accumulator >= M_PI_M2) \
       src->accumulator -= M_PI_M2; \
     \
-    if ((src->next_sample + i)%src->samplerate < 1600) { \
-      for (c = 0; c < src->channels; ++c) \
-        samples[(i * src->channels) + c] = (g##type) scale * src->wave_table[(gint) (src->accumulator * scl)]; \
+    if ((src->next_sample + i)%samplerate < 1600) { \
+      for (c = 0; c < channels; ++c) \
+        samples[(i * channels) + c] = (g##type) scale * src->wave_table[(gint) (src->accumulator * scl)]; \
     } else { \
-      for (c = 0; c < src->channels; ++c) \
-        samples[(i * src->channels) + c] = 0; \
+      for (c = 0; c < channels; ++c) \
+        samples[(i * channels) + c] = 0; \
     } \
   } \
 }
@@ -794,14 +766,15 @@ gst_audio_test_src_create_gaussian_white_noise_##type (GstAudioTestSrc * src, g#
 { \
   gint i, c; \
   gdouble amp = (src->volume * scale); \
+  gint channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
   \
-  for (i = 0; i < src->generate_samples_per_buffer * src->channels; ) { \
-    for (c = 0; c < src->channels; ++c) { \
-      gdouble mag = sqrt (-2 * log (1.0 - g_random_double ())); \
-      gdouble phs = g_random_double_range (0.0, M_PI_M2); \
+  for (i = 0; i < src->generate_samples_per_buffer * channels; ) { \
+    for (c = 0; c < channels; ++c) { \
+      gdouble mag = sqrt (-2 * log (1.0 - g_rand_double (src->gen))); \
+      gdouble phs = g_rand_double_range (src->gen, 0.0, M_PI_M2); \
       \
       samples[i++] = (g##type) (amp * mag * cos (phs)); \
-      if (++c >= src->channels) \
+      if (++c >= channels) \
         break; \
       samples[i++] = (g##type) (amp * mag * sin (phs)); \
     } \
@@ -820,51 +793,202 @@ static const ProcessFunc gaussian_white_noise_funcs[] = {
   (ProcessFunc) gst_audio_test_src_create_gaussian_white_noise_double
 };
 
+/* Brownian (Red) Noise: noise where the power density decreases by 6 dB per
+ * octave with increasing frequency
+ *
+ * taken from http://vellocet.com/dsp/noise/VRand.html
+ * by Andrew Simper of Vellocet (andy@vellocet.com)
+ */
+
+#define DEFINE_RED_NOISE(type,scale) \
+static void \
+gst_audio_test_src_create_red_noise_##type (GstAudioTestSrc * src, g##type * samples) \
+{ \
+  gint i, c; \
+  gdouble amp = (src->volume * scale); \
+  gdouble state = src->red.state; \
+  gint channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  \
+  for (i = 0; i < src->generate_samples_per_buffer * channels; ) { \
+    for (c = 0; c < channels; ++c) { \
+      while (TRUE) { \
+        gdouble r = g_rand_double_range (src->gen, -1.0, 1.0); \
+        state += r; \
+        if (state < -8.0f || state > 8.0f) state -= r; \
+        else break; \
+      } \
+      samples[i++] = (g##type) (amp * state * 0.0625f); /* /16.0 */ \
+    } \
+  } \
+  src->red.state = state; \
+}
+
+DEFINE_RED_NOISE (int16, 32767.0);
+DEFINE_RED_NOISE (int32, 2147483647.0);
+DEFINE_RED_NOISE (float, 1.0);
+DEFINE_RED_NOISE (double, 1.0);
+
+static const ProcessFunc red_noise_funcs[] = {
+  (ProcessFunc) gst_audio_test_src_create_red_noise_int16,
+  (ProcessFunc) gst_audio_test_src_create_red_noise_int32,
+  (ProcessFunc) gst_audio_test_src_create_red_noise_float,
+  (ProcessFunc) gst_audio_test_src_create_red_noise_double
+};
+
+/* Blue Noise: apply spectral inversion to pink noise */
+
+#define DEFINE_BLUE_NOISE(type) \
+static void \
+gst_audio_test_src_create_blue_noise_##type (GstAudioTestSrc * src, g##type * samples) \
+{ \
+  gint i, c; \
+  static gdouble flip=1.0; \
+  gint channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  \
+  gst_audio_test_src_create_pink_noise_##type (src, samples); \
+  for (i = 0; i < src->generate_samples_per_buffer * channels; ) { \
+    for (c = 0; c < channels; ++c) { \
+      samples[i++] *= flip; \
+    } \
+    flip *= -1.0; \
+  } \
+}
+
+DEFINE_BLUE_NOISE (int16);
+DEFINE_BLUE_NOISE (int32);
+DEFINE_BLUE_NOISE (float);
+DEFINE_BLUE_NOISE (double);
+
+static const ProcessFunc blue_noise_funcs[] = {
+  (ProcessFunc) gst_audio_test_src_create_blue_noise_int16,
+  (ProcessFunc) gst_audio_test_src_create_blue_noise_int32,
+  (ProcessFunc) gst_audio_test_src_create_blue_noise_float,
+  (ProcessFunc) gst_audio_test_src_create_blue_noise_double
+};
+
+
+/* Violet Noise: apply spectral inversion to red noise */
+
+#define DEFINE_VIOLET_NOISE(type) \
+static void \
+gst_audio_test_src_create_violet_noise_##type (GstAudioTestSrc * src, g##type * samples) \
+{ \
+  gint i, c; \
+  static gdouble flip=1.0; \
+  gint channels = GST_AUDIO_INFO_CHANNELS (&src->info); \
+  \
+  gst_audio_test_src_create_red_noise_##type (src, samples); \
+  for (i = 0; i < src->generate_samples_per_buffer * channels; ) { \
+    for (c = 0; c < channels; ++c) { \
+      samples[i++] *= flip; \
+    } \
+    flip *= -1.0; \
+  } \
+}
+
+DEFINE_VIOLET_NOISE (int16);
+DEFINE_VIOLET_NOISE (int32);
+DEFINE_VIOLET_NOISE (float);
+DEFINE_VIOLET_NOISE (double);
+
+static const ProcessFunc violet_noise_funcs[] = {
+  (ProcessFunc) gst_audio_test_src_create_violet_noise_int16,
+  (ProcessFunc) gst_audio_test_src_create_violet_noise_int32,
+  (ProcessFunc) gst_audio_test_src_create_violet_noise_float,
+  (ProcessFunc) gst_audio_test_src_create_violet_noise_double
+};
+
+
 /*
  * gst_audio_test_src_change_wave:
- * Assign function pointer of wave genrator.
+ * Assign function pointer of wave generator.
  */
 static void
 gst_audio_test_src_change_wave (GstAudioTestSrc * src)
 {
-  if (src->format == -1) {
+  gint idx;
+
+  /* not negotiated yet? */
+  if (src->info.finfo == NULL) {
     src->process = NULL;
     return;
   }
 
+  switch (GST_AUDIO_FORMAT_INFO_FORMAT (src->info.finfo)) {
+    case GST_AUDIO_FORMAT_S16:
+      idx = 0;
+      break;
+    case GST_AUDIO_FORMAT_S32:
+      idx = 1;
+      break;
+    case GST_AUDIO_FORMAT_F32:
+      idx = 2;
+      break;
+    case GST_AUDIO_FORMAT_F64:
+      idx = 3;
+      break;
+    default:
+      src->process = NULL;
+      return;
+  }
+
   switch (src->wave) {
     case GST_AUDIO_TEST_SRC_WAVE_SINE:
-      src->process = sine_funcs[src->format];
+      src->process = sine_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_SQUARE:
-      src->process = square_funcs[src->format];
+      src->process = square_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_SAW:
-      src->process = saw_funcs[src->format];
+      src->process = saw_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_TRIANGLE:
-      src->process = triangle_funcs[src->format];
+      src->process = triangle_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_SILENCE:
-      src->process = silence_funcs[src->format];
+      src->process = silence_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_WHITE_NOISE:
-      src->process = white_noise_funcs[src->format];
+      if (!(src->gen))
+        src->gen = g_rand_new ();
+      src->process = white_noise_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_PINK_NOISE:
+      if (!(src->gen))
+        src->gen = g_rand_new ();
       gst_audio_test_src_init_pink_noise (src);
-      src->process = pink_noise_funcs[src->format];
+      src->process = pink_noise_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_SINE_TAB:
       gst_audio_test_src_init_sine_table (src);
-      src->process = sine_table_funcs[src->format];
+      src->process = sine_table_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_TICKS:
       gst_audio_test_src_init_sine_table (src);
-      src->process = tick_funcs[src->format];
+      src->process = tick_funcs[idx];
       break;
     case GST_AUDIO_TEST_SRC_WAVE_GAUSSIAN_WHITE_NOISE:
-      src->process = gaussian_white_noise_funcs[src->format];
+      if (!(src->gen))
+        src->gen = g_rand_new ();
+      src->process = gaussian_white_noise_funcs[idx];
+      break;
+    case GST_AUDIO_TEST_SRC_WAVE_RED_NOISE:
+      if (!(src->gen))
+        src->gen = g_rand_new ();
+      src->red.state = 0.0;
+      src->process = red_noise_funcs[idx];
+      break;
+    case GST_AUDIO_TEST_SRC_WAVE_BLUE_NOISE:
+      if (!(src->gen))
+        src->gen = g_rand_new ();
+      gst_audio_test_src_init_pink_noise (src);
+      src->process = blue_noise_funcs[idx];
+      break;
+    case GST_AUDIO_TEST_SRC_WAVE_VIOLET_NOISE:
+      if (!(src->gen))
+        src->gen = g_rand_new ();
+      src->red.state = 0.0;
+      src->process = violet_noise_funcs[idx];
       break;
     default:
       GST_ERROR ("invalid wave-form");
@@ -940,23 +1064,48 @@ gst_audio_test_src_do_seek (GstBaseSrc * basesrc, GstSegment * segment)
 {
   GstAudioTestSrc *src = GST_AUDIO_TEST_SRC (basesrc);
   GstClockTime time;
+  gint samplerate, bpf;
+  gint64 next_sample;
 
-  segment->time = segment->start;
-  time = segment->last_stop;
+  GST_DEBUG_OBJECT (src, "seeking %" GST_SEGMENT_FORMAT, segment);
 
-  /* now move to the time indicated */
-  src->next_sample =
-      gst_util_uint64_scale_int (time, src->samplerate, GST_SECOND);
-  src->next_byte = src->next_sample * src->sample_size * src->channels;
-  src->next_time =
-      gst_util_uint64_scale_int (src->next_sample, GST_SECOND, src->samplerate);
+  time = segment->position;
+  src->reverse = (segment->rate < 0.0);
+
+  samplerate = GST_AUDIO_INFO_RATE (&src->info);
+  bpf = GST_AUDIO_INFO_BPF (&src->info);
+
+  /* now move to the time indicated, don't seek to the sample *after* the time */
+  next_sample = gst_util_uint64_scale_int (time, samplerate, GST_SECOND);
+  src->next_byte = next_sample * bpf;
+  if (samplerate == 0)
+    src->next_time = 0;
+  else
+    src->next_time =
+        gst_util_uint64_scale_round (next_sample, GST_SECOND, samplerate);
+
+  GST_DEBUG_OBJECT (src, "seeking next_sample=%" G_GINT64_FORMAT
+      " next_time=%" GST_TIME_FORMAT, next_sample,
+      GST_TIME_ARGS (src->next_time));
 
   g_assert (src->next_time <= time);
 
+  src->next_sample = next_sample;
+
+  if (!src->reverse) {
+    if (GST_CLOCK_TIME_IS_VALID (segment->start)) {
+      segment->time = segment->start;
+    }
+  } else {
+    if (GST_CLOCK_TIME_IS_VALID (segment->stop)) {
+      segment->time = segment->stop;
+    }
+  }
+
   if (GST_CLOCK_TIME_IS_VALID (segment->stop)) {
     time = segment->stop;
-    src->sample_stop = gst_util_uint64_scale_int (time, src->samplerate,
-        GST_SECOND);
+    src->sample_stop =
+        gst_util_uint64_scale_round (time, samplerate, GST_SECOND);
     src->check_seek_stop = TRUE;
   } else {
     src->check_seek_stop = FALSE;
@@ -973,28 +1122,17 @@ gst_audio_test_src_is_seekable (GstBaseSrc * basesrc)
   return TRUE;
 }
 
-static gboolean
-gst_audio_test_src_check_get_range (GstBaseSrc * basesrc)
-{
-  GstAudioTestSrc *src;
-
-  src = GST_AUDIO_TEST_SRC (basesrc);
-
-  /* if we can operate in pull mode */
-  return src->can_activate_pull;
-}
-
 static GstFlowReturn
-gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
-    guint length, GstBuffer ** buffer)
+gst_audio_test_src_fill (GstBaseSrc * basesrc, guint64 offset,
+    guint length, GstBuffer * buffer)
 {
-  GstFlowReturn res;
   GstAudioTestSrc *src;
-  GstBuffer *buf;
   GstClockTime next_time;
   gint64 next_sample, next_byte;
-  guint bytes, samples;
+  gint bytes, samples;
   GstElementClass *eclass;
+  GstMapInfo map;
+  gint samplerate, bpf;
 
   src = GST_AUDIO_TEST_SRC (basesrc);
 
@@ -1002,27 +1140,31 @@ gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
   if (!src->tags_pushed) {
     GstTagList *taglist;
 
-    taglist = gst_tag_list_new ();
-
-    gst_tag_list_add (taglist, GST_TAG_MERGE_APPEND,
-        GST_TAG_DESCRIPTION, "audiotest wave", NULL);
+    taglist = gst_tag_list_new (GST_TAG_DESCRIPTION, "audiotest wave", NULL);
 
     eclass = GST_ELEMENT_CLASS (parent_class);
     if (eclass->send_event)
       eclass->send_event (GST_ELEMENT_CAST (basesrc),
           gst_event_new_tag (taglist));
+    else
+      gst_tag_list_unref (taglist);
     src->tags_pushed = TRUE;
   }
 
-  if (src->eos_reached)
-    return GST_FLOW_UNEXPECTED;
+  if (src->eos_reached) {
+    GST_INFO_OBJECT (src, "eos");
+    return GST_FLOW_EOS;
+  }
+
+  samplerate = GST_AUDIO_INFO_RATE (&src->info);
+  bpf = GST_AUDIO_INFO_BPF (&src->info);
 
   /* if no length was given, use our default length in samples otherwise convert
    * the length in bytes to samples. */
   if (length == -1)
     samples = src->samples_per_buffer;
   else
-    samples = length / (src->sample_size * src->channels);
+    samples = length / bpf;
 
   /* if no offset was given, use our next logical byte */
   if (offset == -1)
@@ -1032,10 +1174,9 @@ gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
   if (offset != src->next_byte) {
     GST_DEBUG_OBJECT (src, "seek to new offset %" G_GUINT64_FORMAT, offset);
     /* we have a discont in the expected sample offset, do a 'seek' */
-    src->next_sample = offset / (src->sample_size * src->channels);
+    src->next_sample = offset / bpf;
     src->next_time =
-        gst_util_uint64_scale_int (src->next_sample, GST_SECOND,
-        src->samplerate);
+        gst_util_uint64_scale_int (src->next_sample, GST_SECOND, samplerate);
     src->next_byte = offset;
   }
 
@@ -1051,30 +1192,31 @@ gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
   } else {
     /* calculate full buffer */
     src->generate_samples_per_buffer = samples;
-    next_sample = src->next_sample + samples;
+    next_sample = src->next_sample + (src->reverse ? (-samples) : samples);
   }
 
-  bytes = src->generate_samples_per_buffer * src->sample_size * src->channels;
+  bytes = src->generate_samples_per_buffer * bpf;
 
-  if ((res = gst_pad_alloc_buffer (basesrc->srcpad, src->next_sample,
-              bytes, GST_PAD_CAPS (basesrc->srcpad), &buf)) != GST_FLOW_OK) {
-    return res;
-  }
+  next_byte = src->next_byte + (src->reverse ? (-bytes) : bytes);
+  next_time = gst_util_uint64_scale_int (next_sample, GST_SECOND, samplerate);
 
-  next_byte = src->next_byte + bytes;
-  next_time = gst_util_uint64_scale_int (next_sample, GST_SECOND,
-      src->samplerate);
-
-  GST_LOG_OBJECT (src, "samplerate %d", src->samplerate);
+  GST_LOG_OBJECT (src, "samplerate %d", samplerate);
   GST_LOG_OBJECT (src, "next_sample %" G_GINT64_FORMAT ", ts %" GST_TIME_FORMAT,
       next_sample, GST_TIME_ARGS (next_time));
 
-  GST_BUFFER_TIMESTAMP (buf) = src->timestamp_offset + src->next_time;
-  GST_BUFFER_OFFSET (buf) = src->next_sample;
-  GST_BUFFER_OFFSET_END (buf) = next_sample;
-  GST_BUFFER_DURATION (buf) = next_time - src->next_time;
+  gst_buffer_set_size (buffer, bytes);
 
-  gst_object_sync_values (G_OBJECT (src), src->next_time);
+  GST_BUFFER_OFFSET (buffer) = src->next_sample;
+  GST_BUFFER_OFFSET_END (buffer) = next_sample;
+  if (!src->reverse) {
+    GST_BUFFER_TIMESTAMP (buffer) = src->timestamp_offset + src->next_time;
+    GST_BUFFER_DURATION (buffer) = next_time - src->next_time;
+  } else {
+    GST_BUFFER_TIMESTAMP (buffer) = src->timestamp_offset + next_time;
+    GST_BUFFER_DURATION (buffer) = src->next_time - next_time;
+  }
+
+  gst_object_sync_values (GST_OBJECT (src), GST_BUFFER_TIMESTAMP (buffer));
 
   src->next_time = next_time;
   src->next_sample = next_sample;
@@ -1082,16 +1224,16 @@ gst_audio_test_src_create (GstBaseSrc * basesrc, guint64 offset,
 
   GST_LOG_OBJECT (src, "generating %u samples at ts %" GST_TIME_FORMAT,
       src->generate_samples_per_buffer,
-      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
+      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
 
-  src->process (src, GST_BUFFER_DATA (buf));
+  gst_buffer_map (buffer, &map, GST_MAP_WRITE);
+  src->process (src, map.data);
+  gst_buffer_unmap (buffer, &map);
 
   if (G_UNLIKELY ((src->wave == GST_AUDIO_TEST_SRC_WAVE_SILENCE)
           || (src->volume == 0.0))) {
-    GST_BUFFER_FLAG_SET (buf, GST_BUFFER_FLAG_GAP);
+    GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_GAP);
   }
-
-  *buffer = buf;
 
   return GST_FLOW_OK;
 }
@@ -1105,6 +1247,8 @@ gst_audio_test_src_set_property (GObject * object, guint prop_id,
   switch (prop_id) {
     case PROP_SAMPLES_PER_BUFFER:
       src->samples_per_buffer = g_value_get_int (value);
+      gst_base_src_set_blocksize (GST_BASE_SRC_CAST (src),
+          GST_AUDIO_INFO_BPF (&src->info) * src->samples_per_buffer);
       break;
     case PROP_WAVE:
       src->wave = g_value_get_enum (value);
@@ -1175,9 +1319,6 @@ gst_audio_test_src_get_property (GObject * object, guint prop_id,
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* initialize gst controller library */
-  gst_controller_init (NULL, NULL);
-
   GST_DEBUG_CATEGORY_INIT (audio_test_src_debug, "audiotestsrc", 0,
       "Audio Test Source");
 
@@ -1187,6 +1328,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "audiotestsrc",
+    audiotestsrc,
     "Creates audio test signals of given frequency and volume",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

@@ -1,7 +1,7 @@
-/* 
- * GStreamer
- * Copyright (C) 2009 Carl-Anton Ingmarsson <ca.ingmarsson@gmail.com>
- *
+/*
+ * gst-plugins-bad
+ * Copyright (C) 2012 Edward Hervey <edward@collabora.com>
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -14,20 +14,25 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _GST_VDP_UTILS_H_
 #define _GST_VDP_UTILS_H_
 
 #include <gst/gst.h>
-
+#include <gst/video/video.h>
+#include <gst/video/gstvideometa.h>
+#include <gst/video/gstvideopool.h>
 #include "gstvdpdevice.h"
 
-GstCaps  *gst_vdp_video_to_yuv_caps  (GstCaps *caps, GstVdpDevice *device);
-GstCaps  *gst_vdp_yuv_to_video_caps  (GstCaps *caps, GstVdpDevice *device);
+G_BEGIN_DECLS
 
-GstCaps *gst_vdp_video_to_output_caps (GstCaps * caps);
+VdpChromaType gst_video_info_to_vdp_chroma_type (GstVideoInfo *info);
+
+VdpYCbCrFormat gst_video_format_to_vdp_ycbcr (GstVideoFormat format);
+
+G_END_DECLS
 
 #endif /* _GST_VDP_UTILS_H_ */

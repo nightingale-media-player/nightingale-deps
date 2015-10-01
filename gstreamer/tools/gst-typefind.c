@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -147,14 +147,15 @@ main (int argc, char *argv[])
     {NULL}
   };
 
+  setlocale (LC_ALL, "");
+
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #endif
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
+  g_set_prgname ("gst-typefind-" GST_API_VERSION);
 
   ctx = g_option_context_new ("FILES");
   g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
@@ -165,10 +166,10 @@ main (int argc, char *argv[])
   }
   g_option_context_free (ctx);
 
-  gst_tools_print_version ("gst-typefind");
+  gst_tools_print_version ();
 
   if (filenames == NULL || *filenames == NULL) {
-    g_print ("Please give a filename to typefind\n\n");
+    g_print ("Please give one or more filenames to %s\n\n", g_get_prgname ());
     return 1;
   }
 

@@ -20,8 +20,8 @@
  *
  * You should have received a cradioacy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -40,7 +40,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v videotestsrc ! radioactv ! ffmpegcolorspace ! autovideosink
+ * gst-launch-1.0 -v videotestsrc ! radioactv ! videoconvert ! autovideosink
  * ]| This pipeline shows the effect of radioactv on a test stream.
  * </refsect2>
  */
@@ -54,9 +54,6 @@
 
 #include "gstradioac.h"
 #include "gsteffectv.h"
-
-#include <gst/video/video.h>
-#include <gst/controller/gstcontroller.h>
 
 enum
 {
@@ -134,14 +131,15 @@ enum
 #define RATIO 0.95
 
 static guint32 palettes[COLORS * PATTERN];
+static const gint swap_tab[] = { 2, 1, 0, 3 };
 
-GST_BOILERPLATE (GstRadioacTV, gst_radioactv, GstVideoFilter,
-    GST_TYPE_VIDEO_FILTER);
+#define gst_radioactv_parent_class parent_class
+G_DEFINE_TYPE (GstRadioacTV, gst_radioactv, GST_TYPE_VIDEO_FILTER);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define CAPS_STR GST_VIDEO_CAPS_RGBx
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ RGBx, BGRx }")
 #else
-#define CAPS_STR GST_VIDEO_CAPS_xBGR
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ xBGR, xRGB }")
 #endif
 
 static GstStaticPadTemplate gst_radioactv_src_template =
@@ -165,18 +163,20 @@ makePalette (void)
 
 #define DELTA (255/(COLORS/2-1))
 
+  /* red, gree, blue */
   for (i = 0; i < COLORS / 2; i++) {
     palettes[i] = i * DELTA;
     palettes[COLORS + i] = (i * DELTA) << 8;
     palettes[COLORS * 2 + i] = (i * DELTA) << 16;
   }
   for (i = 0; i < COLORS / 2; i++) {
-    palettes[+i + COLORS / 2] = 255 | (i * DELTA) << 16 | (i * DELTA) << 8;
+    palettes[i + COLORS / 2] = 255 | (i * DELTA) << 16 | (i * DELTA) << 8;
     palettes[COLORS + i + COLORS / 2] =
         (255 << 8) | (i * DELTA) << 16 | i * DELTA;
     palettes[COLORS * 2 + i + COLORS / 2] =
         (255 << 16) | (i * DELTA) << 8 | i * DELTA;
   }
+  /* white */
   for (i = 0; i < COLORS; i++) {
     palettes[COLORS * 3 + i] = (255 * i / COLORS) * 0x10101;
   }
@@ -233,9 +233,12 @@ blur (GstRadioacTV * filter)
   gint width;
   guint8 *p, *q;
   guint8 v;
+  GstVideoInfo *info;
+
+  info = &GST_VIDEO_FILTER (filter)->in_info;
 
   width = filter->buf_width;
-  p = filter->blurzoombuf + filter->width + 1;
+  p = filter->blurzoombuf + GST_VIDEO_INFO_WIDTH (info) + 1;
   q = p + filter->buf_area;
 
   for (y = filter->buf_height - 2; y > 0; y--) {
@@ -287,7 +290,7 @@ blurzoomcore (GstRadioacTV * filter)
 
 /* Background image is refreshed every frame */
 static void
-image_bgsubtract_update_y (guint32 * src, guint32 * background, guint8 * diff,
+image_bgsubtract_update_y (guint32 * src, gint16 * background, guint8 * diff,
     gint video_area, gint y_threshold)
 {
   gint i;
@@ -298,7 +301,7 @@ image_bgsubtract_update_y (guint32 * src, guint32 * background, guint8 * diff,
   gint v;
 
   p = src;
-  q = (gint16 *) background;
+  q = background;
   r = diff;
   for (i = 0; i < video_area; i++) {
     R = ((*p) & 0xff0000) >> (16 - 1);
@@ -315,33 +318,48 @@ image_bgsubtract_update_y (guint32 * src, guint32 * background, guint8 * diff,
 }
 
 static GstFlowReturn
-gst_radioactv_transform (GstBaseTransform * trans, GstBuffer * in,
-    GstBuffer * out)
+gst_radioactv_transform_frame (GstVideoFilter * vfilter,
+    GstVideoFrame * in_frame, GstVideoFrame * out_frame)
 {
-  GstRadioacTV *filter = GST_RADIOACTV (trans);
+  GstRadioacTV *filter = GST_RADIOACTV (vfilter);
   guint32 *src, *dest;
-  GstFlowReturn ret = GST_FLOW_OK;
   GstClockTime timestamp, stream_time;
-  gint x, y;
+  gint x, y, width, height;
   guint32 a, b;
   guint8 *diff, *p;
   guint32 *palette;
 
-  palette = &palettes[COLORS * filter->color];
-
-  timestamp = GST_BUFFER_TIMESTAMP (in);
+  timestamp = GST_BUFFER_TIMESTAMP (in_frame->buffer);
   stream_time =
-      gst_segment_to_stream_time (&trans->segment, GST_FORMAT_TIME, timestamp);
+      gst_segment_to_stream_time (&GST_BASE_TRANSFORM (filter)->segment,
+      GST_FORMAT_TIME, timestamp);
 
   GST_DEBUG_OBJECT (filter, "sync to %" GST_TIME_FORMAT,
       GST_TIME_ARGS (timestamp));
 
   if (GST_CLOCK_TIME_IS_VALID (stream_time))
-    gst_object_sync_values (G_OBJECT (filter), stream_time);
+    gst_object_sync_values (GST_OBJECT (filter), stream_time);
 
-  src = (guint32 *) GST_BUFFER_DATA (in);
-  dest = (guint32 *) GST_BUFFER_DATA (out);
+  src = GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
+  dest = GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
 
+  width = GST_VIDEO_FRAME_WIDTH (in_frame);
+  height = GST_VIDEO_FRAME_HEIGHT (in_frame);
+
+  GST_OBJECT_LOCK (filter);
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+  if (GST_VIDEO_FRAME_FORMAT (in_frame) == GST_VIDEO_FORMAT_RGBx) {
+    palette = &palettes[COLORS * filter->color];
+  } else {
+    palette = &palettes[COLORS * swap_tab[filter->color]];
+  }
+#else
+  if (GST_VIDEO_FRAME_FORMAT (in_frame) == GST_VIDEO_FORMAT_xBGR) {
+    palette = &palettes[COLORS * filter->color];
+  } else {
+    palette = &palettes[COLORS * swap_tab[filter->color]];
+  }
+#endif
   diff = filter->diff;
 
   if (filter->mode == 3 && filter->trigger)
@@ -351,7 +369,7 @@ gst_radioactv_transform (GstBaseTransform * trans, GstBuffer * in,
 
   if (filter->mode != 2 || filter->snaptime <= 0) {
     image_bgsubtract_update_y (src, filter->background, diff,
-        filter->width * filter->height, MAGIC_THRESHOLD * 7);
+        width * height, MAGIC_THRESHOLD * 7);
     if (filter->mode == 0 || filter->snaptime <= 0) {
       diff += filter->buf_margin_left;
       p = filter->blurzoombuf;
@@ -359,11 +377,11 @@ gst_radioactv_transform (GstBaseTransform * trans, GstBuffer * in,
         for (x = 0; x < filter->buf_width; x++) {
           p[x] |= diff[x] >> 3;
         }
-        diff += filter->width;
+        diff += width;
         p += filter->buf_width;
       }
       if (filter->mode == 1 || filter->mode == 2) {
-        memcpy (filter->snapframe, src, filter->width * filter->height * 4);
+        memcpy (filter->snapframe, src, width * height * 4);
       }
     }
   }
@@ -373,7 +391,7 @@ gst_radioactv_transform (GstBaseTransform * trans, GstBuffer * in,
     src = filter->snapframe;
   }
   p = filter->blurzoombuf;
-  for (y = 0; y < filter->height; y++) {
+  for (y = 0; y < height; y++) {
     for (x = 0; x < filter->buf_margin_left; x++) {
       *dest++ = *src++;
     }
@@ -395,63 +413,66 @@ gst_radioactv_transform (GstBaseTransform * trans, GstBuffer * in,
       filter->snaptime = filter->interval;
     }
   }
+  GST_OBJECT_UNLOCK (filter);
 
-  return ret;
+  return GST_FLOW_OK;
 }
 
 static gboolean
-gst_radioactv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
-    GstCaps * outcaps)
+gst_radioactv_set_info (GstVideoFilter * vfilter, GstCaps * incaps,
+    GstVideoInfo * in_info, GstCaps * outcaps, GstVideoInfo * out_info)
 {
-  GstRadioacTV *filter = GST_RADIOACTV (btrans);
-  GstStructure *structure;
-  gboolean ret = FALSE;
+  GstRadioacTV *filter = GST_RADIOACTV (vfilter);
+  gint width, height;
 
-  structure = gst_caps_get_structure (incaps, 0);
+  width = GST_VIDEO_INFO_WIDTH (in_info);
+  height = GST_VIDEO_INFO_HEIGHT (in_info);
 
-  if (gst_structure_get_int (structure, "width", &filter->width) &&
-      gst_structure_get_int (structure, "height", &filter->height)) {
-    filter->buf_width_blocks = filter->width / 32;
-    if (filter->buf_width_blocks > 255)
-      return FALSE;
+  filter->buf_width_blocks = width / 32;
+  if (filter->buf_width_blocks > 255)
+    goto too_wide;
 
-    filter->buf_width = filter->buf_width_blocks * 32;
-    filter->buf_height = filter->height;
-    filter->buf_area = filter->buf_height * filter->buf_width;
-    filter->buf_margin_left = (filter->width - filter->buf_width) / 2;
-    filter->buf_margin_right =
-        filter->height - filter->buf_width - filter->buf_margin_left;
+  filter->buf_width = filter->buf_width_blocks * 32;
+  filter->buf_height = height;
+  filter->buf_area = filter->buf_height * filter->buf_width;
+  filter->buf_margin_left = (width - filter->buf_width) / 2;
+  filter->buf_margin_right =
+      height - filter->buf_width - filter->buf_margin_left;
 
-    if (filter->blurzoombuf)
-      g_free (filter->blurzoombuf);
-    filter->blurzoombuf = g_new0 (guint8, filter->buf_area * 2);
+  if (filter->blurzoombuf)
+    g_free (filter->blurzoombuf);
+  filter->blurzoombuf = g_new0 (guint8, filter->buf_area * 2);
 
-    if (filter->blurzoomx)
-      g_free (filter->blurzoomx);
-    filter->blurzoomx = g_new0 (gint, filter->buf_width);
+  if (filter->blurzoomx)
+    g_free (filter->blurzoomx);
+  filter->blurzoomx = g_new0 (gint, filter->buf_width);
 
-    if (filter->blurzoomy)
-      g_free (filter->blurzoomy);
-    filter->blurzoomy = g_new0 (gint, filter->buf_height);
+  if (filter->blurzoomy)
+    g_free (filter->blurzoomy);
+  filter->blurzoomy = g_new0 (gint, filter->buf_height);
 
-    if (filter->snapframe)
-      g_free (filter->snapframe);
-    filter->snapframe = g_new (guint32, filter->width * filter->height);
+  if (filter->snapframe)
+    g_free (filter->snapframe);
+  filter->snapframe = g_new (guint32, width * height);
 
-    if (filter->diff)
-      g_free (filter->diff);
-    filter->diff = g_new (guint8, filter->width * filter->height);
+  if (filter->diff)
+    g_free (filter->diff);
+  filter->diff = g_new (guint8, width * height);
 
-    if (filter->background)
-      g_free (filter->background);
-    filter->background = g_new (guint32, filter->width * filter->height);
+  if (filter->background)
+    g_free (filter->background);
+  filter->background = g_new0 (gint16, width * height);
 
-    setTable (filter);
+  setTable (filter);
 
-    ret = TRUE;
+  return TRUE;
+
+  /* ERRORS */
+too_wide:
+  {
+    GST_DEBUG_OBJECT (filter, "frame too wide");
+    return FALSE;
   }
-
-  return ret;
 }
 
 static gboolean
@@ -502,6 +523,7 @@ gst_radioactv_set_property (GObject * object, guint prop_id,
 {
   GstRadioacTV *filter = GST_RADIOACTV (object);
 
+  GST_OBJECT_LOCK (filter);
   switch (prop_id) {
     case PROP_MODE:
       filter->mode = g_value_get_enum (value);
@@ -521,6 +543,7 @@ gst_radioactv_set_property (GObject * object, guint prop_id,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+  GST_OBJECT_UNLOCK (filter);
 }
 
 static void
@@ -549,27 +572,12 @@ gst_radioactv_get_property (GObject * object, guint prop_id,
 }
 
 static void
-gst_radioactv_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (element_class, "RadioacTV effect",
-      "Filter/Effect/Video",
-      "motion-enlightment effect",
-      "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>, "
-      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_radioactv_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_radioactv_src_template));
-}
-
-static void
 gst_radioactv_class_init (GstRadioacTVClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->set_property = gst_radioactv_set_property;
   gobject_class->get_property = gst_radioactv_get_property;
@@ -596,21 +604,31 @@ gst_radioactv_class_init (GstRadioacTVClass * klass)
           "Trigger (in trigger mode)", DEFAULT_TRIGGER,
           GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_radioactv_set_caps);
-  trans_class->transform = GST_DEBUG_FUNCPTR (gst_radioactv_transform);
+  gst_element_class_set_static_metadata (gstelement_class, "RadioacTV effect",
+      "Filter/Effect/Video",
+      "motion-enlightment effect",
+      "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>, "
+      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_radioactv_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_radioactv_src_template));
+
   trans_class->start = GST_DEBUG_FUNCPTR (gst_radioactv_start);
+
+  vfilter_class->set_info = GST_DEBUG_FUNCPTR (gst_radioactv_set_info);
+  vfilter_class->transform_frame =
+      GST_DEBUG_FUNCPTR (gst_radioactv_transform_frame);
 
   makePalette ();
 }
 
 static void
-gst_radioactv_init (GstRadioacTV * filter, GstRadioacTVClass * klass)
+gst_radioactv_init (GstRadioacTV * filter)
 {
   filter->mode = DEFAULT_MODE;
   filter->color = DEFAULT_COLOR;
   filter->interval = DEFAULT_INTERVAL;
   filter->trigger = DEFAULT_TRIGGER;
-
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (filter));
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (filter));
 }

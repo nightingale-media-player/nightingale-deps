@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_PB_UTILS_BASE_UTILS_H__
@@ -22,10 +22,15 @@
 
 #include <gst/gst.h>
 
+#include <gst/pbutils/gstpluginsbaseversion.h>
 #include <gst/pbutils/descriptions.h>
 #include <gst/pbutils/missing-plugins.h>
 #include <gst/pbutils/install-plugins.h>
+#include <gst/pbutils/codec-utils.h>
 #include <gst/pbutils/pbutils-enumtypes.h>
+#include <gst/pbutils/gstdiscoverer.h>
+#include <gst/pbutils/encoding-profile.h>
+#include <gst/pbutils/encoding-target.h>
 
 G_BEGIN_DECLS
 

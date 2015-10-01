@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* This effect is borrowed from xmms-0.6.1, though I mangled it so badly in
@@ -43,25 +43,12 @@
 #include <gst/base/gstbasetransform.h>
 #include <gst/audio/audio.h>
 #include <gst/audio/gstaudiofilter.h>
-#include <gst/controller/gstcontroller.h>
-
-
-/* elementfactory information */
-static const GstElementDetails stereo_details =
-GST_ELEMENT_DETAILS ("Stereo effect",
-    "Filter/Effect/Audio",
-    "Muck with the stereo signal to enhance its 'stereo-ness'",
-    "Erik Walthinsen <omega@cse.ogi.edu>");
-
 
 #define ALLOWED_CAPS \
-    "audio/x-raw-int,"                                                \
-    " depth = (int) 16, "                                             \
-    " width = (int) 16, "                                             \
-    " endianness = (int) BYTE_ORDER,"                                 \
-    " rate = (int) [ 1, MAX ],"                                       \
-    " channels = (int) 2, "                                           \
-    " signed = (boolean) TRUE"
+    "audio/x-raw,"                     \
+    " format = "GST_AUDIO_NE (S16) "," \
+    " rate = (int) [ 1, MAX ],"        \
+    " channels = (int) 2"
 
 /* Stereo signals and args */
 enum
@@ -72,9 +59,9 @@ enum
 
 enum
 {
-  ARG_0,
-  ARG_ACTIVE,
-  ARG_STEREO
+  PROP_0,
+  PROP_ACTIVE,
+  PROP_STEREO
 };
 
 static void gst_stereo_set_property (GObject * object, guint prop_id,
@@ -85,53 +72,44 @@ static void gst_stereo_get_property (GObject * object, guint prop_id,
 static GstFlowReturn gst_stereo_transform_ip (GstBaseTransform * base,
     GstBuffer * outbuf);
 
-/*static guint gst_stereo_signals[LAST_SIGNAL] = { 0 }; */
-
-GST_BOILERPLATE (GstStereo, gst_stereo, GstAudioFilter, GST_TYPE_AUDIO_FILTER);
-
-static void
-gst_stereo_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-  GstCaps *caps;
-
-  gst_element_class_set_details (element_class, &stereo_details);
-
-  caps = gst_caps_from_string (ALLOWED_CAPS);
-  gst_audio_filter_class_add_pad_templates (GST_AUDIO_FILTER_CLASS (g_class),
-      caps);
-  gst_caps_unref (caps);
-}
+G_DEFINE_TYPE (GstStereo, gst_stereo, GST_TYPE_AUDIO_FILTER);
 
 static void
 gst_stereo_class_init (GstStereoClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstBaseTransformClass *trans_class;
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstBaseTransformClass *trans_class = GST_BASE_TRANSFORM_CLASS (klass);
+  GstAudioFilterClass *audiofilter_class = GST_AUDIO_FILTER_CLASS (klass);
+  GstCaps *caps;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  trans_class = (GstBaseTransformClass *) klass;
+  gst_element_class_set_static_metadata (element_class, "Stereo effect",
+      "Filter/Effect/Audio",
+      "Muck with the stereo signal to enhance its 'stereo-ness'",
+      "Erik Walthinsen <omega@cse.ogi.edu>");
 
-  parent_class = g_type_class_peek_parent (klass);
+  caps = gst_caps_from_string (ALLOWED_CAPS);
+  gst_audio_filter_class_add_pad_templates (audiofilter_class, caps);
+  gst_caps_unref (caps);
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_stereo_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_stereo_get_property);
+  gobject_class->set_property = gst_stereo_set_property;
+  gobject_class->get_property = gst_stereo_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_ACTIVE,
+  g_object_class_install_property (gobject_class, PROP_ACTIVE,
       g_param_spec_boolean ("active", "active", "active",
-          TRUE, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
+          TRUE,
+          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_class, ARG_STEREO,
+  g_object_class_install_property (gobject_class, PROP_STEREO,
       g_param_spec_float ("stereo", "stereo", "stereo",
-          0.0, 1.0, 0.1, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
+          0.0, 1.0, 0.1,
+          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
 
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_stereo_transform_ip);
 }
 
 static void
-gst_stereo_init (GstStereo * stereo, GstStereoClass * klass)
+gst_stereo_init (GstStereo * stereo)
 {
   stereo->active = TRUE;
   stereo->stereo = 0.1;
@@ -141,17 +119,21 @@ static GstFlowReturn
 gst_stereo_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
 {
   GstStereo *stereo = GST_STEREO (base);
-  gint16 *data = (gint16 *) GST_BUFFER_DATA (outbuf);
-  gint samples = GST_BUFFER_SIZE (outbuf) / 2;
+  gint samples;
   gint i;
   gdouble avg, ldiff, rdiff, tmp;
   gdouble mul = stereo->stereo;
+  gint16 *data;
+  GstMapInfo info;
 
-  if (!gst_buffer_is_writable (outbuf))
-    return GST_FLOW_OK;
+  if (!gst_buffer_map (outbuf, &info, GST_MAP_READWRITE))
+    return GST_FLOW_ERROR;
+
+  data = (gint16 *) info.data;
+  samples = info.size / 2;
 
   if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (outbuf)))
-    gst_object_sync_values (G_OBJECT (stereo), GST_BUFFER_TIMESTAMP (outbuf));
+    gst_object_sync_values (GST_OBJECT (stereo), GST_BUFFER_TIMESTAMP (outbuf));
 
   if (stereo->active) {
     for (i = 0; i < samples / 2; i += 2) {
@@ -175,6 +157,8 @@ gst_stereo_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
     }
   }
 
+  gst_buffer_unmap (outbuf, &info);
+
   return GST_FLOW_OK;
 }
 
@@ -182,16 +166,13 @@ static void
 gst_stereo_set_property (GObject * object, guint prop_id, const GValue * value,
     GParamSpec * pspec)
 {
-  GstStereo *stereo;
-
-  g_return_if_fail (GST_IS_STEREO (object));
-  stereo = GST_STEREO (object);
+  GstStereo *stereo = GST_STEREO (object);
 
   switch (prop_id) {
-    case ARG_ACTIVE:
+    case PROP_ACTIVE:
       stereo->active = g_value_get_boolean (value);
       break;
-    case ARG_STEREO:
+    case PROP_STEREO:
       stereo->stereo = g_value_get_float (value) * 10.0;
       break;
     default:
@@ -204,16 +185,13 @@ static void
 gst_stereo_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
-  GstStereo *stereo;
-
-  g_return_if_fail (GST_IS_STEREO (object));
-  stereo = GST_STEREO (object);
+  GstStereo *stereo = GST_STEREO (object);
 
   switch (prop_id) {
-    case ARG_ACTIVE:
+    case PROP_ACTIVE:
       g_value_set_boolean (value, stereo->active);
       break;
-    case ARG_STEREO:
+    case PROP_STEREO:
       g_value_set_float (value, stereo->stereo / 10.0);
       break;
     default:
@@ -231,6 +209,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "stereo",
+    stereo,
     "Muck with the stereo signal, enhance it's 'stereo-ness'",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

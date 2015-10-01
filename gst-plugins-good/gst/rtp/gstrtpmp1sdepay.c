@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,13 +25,7 @@
 
 #include <string.h>
 #include "gstrtpmp1sdepay.h"
-
-/* elementfactory information */
-static const GstElementDetails gst_rtp_mp1sdepay_details =
-GST_ELEMENT_DETAILS ("RTP MPEG1 System Stream depayloader",
-    "Codec/Depayloader/Network",
-    "Extracts MPEG1 System Streams from RTP packets (RFC 3555)",
-    "Wim Taymans <wim.taymans@gmail.com>");
+#include "gstrtputils.h"
 
 /* RtpMP1SDepay signals and args */
 enum
@@ -61,57 +55,50 @@ static GstStaticPadTemplate gst_rtp_mp1s_depay_sink_template =
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-rtp, "
         "media = (string) \"other\", "
-        "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
         "clock-rate = (int) [1, MAX ], " "encoding-name = (string) \"MP1S\";"
         "application/x-rtp, "
         "media = (string) \"video\", "
-        "payload = (int) " GST_RTP_PAYLOAD_DYNAMIC_STRING ", "
         "clock-rate = (int) [1, MAX ], " "encoding-name = (string) \"MP1S\"")
     );
 
-GST_BOILERPLATE (GstRtpMP1SDepay, gst_rtp_mp1s_depay, GstBaseRTPDepayload,
-    GST_TYPE_BASE_RTP_DEPAYLOAD);
+G_DEFINE_TYPE (GstRtpMP1SDepay, gst_rtp_mp1s_depay,
+    GST_TYPE_RTP_BASE_DEPAYLOAD);
 
-static gboolean gst_rtp_mp1s_depay_setcaps (GstBaseRTPDepayload * depayload,
+static gboolean gst_rtp_mp1s_depay_setcaps (GstRTPBaseDepayload * depayload,
     GstCaps * caps);
-static GstBuffer *gst_rtp_mp1s_depay_process (GstBaseRTPDepayload * depayload,
-    GstBuffer * buf);
-
-static void
-gst_rtp_mp1s_depay_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp1s_depay_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rtp_mp1s_depay_sink_template));
-
-  gst_element_class_set_details (element_class, &gst_rtp_mp1sdepay_details);
-}
+static GstBuffer *gst_rtp_mp1s_depay_process (GstRTPBaseDepayload * depayload,
+    GstRTPBuffer * rtp);
 
 static void
 gst_rtp_mp1s_depay_class_init (GstRtpMP1SDepayClass * klass)
 {
-  GstBaseRTPDepayloadClass *gstbasertpdepayload_class;
+  GstElementClass *gstelement_class;
+  GstRTPBaseDepayloadClass *gstrtpbasedepayload_class;
 
-  gstbasertpdepayload_class = (GstBaseRTPDepayloadClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gstrtpbasedepayload_class = (GstRTPBaseDepayloadClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
+  gstrtpbasedepayload_class->process_rtp_packet = gst_rtp_mp1s_depay_process;
+  gstrtpbasedepayload_class->set_caps = gst_rtp_mp1s_depay_setcaps;
 
-  gstbasertpdepayload_class->process = gst_rtp_mp1s_depay_process;
-  gstbasertpdepayload_class->set_caps = gst_rtp_mp1s_depay_setcaps;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp1s_depay_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rtp_mp1s_depay_sink_template));
 
+  gst_element_class_set_static_metadata (gstelement_class,
+      "RTP MPEG1 System Stream depayloader", "Codec/Depayloader/Network/RTP",
+      "Extracts MPEG1 System Streams from RTP packets (RFC 3555)",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
-gst_rtp_mp1s_depay_init (GstRtpMP1SDepay * rtpmp1sdepay,
-    GstRtpMP1SDepayClass * klass)
+gst_rtp_mp1s_depay_init (GstRtpMP1SDepay * rtpmp1sdepay)
 {
 }
 
 static gboolean
-gst_rtp_mp1s_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
+gst_rtp_mp1s_depay_setcaps (GstRTPBaseDepayload * depayload, GstCaps * caps)
 {
   GstCaps *srccaps;
   GstStructure *structure;
@@ -125,21 +112,25 @@ gst_rtp_mp1s_depay_setcaps (GstBaseRTPDepayload * depayload, GstCaps * caps)
 
   srccaps = gst_caps_new_simple ("video/mpeg",
       "systemstream", G_TYPE_BOOLEAN, TRUE, NULL);
-  res = gst_pad_set_caps (GST_BASE_RTP_DEPAYLOAD_SRCPAD (depayload), srccaps);
+  res = gst_pad_set_caps (GST_RTP_BASE_DEPAYLOAD_SRCPAD (depayload), srccaps);
   gst_caps_unref (srccaps);
 
   return res;
 }
 
 static GstBuffer *
-gst_rtp_mp1s_depay_process (GstBaseRTPDepayload * depayload, GstBuffer * buf)
+gst_rtp_mp1s_depay_process (GstRTPBaseDepayload * depayload, GstRTPBuffer * rtp)
 {
   GstBuffer *outbuf;
 
-  outbuf = gst_rtp_buffer_get_payload_buffer (buf);
+  outbuf = gst_rtp_buffer_get_payload_buffer (rtp);
 
-  GST_DEBUG ("gst_rtp_mp1s_depay_chain: pushing buffer of size %d",
-      GST_BUFFER_SIZE (outbuf));
+  if (outbuf) {
+    GST_DEBUG ("gst_rtp_mp1s_depay_chain: pushing buffer of size %"
+        G_GSIZE_FORMAT, gst_buffer_get_size (outbuf));
+
+    gst_rtp_drop_meta (GST_ELEMENT_CAST (depayload), outbuf, 0);
+  }
 
   return outbuf;
 }
@@ -148,5 +139,5 @@ gboolean
 gst_rtp_mp1s_depay_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "rtpmp1sdepay",
-      GST_RANK_MARGINAL, GST_TYPE_RTP_MP1S_DEPAY);
+      GST_RANK_SECONDARY, GST_TYPE_RTP_MP1S_DEPAY);
 }

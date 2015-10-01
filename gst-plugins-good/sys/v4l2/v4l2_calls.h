@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __V4L2_CALLS_H__
@@ -29,9 +29,10 @@
 #ifdef HAVE_LIBV4L2
 #  include <libv4l2.h>
 #else
+#  include "ext/videodev2.h"
 #  include <sys/ioctl.h>
-#  include <linux/videodev.h>
-#  include <linux/videodev2.h>
+#  include <sys/mman.h>
+#  include <unistd.h>
 #  define v4l2_fd_open(fd, flags) (fd)
 #  define v4l2_close    close
 #  define v4l2_dup      dup
@@ -40,14 +41,6 @@
 #  define v4l2_mmap     mmap
 #  define v4l2_munmap   munmap
 #endif
-
-/* simple check whether the device is open */
-#define GST_V4L2_IS_OPEN(v4l2object) \
-  (v4l2object->video_fd > 0)
-
-/* check whether the device is 'active' */
-#define GST_V4L2_IS_ACTIVE(v4l2object) \
-  (v4l2object->buffer != NULL)
 
 #define GST_V4L2_IS_OVERLAY(v4l2object) \
   (v4l2object->vcap.capabilities & V4L2_CAP_VIDEO_OVERLAY)
@@ -100,6 +93,7 @@
 
 /* open/close the device */
 gboolean	gst_v4l2_open			(GstV4l2Object *v4l2object);
+gboolean	gst_v4l2_dup			(GstV4l2Object *v4l2object, GstV4l2Object *other);
 gboolean	gst_v4l2_close			(GstV4l2Object *v4l2object);
 
 /* norm/input/output */
@@ -111,12 +105,10 @@ gboolean        gst_v4l2_get_input              (GstV4l2Object * v4l2object,
                                                  gint * input);
 gboolean        gst_v4l2_set_input              (GstV4l2Object * v4l2object,
                                                  gint input);
-#if 0 /* output not handled by now */
 gboolean	gst_v4l2_get_output		(GstV4l2Object *v4l2object,
 						 gint           *output);
 gboolean	gst_v4l2_set_output		(GstV4l2Object *v4l2object,
 						 gint            output);
-#endif /* #if 0 - output not handled by now */
 
 /* frequency control */
 gboolean	gst_v4l2_get_frequency		(GstV4l2Object *v4l2object,
@@ -136,6 +128,9 @@ gboolean	gst_v4l2_get_attribute		(GstV4l2Object *v4l2object,
 gboolean	gst_v4l2_set_attribute		(GstV4l2Object *v4l2object,
 						 int             attribute,
 						 const int       value);
+
+gboolean	gst_v4l2_set_controls		(GstV4l2Object * v4l2object,
+						 GstStructure * controls);
 
 gboolean        gst_v4l2_get_capabilities       (GstV4l2Object * v4l2object);
 

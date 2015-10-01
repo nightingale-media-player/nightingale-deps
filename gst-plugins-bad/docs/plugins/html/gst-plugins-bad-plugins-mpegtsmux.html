@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>mpegtsmux: GStreamer Bad Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-mpegpsmux.html" title="mpegpsmux">
+<link rel="next" href="gst-plugins-bad-plugins-mplex.html" title="mplex">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mpegtsmux.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mpegtsmux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mpegtsmux.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-mpegpsmux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-mplex.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-plugins-mpegtsmux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-mpegtsmux.top_of_page"></a>mpegtsmux</span></h2>
+<p>mpegtsmux</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--m2ts-mode" title="The “m2ts-mode” property">m2ts-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="type">GstStructure</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--prog-map" title="The “prog-map” property">prog-map</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--pat-interval" title="The “pat-interval” property">pat-interval</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--pmt-interval" title="The “pmt-interval” property">pmt-interval</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--alignment" title="The “alignment” property">alignment</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mpegtsmux.html#MpegTsMux--si-interval" title="The “si-interval” property">si-interval</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="MpegTsMux"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> MpegTsMux
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.50.6.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-mpegtsmux.html#plugin-mpegtsmux">mpegtsmux</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Fluendo &lt;contact@fluendo.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Muxer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.50.6.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink_%d</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpeg, parsed=(boolean)true, mpegversion=(int){ 1, 2, 4 }, systemstream=(boolean)false</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-dirac</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-h264, stream-format=(string)byte-stream, alignment=(string){ au, nal }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, parsed=(boolean)true, mpegversion=(int){ 1, 2 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, framed=(boolean)true, mpegversion=(int)4, stream-format=(string)adts</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)4, stream-format=(string)raw</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-lpcm, width=(int){ 16, 20, 24 }, rate=(int){ 48000, 96000 }, channels=(int)[ 1, 8 ], dynamic_range=(int)[ 0, 255 ], emphasis=(boolean){ false, true }, mute=(boolean){ false, true }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-ac3, framed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-dts, framed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> subpicture/x-dvb</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-teletext</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> meta/x-klv, parsed=(boolean)true</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/mpegts, systemstream=(boolean)true, packetsize=(int){ 188, 192 }</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.other_details"></a><h2>Types and Values</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mpegtsmux.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="MpegTsMux--m2ts-mode"></a><h3>The <code class="literal">“m2ts-mode”</code> property</h3>
+<pre class="programlisting">  “m2ts-mode”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Set to TRUE to output Blu-Ray disc format with 192 byte packets. FALSE for standard TS format with 188 byte packets.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MpegTsMux--prog-map"></a><h3>The <code class="literal">“prog-map”</code> property</h3>
+<pre class="programlisting">  “prog-map”                 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="type">GstStructure</span></a> *</pre>
+<p>A GstStructure specifies the mapping from elementary streams to programs.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MpegTsMux--pat-interval"></a><h3>The <code class="literal">“pat-interval”</code> property</h3>
+<pre class="programlisting">  “pat-interval”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Set the interval (in ticks of the 90kHz clock) for writing out the PAT table.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 1</p>
+<p>Default value: 9000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MpegTsMux--pmt-interval"></a><h3>The <code class="literal">“pmt-interval”</code> property</h3>
+<pre class="programlisting">  “pmt-interval”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Set the interval (in ticks of the 90kHz clock) for writing out the PMT table.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 1</p>
+<p>Default value: 9000</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MpegTsMux--alignment"></a><h3>The <code class="literal">“alignment”</code> property</h3>
+<pre class="programlisting">  “alignment”                <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Number of packets per buffer (padded with dummy packets on EOS) (-1 = auto, 0 = all available packets, 7 for UDP streaming).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MpegTsMux--si-interval"></a><h3>The <code class="literal">“si-interval”</code> property</h3>
+<pre class="programlisting">  “si-interval”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Set the interval (in ticks of the 90kHz clock) for writing out the ServiceInformation tables.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= 1</p>
+<p>Default value: 9000</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

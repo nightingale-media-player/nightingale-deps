@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstVideoChroma: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-video.html" title="Video Library">
+<link rel="prev" href="gst-plugins-base-libs-GstVideoDither.html" title="GstVideoDither">
+<link rel="next" href="gst-plugins-base-libs-GstVideoResampler.html" title="GstVideoResampler">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-GstVideoChroma.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-GstVideoDither.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-GstVideoResampler.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-GstVideoChroma"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-GstVideoChroma.top_of_page"></a>GstVideoChroma</span></h2>
+<p>GstVideoChroma — Functions and utility object for operating on chroma video planes</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="returnvalue">GstVideoChromaSite</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-from-string" title="gst_video_chroma_from_string ()">gst_video_chroma_from_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-to-string" title="gst_video_chroma_to_string ()">gst_video_chroma_to_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample" title="gst_video_chroma_resample ()">gst_video_chroma_resample</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample-free" title="gst_video_chroma_resample_free ()">gst_video_chroma_resample_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample-get-info" title="gst_video_chroma_resample_get_info ()">gst_video_chroma_resample_get_info</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="returnvalue">GstVideoChromaResample</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample-new" title="gst_video_chroma_resample_new ()">gst_video_chroma_resample_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite">GstVideoChromaSite</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaFlags" title="enum GstVideoChromaFlags">GstVideoChromaFlags</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaMethod" title="enum GstVideoChromaMethod">GstVideoChromaMethod</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample">GstVideoChromaResample</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/video/video-chroma.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.description"></a><h2>Description</h2>
+<p>The functions <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-from-string" title="gst_video_chroma_from_string ()"><code class="function">gst_video_chroma_from_string()</code></a> and <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-to-string" title="gst_video_chroma_to_string ()"><code class="function">gst_video_chroma_to_string()</code></a> convert
+between <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a> and string descriptions.</p>
+<p><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a> is a utility object for resampling chroma planes
+and converting between different chroma sampling sitings.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-video-chroma-from-string"></a><h3>gst_video_chroma_from_string ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="returnvalue">GstVideoChromaSite</span></a>
+gst_video_chroma_from_string (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *s</code></em>);</pre>
+<p>Convert <em class="parameter"><code>s</code></em>
+ to a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p>a chromasite string</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.2.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a> or <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GST-VIDEO-CHROMA-SITE-UNKNOWN:CAPS"><code class="literal">GST_VIDEO_CHROMA_SITE_UNKNOWN</code></a> when <em class="parameter"><code>s</code></em>
+does
+not contain a valid chroma description.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-chroma-to-string"></a><h3>gst_video_chroma_to_string ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_video_chroma_to_string (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a> site</code></em>);</pre>
+<p>Converts <em class="parameter"><code>site</code></em>
+ to its string representation.</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>site</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.3.6"></a><h4>Returns</h4>
+<p> a string describing <em class="parameter"><code>site</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-chroma-resample"></a><h3>gst_video_chroma_resample ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_chroma_resample (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a> *resample</code></em>,
+                           <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> lines[]</code></em>,
+                           <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> width</code></em>);</pre>
+<p>Perform resampling of <em class="parameter"><code>width</code></em>
+ chroma pixels in <em class="parameter"><code>lines</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>resample</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>lines</p></td>
+<td class="parameter_description"><p>pixel lines</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>the number of pixels on one line</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-chroma-resample-free"></a><h3>gst_video_chroma_resample_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_chroma_resample_free (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a> *resample</code></em>);</pre>
+<p>Free <em class="parameter"><code>resample</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>resample</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-chroma-resample-get-info"></a><h3>gst_video_chroma_resample_get_info ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_chroma_resample_get_info (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a> *resample</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_lines</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *offset</code></em>);</pre>
+<p>The resampler must be fed <em class="parameter"><code>n_lines</code></em>
+ at a time. The first line should be
+at <em class="parameter"><code>offset</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>resample</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n_lines</p></td>
+<td class="parameter_description"><p>the number of input lines</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>offset</p></td>
+<td class="parameter_description"><p>the first line</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-chroma-resample-new"></a><h3>gst_video_chroma_resample_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="returnvalue">GstVideoChromaResample</span></a> *
+gst_video_chroma_resample_new (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaMethod" title="enum GstVideoChromaMethod"><span class="type">GstVideoChromaMethod</span></a> method</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a> site</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaFlags" title="enum GstVideoChromaFlags"><span class="type">GstVideoChromaFlags</span></a> flags</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> format</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> h_factor</code></em>,
+                               <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> v_factor</code></em>);</pre>
+<p>Create a new resampler object for the given parameters. When <em class="parameter"><code>h_factor</code></em>
+ or
+<em class="parameter"><code>v_factor</code></em>
+ is &gt; 0, upsampling will be used, otherwise subsampling is
+performed.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.7.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>method</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaMethod" title="enum GstVideoChromaMethod"><span class="type">GstVideoChromaMethod</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>site</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaSite" title="enum GstVideoChromaSite"><span class="type">GstVideoChromaSite</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flags</p></td>
+<td class="parameter_description"><p><a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaFlags" title="enum GstVideoChromaFlags"><span class="type">GstVideoChromaFlags</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>h_factor</p></td>
+<td class="parameter_description"><p>horizontal resampling factor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>v_factor</p></td>
+<td class="parameter_description"><p>vertical resampling factor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.8.7.7.7"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#GstVideoChromaResample" title="GstVideoChromaResample"><span class="type">GstVideoChromaResample</span></a> that should be freed with
+<a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample-free" title="gst_video_chroma_resample_free ()"><code class="function">gst_video_chroma_resample_free()</code></a> after usage.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoChroma.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstVideoChromaSite"></a><h3>enum GstVideoChromaSite</h3>
+<p>Various Chroma sitings.</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.8.2.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-UNKNOWN:CAPS"></a>GST_VIDEO_CHROMA_SITE_UNKNOWN</p></td>
+<td class="enum_member_description">
+<p>unknown cositing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-NONE:CAPS"></a>GST_VIDEO_CHROMA_SITE_NONE</p></td>
+<td class="enum_member_description">
+<p>no cositing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-H-COSITED:CAPS"></a>GST_VIDEO_CHROMA_SITE_H_COSITED</p></td>
+<td class="enum_member_description">
+<p>chroma is horizontally cosited</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-V-COSITED:CAPS"></a>GST_VIDEO_CHROMA_SITE_V_COSITED</p></td>
+<td class="enum_member_description">
+<p>chroma is vertically cosited</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-ALT-LINE:CAPS"></a>GST_VIDEO_CHROMA_SITE_ALT_LINE</p></td>
+<td class="enum_member_description">
+<p>choma samples are sited on alternate lines</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-COSITED:CAPS"></a>GST_VIDEO_CHROMA_SITE_COSITED</p></td>
+<td class="enum_member_description">
+<p>chroma samples cosited with luma samples</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-JPEG:CAPS"></a>GST_VIDEO_CHROMA_SITE_JPEG</p></td>
+<td class="enum_member_description">
+<p>jpeg style cositing, also for mpeg1 and mjpeg</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-MPEG2:CAPS"></a>GST_VIDEO_CHROMA_SITE_MPEG2</p></td>
+<td class="enum_member_description">
+<p>mpeg2 style cositing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-SITE-DV:CAPS"></a>GST_VIDEO_CHROMA_SITE_DV</p></td>
+<td class="enum_member_description">
+<p>DV style cositing</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoChromaFlags"></a><h3>enum GstVideoChromaFlags</h3>
+<p>Extra flags that influence the result from <a class="link" href="gst-plugins-base-libs-GstVideoChroma.html#gst-video-chroma-resample-new" title="gst_video_chroma_resample_new ()"><code class="function">gst_video_chroma_resample_new()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.8.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-FLAG-NONE:CAPS"></a>GST_VIDEO_CHROMA_FLAG_NONE</p></td>
+<td class="enum_member_description">
+<p>no flags</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-FLAG-INTERLACED:CAPS"></a>GST_VIDEO_CHROMA_FLAG_INTERLACED</p></td>
+<td class="enum_member_description">
+<p>the input is interlaced</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoChromaMethod"></a><h3>enum GstVideoChromaMethod</h3>
+<p>Different subsampling and upsampling methods</p>
+<div class="refsect3">
+<a name="id-1.2.15.8.8.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-METHOD-NEAREST:CAPS"></a>GST_VIDEO_CHROMA_METHOD_NEAREST</p></td>
+<td class="enum_member_description">
+<p>Duplicates the chroma samples when
+   upsampling and drops when subsampling</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-VIDEO-CHROMA-METHOD-LINEAR:CAPS"></a>GST_VIDEO_CHROMA_METHOD_LINEAR</p></td>
+<td class="enum_member_description">
+<p>Uses linear interpolation to reconstruct
+   missing chroma and averaging to subsample</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstVideoChromaResample"></a><h3>GstVideoChromaResample</h3>
+<pre class="programlisting">typedef struct _GstVideoChromaResample GstVideoChromaResample;</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

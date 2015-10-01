@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>compositor: GStreamer Bad Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-coloreffects.html" title="coloreffects">
+<link rel="next" href="gst-plugins-bad-plugins-cvdilate.html" title="cvdilate">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-compositor.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-compositor.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-compositor.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-coloreffects.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-cvdilate.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-bad-plugins-compositor"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-compositor.top_of_page"></a>compositor</span></h2>
+<p>compositor</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type"><span class="type">GstCompositorBackground</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-compositor.html#GstCompositor--background" title="The “background” property">background</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstCompositor"></a><a name="GstCompositorPad"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">├──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+            <span class="lineart">│</span>   <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-GstAggregator.html#GstAggregator">GstAggregator</a>
+            <span class="lineart">│</span>       <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-GstVideoAggregator.html#GstVideoAggregator">GstVideoAggregator</a>
+            <span class="lineart">│</span>           <span class="lineart">╰──</span> GstCompositor
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html">GstPad</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-GstAggregatorPad.html#GstAggregatorPad">GstAggregatorPad</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-bad-libs/html/gst-plugins-bad-libs-GstVideoAggregatorPad.html#GstVideoAggregatorPad">GstVideoAggregatorPad</a>
+                        <span class="lineart">╰──</span> GstCompositorPad
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.description"></a><h2>Description</h2>
+<p>Compositor can accept AYUV, ARGB and BGRA video streams. For each of the requested
+sink pads it will compare the incoming geometry and framerate to define the
+output parameters. Indeed output video frames will have the geometry of the
+biggest incoming video stream and the framerate of the fastest incoming one.</p>
+<p>Compositor will do colorspace conversion.</p>
+<p>Individual parameters for each input stream can be configured on the
+<a class="link" href="gst-plugins-bad-plugins-compositor.html#GstCompositorPad"><span class="type">GstCompositorPad</span></a>:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+"xpos": The x-coordinate position of the top-left corner of the picture
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>)
+</li>
+<li class="listitem">
+"ypos": The y-coordinate position of the top-left corner of the picture
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>)
+</li>
+<li class="listitem">
+"width": The width of the picture; the input will be scaled if necessary
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>)
+</li>
+<li class="listitem">
+"height": The height of the picture; the input will be scaled if necessary
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>)
+</li>
+<li class="listitem">
+"alpha": The transparency of the picture; between 0.0 and 1.0. The blending
+is a simple copy when fully-transparent (0.0) and fully-opaque (1.0).
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>)
+</li>
+<li class="listitem">
+"zorder": The z-order position of the picture in the composition
+(<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>)
+</li>
+</ul></div>
+<div class="refsect2">
+<a name="id-1.2.15.7.6"></a><h3>Sample pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> \
+  videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>AYUV<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span>width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span>height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  videobox border<span class="gtkdoc opt">-</span>alpha<span class="gtkdoc opt">=</span><span class="number">0</span> top<span class="gtkdoc opt">=-</span><span class="number">70</span> bottom<span class="gtkdoc opt">=-</span><span class="number">70</span> right<span class="gtkdoc opt">=-</span><span class="number">220</span> <span class="gtkdoc opt">!</span> \
+  compositor name<span class="gtkdoc opt">=</span>comp sink_0<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.7</span> sink_1<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.5</span> <span class="gtkdoc opt">!</span> \
+  videoconvert <span class="gtkdoc opt">!</span> xvimagesink \
+  videotestsrc <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>AYUV<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span>width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span>height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> comp<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demonstrate compositor used together with videobox.
+This should show a 320x240 pixels video test source with some transparency
+showing the background checker pattern. Another video test source with just
+the snow pattern of 100x100 pixels is overlayed on top of the first one on
+the left vertically centered with a small transparency showing the first
+video test source behind and the checker pattern under it. Note that the
+framerate of the output video is 10 frames per second.
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  compositor name<span class="gtkdoc opt">=</span>comp <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc <span class="gtkdoc opt">!</span>  \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> comp<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demostrate bgra comping. (This does not demonstrate alpha blending). 
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> videotestsrc pattern<span class="gtkdoc opt">=</span><span class="number">1</span> <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format <span class="gtkdoc opt">=</span>I420<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">10</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">100</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> \
+  compositor name<span class="gtkdoc opt">=</span>comp <span class="gtkdoc opt">!</span> videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc <span class="gtkdoc opt">!</span> \
+  video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>format<span class="gtkdoc opt">=</span>I420<span class="gtkdoc opt">,</span> framerate<span class="gtkdoc opt">=</span>\<span class="gtkdoc opt">(</span>fraction\<span class="gtkdoc opt">)</span><span class="number">5</span><span class="gtkdoc opt">/</span><span class="number">1</span><span class="gtkdoc opt">,</span> width<span class="gtkdoc opt">=</span><span class="number">320</span><span class="gtkdoc opt">,</span> height<span class="gtkdoc opt">=</span><span class="number">240</span> <span class="gtkdoc opt">!</span> comp<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to test I420
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> compositor name<span class="gtkdoc opt">=</span>comp sink_1<span class="gtkdoc opt">::</span>alpha<span class="gtkdoc opt">=</span><span class="number">0.5</span> sink_1<span class="gtkdoc opt">::</span>xpos<span class="gtkdoc opt">=</span><span class="number">50</span> sink_1<span class="gtkdoc opt">::</span>ypos<span class="gtkdoc opt">=</span><span class="number">50</span> <span class="gtkdoc opt">!</span> \
+  videoconvert <span class="gtkdoc opt">!</span> ximagesink \
+  videotestsrc pattern<span class="gtkdoc opt">=</span>snow timestamp<span class="gtkdoc opt">-</span>offset<span class="gtkdoc opt">=</span><span class="number">3000000000</span> <span class="gtkdoc opt">!</span> \
+  <span class="string">&quot;video/x-raw,format=AYUV,width=640,height=480,framerate=(fraction)30/1&quot;</span> <span class="gtkdoc opt">!</span> \
+  timeoverlay <span class="gtkdoc opt">!</span> queue2 <span class="gtkdoc opt">!</span> comp<span class="gtkdoc opt">.</span> \
+  videotestsrc pattern<span class="gtkdoc opt">=</span>smpte <span class="gtkdoc opt">!</span> \
+  <span class="string">&quot;video/x-raw,format=AYUV,width=800,height=600,framerate=(fraction)10/1&quot;</span> <span class="gtkdoc opt">!</span> \
+  timeoverlay <span class="gtkdoc opt">!</span> queue2 <span class="gtkdoc opt">!</span> comp<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A pipeline to demonstrate synchronized compositing (the second stream starts after 3 seconds)
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.15.7.7.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            compositor
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim@fluendo.com&gt;, Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Editor/Video/Compositor</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.15.7.7.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw, format=(string){ AYUV, BGRA, ARGB, RGBA, ABGR, Y444, Y42B, YUY2, UYVY, YVYU, I420, YV12, NV12, NV21, Y41B, RGB, BGR, xRGB, xBGR, RGBx, BGRx }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw, format=(string){ AYUV, BGRA, ARGB, RGBA, ABGR, Y444, Y42B, YUY2, UYVY, YVYU, I420, YV12, NV12, NV21, Y41B, RGB, BGR, xRGB, xBGR, RGBx, BGRx }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.other_details"></a><h2>Types and Values</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-compositor.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstCompositor--background"></a><h3>The <code class="literal">“background”</code> property</h3>
+<pre class="programlisting">  “background”               <span class="type">GstCompositorBackground</span></pre>
+<p>Background type.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Checker pattern</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

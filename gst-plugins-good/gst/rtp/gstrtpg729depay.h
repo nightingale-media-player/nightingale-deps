@@ -12,15 +12,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_G729_DEPAY_H__
 #define __GST_RTP_G729_DEPAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -44,15 +44,15 @@ typedef struct _GstRtpG729DepayClass GstRtpG729DepayClass;
 
 struct _GstRtpG729Depay
 {
-  GstBaseRTPDepayload depayload;
-
-  gint     channels;
+  GstRTPBaseDepayload depayload;
 };
 
 struct _GstRtpG729DepayClass
 {
-  GstBaseRTPDepayloadClass parent_class;
+  GstRTPBaseDepayloadClass parent_class;
 };
+
+GType gst_rtp_g729_depay_get_type (void);
 
 gboolean gst_rtp_g729_depay_plugin_init (GstPlugin * plugin);
 

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -33,7 +33,7 @@
  * If a subsystem is disabled, most of this changes are done in an API
  * compatible way, so you don't need to adapt your code in most cases. It is
  * never done in an ABI compatible way though. So if you want to disable a
- * suybsystem, you have to rebuild all programs depending on GStreamer, too.
+ * subsystem, you have to rebuild all programs depending on GStreamer, too.
  *
  * If a subsystem is disabled in GStreamer, a value is defined in
  * &lt;gst/gst.h&gt;. You can check this if you do subsystem-specific stuff.
@@ -54,14 +54,11 @@
 
 #if 0
 #define GST_DISABLE_GST_DEBUG 1
-#define GST_DISABLE_LOADSAVE 1
 #define GST_DISABLE_PARSE 1
 #define GST_DISABLE_TRACE 1
 #define GST_DISABLE_ALLOC_TRACE 1
 #define GST_DISABLE_REGISTRY 1
 #define GST_DISABLE_PLUGIN 1
-#define GST_DISABLE_XML 1
-#define GST_DISABLE_LOADSAVE_REGISTRY 1
 #define GST_HAVE_GLIB_2_8 1
 #endif
 
@@ -82,24 +79,16 @@
 @GST_DISABLE_GST_DEBUG_DEFINE@
 
 /**
- * GST_DISABLE_LOADSAVE:
- *
- * Configures the inclusion of the plugin graph xml-serialisation
- * (was used in 0.8 by gst-editor)
- */
-@GST_DISABLE_LOADSAVE_DEFINE@
-
-/**
  * GST_DISABLE_PARSE:
  *
- * Configures the inclusion of the gst-lauch parser
+ * Configures the inclusion of the gst-launch parser
  */
 @GST_DISABLE_PARSE_DEFINE@
 
 /**
  * GST_DISABLE_TRACE:
  *
- * Configures the inclusion of a resource tracing facillity
+ * Configures the inclusion of a resource tracing facility
  * (seems to be unused)
  */
 @GST_DISABLE_TRACE_DEFINE@
@@ -121,58 +110,12 @@
  */
 @GST_DISABLE_REGISTRY_DEFINE@
 
-/**
- * GST_DISABLE_XML:
- *
- * Configures the use libxml2. This setting is derived from the settings of
- * %GST_DISABLE_LOADSAVE and %GST_DISABLE_REGISTRY (in the xml registry case).
- */
-@GST_DISABLE_XML_DEFINE@
-
 /* FIXME: test and document these! */
 /* Configures the use of external plugins */
 @GST_DISABLE_PLUGIN_DEFINE@
 
-/* printf extension format */
-/**
- * GST_PTR_FORMAT:
- *
- * printf format type used to debug GStreamer types.
- * This can only be used on types whose size is >= sizeof(gpointer).
- */
-@GST_PRINTF_EXTENSION_POINTER_FORMAT_DEFINE@
-/**
- * GST_SEGMENT_FORMAT:
- *
- * printf format type used to debug GStreamer segments.
- * This can only be used on pointers to GstSegment structures.
- *
- * Since: 0.10.10
- */
-@GST_PRINTF_EXTENSION_SEGMENT_FORMAT_DEFINE@
-
-/* whether or not GST_PTR_FORMAT or GST_SEGMENT_FORMAT are using
- * the printf extension mechanism. This is for internal use in our
- * header files so we know whether we can use G_GNUC_PRINTF or not */
-@GST_USING_PRINTF_EXTENSION_DEFINE@
-
 /* whether or not the CPU supports unaligned access */
 @GST_HAVE_UNALIGNED_ACCESS_DEFINE@
-
-/* FIXME: 0.11 (remove)
- * whether or not we are using glib 2.8 api, e.g. atomic gobject
- * refcounting */
-@GST_HAVE_GLIB_2_8_DEFINE@
-
-/***** Deal with XML stuff, we have to handle both loadsave and registry *****/
-/* FIXME: move include to where we need it */
-/*#if (! (defined(GST_DISABLE_LOADSAVE) && defined(GST_DISABLE_REGISTRY)) )*/
-#ifndef GST_DISABLE_XML
-# include <libxml/parser.h>
-#else
-  /* FIXME: 0.11 (replace by GST_DISABLE_XML) */
-# define GST_DISABLE_LOADSAVE_REGISTRY
-#endif
 
 /**
  * GST_EXPORT:
@@ -199,7 +142,11 @@
 #endif
 #else /* not _MSC_VER */
 #define GST_PLUGIN_EXPORT
+#if (defined(__SUNPRO_C) && (__SUNPRO_C >= 0x590))
+#define GST_EXPORT extern __attribute__ ((visibility ("default")))
+#else
 #define GST_EXPORT extern
+#endif
 #endif
 
 #endif /* __GST_CONFIG_H__ */

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -79,16 +79,21 @@ gstspu_blend_comp_buffers (SpuState * state, guint8 * planes[3])
   uv_end = (comp_last_x + 1) / 2;
   left = state->comp_left / 2;
 
+  out_U += left * GST_VIDEO_INFO_COMP_PSTRIDE (&state->info, 1);
+  out_V += left * GST_VIDEO_INFO_COMP_PSTRIDE (&state->info, 2);
   for (x = left; x < uv_end; x++) {
     guint32 tmp;
     /* Each entry in the compositing buffer is 4 summed pixels, so the
      * inverse alpha is (4 * 0xff) - in_A[x] */
     guint16 inv_A = (4 * 0xff) - in_A[x];
 
-    tmp = in_U[x] + inv_A * out_U[x];
-    out_U[x] = (guint8) (tmp / (4 * 0xff));
+    tmp = in_U[x] + inv_A * *out_U;
+    *out_U = (guint8) (tmp / (4 * 0xff));
 
-    tmp = in_V[x] + inv_A * out_V[x];
-    out_V[x] = (guint8) (tmp / (4 * 0xff));
+    tmp = in_V[x] + inv_A * *out_V;
+    *out_V = (guint8) (tmp / (4 * 0xff));
+
+    out_U += GST_VIDEO_INFO_COMP_PSTRIDE (&state->info, 1);
+    out_V += GST_VIDEO_INFO_COMP_PSTRIDE (&state->info, 2);
   }
 }

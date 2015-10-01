@@ -1,50 +1,196 @@
 # Japanese traslation for gst-plugins-bad
 # This file is put in the public domain.
 #
-# Makoto Kato <makoto.kt@gmail.com>, 2009.
+# Makoto Kato <makoto.kt@gmail.com>, 2009-2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad 0.10.11.2\n"
+"Project-Id-Version: gst-plugins-bad 0.10.21.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
-"PO-Revision-Date: 2009-06-01 20:27+0900\n"
+"POT-Creation-Date: 2015-09-25 22:59+0200\n"
+"PO-Revision-Date: 2011-04-26 19:38+0900\n"
 "Last-Translator: Makoto Kato <makoto.kt@gmail.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgid "format wasn't negotiated before get function"
+msgstr ""
+
+msgid "default GStreamer sound events audiosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play audio using any number of output elements. Some possible "
+"choices are osssink, pulsesink and alsasink. The audiosink can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer sound events audiosink"
+msgstr ""
+
+msgid "Describes the selected audiosink element."
+msgstr ""
+
+msgid "default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid ""
+"description for default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid "default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "description for default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "default GStreamer videosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play video using any number of output elements. Some possible "
+"choices are xvimagesink, ximagesink, sdlvideosink and aasink. The videosink "
+"can be a partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosink"
+msgstr ""
+
+msgid "Describes the selected videosink element."
+msgstr ""
+
+msgid "default GStreamer audiosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record audio using any number of input elements. Some possible "
+"choices are osssrc, pulsesrc and alsasrc. The audio source can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer audiosrc"
+msgstr ""
+
+msgid "Describes the selected audiosrc element."
+msgstr ""
+
+msgid "default GStreamer videosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record video from any number of input elements. Some possible "
+"choices are v4lsrc, v4l2src and videotestsrc. The video source can be a "
+"partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosrc"
+msgstr ""
+
+msgid "Describes the selected videosrc element."
+msgstr ""
+
+msgid "default GStreamer visualization"
+msgstr ""
+
+msgid ""
+"GStreamer can put visualization plugins in a pipeline to transform audio "
+"streams in video frames. Some possible choices are goom, goom2k1 and "
+"synaesthesia. The visualization plugin can be a partial pipeline instead of "
+"just one element."
+msgstr ""
+
+msgid "description for default GStreamer visualization"
+msgstr ""
+
+msgid "Describes the selected visualization element."
+msgstr ""
+
+msgid "OpenCV failed to load template image"
+msgstr ""
+
 msgid "Could not read title information for DVD."
-msgstr "DVD のタイトル情報を読み込むことができませんでした。"
+msgstr "DVDのタイトル情報を読み込むことができませんでした。"
 
 #, c-format
 msgid "Failed to open DVD device '%s'."
-msgstr "DVD デバイス '%s' のオープンに失敗しました"
+msgstr "DVDデバイス '%s' のオープンに失敗しました。"
 
 msgid "Failed to set PGC based seeking."
+msgstr "PGCを利用したシークに失敗しました。"
+
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+"DVDを読み込むことができませんでした。DVDが暗号化されているかDVDを解読するライ"
+"ブラリがインストールされていないからかもしれません。"
+
+msgid "Could not read DVD."
+msgstr "DVDを読み込むことができませんでした。"
+
+msgid "This file contains no playable streams."
 msgstr ""
 
-msgid "Internal clock error."
-msgstr "内部クロックエラー"
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "読み込み用にファイル \"%s\" を開くことができません。"
+
+msgid "Could not establish connection to sndio"
+msgstr ""
+
+msgid "Failed to query sndio capabilities"
+msgstr ""
+
+#, fuzzy
+msgid "Could not configure sndio"
+msgstr "読み込み用にファイル \"%s\" を開くことができません。"
+
+#, fuzzy
+msgid "Could not start sndio"
+msgstr "DVDを読み込むことができませんでした。"
 
 msgid "Internal data flow error."
-msgstr "内部データフローエラー"
+msgstr "内部データフローエラー。"
+
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr ""
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+
+msgid "Digitalzoom element couldn't be created"
+msgstr ""
+
+msgid "Subpicture format was not configured before data flow"
+msgstr ""
+
+msgid "Failed to get fragment URL."
+msgstr ""
+
+msgid "Internal data stream error."
+msgstr "内部データストリームエラー。"
+
+msgid "Couldn't download fragments"
+msgstr ""
 
 msgid "No file name specified for writing."
-msgstr "書き込み用にファイル名が指定されていません"
+msgstr "書き込み用にファイル名が指定されていません。"
+
+#, c-format
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "書き込み用にファイル \"%s\" を開くことができませんでした。"
-
-msgid "Internal data stream error."
-msgstr "内部データフローエラー"
-
-#, c-format
-msgid "Could not write to file \"%s\"."
-msgstr "ファイル \"%s\" へ書き込むことができませんでした。"
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -52,402 +198,95 @@ msgstr "デバイス \"%s\" は存在しません。"
 
 #, c-format
 msgid "Could not open frontend device \"%s\"."
-msgstr "フロントデバイス \"%s\" を開くことができません。"
+msgstr "フロントエンドデバイス \"%s\" を開くことができません。"
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "フロントエンドデバイス \"%s\" から設定を取得できませんでした。"
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "フロントエンドデバイス \"%s\" から設定を取得できませんでした。"
 
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "読み込み用にファイル \"%s\" を開くことができません。"
 
-msgid "Could not open audio device for mixer control handling."
-msgstr "ミキサーがコントロールするオーディオデバイスを開くことができません。"
-
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr ""
-
-msgid "Volume"
-msgstr ""
-
-msgid "Master"
-msgstr ""
-
-msgid "Front"
-msgstr "フロント"
-
-msgid "Rear"
-msgstr "リア"
-
-msgid "Headphones"
-msgstr "ヘッドフォン"
-
 #, fuzzy
-msgid "Center"
-msgstr "センター / LFE"
+msgid "Couldn't find DVB channel configuration file"
+msgstr "仮想ミックスチャンネル設定"
 
-msgid "LFE"
-msgstr ""
+#, fuzzy, c-format
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr "仮想ミックスチャンネル設定"
 
-#, fuzzy
-msgid "Surround"
-msgstr "サラウンドサウンド"
-
-msgid "Side"
-msgstr "サイド"
-
-msgid "Built-in Speaker"
-msgstr ""
-
-msgid "AUX 1 Out"
-msgstr ""
-
-msgid "AUX 2 Out"
-msgstr ""
-
-msgid "AUX Out"
-msgstr ""
-
-msgid "Bass"
-msgstr ""
-
-msgid "Treble"
-msgstr ""
-
-msgid "3D Depth"
-msgstr ""
-
-msgid "3D Center"
-msgstr ""
-
-msgid "3D Enhance"
-msgstr ""
-
-#, fuzzy
-msgid "Telephone"
-msgstr "ヘッドフォン"
-
-msgid "Microphone"
-msgstr "マイクロフォン"
-
-msgid "Line Out"
-msgstr ""
-
-#, fuzzy
-msgid "Line In"
-msgstr "ライン入力"
-
-msgid "Internal CD"
-msgstr ""
-
-msgid "Video In"
-msgstr ""
-
-msgid "AUX 1 In"
-msgstr ""
-
-msgid "AUX 2 In"
-msgstr ""
-
-msgid "AUX In"
-msgstr ""
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Record Gain"
-msgstr ""
-
-msgid "Output Gain"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone Boost"
-msgstr "マイクロフォン"
-
-msgid "Loopback"
-msgstr ""
-
-msgid "Diagnostic"
-msgstr ""
-
-msgid "Bass Boost"
-msgstr ""
-
-msgid "Playback Ports"
-msgstr ""
-
-msgid "Input"
-msgstr "入力"
-
-msgid "Record Source"
-msgstr ""
-
-msgid "Monitor Source"
-msgstr ""
-
-msgid "Keyboard Beep"
-msgstr ""
-
-msgid "Monitor"
-msgstr ""
-
-msgid "Simulate Stereo"
-msgstr ""
-
-msgid "Stereo"
-msgstr "ステレオ"
-
-#, fuzzy
-msgid "Surround Sound"
-msgstr "サラウンドサウンド"
-
-#, fuzzy
-msgid "Microphone Gain"
-msgstr "マイクロフォン"
-
-msgid "Speaker Source"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone Source"
-msgstr "マイクロフォン"
-
-msgid "Jack"
-msgstr ""
-
-msgid "Center / LFE"
-msgstr "センター / LFE"
-
-#, fuzzy
-msgid "Stereo Mix"
-msgstr "ステレオ"
-
-msgid "Mono Mix"
-msgstr ""
-
-#, fuzzy
-msgid "Input Mix"
-msgstr "入力ミックス"
-
-msgid "SPDIF In"
-msgstr ""
-
-msgid "SPDIF Out"
-msgstr ""
-
-#, fuzzy
-msgid "Microphone 1"
-msgstr "マイクロフォン"
-
-#, fuzzy
-msgid "Microphone 2"
-msgstr "マイクロフォン"
-
-msgid "Digital Out"
-msgstr ""
-
-msgid "Digital In"
-msgstr ""
-
-msgid "HDMI"
-msgstr ""
-
-msgid "Modem"
-msgstr ""
-
-msgid "Handset"
-msgstr ""
-
-msgid "Other"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "On"
-msgstr "On"
-
-msgid "Off"
-msgstr "Off"
-
-msgid "Mute"
-msgstr ""
-
-msgid "Fast"
-msgstr ""
-
-msgid "Very Low"
-msgstr ""
-
-msgid "Low"
-msgstr "低音"
-
-msgid "Medium"
-msgstr "中音"
-
-msgid "High"
-msgstr "高音"
-
-#, fuzzy
-msgid "Very High"
-msgstr "高音"
-
-msgid "Production"
-msgstr "プロダクション"
-
-#, fuzzy
-msgid "Front Panel Microphone"
-msgstr "フロントパネルのマイクロフォン"
-
-#, fuzzy
-msgid "Front Panel Line In"
-msgstr "プロントパネルのライン入力"
-
-#, fuzzy
-msgid "Front Panel Headphones"
-msgstr "フロントパネルのヘッドフォン"
-
-#, fuzzy
-msgid "Front Panel Line Out"
-msgstr "プロントパネルのライン入力"
-
-#, fuzzy
-msgid "Green Connector"
-msgstr "緑色コネクタ"
-
-#, fuzzy
-msgid "Pink Connector"
-msgstr "ピンク色コネクタ"
-
-#, fuzzy
-msgid "Blue Connector"
-msgstr "青色コネクタ"
-
-#, fuzzy
-msgid "White Connector"
-msgstr "白色コネクタ"
-
-#, fuzzy
-msgid "Black Connector"
-msgstr "黒色コネクタ"
-
-#, fuzzy
-msgid "Gray Connector"
-msgstr "グレー色コネクタ"
-
-#, fuzzy
-msgid "Orange Connector"
-msgstr "オレンジ色コネクタ"
-
-#, fuzzy
-msgid "Red Connector"
-msgstr "赤色コネクタ"
-
-#, fuzzy
-msgid "Yellow Connector"
-msgstr "黄色コネクタ"
-
-#, fuzzy
-msgid "Green Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-#, fuzzy
-msgid "Pink Front Panel Connector"
-msgstr "ピンク色のフロントパネルコネクタ"
-
-#, fuzzy
-msgid "Blue Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-#, fuzzy
-msgid "White Front Panel Connector"
-msgstr "ピンク色のフロントパネルコネクタ"
-
-#, fuzzy
-msgid "Black Front Panel Connector"
-msgstr "ピンク色のフロントパネルコネクタ"
-
-#, fuzzy
-msgid "Gray Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-#, fuzzy
-msgid "Orange Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-#, fuzzy
-msgid "Red Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-#, fuzzy
-msgid "Yellow Front Panel Connector"
-msgstr "緑色のフロントパネルのコネクタ"
-
-msgid "Spread Output"
-msgstr ""
-
-msgid "Downmix"
-msgstr ""
-
-#, fuzzy
-msgid "Virtual Mixer Input"
-msgstr "仮想ミキサー入力"
-
-#, fuzzy
-msgid "Virtual Mixer Output"
-msgstr "仮想ミキサー出力"
-
-#, fuzzy
-msgid "Virtual Mixer Channels"
-msgstr "仮想ミキサー入力"
-
-#, c-format
-msgid "%s Function"
+msgid "DVB channel configuration file doesn't contain any channels"
 msgstr ""
 
 #, c-format
-msgid "%s %d"
+msgid "Couldn't find details for DVB channel %s"
 msgstr ""
 
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-"プレイバック用にオーディオデバイスを開くことができませんでした。デバイスは他"
-"のアプリケーションによって使われています。"
+#~ msgid "Could not write to file \"%s\"."
+#~ msgstr "ファイル \"%s\" へ書き込むことができませんでした。"
 
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr ""
-"プレイバック用にオーディオデバイスを開くことができませんでした。デバイスを開"
-"くための権限を持っていません。"
+#~ msgid "Internal clock error."
+#~ msgstr "内部クロックエラー"
 
-msgid "Could not open audio device for playback."
-msgstr "プレイバック用にオーディオデバイスを開くことができませんでした。"
+#~ msgid "Could not open audio device for mixer control handling."
+#~ msgstr ""
+#~ "ミキサーがコントロールするオーディオデバイスを開くことができません。"
 
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-"プレイバック用にオーディオデバイスを開くことができませんでした。この Open "
-"Sound System のバージョンはこのエレメントによってサポートされません。"
+#~ msgid "Low"
+#~ msgstr "低音"
 
-msgid "Playback is not supported by this audio device."
-msgstr "プレイバックはこのオーディオデバイスによってサポートされません。"
+#~ msgid "Medium"
+#~ msgstr "中音"
 
-msgid "Audio playback error."
-msgstr "オーディオプレイバックエラー"
+#~ msgid "High"
+#~ msgstr "高音"
 
-msgid "Recording is not supported by this audio device."
-msgstr "録音はこのオーディオデバイスによってサポートされません。"
+#~ msgid "Production"
+#~ msgstr "プロダクション"
 
-msgid "Error recording from audio device."
-msgstr "オーディオデバイスからの録音時にエラーが発生しました。"
+#~ msgid "Off"
+#~ msgstr "Off"
+
+#~ msgid "On"
+#~ msgstr "On"
+
+#~ msgid "Stereo"
+#~ msgstr "ステレオ"
+
+#~ msgid "Surround sound"
+#~ msgstr "サラウンドサウンド"
+
+#~ msgid "Input mix"
+#~ msgstr "入力ミックス"
+
+#~ msgid "Front"
+#~ msgstr "フロント"
+
+#~ msgid "Rear"
+#~ msgstr "リア"
+
+#~ msgid "Side"
+#~ msgstr "サイド"
+
+#~ msgid "Center / LFE"
+#~ msgstr "センター / LFE"
+
+#~ msgid "Microphone"
+#~ msgstr "マイクロフォン"
+
+#~ msgid "Front panel microphone"
+#~ msgstr "フロントパネルのマイクロフォン"
+
+#~ msgid "Input"
+#~ msgstr "入力"
+
+#~ msgid "Line-in"
+#~ msgstr "ライン入力"
 
 #~ msgid "PCM 1"
 #~ msgstr "PCM 1"
@@ -461,11 +300,95 @@ msgstr "オーディオデバイスからの録音時にエラーが発生しま
 #~ msgid "PCM 4"
 #~ msgstr "PCM 4"
 
+#~ msgid "Green connector"
+#~ msgstr "緑色コネクタ"
+
+#~ msgid "Green front panel connector"
+#~ msgstr "緑色のフロントパネルのコネクタ"
+
+#~ msgid "Pink connector"
+#~ msgstr "ピンク色コネクタ"
+
+#~ msgid "Pink front panel connector"
+#~ msgstr "ピンク色のフロントパネルコネクタ"
+
+#~ msgid "Blue connector"
+#~ msgstr "青色コネクタ"
+
+#~ msgid "Orange connector"
+#~ msgstr "オレンジ色コネクタ"
+
+#~ msgid "Black connector"
+#~ msgstr "黒色コネクタ"
+
+#~ msgid "Gray connector"
+#~ msgstr "グレー色コネクタ"
+
+#~ msgid "White connector"
+#~ msgstr "白色コネクタ"
+
+#~ msgid "Red connector"
+#~ msgstr "赤色コネクタ"
+
+#~ msgid "Yellow connector"
+#~ msgstr "黄色コネクタ"
+
 #~ msgid "Green connector function"
 #~ msgstr "緑色コネクタ機能"
 
-#~ msgid "Virtual mixer channel configuration"
-#~ msgstr "仮想ミックスチャンネル設定"
+#~ msgid "Front panel line-in"
+#~ msgstr "プロントパネルのライン入力"
+
+#~ msgid "Headphones"
+#~ msgstr "ヘッドフォン"
+
+#~ msgid "Front panel headphones"
+#~ msgstr "フロントパネルのヘッドフォン"
+
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "Virtual mixer input"
+#~ msgstr "仮想ミキサー入力"
+
+#~ msgid "Virtual mixer output"
+#~ msgstr "仮想ミキサー出力"
+
+#~ msgid ""
+#~ "Could not open audio device for playback. Device is being used by another "
+#~ "application."
+#~ msgstr ""
+#~ "プレイバック用にオーディオデバイスを開くことができませんでした。デバイスは"
+#~ "他のアプリケーションによって使われています。"
+
+#~ msgid ""
+#~ "Could not open audio device for playback. You don't have permission to "
+#~ "open the device."
+#~ msgstr ""
+#~ "プレイバック用にオーディオデバイスを開くことができませんでした。デバイスを"
+#~ "開くための権限を持っていません。"
+
+#~ msgid "Could not open audio device for playback."
+#~ msgstr "プレイバック用にオーディオデバイスを開くことができませんでした。"
+
+#~ msgid ""
+#~ "Could not open audio device for playback. This version of the Open Sound "
+#~ "System is not supported by this element."
+#~ msgstr ""
+#~ "プレイバック用にオーディオデバイスを開くことができませんでした。この Open "
+#~ "Sound System のバージョンはこのエレメントによってサポートされません。"
+
+#~ msgid "Playback is not supported by this audio device."
+#~ msgstr "プレイバックはこのオーディオデバイスによってサポートされません。"
+
+#~ msgid "Audio playback error."
+#~ msgstr "オーディオプレイバックエラー"
+
+#~ msgid "Recording is not supported by this audio device."
+#~ msgstr "録音はこのオーディオデバイスによってサポートされません。"
+
+#~ msgid "Error recording from audio device."
+#~ msgstr "オーディオデバイスからの録音時にエラーが発生しました。"
 
 #~ msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
 #~ msgstr ""

@@ -2,125 +2,136 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>ximagesrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="GStreamer Good Plugins 0.10 Plugins Reference Manual">
+<title>ximagesrc: GStreamer Good Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="prev" href="gst-plugins-good-plugins-wavparse.html" title="wavparse">
+<link rel="prev" href="gst-plugins-good-plugins-webmmux.html" title="webmmux">
 <link rel="next" href="gst-plugins-good-plugins-y4menc.html" title="y4menc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-good Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-good Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-good Base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-wavparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-y4menc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-ximagesrc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-ximagesrc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-ximagesrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-good-plugins-ximagesrc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" title="ximagesrc">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ximagesrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ximagesrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-ximagesrc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-webmmux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-y4menc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-good-plugins-ximagesrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-ximagesrc.top_of_page"></a>ximagesrc</span></h2>
-<p>ximagesrc — Creates a screenshot video stream</p>
+<p>ximagesrc</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
-<a name="gst-plugins-good-plugins-ximagesrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstXImageSrc"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc-struct" title="GstXImageSrc">GstXImageSrc</a>;
-</pre>
-</div>
-<div class="refsect1" title="Object Hierarchy">
-<a name="gst-plugins-good-plugins-ximagesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-libs-0.10/GstBaseSrc.html"
->GstBaseSrc</a>
-                     +----<a
-href="../gstreamer-libs-0.10/GstPushSrc.html"
->GstPushSrc</a>
-                           +----GstXImageSrc
-</pre>
-</div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-ximagesrc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--display-name" title='The "display-name" property'>display-name</a>"             <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--screen-num" title='The "screen-num" property'>screen-num</a>"               <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--show-pointer" title='The "show-pointer" property'>show-pointer</a>"             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--endx" title='The "endx" property'>endx</a>"                     <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--endy" title='The "endy" property'>endy</a>"                     <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--startx" title='The "startx" property'>startx</a>"                   <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--starty" title='The "starty" property'>starty</a>"                   <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--use-damage" title='The "use-damage" property'>use-damage</a>"               <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--display-name" title="The “display-name” property">display-name</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--show-pointer" title="The “show-pointer” property">show-pointer</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--endx" title="The “endx” property">endx</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--endy" title="The “endy” property">endy</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--startx" title="The “startx” property">startx</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--starty" title="The “starty” property">starty</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--use-damage" title="The “use-damage” property">use-damage</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--remote" title="The “remote” property">remote</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--xid" title="The “xid” property">xid</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc--xname" title="The “xname” property">xname</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstXImageSrc"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-ximagesrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-ximagesrc.html#GstXImageSrc-struct" title="struct GstXImageSrc">GstXImageSrc</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ximagesrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> GstXImageSrc
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-ximagesrc.description"></a><h2>Description</h2>
-<p>
-This element captures your X Display and creates raw RGB video.  It uses
-the XDamage extension if available to only capture areas of the screen that
-have changed since the last frame.  It uses the XFixes extension if
-available to also capture your mouse pointer.  By default it will fixate to
-25 frames per second.
-</p>
-<p>
-</p>
-<div class="refsect2" title="Example pipelines">
-<a name="id614199"></a><h3>Example pipelines</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch ximagesrc ! video/x-raw-rgb,framerate=5/1 ! ffmpegcolorspace ! theoraenc ! oggmux ! filesink location=desktop.ogg
-</pre></div> Encodes your X display to an Ogg theora video at 5 frames per second.
-</div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" title="Element Information">
-<a name="id618015"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.189.7.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -140,10 +151,13 @@ gst-launch ximagesrc ! video/x-raw-rgb,framerate=5/1 ! ffmpegcolorspace ! theora
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="Element Pads">
-<a name="id599556"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.189.7.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -159,130 +173,112 @@ gst-launch ximagesrc ! video/x-raw-rgb,framerate=5/1 ! ffmpegcolorspace ! theora
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>video/x-raw-rgb, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], pixel-aspect-ratio=(fraction)[ 0/1, 2147483647/1 ]</td>
+<td>video/x-raw, framerate=(fraction)[ 0/1, 2147483647/1 ], width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], pixel-aspect-ratio=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" title="Details">
-<a name="gst-plugins-good-plugins-ximagesrc.details"></a><h2>Details</h2>
-<div class="refsect2" title="GstXImageSrc">
-<a name="GstXImageSrc-struct"></a><h3>GstXImageSrc</h3>
-<pre class="programlisting">typedef struct _GstXImageSrc GstXImageSrc;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ximagesrc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-ximagesrc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstXImageSrc-struct"></a><h3>struct GstXImageSrc</h3>
+<pre class="programlisting">struct GstXImageSrc;</pre>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="gst-plugins-good-plugins-ximagesrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "display-name" property'>
-<a name="GstXImageSrc--display-name"></a><h3>The <code class="literal">"display-name"</code> property</h3>
-<pre class="programlisting">  "display-name"             <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read / Write</pre>
+<div class="refsect2">
+<a name="GstXImageSrc--display-name"></a><h3>The <code class="literal">“display-name”</code> property</h3>
+<pre class="programlisting">  “display-name”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>X Display Name.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "screen-num" property'>
-<a name="GstXImageSrc--screen-num"></a><h3>The <code class="literal">"screen-num"</code> property</h3>
-<pre class="programlisting">  "screen-num"               <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>X Screen Number.</p>
-<p>Allowed values: &lt;= G_MAXINT</p>
-<p>Default value: 0</p>
-</div>
-<hr>
-<div class="refsect2" title='The "show-pointer" property'>
-<a name="GstXImageSrc--show-pointer"></a><h3>The <code class="literal">"show-pointer"</code> property</h3>
-<pre class="programlisting">  "show-pointer"             <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstXImageSrc--show-pointer"></a><h3>The <code class="literal">“show-pointer”</code> property</h3>
+<pre class="programlisting">  “show-pointer”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Show mouse pointer (if XFixes extension enabled).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" title='The "endx" property'>
-<a name="GstXImageSrc--endx"></a><h3>The <code class="literal">"endx"</code> property</h3>
-<pre class="programlisting">  "endx"                     <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>
-X coordinate of bottom right corner of area to be recorded
-(0 for bottom right of screen)</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstXImageSrc--endx"></a><h3>The <code class="literal">“endx”</code> property</h3>
+<pre class="programlisting">  “endx”                     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>X coordinate of bottom right corner of area to be recorded (0 for bottom right of screen).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= G_MAXINT</p>
 <p>Default value: 0</p>
-<p>Since 0.10.4</p>
 </div>
 <hr>
-<div class="refsect2" title='The "endy" property'>
-<a name="GstXImageSrc--endy"></a><h3>The <code class="literal">"endy"</code> property</h3>
-<pre class="programlisting">  "endy"                     <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>
-Y coordinate of bottom right corner of area to be recorded
-(0 for bottom right of screen)</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstXImageSrc--endy"></a><h3>The <code class="literal">“endy”</code> property</h3>
+<pre class="programlisting">  “endy”                     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Y coordinate of bottom right corner of area to be recorded (0 for bottom right of screen).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= G_MAXINT</p>
 <p>Default value: 0</p>
-<p>Since 0.10.4</p>
 </div>
 <hr>
-<div class="refsect2" title='The "startx" property'>
-<a name="GstXImageSrc--startx"></a><h3>The <code class="literal">"startx"</code> property</h3>
-<pre class="programlisting">  "startx"                   <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>
-X coordinate of top left corner of area to be recorded
-(0 for top left of screen)</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstXImageSrc--startx"></a><h3>The <code class="literal">“startx”</code> property</h3>
+<pre class="programlisting">  “startx”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>X coordinate of top left corner of area to be recorded (0 for top left of screen).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= G_MAXINT</p>
 <p>Default value: 0</p>
-<p>Since 0.10.4</p>
 </div>
 <hr>
-<div class="refsect2" title='The "starty" property'>
-<a name="GstXImageSrc--starty"></a><h3>The <code class="literal">"starty"</code> property</h3>
-<pre class="programlisting">  "starty"                   <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>
-Y coordinate of top left corner of area to be recorded
-(0 for top left of screen)</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstXImageSrc--starty"></a><h3>The <code class="literal">“starty”</code> property</h3>
+<pre class="programlisting">  “starty”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>Y coordinate of top left corner of area to be recorded (0 for top left of screen).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= G_MAXINT</p>
 <p>Default value: 0</p>
-<p>Since 0.10.4</p>
 </div>
 <hr>
-<div class="refsect2" title='The "use-damage" property'>
-<a name="GstXImageSrc--use-damage"></a><h3>The <code class="literal">"use-damage"</code> property</h3>
-<pre class="programlisting">  "use-damage"               <a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
-<p>
-Use XDamage (if the XDamage extension is enabled)</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstXImageSrc--use-damage"></a><h3>The <code class="literal">“use-damage”</code> property</h3>
+<pre class="programlisting">  “use-damage”               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Use XDamage (if XDamage extension enabled).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
-<p>Since 0.10.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstXImageSrc--remote"></a><h3>The <code class="literal">“remote”</code> property</h3>
+<pre class="programlisting">  “remote”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Whether the display is remote.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstXImageSrc--xid"></a><h3>The <code class="literal">“xid”</code> property</h3>
+<pre class="programlisting">  “xid”                      <span class="type">guint64</span></pre>
+<p>Window XID to capture from.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstXImageSrc--xname"></a><h3>The <code class="literal">“xname”</code> property</h3>
+<pre class="programlisting">  “xname”                    <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Window name to capture from.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

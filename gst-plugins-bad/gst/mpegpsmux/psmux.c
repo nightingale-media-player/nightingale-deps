@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -67,7 +67,7 @@ static gboolean psmux_write_program_stream_map (PsMux * mux);
  * Returns: A new #PsMux object.
  */
 PsMux *
-psmux_new ()
+psmux_new (void)
 {
   PsMux *mux;
 
@@ -140,6 +140,12 @@ psmux_free (PsMux * mux)
     psmux_stream_free (stream);
   }
   g_list_free (mux->streams);
+
+  if (mux->sys_header != NULL)
+    gst_buffer_unref (mux->sys_header);
+
+  if (mux->psm != NULL)
+    gst_buffer_unref (mux->psm);
 
   g_slice_free (PsMux, mux);
 }
@@ -282,7 +288,7 @@ psmux_write_stream_packet (PsMux * mux, PsMuxStream * stream)
 
   res = psmux_packet_out (mux);
   if (!res) {
-    PS_DEBUG ("packet write false");
+    GST_DEBUG_OBJECT (mux, "packet write false");
     return FALSE;
   }
 
@@ -332,23 +338,28 @@ psmux_write_pack_header (PsMux * mux)
   return psmux_packet_out (mux);
 }
 
-static gboolean
-psmux_write_system_header (PsMux * mux)
+static void
+psmux_ensure_system_header (PsMux * mux)
 {
   bits_buffer_t bw;
   guint len = 12 + (mux->nb_streams +
       (mux->nb_private_streams > 1 ? mux->nb_private_streams - 1 : 0)) * 3;
   GList *cur;
   gboolean private_hit = FALSE;
+  guint8 *data;
 
-  /* system_header_start_code */
-  bits_initwrite (&bw, len, mux->packet_buf);
+  if (mux->sys_header != NULL)
+    return;
+
+  data = g_malloc (len);
+
+  bits_initwrite (&bw, len, data);
 
   /* system_header start code */
   bits_write (&bw, 24, PSMUX_START_CODE_PREFIX);
   bits_write (&bw, 8, PSMUX_SYSTEM_HEADER);
 
-  bits_write (&bw, 16, len);    /* header_length */
+  bits_write (&bw, 16, len - 6);        /* header_length (bytes after this field) */
   bits_write (&bw, 1, 1);       /* marker */
   bits_write (&bw, 22, mux->rate_bound);        /* rate_bound */
   bits_write (&bw, 1, 1);       /* marker */
@@ -362,8 +373,7 @@ psmux_write_system_header (PsMux * mux)
   bits_write (&bw, 1, 0);       /* packet_rate_restriction_flag */
   bits_write (&bw, 7, 0x7f);    /* reserved_bits */
 
-  for (cur = g_list_first (mux->streams), private_hit = FALSE; cur != NULL;
-      cur = g_list_next (cur)) {
+  for (cur = mux->streams, private_hit = FALSE; cur != NULL; cur = cur->next) {
     PsMuxStream *stream = (PsMuxStream *) cur->data;
 
     if (private_hit && stream->stream_id == PSMUX_EXTENDED_STREAM)
@@ -378,22 +388,42 @@ psmux_write_system_header (PsMux * mux)
       private_hit = TRUE;
   }
 
-  mux->packet_bytes_written = len;
-  return psmux_packet_out (mux);
+  GST_MEMDUMP ("System Header", data, len);
+
+  mux->sys_header = gst_buffer_new_wrapped (data, len);
 }
 
 static gboolean
-psmux_write_program_stream_map (PsMux * mux)
+psmux_write_system_header (PsMux * mux)
+{
+  GstMapInfo map;
+
+  psmux_ensure_system_header (mux);
+
+  gst_buffer_map (mux->sys_header, &map, GST_MAP_READ);
+  memcpy (mux->packet_buf, map.data, map.size);
+  mux->packet_bytes_written = map.size;
+  gst_buffer_unmap (mux->sys_header, &map);
+
+  return psmux_packet_out (mux);
+}
+
+static void
+psmux_ensure_program_stream_map (PsMux * mux)
 {
   gint psm_size = 16, es_map_size = 0;
   bits_buffer_t bw;
   GList *cur;
   guint16 len;
   guint8 *pos;
+  guint8 *data;
+
+  if (mux->psm != NULL)
+    return;
 
   /* pre-write the descriptor loop */
   pos = mux->es_info_buf;
-  for (cur = g_list_first (mux->streams); cur != NULL; cur = g_list_next (cur)) {
+  for (cur = mux->streams; cur != NULL; cur = cur->next) {
     PsMuxStream *stream = (PsMuxStream *) cur->data;
     len = 0;
 
@@ -412,7 +442,10 @@ psmux_write_program_stream_map (PsMux * mux)
   }
 
   psm_size += es_map_size;
-  bits_initwrite (&bw, psm_size, mux->packet_buf);
+
+  data = g_malloc (psm_size);
+
+  bits_initwrite (&bw, psm_size, data);
 
   /* psm start code */
   bits_write (&bw, 24, PSMUX_START_CODE_PREFIX);
@@ -429,15 +462,46 @@ psmux_write_program_stream_map (PsMux * mux)
   /* program_stream_info empty */
 
   bits_write (&bw, 16, es_map_size);    /* elementary_stream_map_length */
+
   memcpy (bw.p_data + bw.i_data, mux->es_info_buf, es_map_size);
 
   /* CRC32 */
   {
-    guint32 crc = calc_crc32 (mux->packet_buf, psm_size - 4);
-    guint8 *pos = mux->packet_buf + psm_size - 4;
+    guint32 crc = calc_crc32 (bw.p_data, psm_size - 4);
+    guint8 *pos = bw.p_data + psm_size - 4;
     psmux_put32 (&pos, crc);
   }
 
-  mux->packet_bytes_written = psm_size;
+  GST_MEMDUMP ("Program Stream Map", data, psm_size);
+
+  mux->psm = gst_buffer_new_wrapped (data, psm_size);
+}
+
+static gboolean
+psmux_write_program_stream_map (PsMux * mux)
+{
+  GstMapInfo map;
+
+  psmux_ensure_program_stream_map (mux);
+
+  gst_buffer_map (mux->psm, &map, GST_MAP_READ);
+  memcpy (mux->packet_buf, map.data, map.size);
+  mux->packet_bytes_written = map.size;
+  gst_buffer_unmap (mux->psm, &map);
+
   return psmux_packet_out (mux);
+}
+
+GList *
+psmux_get_stream_headers (PsMux * mux)
+{
+  GList *list;
+
+  psmux_ensure_system_header (mux);
+  psmux_ensure_program_stream_map (mux);
+
+  list = g_list_append (NULL, gst_buffer_ref (mux->sys_header));
+  list = g_list_append (list, gst_buffer_ref (mux->psm));
+
+  return list;
 }

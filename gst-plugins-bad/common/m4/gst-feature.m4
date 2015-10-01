@@ -76,6 +76,12 @@ if test "x$NOUSE" = "xyes"; then
 fi
 NOUSE=
 
+dnl *** Check if it is ported or not
+if echo " [$GST_PLUGINS_NONPORTED] " | tr , ' ' | grep -i " [$1] " > /dev/null; then
+  USE_[$1]="no"
+  AC_MSG_WARN(*** $3 not ported)
+fi
+
 dnl *** If it's enabled
 
 if test x$USE_[$1] = xyes; then
@@ -120,35 +126,6 @@ else
 fi
 dnl *** Define the conditional as appropriate
 AM_CONDITIONAL(USE_[$1], test x$USE_[$1] = xyes)
-])
-
-dnl Use a -config program which accepts --cflags and --libs parameters
-dnl to set *_CFLAGS and *_LIBS and check existence of a feature.
-dnl Richard Boulton <richard-alsa@tartarus.org>
-dnl Last modification: 26/06/2001
-dnl AG_GST_CHECK_CONFIGPROG(FEATURE-NAME, CONFIG-PROG-FILENAME, MODULES)
-dnl
-dnl This check was written for GStreamer: it should be renamed and checked
-dnl for portability if you decide to use it elsewhere.
-dnl
-AC_DEFUN([AG_GST_CHECK_CONFIGPROG],
-[
-  AC_PATH_PROG([$1]_CONFIG, [$2], no)
-  if test x$[$1]_CONFIG = xno; then
-    [$1]_LIBS=
-    [$1]_CFLAGS=
-    HAVE_[$1]=no
-  else
-    if [$2] --plugin-libs [$3] &> /dev/null; then
-      [$1]_LIBS=`[$2] --plugin-libs [$3]`
-    else
-      [$1]_LIBS=`[$2] --libs [$3]`
-    fi
-    [$1]_CFLAGS=`[$2] --cflags [$3]`
-    HAVE_[$1]=yes
-  fi
-  AC_SUBST([$1]_LIBS)
-  AC_SUBST([$1]_CFLAGS)
 ])
 
 dnl Use AC_CHECK_LIB and AC_CHECK_HEADER to do both tests at once
@@ -232,7 +209,7 @@ AC_DEFUN([AG_GST_PARSE_SUBSYSTEM_DISABLE],
 
 dnl Parse gstconfig.h and defines add the symbols and substitions
 dnl
-dnl GST_CONFIGPATH=`$PKG_CONFIG --variable=includedir gstreamer-0.10`"/gst/gstconfig.h"
+dnl GST_CONFIGPATH=`$PKG_CONFIG --variable=includedir gstreamer-1.0`"/gst/gstconfig.h"
 dnl AG_GST_PARSE_SUBSYSTEM_DISABLES(GST_CONFIGPATH)
 dnl
 AC_DEFUN([AG_GST_PARSE_SUBSYSTEM_DISABLES],
@@ -247,7 +224,38 @@ AC_DEFUN([AG_GST_PARSE_SUBSYSTEM_DISABLES],
   AG_GST_PARSE_SUBSYSTEM_DISABLE($1,XML)
 ])
 
+dnl AG_GST_CHECK_GST_DEBUG_DISABLED(ACTION-IF-DISABLED, ACTION-IF-NOT-DISABLED)
+dnl
+dnl Checks if the GStreamer debugging system is disabled in the core version
+dnl we are compiling against (by checking gstconfig.h)
+dnl
+AC_DEFUN([AG_GST_CHECK_GST_DEBUG_DISABLED],
+[
+  AC_REQUIRE([AG_GST_CHECK_GST])
 
+  AC_MSG_CHECKING([whether the GStreamer debugging system is enabled])
+  AC_LANG_PUSH([C])
+  save_CFLAGS="$CFLAGS"
+  CFLAGS="$GST_CFLAGS $CFLAGS"
+  AC_COMPILE_IFELSE([
+    AC_LANG_SOURCE([[
+      #include <gst/gstconfig.h>
+      #ifdef GST_DISABLE_GST_DEBUG
+      #error "debugging disabled, make compiler fail"
+      #endif]])], [ debug_system_enabled=yes], [debug_system_enabled=no])
+  CFLAGS="$save_CFLAGS"
+  AC_LANG_POP([C])
+
+  AC_MSG_RESULT([$debug_system_enabled])
+
+  if test "x$debug_system_enabled" = "xyes" ; then
+    $2
+    true
+  else
+    $1
+    true
+  fi
+])
 
 dnl relies on GST_PLUGINS_ALL, GST_PLUGINS_SELECTED, GST_PLUGINS_YES,
 dnl GST_PLUGINS_NO, and BUILD_EXTERNAL
@@ -266,6 +274,12 @@ printf "configure: *** Plug-ins without external dependencies that will NOT be b
 	printf '\t'$i'\n'
 	;;
     esac
+  done ) | sort
+printf "\n"
+
+printf "configure: *** Plug-ins that have NOT been ported:\n"
+( for i in $GST_PLUGINS_NONPORTED; do
+	printf '\t'$i'\n'
   done ) | sort
 printf "\n"
 

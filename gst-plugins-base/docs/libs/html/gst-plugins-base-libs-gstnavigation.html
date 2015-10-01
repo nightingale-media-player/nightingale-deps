@@ -2,50 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>gstnavigation</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
-<link rel="up" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="prev" href="gst-plugins-base-libs-gstmixertrack.html" title="gstmixertrack">
-<link rel="next" href="gst-plugins-base-libs-gstpropertyprobe.html" title="gstpropertyprobe">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<title>gstnavigation: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-video.html" title="Video Library">
+<link rel="prev" href="gst-plugins-base-libs-gstvideoutils.html" title="gstvideoutils">
+<link rel="next" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
-<link rel="chapter" href="gstreamer-app.html" title="App Library">
-<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
-<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
-<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
-<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
-<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
-<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
-<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
-<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
-<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
-<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
-<link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstmixertrack.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-interfaces.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-gstpropertyprobe.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-libs-gstnavigation.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gstnavigation.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gstnavigation.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstnavigation.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstnavigation.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstvideoutils.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-libs-hierarchy.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-base-libs-gstnavigation"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -53,174 +31,312 @@
 <p>gstnavigation — Interface for creating, sending and parsing navigation
 events.</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-libs-gstnavigation.synopsis"></a><h2>Synopsis</h2>
-<a name="GstNavigation"></a><pre class="synopsis">
-
-#include &lt;gst/interfaces/navigation.h&gt;
-
-                    <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation-struct" title="GstNavigation">GstNavigation</a>;
-                    <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationInterface" title="GstNavigationInterface">GstNavigationInterface</a>;
-enum                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a>;
-enum                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType">GstNavigationMessageType</a>;
-enum                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType">GstNavigationQueryType</a>;
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-event" title="gst_navigation_send_event ()">gst_navigation_send_event</a>           (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstStructure.html#GstStructure"
->GstStructure</a> *structure);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-key-event" title="gst_navigation_send_key_event ()">gst_navigation_send_key_event</a>       (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         const char *event,
-                                                         const char *key);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-mouse-event" title="gst_navigation_send_mouse_event ()">gst_navigation_send_mouse_event</a>     (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         const char *event,
-                                                         int button,
-                                                         double x,
-                                                         double y);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-command" title="gst_navigation_send_command ()">gst_navigation_send_command</a>         (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> command);
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType">GstNavigationMessageType</a>  <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-get-type" title="gst_navigation_message_get_type ()">gst_navigation_message_get_type</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *message);
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-angles-changed" title="gst_navigation_message_new_angles_changed ()">gst_navigation_message_new_angles_changed</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> n_angles);
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-commands-changed" title="gst_navigation_message_new_commands_changed ()">gst_navigation_message_new_commands_changed</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src);
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-mouse-over" title="gst_navigation_message_new_mouse_over ()">gst_navigation_message_new_mouse_over</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> active);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-parse-mouse-over" title="gst_navigation_message_parse_mouse_over ()">gst_navigation_message_parse_mouse_over</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *message,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> *active);
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *          <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-angles" title="gst_navigation_query_new_angles ()">gst_navigation_query_new_angles</a>     (void);
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType">GstNavigationQueryType</a>  <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-get-type" title="gst_navigation_query_get_type ()">gst_navigation_query_get_type</a>   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query);
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *          <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-commands" title="gst_navigation_query_new_commands ()">gst_navigation_query_new_commands</a>   (void);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-angles" title="gst_navigation_query_parse_angles ()">gst_navigation_query_parse_angles</a>   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *n_angles);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-commands-length" title="gst_navigation_query_parse_commands_length ()">gst_navigation_query_parse_commands_length</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *n_cmds);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-commands-nth" title="gst_navigation_query_parse_commands_nth ()">gst_navigation_query_parse_commands_nth</a>
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> nth,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> *cmd);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-angles" title="gst_navigation_query_set_angles ()">gst_navigation_query_set_angles</a>     (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> n_angles);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-commands" title="gst_navigation_query_set_commands ()">gst_navigation_query_set_commands</a>   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> n_cmds,
-                                                         ...);
-void                <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-commandsv" title="gst_navigation_query_set_commandsv ()">gst_navigation_query_set_commandsv</a>  (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> n_cmds,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> *cmds);
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-ANGLE-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU">GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-AUDIO-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU">GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-CHAPTER-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU">GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_MENU">GST_NAVIGATION_COMMAND_DVD_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-ROOT-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_ROOT_MENU">GST_NAVIGATION_COMMAND_DVD_ROOT_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-SUBPICTURE-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU">GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU</a>
-#define             <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-TITLE-MENU--CAPS" title="GST_NAVIGATION_COMMAND_DVD_TITLE_MENU">GST_NAVIGATION_COMMAND_DVD_TITLE_MENU</a>
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstnavigation.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-event" title="gst_navigation_send_event ()">gst_navigation_send_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-key-event" title="gst_navigation_send_key_event ()">gst_navigation_send_key_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-mouse-event" title="gst_navigation_send_mouse_event ()">gst_navigation_send_mouse_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-send-command" title="gst_navigation_send_command ()">gst_navigation_send_command</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-command" title="gst_navigation_event_parse_command ()">gst_navigation_event_parse_command</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-key-event" title="gst_navigation_event_parse_key_event ()">gst_navigation_event_parse_key_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-mouse-button-event" title="gst_navigation_event_parse_mouse_button_event ()">gst_navigation_event_parse_mouse_button_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-mouse-move-event" title="gst_navigation_event_parse_mouse_move_event ()">gst_navigation_event_parse_mouse_move_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType"><span class="returnvalue">GstNavigationMessageType</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-get-type" title="gst_navigation_message_get_type ()">gst_navigation_message_get_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-angles-changed" title="gst_navigation_message_new_angles_changed ()">gst_navigation_message_new_angles_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-commands-changed" title="gst_navigation_message_new_commands_changed ()">gst_navigation_message_new_commands_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-event" title="gst_navigation_message_new_event ()">gst_navigation_message_new_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-new-mouse-over" title="gst_navigation_message_new_mouse_over ()">gst_navigation_message_new_mouse_over</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-parse-angles-changed" title="gst_navigation_message_parse_angles_changed ()">gst_navigation_message_parse_angles_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-parse-event" title="gst_navigation_message_parse_event ()">gst_navigation_message_parse_event</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-parse-mouse-over" title="gst_navigation_message_parse_mouse_over ()">gst_navigation_message_parse_mouse_over</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="returnvalue">GstQuery</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-angles" title="gst_navigation_query_new_angles ()">gst_navigation_query_new_angles</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="returnvalue">GstNavigationQueryType</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-get-type" title="gst_navigation_query_get_type ()">gst_navigation_query_get_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="returnvalue">GstQuery</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-commands" title="gst_navigation_query_new_commands ()">gst_navigation_query_new_commands</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-angles" title="gst_navigation_query_parse_angles ()">gst_navigation_query_parse_angles</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-commands-length" title="gst_navigation_query_parse_commands_length ()">gst_navigation_query_parse_commands_length</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-parse-commands-nth" title="gst_navigation_query_parse_commands_nth ()">gst_navigation_query_parse_commands_nth</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-angles" title="gst_navigation_query_set_angles ()">gst_navigation_query_set_angles</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-commands" title="gst_navigation_query_set_commands ()">gst_navigation_query_set_commands</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-set-commandsv" title="gst_navigation_query_set_commandsv ()">gst_navigation_query_set_commandsv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<a name="GstNavigation"></a><div class="refsect1">
+<a name="gst-plugins-base-libs-gstnavigation.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation-struct" title="GstNavigation">GstNavigation</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationInterface" title="struct GstNavigationInterface">GstNavigationInterface</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationEventType" title="enum GstNavigationEventType">GstNavigationEventType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType">GstNavigationMessageType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType">GstNavigationQueryType</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-ANGLE-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU">GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-AUDIO-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU">GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-CHAPTER-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU">GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_MENU">GST_NAVIGATION_COMMAND_DVD_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-ROOT-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_ROOT_MENU">GST_NAVIGATION_COMMAND_DVD_ROOT_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-SUBPICTURE-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU">GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-DVD-TITLE-MENU:CAPS" title="GST_NAVIGATION_COMMAND_DVD_TITLE_MENU">GST_NAVIGATION_COMMAND_DVD_TITLE_MENU</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstnavigation.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  GInterface
-   +----GstNavigation
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/GTypeModule.html">GInterface</a>
+    <span class="lineart">╰──</span> GstNavigation
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstnavigation.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/video/navigation.h&gt;
+</pre>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gstnavigation.description"></a><h2>Description</h2>
-<p>
-The Navigation interface is used for creating and injecting navigation related
+<p>The Navigation interface is used for creating and injecting navigation related
 events such as mouse button presses, cursor motion and key presses. The associated
 library also provides methods for parsing received events, and for sending and
-receiving navigation related bus events. One main usecase is DVD menu navigation.
-</p>
-<p>
-The main parts of the API are:
-</p>
-<div class="itemizedlist"><ul type="disc">
-<li><p>
+receiving navigation related bus events. One main usecase is DVD menu navigation.</p>
+<p>The main parts of the API are:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>
 The GstNavigation interface, implemented by elements which provide an application
 with the ability to create and inject navigation events into the pipeline.
 </p></li>
-<li><p>
+<li class="listitem"><p>
 GstNavigation event handling API. GstNavigation events are created in response to
 calls on a GstNavigation interface implementation, and sent in the pipeline. Upstream
 elements can use the navigation event API functions to parse the contents of received
 messages.
 </p></li>
-<li>
+<li class="listitem">
 <p>
 GstNavigation message handling API. GstNavigation messages may be sent on the message
 bus to inform applications of navigation related changes in the pipeline, such as the
@@ -228,993 +344,1312 @@ mouse moving over a clickable region, or the set of available angles changing.
 </p>
 <p>
 The GstNavigation message functions provide functions for creating and parsing
-custom bus messages for signalling GstNavigation changes.
+custom bus messages for signaling GstNavigation changes.
 </p>
 </li>
 </ul></div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-libs-gstnavigation.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstNavigation-struct"></a><h3>GstNavigation</h3>
-<pre class="programlisting">typedef struct _GstNavigation GstNavigation;</pre>
-<p>
-</p>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstnavigation.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-navigation-send-event"></a><h3>gst_navigation_send_event ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_send_event (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> *navigation</code></em>,
+                           <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstStructure.html"><span class="type">GstStructure</span></a> *structure</code></em>);</pre>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstNavigationInterface"></a><h3>GstNavigationInterface</h3>
-<pre class="programlisting">typedef struct {
-  GTypeInterface g_iface;
-
-  /* virtual functions */
-  void (*send_event) (GstNavigation *navigation, GstStructure *structure);
-  
-  gpointer _gst_reserved[GST_PADDING];
-} GstNavigationInterface;
-</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstNavigationCommand"></a><h3>enum GstNavigationCommand</h3>
-<pre class="programlisting">typedef enum {
-  GST_NAVIGATION_COMMAND_INVALID  = 0,
-
-  GST_NAVIGATION_COMMAND_MENU1    = 1,
-  GST_NAVIGATION_COMMAND_MENU2    = 2,
-  GST_NAVIGATION_COMMAND_MENU3    = 3,
-  GST_NAVIGATION_COMMAND_MENU4    = 4,
-  GST_NAVIGATION_COMMAND_MENU5    = 5,
-  GST_NAVIGATION_COMMAND_MENU6    = 6,
-  GST_NAVIGATION_COMMAND_MENU7    = 7,
-  
-  GST_NAVIGATION_COMMAND_LEFT     = 20,
-  GST_NAVIGATION_COMMAND_RIGHT    = 21,
-  GST_NAVIGATION_COMMAND_UP       = 22,
-  GST_NAVIGATION_COMMAND_DOWN     = 23,
-  GST_NAVIGATION_COMMAND_ACTIVATE = 24,
-
-  GST_NAVIGATION_COMMAND_PREV_ANGLE = 30,
-  GST_NAVIGATION_COMMAND_NEXT_ANGLE = 31
-} GstNavigationCommand;
-</pre>
-<p>
-A set of commands that may be issued to an element providing the
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> interface. The available commands can be queried via
-the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-commands" title="gst_navigation_query_new_commands ()"><code class="function">gst_navigation_query_new_commands()</code></a> query.
-</p>
-<p>
-For convenience in handling DVD navigation, the MENU commands are aliased as:
-   GST_NAVIGATION_COMMAND_DVD_MENU            = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU1</code></em>
-   GST_NAVIGATION_COMMAND_DVD_TITLE_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU2</code></em>
-   GST_NAVIGATION_COMMAND_DVD_ROOT_MENU       = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU3</code></em>
-   GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU4</code></em>
-   GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU5</code></em>
-   GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU6</code></em>
-   GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU    = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU7</code></em></p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-send-key-event"></a><h3>gst_navigation_send_key_event ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_send_key_event (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> *navigation</code></em>,
+                               <em class="parameter"><code>const <span class="type">char</span> *event</code></em>,
+                               <em class="parameter"><code>const <span class="type">char</span> *key</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.3.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-INVALID--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_INVALID</code></span></p></td>
-<td> An invalid command entry
-</td>
+<td class="parameter_name"><p>navigation</p></td>
+<td class="parameter_description"><p>The navigation interface instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU1--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU1</code></span></p></td>
-<td> Execute navigation menu command 1. For DVD,
-this enters the DVD root menu, or exits back to the title from the menu.
-</td>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>The type of the key event. Recognised values are "key-press" and
+"key-release"</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU2--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU2</code></span></p></td>
-<td> Execute navigation menu command 2. For DVD,
-this jumps to the DVD title menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU3--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU3</code></span></p></td>
-<td> Execute navigation menu command 3. For DVD,
-this jumps into the DVD root menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU4--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU4</code></span></p></td>
-<td> Execute navigation menu command 4. For DVD,
-this jumps to the Subpicture menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU5--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU5</code></span></p></td>
-<td> Execute navigation menu command 5. For DVD,
-the jumps to the audio menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU6--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU6</code></span></p></td>
-<td> Execute navigation menu command 6. For DVD,
-this jumps to the angles menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-MENU7--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_MENU7</code></span></p></td>
-<td> Execute navigation menu command 7. For DVD,
-this jumps to the chapter menu.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-LEFT--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_LEFT</code></span></p></td>
-<td> Select the next button to the left in a menu,
-if such a button exists.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-RIGHT--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_RIGHT</code></span></p></td>
-<td> Select the next button to the right in a menu,
-if such a button exists.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-UP--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_UP</code></span></p></td>
-<td> Select the button above the current one in a
-menu, if such a button exists.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-DOWN--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_DOWN</code></span></p></td>
-<td> Select the button below the current one in a
-menu, if such a button exists.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-ACTIVATE--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_ACTIVATE</code></span></p></td>
-<td> Activate (click) the currently selected
-button in a menu, if such a button exists.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-PREV-ANGLE--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_PREV_ANGLE</code></span></p></td>
-<td> Switch to the previous angle in a
-multiangle feature.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-COMMAND-NEXT-ANGLE--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_COMMAND_NEXT_ANGLE</code></span></p></td>
-<td> Switch to the next angle in a multiangle
-feature.
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.23</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstNavigationMessageType"></a><h3>enum GstNavigationMessageType</h3>
-<pre class="programlisting">typedef enum {
-  GST_NAVIGATION_MESSAGE_INVALID,
-  GST_NAVIGATION_MESSAGE_MOUSE_OVER,
-  GST_NAVIGATION_MESSAGE_COMMANDS_CHANGED,
-  GST_NAVIGATION_MESSAGE_ANGLES_CHANGED
-} GstNavigationMessageType;
-</pre>
-<p>
-A set of notifications that may be received on the bus when navigation
-related status changes.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><a name="GST-NAVIGATION-MESSAGE-INVALID--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_MESSAGE_INVALID</code></span></p></td>
-<td> Returned from
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-get-type" title="gst_navigation_message_get_type ()"><code class="function">gst_navigation_message_get_type()</code></a> when the passed message is not a
-navigation message.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-MESSAGE-MOUSE-OVER--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_MESSAGE_MOUSE_OVER</code></span></p></td>
-<td> Sent when the mouse moves over or leaves a
-clickable region of the output, such as a DVD menu button.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-MESSAGE-COMMANDS-CHANGED--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_MESSAGE_COMMANDS_CHANGED</code></span></p></td>
-<td> Sent when the set of available commands
-changes and should re-queried by interested applications.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-NAVIGATION-MESSAGE-ANGLES-CHANGED--CAPS"></a><span class="term"><code class="literal">GST_NAVIGATION_MESSAGE_ANGLES_CHANGED</code></span></p></td>
-<td> Sent when display angles in a multi-angle
-feature (such as a multiangle DVD) change - either angles have appeared or
-disappeared.
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.23</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GstNavigationQueryType"></a><h3>enum GstNavigationQueryType</h3>
-<pre class="programlisting">typedef enum
-{
-  GST_NAVIGATION_QUERY_INVALID     = 0,
-  GST_NAVIGATION_QUERY_COMMANDS    = 1,
-  GST_NAVIGATION_QUERY_ANGLES      = 2
-} GstNavigationQueryType;
-</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-send-event"></a><h3>gst_navigation_send_event ()</h3>
-<pre class="programlisting">void                gst_navigation_send_event           (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstStructure.html#GstStructure"
->GstStructure</a> *structure);</pre>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>navigation</code></em> :</span></p></td>
-<td>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>structure</code></em> :</span></p></td>
-<td>
-</td>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>Character representation of the key. This is typically as produced
+by XKeysymToString.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-send-key-event"></a><h3>gst_navigation_send_key_event ()</h3>
-<pre class="programlisting">void                gst_navigation_send_key_event       (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         const char *event,
-                                                         const char *key);</pre>
-<p>
-</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>navigation</code></em> :</span></p></td>
-<td> The navigation interface instance
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>event</code></em> :</span></p></td>
-<td> The type of the key event. Recognised values are "key-press" and
-"key-release"
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td> Character representation of the key. This is typically as produced
-by XKeysymToString.
-</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-send-mouse-event"></a><h3>gst_navigation_send_mouse_event ()</h3>
-<pre class="programlisting">void                gst_navigation_send_mouse_event     (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         const char *event,
-                                                         int button,
-                                                         double x,
-                                                         double y);</pre>
-<p>
-Sends a mouse event to the navigation interface. Mouse event coordinates
+<div class="refsect2">
+<a name="gst-navigation-send-mouse-event"></a><h3>gst_navigation_send_mouse_event ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_send_mouse_event (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> *navigation</code></em>,
+                                 <em class="parameter"><code>const <span class="type">char</span> *event</code></em>,
+                                 <em class="parameter"><code><span class="type">int</span> button</code></em>,
+                                 <em class="parameter"><code><span class="type">double</span> x</code></em>,
+                                 <em class="parameter"><code><span class="type">double</span> y</code></em>);</pre>
+<p>Sends a mouse event to the navigation interface. Mouse event coordinates
 are sent relative to the display space of the related output area. This is
 usually the size in pixels of the window associated with the element
 implementing the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> interface.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.15.20.9.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>navigation</code></em> :</span></p></td>
-<td> The navigation interface instance
-</td>
+<td class="parameter_name"><p>navigation</p></td>
+<td class="parameter_description"><p>The navigation interface instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>event</code></em> :</span></p></td>
-<td> The type of mouse event, as a text string. Recognised values are
-"mouse-button-press", "mouse-button-release" and "mouse-move".
-</td>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>The type of mouse event, as a text string. Recognised values are
+"mouse-button-press", "mouse-button-release" and "mouse-move".</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>button</code></em> :</span></p></td>
-<td> The button number of the button being pressed or released. Pass 0
-for mouse-move events.
-</td>
+<td class="parameter_name"><p>button</p></td>
+<td class="parameter_description"><p>The button number of the button being pressed or released. Pass 0
+for mouse-move events.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td> The x coordinate of the mouse event.
-</td>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>The x coordinate of the mouse event.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>y</code></em> :</span></p></td>
-<td> The y coordinate of the mouse event.
-</td>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>The y coordinate of the mouse event.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-send-command"></a><h3>gst_navigation_send_command ()</h3>
-<pre class="programlisting">void                gst_navigation_send_command         (<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> *navigation,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> command);</pre>
-<p>
-Sends the indicated command to the navigation interface.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-send-command"></a><h3>gst_navigation_send_command ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_send_command (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> *navigation</code></em>,
+                             <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand"><span class="type">GstNavigationCommand</span></a> command</code></em>);</pre>
+<p>Sends the indicated command to the navigation interface.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>navigation</code></em> :</span></p></td>
-<td> The navigation interface instance
-</td>
+<td class="parameter_name"><p>navigation</p></td>
+<td class="parameter_description"><p>The navigation interface instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>command</code></em> :</span></p></td>
-<td> The command to issue
-</td>
+<td class="parameter_name"><p>command</p></td>
+<td class="parameter_description"><p>The command to issue</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-message-get-type"></a><h3>gst_navigation_message_get_type ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType">GstNavigationMessageType</a>  gst_navigation_message_get_type
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *message);</pre>
-<p>
-Check a bus message to see if it is a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> event, and return
+<div class="refsect2">
+<a name="gst-navigation-event-parse-command"></a><h3>gst_navigation_event_parse_command ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_event_parse_command (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> *event</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand"><span class="type">GstNavigationCommand</span></a> *command</code></em>);</pre>
+<p>Inspect a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command event and retrieve the enum value of the
+associated command.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>command</p></td>
+<td class="parameter_description"><p>Pointer to GstNavigationCommand to receive the type of the
+navigation event.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.6.6"></a><h4>Returns</h4>
+<p> TRUE if the navigation command could be extracted, otherwise FALSE.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-event-parse-key-event"></a><h3>gst_navigation_event_parse_key_event ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_event_parse_key_event (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> *event</code></em>,
+                                      <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **key</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.7.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>A pointer to a location to receive the string identifying the key
+press. The returned string is owned by the event, and valid only until the
+event is unreffed.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-event-parse-mouse-button-event"></a><h3>gst_navigation_event_parse_mouse_button_event ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_event_parse_mouse_button_event
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> *event</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *button</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> *x</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> *y</code></em>);</pre>
+<p>Retrieve the details of either a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> mouse button press event or
+a mouse button release event. Determine which type the event is using
+<code class="function">gst_navigation_event_get_type()</code> to retrieve the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationEventType" title="enum GstNavigationEventType"><span class="type">GstNavigationEventType</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>button</p></td>
+<td class="parameter_description"><p>Pointer to a gint that will receive the button number associated
+with the event.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>Pointer to a gdouble to receive the x coordinate of the mouse button
+event.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>Pointer to a gdouble to receive the y coordinate of the mouse button
+event.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.8.6"></a><h4>Returns</h4>
+<p> TRUE if the button number and both coordinates could be extracted,
+otherwise FALSE.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-event-parse-mouse-move-event"></a><h3>gst_navigation_event_parse_mouse_move_event ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_event_parse_mouse_move_event
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> *event</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> *x</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> *y</code></em>);</pre>
+<p>Inspect a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> mouse movement event and extract the coordinates
+of the event.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>Pointer to a gdouble to receive the x coordinate of the mouse movement.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>Pointer to a gdouble to receive the y coordinate of the mouse movement.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.9.6"></a><h4>Returns</h4>
+<p> TRUE if both coordinates could be extracted, otherwise FALSE.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-message-get-type"></a><h3>gst_navigation_message_get_type ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType"><span class="returnvalue">GstNavigationMessageType</span></a>
+gst_navigation_message_get_type (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> *message</code></em>);</pre>
+<p>Check a bus message to see if it is a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> event, and return
 the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationMessageType" title="enum GstNavigationMessageType"><span class="type">GstNavigationMessageType</span></a> identifying the type of the message if so.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
-><span class="type">GstMessage</span></a> to inspect.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The type of the <span class="type">GstNavigationMessage</span>, or
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-INVALID--CAPS"><span class="type">GST_NAVIGATION_MESSAGE_INVALID</span></a> if the message is not a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a>
-notification.
-
-</td>
-</tr>
-</tbody>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>message</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.10.6"></a><h4>Returns</h4>
+<p> The type of the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a>, or
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-INVALID:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_INVALID</span></a> if the message is not a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a>
+notification.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-message-new-angles-changed"></a><h3>gst_navigation_message_new_angles_changed ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        gst_navigation_message_new_angles_changed
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> n_angles);</pre>
-<p>
-Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-ANGLES-CHANGED--CAPS"><span class="type">GST_NAVIGATION_MESSAGE_ANGLES_CHANGED</span></a> for notifying an application
+<div class="refsect2">
+<a name="gst-navigation-message-new-angles-changed"></a><h3>gst_navigation_message_new_angles_changed ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+gst_navigation_message_new_angles_changed
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> *src</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> cur_angle</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_angles</code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-ANGLES-CHANGED:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_ANGLES_CHANGED</span></a> for notifying an application
 that the current angle, or current number of angles available in a
 multiangle video has changed.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.15.20.9.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
-><span class="type">GstObject</span></a> to set as source of the new message.
-</td>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> to set as source of the new message.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>cur_angle</code></em> :</span></p></td>
-<td> The currently selected angle.
-</td>
+<td class="parameter_name"><p>cur_angle</p></td>
+<td class="parameter_description"><p>The currently selected angle.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_angles</code></em> :</span></p></td>
-<td> The number of viewing angles now available.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The new <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
-><span class="type">GstMessage</span></a>.
-</td>
+<td class="parameter_name"><p>n_angles</p></td>
+<td class="parameter_description"><p>The number of viewing angles now available.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.11.6"></a><h4>Returns</h4>
+<p> The new <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a>.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-message-new-commands-changed"></a><h3>gst_navigation_message_new_commands_changed ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        gst_navigation_message_new_commands_changed
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src);</pre>
-<p>
-Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-COMMANDS-CHANGED--CAPS"><span class="type">GST_NAVIGATION_MESSAGE_COMMANDS_CHANGED</span></a></p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-message-new-commands-changed"></a><h3>gst_navigation_message_new_commands_changed ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+gst_navigation_message_new_commands_changed
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> *src</code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-COMMANDS-CHANGED:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_COMMANDS_CHANGED</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> to set as source of the new message.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.12.6"></a><h4>Returns</h4>
+<p> The new <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-message-new-event"></a><h3>gst_navigation_message_new_event ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+gst_navigation_message_new_event (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> *src</code></em>,
+                                  <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> *event</code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-EVENT:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_EVENT</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
-><span class="type">GstObject</span></a> to set as source of the new message.
-</td>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> to set as source of the new message.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The new <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
-><span class="type">GstMessage</span></a>.
-</td>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p> A navigation <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.13.6"></a><h4>Returns</h4>
+<p> The new <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a>.</p>
+</div>
+<p class="since">Since: 1.6</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-message-new-mouse-over"></a><h3>gst_navigation_message_new_mouse_over ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *        gst_navigation_message_new_mouse_over
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a> *src,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> active);</pre>
-<p>
-Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
-<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-MOUSE-OVER--CAPS"><span class="type">GST_NAVIGATION_MESSAGE_MOUSE_OVER</span></a>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-message-new-mouse-over"></a><h3>gst_navigation_message_new_mouse_over ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="returnvalue">GstMessage</span></a> *
+gst_navigation_message_new_mouse_over (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> *src</code></em>,
+                                       <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message with type
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-MOUSE-OVER:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_MOUSE_OVER</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>src</code></em> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
-><span class="type">GstObject</span></a> to set as source of the new message.
-</td>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html"><span class="type">GstObject</span></a> to set as source of the new message.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>active</code></em> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the mouse has entered a clickable area of the display.
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if it over a non-clickable area.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The new <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
-><span class="type">GstMessage</span></a>.
-</td>
+<td class="parameter_name"><p>active</p></td>
+<td class="parameter_description"><p><a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the mouse has entered a clickable area of the display.
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if it over a non-clickable area.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.14.6"></a><h4>Returns</h4>
+<p> The new <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a>.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-message-parse-mouse-over"></a><h3>gst_navigation_message_parse_mouse_over ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_navigation_message_parse_mouse_over
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
->GstMessage</a> *message,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> *active);</pre>
-<p>
-Parse a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message of type <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-MOUSE-OVER--CAPS"><span class="type">GST_NAVIGATION_MESSAGE_MOUSE_OVER</span></a>
+<div class="refsect2">
+<a name="gst-navigation-message-parse-angles-changed"></a><h3>gst_navigation_message_parse_angles_changed ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_message_parse_angles_changed
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> *message</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *cur_angle</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_angles</code></em>);</pre>
+<p>Parse a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message of type GST_NAVIGATION_MESSAGE_ANGLES_CHANGED
+and extract the <em class="parameter"><code>cur_angle</code></em>
+ and <em class="parameter"><code>n_angles</code></em>
+ parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>message</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cur_angle</p></td>
+<td class="parameter_description"><p>A pointer to a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> to receive the new current angle number,
+or NULL</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n_angles</p></td>
+<td class="parameter_description"><p>A pointer to a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> to receive the new angle count, or NULL.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.15.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the message could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-message-parse-event"></a><h3>gst_navigation_message_parse_event ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_message_parse_event (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> *message</code></em>,
+                                    <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> **event</code></em>);</pre>
+<p>Parse a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message of type <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-EVENT:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_EVENT</span></a>
+and extract contained <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a>. The caller must unref the <em class="parameter"><code>event</code></em>
+ when done
+with it.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>message</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>event</p></td>
+<td class="parameter_description"><p> a pointer to a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html"><span class="type">GstEvent</span></a> to receive the
+contained navigation event. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.16.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the message could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
+<p class="since">Since: 1.6</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-message-parse-mouse-over"></a><h3>gst_navigation_message_parse_mouse_over ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_message_parse_mouse_over
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> *message</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *active</code></em>);</pre>
+<p>Parse a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> message of type <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-MESSAGE-MOUSE-OVER:CAPS"><span class="type">GST_NAVIGATION_MESSAGE_MOUSE_OVER</span></a>
 and extract the active/inactive flag. If the mouse over event is marked
 active, it indicates that the mouse is over a clickable area.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.15.20.9.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>message</code></em> :</span></p></td>
-<td> A <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstMessage.html#GstMessage"
-><span class="type">GstMessage</span></a> to inspect.
-</td>
+<td class="parameter_name"><p>message</p></td>
+<td class="parameter_description"><p>A <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html"><span class="type">GstMessage</span></a> to inspect.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>active</code></em> :</span></p></td>
-<td> A pointer to a gboolean to receive the active/inactive state,
-or NULL.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the message could be successfully parsed. <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if not.
-</td>
+<td class="parameter_name"><p>active</p></td>
+<td class="parameter_description"><p>A pointer to a gboolean to receive the active/inactive state,
+or NULL.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.17.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the message could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-new-angles"></a><h3>gst_navigation_query_new_angles ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *          gst_navigation_query_new_angles     (void);</pre>
-<p>
-Create a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles query. When executed, it will
+<div class="refsect2">
+<a name="gst-navigation-query-new-angles"></a><h3>gst_navigation_query_new_angles ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="returnvalue">GstQuery</span></a> *
+gst_navigation_query_new_angles (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Create a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles query. When executed, it will
 query the pipeline for the set of currently available angles, which may be
 greater than one in a multiangle video.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The new query.
-</td>
-</tr></tbody>
-</table></div>
-<p class="since">Since 0.10.23</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.18.5"></a><h4>Returns</h4>
+<p> The new query.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-get-type"></a><h3>gst_navigation_query_get_type ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType">GstNavigationQueryType</a>  gst_navigation_query_get_type   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query);</pre>
-<p>
-Inspect a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a> and return the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="type">GstNavigationQueryType</span></a> associated with
+<div class="refsect2">
+<a name="gst-navigation-query-get-type"></a><h3>gst_navigation_query_get_type ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="returnvalue">GstNavigationQueryType</span></a>
+gst_navigation_query_get_type (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>);</pre>
+<p>Inspect a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> and return the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="type">GstNavigationQueryType</span></a> associated with
 it if it is a <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> query.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> The query to inspect
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="type">GstNavigationQueryType</span></a> of the query, or
-<span class="type">GST_NAVIGATION_QUERY_INVALID</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 0.10.23</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-new-commands"></a><h3>gst_navigation_query_new_commands ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *          gst_navigation_query_new_commands   (void);</pre>
-<p>
-Create a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> commands query. When executed, it will
-query the pipeline for the set of currently available commands.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.15.20.9.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody><tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The new query.
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>The query to inspect</p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.19.6"></a><h4>Returns</h4>
+<p> The <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationQueryType" title="enum GstNavigationQueryType"><span class="type">GstNavigationQueryType</span></a> of the query, or
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-QUERY-INVALID:CAPS"><span class="type">GST_NAVIGATION_QUERY_INVALID</span></a></p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-parse-angles"></a><h3>gst_navigation_query_parse_angles ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_navigation_query_parse_angles   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *n_angles);</pre>
-<p>
-Parse the current angle number in the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles <em class="parameter"><code>query</code></em> into the
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
-><span class="type">guint</span></a> pointed to by the <em class="parameter"><code>cur_angle</code></em> variable, and the number of available
-angles into the <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
-><span class="type">guint</span></a> pointed to by the <em class="parameter"><code>n_angles</code></em> variable.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-new-commands"></a><h3>gst_navigation_query_new_commands ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="returnvalue">GstQuery</span></a> *
+gst_navigation_query_new_commands (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Create a new <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> commands query. When executed, it will
+query the pipeline for the set of currently available commands.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.20.5"></a><h4>Returns</h4>
+<p> The new query.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-navigation-query-parse-angles"></a><h3>gst_navigation_query_parse_angles ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_query_parse_angles (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *cur_angle</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_angles</code></em>);</pre>
+<p>Parse the current angle number in the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles <em class="parameter"><code>query</code></em>
+ into the
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> pointed to by the <em class="parameter"><code>cur_angle</code></em>
+ variable, and the number of available
+angles into the <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> pointed to by the <em class="parameter"><code>n_angles</code></em>
+ variable.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>cur_angle</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
-><span class="type">guint</span></a> into which to store the currently selected
-angle value from the query, or NULL
-</td>
+<td class="parameter_name"><p>cur_angle</p></td>
+<td class="parameter_description"><p>Pointer to a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> into which to store the currently selected
+angle value from the query, or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_angles</code></em> :</span></p></td>
-<td> Pointer to a <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
-><span class="type">guint</span></a> into which to store the number of angles
-value from the query, or NULL
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if not.
-</td>
+<td class="parameter_name"><p>n_angles</p></td>
+<td class="parameter_description"><p>Pointer to a <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> into which to store the number of angles
+value from the query, or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.21.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-parse-commands-length"></a><h3>gst_navigation_query_parse_commands_length ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_navigation_query_parse_commands_length
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> *n_cmds);</pre>
-<p>
-Parse the number of commands in the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> commands <em class="parameter"><code>query</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-parse-commands-length"></a><h3>gst_navigation_query_parse_commands_length ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_query_parse_commands_length
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_cmds</code></em>);</pre>
+<p>Parse the number of commands in the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> commands <em class="parameter"><code>query</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_cmds</code></em> :</span></p></td>
-<td> the number of commands in this query.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if not.
-</td>
+<td class="parameter_name"><p>n_cmds</p></td>
+<td class="parameter_description"><p> the number of commands in this query. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.22.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-parse-commands-nth"></a><h3>gst_navigation_query_parse_commands_nth ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_navigation_query_parse_commands_nth
-                                                        (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> nth,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> *cmd);</pre>
-<p>
-Parse the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query and retrieve the <em class="parameter"><code>nth</code></em> command from
-it into <em class="parameter"><code>cmd</code></em>. If the list contains less elements than <em class="parameter"><code>nth</code></em>, <em class="parameter"><code>cmd</code></em> will be
-set to <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-INVALID--CAPS"><span class="type">GST_NAVIGATION_COMMAND_INVALID</span></a>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-parse-commands-nth"></a><h3>gst_navigation_query_parse_commands_nth ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_navigation_query_parse_commands_nth
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nth</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand"><span class="type">GstNavigationCommand</span></a> *cmd</code></em>);</pre>
+<p>Parse the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query and retrieve the <em class="parameter"><code>nth</code></em>
+ command from
+it into <em class="parameter"><code>cmd</code></em>
+. If the list contains less elements than <em class="parameter"><code>nth</code></em>
+, <em class="parameter"><code>cmd</code></em>
+ will be
+set to <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GST-NAVIGATION-COMMAND-INVALID:CAPS"><span class="type">GST_NAVIGATION_COMMAND_INVALID</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>nth</code></em> :</span></p></td>
-<td> the nth command to retrieve.
-</td>
+<td class="parameter_name"><p>nth</p></td>
+<td class="parameter_description"><p>the nth command to retrieve.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>cmd</code></em> :</span></p></td>
-<td> a pointer to store the nth command into.
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE--CAPS"
-><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a
-href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE--CAPS"
-><code class="literal">FALSE</code></a> if not.
-</td>
+<td class="parameter_name"><p>cmd</p></td>
+<td class="parameter_description"><p> a pointer to store the nth command into. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.23.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the query could be successfully parsed. <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-set-angles"></a><h3>gst_navigation_query_set_angles ()</h3>
-<pre class="programlisting">void                gst_navigation_query_set_angles     (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> cur_angle,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a> n_angles);</pre>
-<p>
-Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles query result field in <em class="parameter"><code>query</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-set-angles"></a><h3>gst_navigation_query_set_angles ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_query_set_angles (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> cur_angle</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_angles</code></em>);</pre>
+<p>Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> angles query result field in <em class="parameter"><code>query</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>cur_angle</code></em> :</span></p></td>
-<td> the current viewing angle to set.
-</td>
+<td class="parameter_name"><p>cur_angle</p></td>
+<td class="parameter_description"><p>the current viewing angle to set.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_angles</code></em> :</span></p></td>
-<td> the number of viewing angles to set.
-</td>
+<td class="parameter_name"><p>n_angles</p></td>
+<td class="parameter_description"><p>the number of viewing angles to set.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-set-commands"></a><h3>gst_navigation_query_set_commands ()</h3>
-<pre class="programlisting">void                gst_navigation_query_set_commands   (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> n_cmds,
-                                                         ...);</pre>
-<p>
-Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query result fields in <em class="parameter"><code>query</code></em>. The number
-of commands passed must be equal to <em class="parameter"><code>n_commands</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-set-commands"></a><h3>gst_navigation_query_set_commands ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_query_set_commands (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n_cmds</code></em>,
+                                   <em class="parameter"><code>...</code></em>);</pre>
+<p>Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query result fields in <em class="parameter"><code>query</code></em>
+. The number
+of commands passed must be equal to <em class="parameter"><code>n_commands</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.25.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_cmds</code></em> :</span></p></td>
-<td> the number of commands to set.
-</td>
+<td class="parameter_name"><p>n_cmds</p></td>
+<td class="parameter_description"><p>the number of commands to set.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
-<td> A list of <em class="parameter"><code>GstNavigationCommand</code></em> values, <em class="parameter"><code>n_cmds</code></em> entries long.
-</td>
+<td class="parameter_name"><p>...</p></td>
+<td class="parameter_description"><p>A list of <em class="parameter"><code>GstNavigationCommand</code></em>
+values, <em class="parameter"><code>n_cmds</code></em>
+entries long.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-navigation-query-set-commandsv"></a><h3>gst_navigation_query_set_commandsv ()</h3>
-<pre class="programlisting">void                gst_navigation_query_set_commandsv  (<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
->GstQuery</a> *query,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> n_cmds,
-                                                         <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand">GstNavigationCommand</a> *cmds);</pre>
-<p>
-Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query result fields in <em class="parameter"><code>query</code></em>. The number
-of commands passed must be equal to <em class="parameter"><code>n_commands</code></em>.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-navigation-query-set-commandsv"></a><h3>gst_navigation_query_set_commandsv ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_navigation_query_set_commandsv (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a> *query</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> n_cmds</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigationCommand" title="enum GstNavigationCommand"><span class="type">GstNavigationCommand</span></a> *cmds</code></em>);</pre>
+<p>Set the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> command query result fields in <em class="parameter"><code>query</code></em>
+. The number
+of commands passed must be equal to <em class="parameter"><code>n_commands</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.9.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>query</code></em> :</span></p></td>
-<td> a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstQuery.html#GstQuery"
-><span class="type">GstQuery</span></a>
-</td>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstQuery.html"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>n_cmds</code></em> :</span></p></td>
-<td> the number of commands to set.
-</td>
+<td class="parameter_name"><p>n_cmds</p></td>
+<td class="parameter_description"><p>the number of commands to set.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>cmds</code></em> :</span></p></td>
-<td> An array containing <em class="parameter"><code>n_cmds</code></em> <em class="parameter"><code>GstNavigationCommand</code></em> values.
-</td>
+<td class="parameter_name"><p>cmds</p></td>
+<td class="parameter_description"><p>An array containing <em class="parameter"><code>n_cmds</code></em>
+<em class="parameter"><code>GstNavigationCommand</code></em>
+values.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.23</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstnavigation.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstNavigation-struct"></a><h3>GstNavigation</h3>
+<pre class="programlisting">typedef struct _GstNavigation GstNavigation;</pre>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-ANGLE-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU</h3>
+<div class="refsect2">
+<a name="GstNavigationInterface"></a><h3>struct GstNavigationInterface</h3>
+<pre class="programlisting">struct GstNavigationInterface {
+  GTypeInterface iface;
+
+  /* virtual functions */
+  void (*send_event) (GstNavigation *navigation, GstStructure *structure);
+};
+</pre>
+<p>Navigation interface.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.10.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GstNavigationInterface.iface"></a>iface</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent interface</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstNavigationInterface.send-event"></a>send_event</code></em> ()</p></td>
+<td class="struct_member_description"><p>sending a navigation event</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstNavigationCommand"></a><h3>enum GstNavigationCommand</h3>
+<p>A set of commands that may be issued to an element providing the
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#GstNavigation"><span class="type">GstNavigation</span></a> interface. The available commands can be queried via
+the <a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-query-new-commands" title="gst_navigation_query_new_commands ()"><code class="function">gst_navigation_query_new_commands()</code></a> query.</p>
+<p>For convenience in handling DVD navigation, the MENU commands are aliased as:
+   GST_NAVIGATION_COMMAND_DVD_MENU            = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU1</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_TITLE_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU2</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_ROOT_MENU       = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU3</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU4</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU5</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU      = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU6</code></em>
+
+   GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU    = <em class="parameter"><code>GST_NAVIGATION_COMMAND_MENU7</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.10.4.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-INVALID:CAPS"></a>GST_NAVIGATION_COMMAND_INVALID</p></td>
+<td class="enum_member_description">
+<p>An invalid command entry</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU1:CAPS"></a>GST_NAVIGATION_COMMAND_MENU1</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 1. For DVD,
+this enters the DVD root menu, or exits back to the title from the menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU2:CAPS"></a>GST_NAVIGATION_COMMAND_MENU2</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 2. For DVD,
+this jumps to the DVD title menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU3:CAPS"></a>GST_NAVIGATION_COMMAND_MENU3</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 3. For DVD,
+this jumps into the DVD root menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU4:CAPS"></a>GST_NAVIGATION_COMMAND_MENU4</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 4. For DVD,
+this jumps to the Subpicture menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU5:CAPS"></a>GST_NAVIGATION_COMMAND_MENU5</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 5. For DVD,
+the jumps to the audio menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU6:CAPS"></a>GST_NAVIGATION_COMMAND_MENU6</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 6. For DVD,
+this jumps to the angles menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-MENU7:CAPS"></a>GST_NAVIGATION_COMMAND_MENU7</p></td>
+<td class="enum_member_description">
+<p>Execute navigation menu command 7. For DVD,
+this jumps to the chapter menu.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-LEFT:CAPS"></a>GST_NAVIGATION_COMMAND_LEFT</p></td>
+<td class="enum_member_description">
+<p>Select the next button to the left in a menu,
+if such a button exists.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-RIGHT:CAPS"></a>GST_NAVIGATION_COMMAND_RIGHT</p></td>
+<td class="enum_member_description">
+<p>Select the next button to the right in a menu,
+if such a button exists.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-UP:CAPS"></a>GST_NAVIGATION_COMMAND_UP</p></td>
+<td class="enum_member_description">
+<p>Select the button above the current one in a
+menu, if such a button exists.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-DOWN:CAPS"></a>GST_NAVIGATION_COMMAND_DOWN</p></td>
+<td class="enum_member_description">
+<p>Select the button below the current one in a
+menu, if such a button exists.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-ACTIVATE:CAPS"></a>GST_NAVIGATION_COMMAND_ACTIVATE</p></td>
+<td class="enum_member_description">
+<p>Activate (click) the currently selected
+button in a menu, if such a button exists.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-PREV-ANGLE:CAPS"></a>GST_NAVIGATION_COMMAND_PREV_ANGLE</p></td>
+<td class="enum_member_description">
+<p>Switch to the previous angle in a
+multiangle feature.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-COMMAND-NEXT-ANGLE:CAPS"></a>GST_NAVIGATION_COMMAND_NEXT_ANGLE</p></td>
+<td class="enum_member_description">
+<p>Switch to the next angle in a multiangle
+feature.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstNavigationEventType"></a><h3>enum GstNavigationEventType</h3>
+<p>Enum values for the various events that an element implementing the
+GstNavigation interface might send up the pipeline.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.10.5.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-INVALID:CAPS"></a>GST_NAVIGATION_EVENT_INVALID</p></td>
+<td class="enum_member_description">
+<p>Returned from
+<code class="function">gst_navigation_event_get_type()</code> when the passed event is not a navigation event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-KEY-PRESS:CAPS"></a>GST_NAVIGATION_EVENT_KEY_PRESS</p></td>
+<td class="enum_member_description">
+<p>A key press event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-key-event" title="gst_navigation_event_parse_key_event ()"><code class="function">gst_navigation_event_parse_key_event()</code></a> to extract the details from the event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-KEY-RELEASE:CAPS"></a>GST_NAVIGATION_EVENT_KEY_RELEASE</p></td>
+<td class="enum_member_description">
+<p>A key release event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-key-event" title="gst_navigation_event_parse_key_event ()"><code class="function">gst_navigation_event_parse_key_event()</code></a> to extract the details from the event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-MOUSE-BUTTON-PRESS:CAPS"></a>GST_NAVIGATION_EVENT_MOUSE_BUTTON_PRESS</p></td>
+<td class="enum_member_description">
+<p>A mouse button press event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-mouse-button-event" title="gst_navigation_event_parse_mouse_button_event ()"><code class="function">gst_navigation_event_parse_mouse_button_event()</code></a> to extract the details from the
+event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-MOUSE-BUTTON-RELEASE:CAPS"></a>GST_NAVIGATION_EVENT_MOUSE_BUTTON_RELEASE</p></td>
+<td class="enum_member_description">
+<p>A mouse button release event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-mouse-button-event" title="gst_navigation_event_parse_mouse_button_event ()"><code class="function">gst_navigation_event_parse_mouse_button_event()</code></a> to extract the details from the
+event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-MOUSE-MOVE:CAPS"></a>GST_NAVIGATION_EVENT_MOUSE_MOVE</p></td>
+<td class="enum_member_description">
+<p>A mouse movement event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-mouse-move-event" title="gst_navigation_event_parse_mouse_move_event ()"><code class="function">gst_navigation_event_parse_mouse_move_event()</code></a> to extract the details from the
+event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-EVENT-COMMAND:CAPS"></a>GST_NAVIGATION_EVENT_COMMAND</p></td>
+<td class="enum_member_description">
+<p>A navigation command event. Use
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-event-parse-command" title="gst_navigation_event_parse_command ()"><code class="function">gst_navigation_event_parse_command()</code></a> to extract the details from the event.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstNavigationMessageType"></a><h3>enum GstNavigationMessageType</h3>
+<p>A set of notifications that may be received on the bus when navigation
+related status changes.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.10.6.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-MESSAGE-INVALID:CAPS"></a>GST_NAVIGATION_MESSAGE_INVALID</p></td>
+<td class="enum_member_description">
+<p>Returned from
+<a class="link" href="gst-plugins-base-libs-gstnavigation.html#gst-navigation-message-get-type" title="gst_navigation_message_get_type ()"><code class="function">gst_navigation_message_get_type()</code></a> when the passed message is not a
+navigation message.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-MESSAGE-MOUSE-OVER:CAPS"></a>GST_NAVIGATION_MESSAGE_MOUSE_OVER</p></td>
+<td class="enum_member_description">
+<p>Sent when the mouse moves over or leaves a
+clickable region of the output, such as a DVD menu button.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-MESSAGE-COMMANDS-CHANGED:CAPS"></a>GST_NAVIGATION_MESSAGE_COMMANDS_CHANGED</p></td>
+<td class="enum_member_description">
+<p>Sent when the set of available commands
+changes and should re-queried by interested applications.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-MESSAGE-ANGLES-CHANGED:CAPS"></a>GST_NAVIGATION_MESSAGE_ANGLES_CHANGED</p></td>
+<td class="enum_member_description">
+<p>Sent when display angles in a multi-angle
+feature (such as a multiangle DVD) change - either angles have appeared or
+disappeared.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-MESSAGE-EVENT:CAPS"></a>GST_NAVIGATION_MESSAGE_EVENT</p></td>
+<td class="enum_member_description">
+<p>Sent when a navigation event was not handled
+by any element in the pipeline (Since 1.6)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstNavigationQueryType"></a><h3>enum GstNavigationQueryType</h3>
+<p>Tyoes of navigation interface queries.</p>
+<div class="refsect3">
+<a name="id-1.2.15.20.10.7.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-QUERY-INVALID:CAPS"></a>GST_NAVIGATION_QUERY_INVALID</p></td>
+<td class="enum_member_description">
+<p>invalid query</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-QUERY-COMMANDS:CAPS"></a>GST_NAVIGATION_QUERY_COMMANDS</p></td>
+<td class="enum_member_description">
+<p>command query</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-NAVIGATION-QUERY-ANGLES:CAPS"></a>GST_NAVIGATION_QUERY_ANGLES</p></td>
+<td class="enum_member_description">
+<p>viewing angle query</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-ANGLE-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_ANGLE_MENU      GST_NAVIGATION_COMMAND_MENU6
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-AUDIO-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-AUDIO-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_AUDIO_MENU      GST_NAVIGATION_COMMAND_MENU5
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-CHAPTER-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-CHAPTER-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_CHAPTER_MENU    GST_NAVIGATION_COMMAND_MENU7
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_MENU            GST_NAVIGATION_COMMAND_MENU1
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-ROOT-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_ROOT_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-ROOT-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_ROOT_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_ROOT_MENU       GST_NAVIGATION_COMMAND_MENU3
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-SUBPICTURE-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-SUBPICTURE-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_SUBPICTURE_MENU GST_NAVIGATION_COMMAND_MENU4
 </pre>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GST-NAVIGATION-COMMAND-DVD-TITLE-MENU--CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_TITLE_MENU</h3>
+<div class="refsect2">
+<a name="GST-NAVIGATION-COMMAND-DVD-TITLE-MENU:CAPS"></a><h3>GST_NAVIGATION_COMMAND_DVD_TITLE_MENU</h3>
 <pre class="programlisting">#define GST_NAVIGATION_COMMAND_DVD_TITLE_MENU      GST_NAVIGATION_COMMAND_MENU2
 </pre>
-<p>
-</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

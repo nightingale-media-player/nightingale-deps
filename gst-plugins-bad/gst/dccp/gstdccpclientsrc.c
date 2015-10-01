@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -80,12 +80,6 @@ enum
 static gboolean gst_dccp_client_src_stop (GstBaseSrc * bsrc);
 
 GST_DEBUG_CATEGORY_STATIC (dccpclientsrc_debug);
-
-static const GstElementDetails gst_dccp_client_src_details =
-GST_ELEMENT_DETAILS ("DCCP client source",
-    "Source/Network",
-    "Receive data as a client over the network via DCCP",
-    "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -281,7 +275,10 @@ gst_dccp_client_src_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&srctemplate));
 
-  gst_element_class_set_details (element_class, &gst_dccp_client_src_details);
+  gst_element_class_set_static_metadata (element_class, "DCCP client source",
+      "Source/Network",
+      "Receive data as a client over the network via DCCP",
+      "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
 }
 
 static void
@@ -359,31 +356,32 @@ gst_dccp_client_src_class_init (GstDCCPClientSrcClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PORT,
       g_param_spec_int ("port", "Port",
           "The port to receive packets from", 0, G_MAXUINT16,
-          DCCP_DEFAULT_PORT, G_PARAM_READWRITE));
+          DCCP_DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_HOST,
       g_param_spec_string ("host", "Host",
           "The host IP address to receive packets from", DCCP_DEFAULT_HOST,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SOCK_FD,
       g_param_spec_int ("sockfd", "Socket fd",
           "The socket file descriptor", -1, G_MAXINT, DCCP_DEFAULT_SOCK_FD,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CLOSED,
       g_param_spec_boolean ("close-socket", "Close socket",
           "Close socket at the end of stream", DCCP_DEFAULT_CLOSED,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CAPS,
       g_param_spec_boxed ("caps", "Caps",
-          "The caps of the source pad", GST_TYPE_CAPS, G_PARAM_READWRITE));
+          "The caps of the source pad", GST_TYPE_CAPS,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CCID,
       g_param_spec_int ("ccid", "CCID",
           "The Congestion Control IDentified to be used", 2, G_MAXINT,
-          DCCP_DEFAULT_CCID, G_PARAM_READWRITE));
+          DCCP_DEFAULT_CCID, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* signals */
   /**

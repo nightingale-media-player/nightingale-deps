@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with gst-pulse; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
  *  USA.
  */
 
@@ -23,26 +23,34 @@
 #include "config.h"
 #endif
 
+#include <gst/gst-i18n-plugin.h>
+
 #include "pulsesink.h"
 #include "pulsesrc.h"
-#include "pulsemixer.h"
+#include "pulsedeviceprovider.h"
 
 GST_DEBUG_CATEGORY (pulse_debug);
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+#ifdef ENABLE_NLS
+  GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
+      LOCALEDIR);
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
 
-  if (!gst_element_register (plugin, "pulsesink", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "pulsesink", GST_RANK_PRIMARY + 10,
           GST_TYPE_PULSESINK))
     return FALSE;
 
-  if (!gst_element_register (plugin, "pulsesrc", GST_RANK_PRIMARY,
+  if (!gst_element_register (plugin, "pulsesrc", GST_RANK_PRIMARY + 10,
           GST_TYPE_PULSESRC))
     return FALSE;
 
-  if (!gst_element_register (plugin, "pulsemixer", GST_RANK_NONE,
-          GST_TYPE_PULSEMIXER))
+  if (!gst_device_provider_register (plugin, "pulsedeviceprovider",
+          GST_RANK_PRIMARY, GST_TYPE_PULSE_DEVICE_PROVIDER))
     return FALSE;
 
   GST_DEBUG_CATEGORY_INIT (pulse_debug, "pulse", 0, "PulseAudio elements");
@@ -51,6 +59,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "pulseaudio",
+    pulseaudio,
     "PulseAudio plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

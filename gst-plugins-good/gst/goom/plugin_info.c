@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,11 +29,12 @@
 #include "drawmethods.h"
 #include <math.h>
 #include <stdio.h>
+#ifdef HAVE_ORC
+#include <orc/orc.h>
+#endif
 
 
 #if defined (HAVE_CPU_PPC64) || defined (HAVE_CPU_PPC)
-#include <sys/types.h>
-#include <sys/sysctl.h>
 #include "ppc_zoom_ultimate.h"
 #include "ppc_drawings.h"
 #endif /* HAVE_CPU_PPC64 || HAVE_CPU_PPC */
@@ -43,11 +44,7 @@
 #include "mmx.h"
 #endif /* HAVE_MMX */
 
-#ifdef HAVE_LIBOIL
-#include <liboil/liboil.h>
-#include <liboil/liboilfunction.h>
-#include <liboil/liboilcpu.h>
-#endif
+#include <string.h>
 
 GST_DEBUG_CATEGORY_EXTERN (goom_debug);
 #define GST_CAT_DEFAULT goom_debug
@@ -55,10 +52,11 @@ GST_DEBUG_CATEGORY_EXTERN (goom_debug);
 static void
 setOptimizedMethods (PluginInfo * p)
 {
-
-  unsigned int cpuFlavour;
-#ifdef HAVE_LIBOIL
-  cpuFlavour = oil_cpu_get_flags ();
+#ifdef HAVE_ORC
+  unsigned int cpuFlavour =
+      orc_target_get_default_flags (orc_target_get_by_name ("mmx"));
+#else
+  unsigned int cpuFlavour = 0;
 #endif
 
   /* set default methods */
@@ -66,18 +64,18 @@ setOptimizedMethods (PluginInfo * p)
   p->methods.zoom_filter = zoom_filter_c;
 /*    p->methods.create_output_with_brightness = create_output_with_brightness;*/
 
-  GST_INFO ("liboil cpu flags: 0x%08x", cpuFlavour);
+  GST_INFO ("orc cpu flags: 0x%08x", cpuFlavour);
 
 /* FIXME: what about HAVE_CPU_X86_64 ? */
 #ifdef HAVE_CPU_I386
 #ifdef HAVE_MMX
-#ifdef HAVE_LIBOIL
+#ifdef HAVE_ORC
   GST_INFO ("have an x86");
-  if (cpuFlavour & OIL_IMPL_FLAG_MMXEXT) {
+  if (cpuFlavour & ORC_TARGET_MMX_MMXEXT) {
     GST_INFO ("Extended MMX detected. Using the fastest methods!");
     p->methods.draw_line = draw_line_xmmx;
     p->methods.zoom_filter = zoom_filter_xmmx;
-  } else if (cpuFlavour & OIL_IMPL_FLAG_MMX) {
+  } else if (cpuFlavour & ORC_TARGET_MMX_MMX) {
     GST_INFO ("MMX detected. Using fast methods!");
     p->methods.draw_line = draw_line_mmx;
     p->methods.zoom_filter = zoom_filter_mmx;
@@ -99,7 +97,7 @@ setOptimizedMethods (PluginInfo * p)
 #endif /* HAVE_CPU_PPC64 */
 
 #ifdef HAVE_CPU_PPC
-  if ((cpuFlavour & OIL_IMPL_FLAG_ALTIVEC) != 0) {
+  if ((cpuFlavour & ORC_TARGET_ALTIVEC_ALTIVEC) != 0) {
 /*            p->methods.create_output_with_brightness = ppc_brightness_G4;        */
     p->methods.zoom_filter = ppc_zoom_G4;
   } else {
@@ -116,46 +114,45 @@ void
 plugin_info_init (PluginInfo * pp, int nbVisuals)
 {
 
-  PluginInfo p = { 0, };
   int i;
 
-  p.sound.speedvar = p.sound.accelvar = p.sound.totalgoom = 0;
-  p.sound.prov_max = 0;
-  p.sound.goom_limit = 1;
-  p.sound.allTimesMax = 1;
-  p.sound.timeSinceLastGoom = 1;
-  p.sound.timeSinceLastBigGoom = 1;
-  p.sound.cycle = 0;
+  memset (pp, 0, sizeof (PluginInfo));
 
-  p.sound.volume_p = secure_f_feedback ("Sound Volume");
-  p.sound.accel_p = secure_f_feedback ("Sound Acceleration");
-  p.sound.speed_p = secure_f_feedback ("Sound Speed");
-  p.sound.goom_limit_p = secure_f_feedback ("Goom Limit");
-  p.sound.last_goom_p = secure_f_feedback ("Goom Detection");
-  p.sound.last_biggoom_p = secure_f_feedback ("Big Goom Detection");
-  p.sound.goom_power_p = secure_f_feedback ("Goom Power");
+  pp->sound.speedvar = pp->sound.accelvar = pp->sound.totalgoom = 0;
+  pp->sound.prov_max = 0;
+  pp->sound.goom_limit = 1;
+  pp->sound.allTimesMax = 1;
+  pp->sound.timeSinceLastGoom = 1;
+  pp->sound.timeSinceLastBigGoom = 1;
+  pp->sound.cycle = 0;
 
-  p.sound.biggoom_speed_limit_p = secure_i_param ("Big Goom Speed Limit");
-  IVAL (p.sound.biggoom_speed_limit_p) = 10;
-  IMIN (p.sound.biggoom_speed_limit_p) = 0;
-  IMAX (p.sound.biggoom_speed_limit_p) = 100;
-  ISTEP (p.sound.biggoom_speed_limit_p) = 1;
+  secure_f_feedback (&pp->sound.volume_p, "Sound Volume");
+  secure_f_feedback (&pp->sound.accel_p, "Sound Acceleration");
+  secure_f_feedback (&pp->sound.speed_p, "Sound Speed");
+  secure_f_feedback (&pp->sound.goom_limit_p, "Goom Limit");
+  secure_f_feedback (&pp->sound.last_goom_p, "Goom Detection");
+  secure_f_feedback (&pp->sound.last_biggoom_p, "Big Goom Detection");
+  secure_f_feedback (&pp->sound.goom_power_p, "Goom Power");
 
-  p.sound.biggoom_factor_p = secure_i_param ("Big Goom Factor");
-  IVAL (p.sound.biggoom_factor_p) = 10;
-  IMIN (p.sound.biggoom_factor_p) = 0;
-  IMAX (p.sound.biggoom_factor_p) = 100;
-  ISTEP (p.sound.biggoom_factor_p) = 1;
+  secure_i_param (&pp->sound.biggoom_speed_limit_p, "Big Goom Speed Limit");
+  IVAL (pp->sound.biggoom_speed_limit_p) = 10;
+  IMIN (pp->sound.biggoom_speed_limit_p) = 0;
+  IMAX (pp->sound.biggoom_speed_limit_p) = 100;
+  ISTEP (pp->sound.biggoom_speed_limit_p) = 1;
 
-  p.sound.params = plugin_parameters ("Sound", 11);
+  secure_i_param (&pp->sound.biggoom_factor_p, "Big Goom Factor");
+  IVAL (pp->sound.biggoom_factor_p) = 10;
+  IMIN (pp->sound.biggoom_factor_p) = 0;
+  IMAX (pp->sound.biggoom_factor_p) = 100;
+  ISTEP (pp->sound.biggoom_factor_p) = 1;
 
-  p.nbParams = 0;
-  p.params = NULL;
-  p.nbVisuals = nbVisuals;
-  p.visuals = (VisualFX **) malloc (sizeof (VisualFX *) * nbVisuals);
+  plugin_parameters (&pp->sound.params, "Sound", 11);
 
-  /* huh, we're setting a local variable and now copying it over? */
-  *pp = p;
+  pp->nbParams = 0;
+  pp->params = NULL;
+  pp->nbVisuals = nbVisuals;
+  pp->visuals = (VisualFX **) malloc (sizeof (VisualFX *) * nbVisuals);
+
   pp->sound.params.params[0] = &pp->sound.biggoom_speed_limit_p;
   pp->sound.params.params[1] = &pp->sound.biggoom_factor_p;
   pp->sound.params.params[2] = 0;

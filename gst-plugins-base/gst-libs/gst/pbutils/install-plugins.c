@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -88,7 +88,7 @@
  * </para>
  * <para>
  * The application will then call gst_install_plugins_async(), passing a
- * #NULL-terminated array of installer detail strings, and a function that
+ * NULL-terminated array of installer detail strings, and a function that
  * should be called when the installation of the plugins has finished
  * (successfully or not). Optionally, a #GstInstallPluginsContext created
  * with gst_install_plugins_context_new() may be passed as well. This way
@@ -216,7 +216,7 @@
  *       urisource-$(PROTOCOL_REQUIRED), e.g. urisource-http or urisource-mms
  *     </para></listitem>
  *     <listitem><para>
- *       element-$(ELEMENT_REQUIRED), e.g. element-ffmpegcolorspace
+ *       element-$(ELEMENT_REQUIRED), e.g. element-videoconvert
  *     </para></listitem>
  *     <listitem><para>
  *       decoder-$(CAPS_REQUIRED), e.g. (do read below for more details!):
@@ -381,8 +381,95 @@ static gboolean install_in_progress;    /* FALSE */
 /* private struct */
 struct _GstInstallPluginsContext
 {
+  gchar *confirm_search;
+  gchar *desktop_id;
+  gchar *startup_notification_id;
   guint xid;
 };
+
+/**
+ * gst_install_plugins_context_set_confirm_search:
+ * @ctx: a #GstInstallPluginsContext
+ * @confirm_search: whether to ask for confirmation before searching for plugins
+ *
+ * This function is used to tell the external installer process whether it
+ * should ask for confirmation or not before searching for missing plugins.
+ *
+ * If set, this option will be passed to the installer via a
+ * --interaction=[show-confirm-search|hide-confirm-search] command line option.
+ *
+ * Since: 1.6
+ */
+void
+gst_install_plugins_context_set_confirm_search (GstInstallPluginsContext * ctx,
+    gboolean confirm_search)
+{
+  g_return_if_fail (ctx != NULL);
+
+  if (confirm_search)
+    ctx->confirm_search = g_strdup ("show-confirm-search");
+  else
+    ctx->confirm_search = g_strdup ("hide-confirm-search");
+}
+
+/**
+ * gst_install_plugins_context_set_desktop_id:
+ * @ctx: a #GstInstallPluginsContext
+ * @desktop_id: the desktop file ID of the calling application
+ *
+ * This function is used to pass the calling application's desktop file ID to
+ * the external installer process.
+ *
+ * A desktop file ID is the basename of the desktop file, including the
+ * .desktop extension.
+ *
+ * If set, the desktop file ID will be passed to the installer via a
+ * --desktop-id= command line option.
+ *
+ * Since: 1.6
+ */
+void
+gst_install_plugins_context_set_desktop_id (GstInstallPluginsContext * ctx,
+    const gchar * desktop_id)
+{
+  g_return_if_fail (ctx != NULL);
+
+  ctx->desktop_id = g_strdup (desktop_id);
+}
+
+/**
+ * gst_install_plugins_context_set_startup_notification_id:
+ * @ctx: a #GstInstallPluginsContext
+ * @startup_id: the startup notification ID
+ *
+ * Sets the startup notification ID for the launched process.
+ *
+ * This is typically used to to pass the current X11 event timestamp to the
+ * external installer process.
+ *
+ * Startup notification IDs are defined in the
+ * [FreeDesktop.Org Startup Notifications standard](http://standards.freedesktop.org/startup-notification-spec/startup-notification-latest.txt).
+ *
+ * If set, the ID will be passed to the installer via a
+ * --startup-notification-id= command line option.
+ *
+ * GTK+/GNOME applications should be able to create a startup notification ID
+ * like this:
+ * <programlisting>
+ *   timestamp = gtk_get_current_event_time ();
+ *   startup_id = g_strdup_printf ("_TIME%u", timestamp);
+ * ...
+ * </programlisting>
+ *
+ * Since: 1.6
+ */
+void gst_install_plugins_context_set_startup_notification_id
+    (GstInstallPluginsContext * ctx, const gchar * startup_id)
+{
+  g_return_if_fail (ctx != NULL);
+
+  ctx->startup_notification_id = g_strdup (startup_id);
+}
 
 /**
  * gst_install_plugins_context_set_xid:
@@ -411,8 +498,6 @@ struct _GstInstallPluginsContext
  * ##endif
  * ...
  * </programlisting>
- *
- * Since: 0.10.12
  */
 void
 gst_install_plugins_context_set_xid (GstInstallPluginsContext * ctx, guint xid)
@@ -429,8 +514,6 @@ gst_install_plugins_context_set_xid (GstInstallPluginsContext * ctx, guint xid)
  *
  * Returns: a new #GstInstallPluginsContext. Free with
  * gst_install_plugins_context_free() when no longer needed
- *
- * Since: 0.10.12
  */
 GstInstallPluginsContext *
 gst_install_plugins_context_new (void)
@@ -443,14 +526,15 @@ gst_install_plugins_context_new (void)
  * @ctx: a #GstInstallPluginsContext
  *
  * Frees a #GstInstallPluginsContext.
- *
- * Since: 0.10.12
  */
 void
 gst_install_plugins_context_free (GstInstallPluginsContext * ctx)
 {
   g_return_if_fail (ctx != NULL);
 
+  g_free (ctx->confirm_search);
+  g_free (ctx->desktop_id);
+  g_free (ctx->startup_notification_id);
   g_free (ctx);
 }
 
@@ -460,23 +544,17 @@ gst_install_plugins_context_copy (GstInstallPluginsContext * ctx)
   GstInstallPluginsContext *ret;
 
   ret = gst_install_plugins_context_new ();
+  ret->confirm_search = g_strdup (ctx->confirm_search);
+  ret->desktop_id = g_strdup (ctx->desktop_id);
+  ret->startup_notification_id = g_strdup (ctx->startup_notification_id);
   ret->xid = ctx->xid;
 
   return ret;
 }
 
-GType
-gst_install_plugins_context_get_type (void)
-{
-  static GType gst_ipc_type = 0;
-
-  if (G_UNLIKELY (gst_ipc_type == 0)) {
-    gst_ipc_type = g_boxed_type_register_static ("GstInstallPluginsContext",
-        (GBoxedCopyFunc) gst_install_plugins_context_copy,
-        (GBoxedFreeFunc) gst_install_plugins_context_free);
-  }
-  return gst_ipc_type;
-}
+G_DEFINE_BOXED_TYPE (GstInstallPluginsContext, gst_install_plugins_context,
+    (GBoxedCopyFunc) gst_install_plugins_context_copy,
+    (GBoxedFreeFunc) gst_install_plugins_context_free);
 
 static const gchar *
 gst_install_plugins_get_helper (void)
@@ -504,29 +582,39 @@ ptr_array_contains_string (GPtrArray * arr, const gchar * s)
 }
 
 static gboolean
-gst_install_plugins_spawn_child (gchar ** details,
+gst_install_plugins_spawn_child (const gchar * const *details,
     GstInstallPluginsContext * ctx, GPid * child_pid, gint * exit_status)
 {
   GPtrArray *arr;
   gboolean ret;
   GError *err = NULL;
-  gchar **argv, xid_str[64] = { 0, };
+  gchar **argv;
 
-  arr = g_ptr_array_new ();
+  arr = g_ptr_array_new_with_free_func (g_free);
 
   /* argv[0] = helper path */
-  g_ptr_array_add (arr, (gchar *) gst_install_plugins_get_helper ());
+  g_ptr_array_add (arr, g_strdup (gst_install_plugins_get_helper ()));
 
   /* add any additional command line args from the context */
+  if (ctx != NULL && ctx->confirm_search) {
+    g_ptr_array_add (arr, g_strdup_printf ("--interaction=%s",
+            ctx->confirm_search));
+  }
+  if (ctx != NULL && ctx->desktop_id != NULL) {
+    g_ptr_array_add (arr, g_strdup_printf ("--desktop-id=%s", ctx->desktop_id));
+  }
+  if (ctx != NULL && ctx->startup_notification_id != NULL) {
+    g_ptr_array_add (arr, g_strdup_printf ("--startup-notification-id=%s",
+            ctx->startup_notification_id));
+  }
   if (ctx != NULL && ctx->xid != 0) {
-    g_snprintf (xid_str, sizeof (xid_str), "--transient-for=%u", ctx->xid);
-    g_ptr_array_add (arr, xid_str);
+    g_ptr_array_add (arr, g_strdup_printf ("--transient-for=%u", ctx->xid));
   }
 
   /* finally, add the detail strings, but without duplicates */
   while (details != NULL && details[0] != NULL) {
     if (!ptr_array_contains_string (arr, details[0]))
-      g_ptr_array_add (arr, details[0]);
+      g_ptr_array_add (arr, g_strdup (details[0]));
     ++details;
   }
 
@@ -553,7 +641,7 @@ gst_install_plugins_spawn_child (gchar ** details,
     g_error_free (err);
   }
 
-  g_ptr_array_free (arr, TRUE);
+  g_ptr_array_unref (arr);
   return ret;
 }
 
@@ -569,7 +657,7 @@ gst_install_plugins_return_from_status (gint status)
     ret = (GstInstallPluginsReturn) WEXITSTATUS (status);
 
     /* did the helper return an invalid status code? */
-    if ((ret < 0 || ret >= GST_INSTALL_PLUGINS_STARTED_OK) &&
+    if (((guint) ret) >= GST_INSTALL_PLUGINS_STARTED_OK &&
         ret != GST_INSTALL_PLUGINS_INTERNAL_FAILURE) {
       ret = GST_INSTALL_PLUGINS_INVALID;
     }
@@ -606,10 +694,11 @@ gst_install_plugins_installer_exited (GPid pid, gint status, gpointer data)
 
 /**
  * gst_install_plugins_async:
- * @details: NULL-terminated array of installer string details (see below)
- * @ctx: a #GstInstallPluginsContext, or NULL
- * @func: the function to call when the installer program returns
- * @user_data: the user data to pass to @func when called, or NULL
+ * @details: (array zero-terminated=1) (transfer none): NULL-terminated array
+ *     of installer string details (see below)
+ * @ctx: (allow-none): a #GstInstallPluginsContext, or NULL
+ * @func: (scope async): the function to call when the installer program returns
+ * @user_data: (closure): the user data to pass to @func when called, or NULL
  * 
  * Requests plugin installation without blocking. Once the plugins have been
  * installed or installation has failed, @func will be called with the result
@@ -629,13 +718,12 @@ gst_install_plugins_installer_exited (GPid pid, gint status, gpointer data)
  * installed but no suitable video decoder and no suitable audio decoder).
  *
  * Returns: result code whether an external installer could be started
- *
- * Since: 0.10.12
  */
 
 GstInstallPluginsReturn
-gst_install_plugins_async (gchar ** details, GstInstallPluginsContext * ctx,
-    GstInstallPluginsResultFunc func, gpointer user_data)
+gst_install_plugins_async (const gchar * const *details,
+    GstInstallPluginsContext * ctx, GstInstallPluginsResultFunc func,
+    gpointer user_data)
 {
   GstInstallPluginsAsyncHelper *helper;
   GPid pid;
@@ -665,8 +753,9 @@ gst_install_plugins_async (gchar ** details, GstInstallPluginsContext * ctx,
 
 /**
  * gst_install_plugins_sync:
- * @details: NULL-terminated array of installer string details
- * @ctx: a #GstInstallPluginsContext, or NULL
+ * @details: (array zero-terminated=1) (transfer none): NULL-terminated array
+ *     of installer string details
+ * @ctx: (allow-none): a #GstInstallPluginsContext, or NULL
  * 
  * Requests plugin installation and block until the plugins have been
  * installed or installation has failed.
@@ -678,11 +767,10 @@ gst_install_plugins_async (gchar ** details, GstInstallPluginsContext * ctx,
  * gst_install_plugins_async() instead of this function.
  *
  * Returns: the result of the installation.
- *
- * Since: 0.10.12
  */
 GstInstallPluginsReturn
-gst_install_plugins_sync (gchar ** details, GstInstallPluginsContext * ctx)
+gst_install_plugins_sync (const gchar * const *details,
+    GstInstallPluginsContext * ctx)
 {
   gint status;
 
@@ -712,8 +800,6 @@ gst_install_plugins_sync (gchar ** details, GstInstallPluginsContext * ctx)
  * in debugging.
  *
  * Returns: a descriptive string for the status code in @ret
- *
- * Since: 0.10.12
  */
 const gchar *
 gst_install_plugins_return_get_name (GstInstallPluginsReturn ret)
@@ -754,8 +840,6 @@ gst_install_plugins_return_get_name (GstInstallPluginsReturn ret)
  * is currently in progress.
  *
  * Returns: TRUE if plugin installation is in progress, otherwise FALSE
- *
- * Since: 0.10.12
  */
 gboolean
 gst_install_plugins_installation_in_progress (void)
@@ -772,8 +856,6 @@ gst_install_plugins_installation_in_progress (void)
  * exists.
  *
  * Returns: TRUE if plugin installation is likely to be supported.
- *
- * Since: 0.10.15
  */
 gboolean
 gst_install_plugins_supported (void)

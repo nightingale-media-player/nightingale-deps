@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_AVI_H__
@@ -49,6 +49,7 @@ typedef struct _gst_riff_avih {
 /* vprp (video properties) ODML header */
 /* see ODML spec for some/more explanation */
 #define GST_RIFF_TAG_vprp GST_MAKE_FOURCC ('v','p','r','p')
+#define GST_RIFF_DXSB GST_MAKE_FOURCC ('D','X','S','B')
 #define GST_RIFF_VPRP_VIDEO_FIELDS        (2)
 
 typedef struct _gst_riff_vprp_video_field_desc {

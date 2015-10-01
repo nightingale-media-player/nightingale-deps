@@ -1,20 +1,17 @@
 plugin_LTLIBRARIES = libgstcairo.la
 
-noinst_HEADERS = gsttimeoverlay.h gsttextoverlay.h gstcairorender.h
-
+noinst_HEADERS = \
+	gstcairooverlay.h
 libgstcairo_la_SOURCES = \
 	gstcairo.c \
-	gsttimeoverlay.c \
-	gsttextoverlay.c \
-	gstcairorender.c
-
+	gstcairooverlay.c
 libgstcairo_la_CFLAGS = \
-        $(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) \
 	$(GST_BASE_CFLAGS) \
 	$(GST_CFLAGS) $(CAIRO_CFLAGS)
 libgstcairo_la_LIBADD = \
-  $(GST_BASE_LIBS) \
-  $(GST_LIBS) $(CAIRO_LIBS) $(LIBM)
+	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) \
+	$(GST_BASE_LIBS) $(GST_LIBS) $(CAIRO_LIBS) $(LIBM)
 libgstcairo_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstcairo_la_LIBTOOLFLAGS = --tag=disable-static
+libgstcairo_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 

@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  */
 
@@ -44,6 +44,8 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_RTP_JITTER_BUFFER))
 #define GST_IS_RTP_JITTER_BUFFER_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_RTP_JITTER_BUFFER))
+#define GST_RTP_JITTER_BUFFER_CAST(obj) \
+  ((GstRtpJitterBuffer *)(obj))
 
 typedef struct _GstRtpJitterBuffer GstRtpJitterBuffer;
 typedef struct _GstRtpJitterBufferClass GstRtpJitterBufferClass;
@@ -59,9 +61,7 @@ struct _GstRtpJitterBuffer
   GstElement parent;
 
   /*< private >*/
-  GstRtpJitterBufferPrivate *priv;
-
-  gpointer _gst_reserved[GST_PADDING];
+  GstRtpJitterBufferPrivate *priv; /* FIXME: remove? */
 };
 
 struct _GstRtpJitterBufferClass
@@ -77,8 +77,7 @@ struct _GstRtpJitterBufferClass
   /* actions */
   void     (*clear_pt_map)   (GstRtpJitterBuffer *buffer);
 
-  /*< private > */
-  gpointer _gst_reserved[GST_PADDING];
+  GstClockTime (*set_active)     (GstRtpJitterBuffer *buffer, gboolean active, guint64 elapsed);
 };
 
 GType gst_rtp_jitter_buffer_get_type (void);

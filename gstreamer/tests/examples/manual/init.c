@@ -1,5 +1,6 @@
 
 /*** block  from ../../../docs/manual/basics-init.xml ***/
+#include <stdio.h>
 #include <gst/gst.h>
 
 int

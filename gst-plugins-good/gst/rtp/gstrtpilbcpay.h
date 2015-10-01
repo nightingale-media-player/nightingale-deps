@@ -13,20 +13,20 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_ILBC_PAY_H__
 #define __GST_RTP_ILBC_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertpaudiopayload.h>
+#include <gst/rtp/gstrtpbaseaudiopayload.h>
 
 G_BEGIN_DECLS
 
 #define GST_TYPE_RTP_ILBC_PAY \
-  (gst_rtpilbcpay_get_type())
+  (gst_rtp_ilbc_pay_get_type())
 #define GST_RTP_ILBC_PAY(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_RTP_ILBC_PAY,GstRTPILBCPay))
 #define GST_RTP_ILBC_PAY_CLASS(klass) \
@@ -41,15 +41,17 @@ typedef struct _GstRTPILBCPayClass GstRTPILBCPayClass;
 
 struct _GstRTPILBCPay
 {
-  GstBaseRTPAudioPayload audiopayload;
+  GstRTPBaseAudioPayload audiopayload;
 
   gint mode;
 };
 
 struct _GstRTPILBCPayClass
 {
-  GstBaseRTPAudioPayloadClass parent_class;
+  GstRTPBaseAudioPayloadClass parent_class;
 };
+
+GType gst_rtp_ilbc_pay_get_type (void);
 
 gboolean gst_rtp_ilbc_pay_plugin_init (GstPlugin * plugin);
 

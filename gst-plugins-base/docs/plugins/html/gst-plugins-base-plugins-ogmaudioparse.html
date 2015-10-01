@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ogmaudioparse: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-oggparse.html" title="oggparse">
+<link rel="next" href="gst-plugins-base-plugins-ogmtextparse.html" title="ogmtextparse">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-ogmaudioparse.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-oggparse.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-ogmtextparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-plugins-ogmaudioparse"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-ogmaudioparse.top_of_page"></a>ogmaudioparse</span></h2>
+<p>ogmaudioparse</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-ogmaudioparse.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.25.3.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-ogg.html#plugin-ogg">ogg</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>GStreamer maintainers &lt;gstreamer-devel@lists.freedesktop.org&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Decoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.25.3.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-ogm-audio</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>sometimes</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/ms-gsm, rate=(int)[ 1, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)1, layer=(int)3, rate=(int)[ 8000, 48000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)1, layer=(int)2, rate=(int)[ 16000, 48000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw, format=(string){ S8, U8, S16LE, U16LE, S24LE, U24LE, S32LE, U32LE }, layout=(string)interleaved, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-vorbis, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-ac3, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 6 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-dts</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)4, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-alaw, rate=(int)[ 1000, 48000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-mulaw, rate=(int)[ 1000, 48000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-wms, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-adpcm, layout=(string)microsoft, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-adpcm, layout=(string)dvi, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-truespeech, rate=(int)8000, channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-wma, wmaversion=(int)1, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-wma, wmaversion=(int)2, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-wma, wmaversion=(int)3, bitrate=(int)[ 0, 2147483647 ], rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 8 ], block_align=(int)[ 1, 2147483647 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-vnd.sony.atrac3, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw, format=(string){ F32LE, F64LE }, layout=(string)interleaved, rate=(int)[ 1000, 192000 ], channels=(int)[ 1, 8 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-voxware, voxwaretype=(int)117, rate=(int)[ 1000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-adpcm, layout=(string)dk4, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-adpcm, layout=(string)dk3, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-adpcm, layout=(string)dvi, rate=(int)[ 8000, 96000 ], channels=(int)[ 1, 2 ]</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/AMR, rate=(int)8000, channels=(int)1</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/AMR-WB, rate=(int)16000, channels=(int)1</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-siren</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-ogg-avi</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-ogmaudioparse.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-ogmaudioparse.other_details"></a><h2>Types and Values</h2>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

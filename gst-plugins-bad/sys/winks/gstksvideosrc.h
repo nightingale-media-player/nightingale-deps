@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_KS_VIDEO_SRC_H__
@@ -35,12 +35,15 @@ G_BEGIN_DECLS
 #define GST_IS_KS_VIDEO_SRC_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_KS_VIDEO_SRC))
 
-typedef struct _GstKsVideoSrc      GstKsVideoSrc;
-typedef struct _GstKsVideoSrcClass GstKsVideoSrcClass;
+typedef struct _GstKsVideoSrc         GstKsVideoSrc;
+typedef struct _GstKsVideoSrcClass    GstKsVideoSrcClass;
+typedef struct _GstKsVideoSrcPrivate  GstKsVideoSrcPrivate;
 
 struct _GstKsVideoSrc
 {
   GstPushSrc push_src;
+
+  GstKsVideoSrcPrivate * priv;
 };
 
 struct _GstKsVideoSrcClass

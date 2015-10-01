@@ -1,4 +1,10 @@
-/* 
+/*
+ * This library is licensed under 2 different licenses and you
+ * can choose to use it under the terms of either one of them. The
+ * two licenses are the MPL 1.1 and the LGPL.
+ *
+ * MPL:
+ *
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -8,6 +14,23 @@
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
+ *
+ * LGPL:
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * The Original Code is Fluendo MPEG Demuxer plugin.
  *
@@ -42,92 +65,102 @@ typedef struct _GstFluPSDemuxClass GstFluPSDemuxClass;
 
 #define GST_FLUPS_DEMUX_MAX_STREAMS	256
 #define GST_FLUPS_DEMUX_MAX_PSM		256
+
 #define MAX_DVD_AUDIO_STREAMS 8
 #define MAX_DVD_SUBPICTURE_STREAMS 32
 
-typedef enum {
+typedef enum
+{
   STATE_FLUPS_DEMUX_NEED_SYNC,
   STATE_FLUPS_DEMUX_SYNCED,
   STATE_FLUPS_DEMUX_NEED_MORE_DATA,
 } GstFluPSDemuxState;
 
 /* Information associated with a single FluPS stream. */
-struct _GstFluPSStream {
-  GstPad         * pad;
+struct _GstFluPSStream
+{
+  GstPad *pad;
 
-  gint           id;
-  gint           type;
-  gint           size_bound;
+  gint id;
+  gint type;
 
-  gboolean       discont;
-  gboolean       notlinked;
-  gboolean       need_segment;
- 
-  GstClockTime   last_seg_start;
-  GstClockTime   last_ts;
-  GstClockTime   segment_thresh;
+  GstClockTime segment_thresh;
+  GstClockTime last_ts;
+  GstFlowReturn last_flow;
+
+  gboolean discont;
+  gboolean notlinked;
+  gboolean need_segment;
+
+  GstTagList *pending_tags;
 };
 
-struct _GstFluPSDemux {
-  GstElement     parent;
+struct _GstFluPSDemux
+{
+  GstElement parent;
 
-  GstPad         * sinkpad;
+  GstPad *sinkpad;
+  gboolean random_access;       /* If we operate in pull mode */
+  gboolean in_still;
 
-  GstAdapter     * adapter;
-  GstAdapter     * rev_adapter;
-  guint64        adapter_offset;
-  guint32        last_sync_code;
-  GstPESFilter   filter;
+  gboolean have_group_id;
+  guint group_id;
 
-  gint64         mux_rate;
-  guint64	     first_scr;
-  guint64	     first_dts;
-  guint64	     base_time;
-  guint64        current_scr;
-  guint64        next_scr;
-  guint64        bytes_since_scr;
-  gint64         scr_adjust;
-  guint64        scr_rate_n;
-  guint64        scr_rate_d;
-  guint64        first_scr_offset;
-  guint64        last_scr_offset;
+  GstAdapter *adapter;
+  GstAdapter *rev_adapter;
+  guint64 adapter_offset;
+  guint32 last_sync_code;
+  GstPESFilter filter;
 
-  gint16         psm[GST_FLUPS_DEMUX_MAX_PSM];
+  gint64 mux_rate;
+  guint64 first_scr;
+  guint64 first_dts;
+  guint64 base_time;
+  guint64 current_scr;
+  guint64 next_scr;
+  guint64 bytes_since_scr;
+  gint64 scr_adjust;
+  guint64 scr_rate_n;
+  guint64 scr_rate_d;
+  guint64 first_scr_offset;
+  guint64 cur_scr_offset;
 
-  GstSegment     sink_segment;
-  GstSegment     src_segment;
+  gint16 psm[GST_FLUPS_DEMUX_MAX_PSM];
+
+  GstSegment sink_segment;
+  GstSegment src_segment;
 
   /* stream output */
-  GstFluPSStream * current_stream;
-  guint64        next_pts;
-  guint64        next_dts;
-  GstFluPSStream ** streams;
-  gboolean       need_no_more_pads;
+  GstFluPSStream *current_stream;
+  guint64 next_pts;
+  guint64 next_dts;
+  GstFluPSStream **streams;
+  GstFluPSStream **streams_found;
+  gint found_count;
+  gboolean need_no_more_pads;
 
   /* Indicates an MPEG-2 stream */
   gboolean is_mpeg2_pack;
-  gboolean disable_stream_creation;
 
-  /* Language codes event is stored when a dvd-lang-codes
-   * custom event arrives from upstream */
-  GstEvent * lang_codes;
-  gint       audio_stream_types[MAX_DVD_AUDIO_STREAMS];
+  /* DVD-specific stream handling */
+  gboolean disable_stream_creation;
+  gint audio_stream_map[MAX_DVD_AUDIO_STREAMS];
 };
 
-struct _GstFluPSDemuxClass {
+struct _GstFluPSDemuxClass
+{
   GstElementClass parent_class;
 
   GstPadTemplate *sink_template;
   GstPadTemplate *video_template;
   GstPadTemplate *audio_template;
-  GstPadTemplate *private_template;
   GstPadTemplate *subpicture_template;
+  GstPadTemplate *private_template;
 };
 
-GType		gst_flups_demux_get_type	(void);
+GType gst_flups_demux_get_type (void);
 
-gboolean	gst_flups_demux_plugin_init	(GstPlugin *plugin);
+gboolean gst_flups_demux_plugin_init (GstPlugin *plugin);
 
 G_END_DECLS
-
 #endif /* __GST_FLUPS_DEMUX_H__ */

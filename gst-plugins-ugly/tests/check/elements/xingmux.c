@@ -48,13 +48,19 @@ GstElement *
 setup_xingmux ()
 {
   GstElement *xingmux;
+  GstCaps *caps;
 
   GST_DEBUG ("setup_xingmux");
   xingmux = gst_check_setup_element ("xingmux");
-  mysrcpad = gst_check_setup_src_pad (xingmux, &srctemplate, NULL);
-  mysinkpad = gst_check_setup_sink_pad (xingmux, &sinktemplate, NULL);
+  mysrcpad = gst_check_setup_src_pad (xingmux, &srctemplate);
+  mysinkpad = gst_check_setup_sink_pad (xingmux, &sinktemplate);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
+
+  caps = gst_caps_new_simple ("audio/mpeg",
+      "mpegversion", G_TYPE_INT, 1, "layer", G_TYPE_INT, 3, NULL);
+  gst_check_setup_events (mysrcpad, xingmux, caps, GST_FORMAT_TIME);
+  gst_caps_unref (caps);
 
   return xingmux;
 }
@@ -89,9 +95,8 @@ GST_START_TEST (test_xing_remux)
       "could not set to playing");
 
   inbuffer = gst_buffer_new_and_alloc (sizeof (test_xing));
-  memcpy (GST_BUFFER_DATA (inbuffer), test_xing, sizeof (test_xing));
+  gst_buffer_fill (inbuffer, 0, test_xing, sizeof (test_xing));
 
-  gst_buffer_set_caps (inbuffer, GST_PAD_CAPS (mysrcpad));
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
 
   /* pushing gives away my reference ... */
@@ -103,27 +108,29 @@ GST_START_TEST (test_xing_remux)
   verify_data = test_xing;
   for (it = buffers; it != NULL; it = it->next) {
     GstBuffer *outbuffer = (GstBuffer *) it->data;
+    GstMapInfo map;
+
+    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
 
     if (it == buffers) {
       gint j;
 
       /* Empty Xing header, should be the same as input data until the "Xing" marker
        * and zeroes afterwards. */
-      fail_unless (memcmp (test_xing, GST_BUFFER_DATA (outbuffer), 25) == 0);
-      for (j = 26; j < GST_BUFFER_SIZE (outbuffer); j++)
-        fail_unless (GST_BUFFER_DATA (outbuffer)[j] == 0);
-      verify_data += GST_BUFFER_SIZE (outbuffer);
+      fail_unless (memcmp (map.data, test_xing, 25) == 0);
+      for (j = 26; j < map.size; j++)
+        fail_unless (map.data[j] == 0);
+      verify_data += map.size;
     } else if (it->next != NULL) {
       /* Should contain the raw MP3 data without changes */
-      fail_unless (memcmp (verify_data, GST_BUFFER_DATA (outbuffer),
-              GST_BUFFER_SIZE (outbuffer)) == 0);
-      verify_data += GST_BUFFER_SIZE (outbuffer);
+      fail_unless (memcmp (map.data, verify_data, map.size) == 0);
+      verify_data += map.size;
     } else {
       /* Last buffer is the rewrite of the first buffer and should be exactly the same
        * as the old Xing header we had */
-      fail_unless (memcmp (test_xing, GST_BUFFER_DATA (outbuffer),
-              GST_BUFFER_SIZE (outbuffer)) == 0);
+      fail_unless (memcmp (test_xing, map.data, map.size) == 0);
     }
+    gst_buffer_unmap (outbuffer, &map);
   }
 
   /* cleanup */
@@ -144,19 +151,4 @@ xingmux_suite (void)
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = xingmux_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (xingmux);

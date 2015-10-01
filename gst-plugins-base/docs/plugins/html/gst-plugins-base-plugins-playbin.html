@@ -2,391 +2,625 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>playbin</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Plugins Reference Manual">
+<title>playbin: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="prev" href="gst-plugins-base-plugins-oggmux.html" title="oggmux">
-<link rel="next" href="gst-plugins-base-plugins-playbin2.html" title="playbin2">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="prev" href="gst-plugins-base-plugins-ogmvideoparse.html" title="ogmvideoparse">
+<link rel="next" href="gst-plugins-base-plugins-playsink.html" title="playsink">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-base Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-base Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-base Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-oggmux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-playbin2.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-playbin.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-playbin.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-playbin.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-playbin.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gst-plugins-base-plugins-playbin.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playbin.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playbin.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playbin.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playbin.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playbin.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-ogmvideoparse.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-playsink.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-base-plugins-playbin"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-playbin.top_of_page"></a>playbin</span></h2>
-<p>playbin — Autoplug and play media from an uri</p>
+<p>playbin</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-playbin.synopsis"></a><h2>Synopsis</h2>
-<a name="GstPlayBin"></a><pre class="synopsis">
-struct              <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-struct" title="struct GstPlayBin">GstPlayBin</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title="The “audio-sink” property">audio-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-stream-combiner" title="The “audio-stream-combiner” property">audio-stream-combiner</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--av-offset" title="The “av-offset” property">av-offset</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--buffer-duration" title="The “buffer-duration” property">buffer-duration</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--buffer-size" title="The “buffer-size” property">buffer-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--connection-speed" title="The “connection-speed” property">connection-speed</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--current-audio" title="The “current-audio” property">current-audio</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--current-suburi" title="The “current-suburi” property">current-suburi</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--current-text" title="The “current-text” property">current-text</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--current-uri" title="The “current-uri” property">current-uri</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--current-video" title="The “current-video” property">current-video</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayFlags" title="enum GstPlayFlags"><span class="type">GstPlayFlags</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--flags" title="The “flags” property">flags</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--force-aspect-ratio" title="The “force-aspect-ratio” property">force-aspect-ratio</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--mute" title="The “mute” property">mute</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--n-audio" title="The “n-audio” property">n-audio</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--n-text" title="The “n-text” property">n-text</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--n-video" title="The “n-video” property">n-video</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--ring-buffer-max-size" title="The “ring-buffer-max-size” property">ring-buffer-max-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--sample" title="The “sample” property">sample</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--source" title="The “source” property">source</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-encoding" title="The “subtitle-encoding” property">subtitle-encoding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-font-desc" title="The “subtitle-font-desc” property">subtitle-font-desc</a></td>
+<td class="property_flags">Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--suburi" title="The “suburi” property">suburi</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--text-sink" title="The “text-sink” property">text-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--text-stream-combiner" title="The “text-stream-combiner” property">text-stream-combiner</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--uri" title="The “uri” property">uri</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title="The “video-sink” property">video-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-stream-combiner" title="The “video-stream-combiner” property">video-stream-combiner</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--vis-plugin" title="The “vis-plugin” property">vis-plugin</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--volume" title="The “volume” property">volume</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-filter" title="The “audio-filter” property">audio-filter</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-filter" title="The “video-filter” property">video-filter</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoMultiviewFlags"><span class="type">GstVideoMultiviewFlags</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-multiview-flags" title="The “video-multiview-flags” property">video-multiview-flags</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoMultiviewFramePacking"><span class="type">GstVideoMultiviewFramePacking</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-multiview-mode" title="The “video-multiview-mode” property">video-multiview-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-about-to-finish" title="The “about-to-finish” signal">about-to-finish</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-audio-changed" title="The “audio-changed” signal">audio-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-audio-tags-changed" title="The “audio-tags-changed” signal">audio-tags-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-convert-sample" title="The “convert-sample” signal">convert-sample</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-audio-pad" title="The “get-audio-pad” signal">get-audio-pad</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-audio-tags" title="The “get-audio-tags” signal">get-audio-tags</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-text-pad" title="The “get-text-pad” signal">get-text-pad</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-text-tags" title="The “get-text-tags” signal">get-text-tags</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-video-pad" title="The “get-video-pad” signal">get-video-pad</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-get-video-tags" title="The “get-video-tags” signal">get-video-tags</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-source-setup" title="The “source-setup” signal">source-setup</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-text-changed" title="The “text-changed” signal">text-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-text-tags-changed" title="The “text-tags-changed” signal">text-tags-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-video-changed" title="The “video-changed” signal">video-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-video-tags-changed" title="The “video-tags-changed” signal">video-tags-changed</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstPlayBin"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin-struct" title="struct GstPlayBin">GstPlayBin</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayFlags" title="enum GstPlayFlags">GstPlayFlags</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-playbin.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBin.html"
->GstBin</a>
-                     +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPipeline.html"
->GstPipeline</a>
-                           +----<a class="link" href="GstPlayBaseBin.html" title="GstPlayBaseBin">GstPlayBaseBin</a>
-                                 +----GstPlayBin
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPipeline.html">GstPipeline</a>
+                        <span class="lineart">╰──</span> GstPlayBin
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-playbin.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstPlayBin implements
- <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstChildProxy.html"
->GstChildProxy</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gststreamvolume.html#GstStreamVolume">GstStreamVolume</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay">GstVideoOverlay</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> and  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance">GstColorBalance</a>.</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-playbin.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'>audio-sink</a>"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--frame" title='The "frame" property'>frame</a>"                    <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a>*            : Read
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--subtitle-font-desc" title='The "subtitle-font-desc" property'>subtitle-font-desc</a>"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'>video-sink</a>"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--vis-plugin" title='The "vis-plugin" property'>vis-plugin</a>"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--volume" title='The "volume" property'>volume</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
->gdouble</a>               : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-playbin.description"></a><h2>Description</h2>
-<p>
-Playbin provides a stand-alone everything-in-one abstraction for an
-audio and/or video player.
-</p>
-<p>
-It can handle both audio and video files and features
-</p>
-<div class="itemizedlist"><ul type="disc">
-<li>
+<p>Playbin provides a stand-alone everything-in-one abstraction for an
+audio and/or video player.</p>
+<p>Playbin can handle both audio and video files and features</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
 automatic file type recognition and based on that automatic
 selection and usage of the right audio/video/subtitle demuxers/decoders
 </li>
-<li>
+<li class="listitem">
 visualisations for audio files
 </li>
-<li>
-subtitle support for video files
+<li class="listitem">
+subtitle support for video files. Subtitles can be store in external
+files.
 </li>
-<li>
-stream selection between different audio/subtitles streams
+<li class="listitem">
+stream selection between different video/audio/subtitles streams
 </li>
-<li>
+<li class="listitem">
 meta info (tag) extraction
 </li>
-<li>
-easy access to the last video frame
+<li class="listitem">
+easy access to the last video sample
 </li>
-<li>
+<li class="listitem">
 buffering when playing streams over a network
 </li>
-<li>
-volume control
+<li class="listitem">
+volume control with mute option
 </li>
 </ul></div>
-<p>
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2621601"></a><h3>Usage</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.5"></a><h3>Usage</h3>
 <p>
 A playbin element can be created just like any other element using
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html#gst-element-factory-make"
-><code class="function">gst_element_factory_make()</code></a>. The file/URI to play should be set via the <span class="type">"uri"</span>
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElementFactory.html#gst-element-factory-make"><code class="function">gst_element_factory_make()</code></a>. The file/URI to play should be set via the <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--uri" title="The “uri” property"><span class="type">“uri”</span></a>
 property. This must be an absolute URI, relative file paths are not allowed.
 Example URIs are file:///home/joe/movie.avi or http://www.joedoe.com/foo.ogg
-</p>
-<p>
-Playbin is a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstPipeline.html"
-><span class="type">GstPipeline</span></a>. It will notify the application of everything
+
+Playbin is a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPipeline.html"><span class="type">GstPipeline</span></a>. It will notify the application of everything
 that's happening (errors, end of stream, tags found, state changes, etc.)
-by posting messages on its <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBus.html"
-><span class="type">GstBus</span></a>. The application needs to watch the
+by posting messages on its <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBus.html"><span class="type">GstBus</span></a>. The application needs to watch the
 bus.
-</p>
-<p>
+
 Playback can be initiated by setting the element to PLAYING state using
-<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-set-state"
-><code class="function">gst_element_set_state()</code></a>. Note that the state change will take place in
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-set-state"><code class="function">gst_element_set_state()</code></a>. Note that the state change will take place in
 the background in a separate thread, when the function returns playback
 is probably not happening yet and any errors might not have occured yet.
 Applications using playbin should ideally be written to deal with things
 completely asynchroneous.
-</p>
-<p>
+
 When playback has finished (an EOS message has been received on the bus)
 or an error has occured (an ERROR message has been received on the bus) or
 the user wants to play a different track, playbin should be set back to
-READY or NULL state, then the <span class="type">"uri"</span> property should be set to the
+READY or NULL state, then the <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--uri" title="The “uri” property"><span class="type">“uri”</span></a> property should be set to the
 new location and then playbin be set to PLAYING state again.
-</p>
-<p>
-Seeking can be done using <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-seek-simple"
-><code class="function">gst_element_seek_simple()</code></a> or <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-seek"
-><code class="function">gst_element_seek()</code></a>
+
+Seeking can be done using <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-seek-simple"><code class="function">gst_element_seek_simple()</code></a> or <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-seek"><code class="function">gst_element_seek()</code></a>
 on the playbin element. Again, the seek will not be executed
 instantaneously, but will be done in a background thread. When the seek
 call returns the seek will most likely still be in process. An application
-may wait for the seek to finish (or fail) using <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-get-state"
-><code class="function">gst_element_get_state()</code></a> with
+may wait for the seek to finish (or fail) using <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-get-state"><code class="function">gst_element_get_state()</code></a> with
 -1 as the timeout, but this will block the user interface and is not
 recommended at all.
-</p>
-<p>
+
 Applications may query the current position and duration of the stream
-via <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-query-position"
-><code class="function">gst_element_query_position()</code></a> and <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html#gst-element-query-duration"
-><code class="function">gst_element_query_duration()</code></a> and
+via <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-query-position"><code class="function">gst_element_query_position()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-query-duration"><code class="function">gst_element_query_duration()</code></a> and
 setting the format passed to GST_FORMAT_TIME. If the query was successful,
 the duration or position will have been returned in units of nanoseconds.
 </p>
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2621750"></a><h3>Advanced Usage: specifying the audio and video sink</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.6"></a><h3>Advanced Usage: specifying the audio and video sink</h3>
 <p>
 By default, if no audio sink or video sink has been specified via the
-<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'><span class="type">"audio-sink"</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'><span class="type">"video-sink"</span></a> property, playbin will use
-the autoaudiosink and autovideosink elements to find the first-best
-available output method.
+<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title="The “audio-sink” property"><span class="type">“audio-sink”</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title="The “video-sink” property"><span class="type">“video-sink”</span></a> property, playbin will use the autoaudiosink
+and autovideosink elements to find the first-best available output method.
 This should work in most cases, but is not always desirable. Often either
 the user or application might want to specify more explicitly what to use
 for audio and video output.
-</p>
-<p>
+
 If the application wants more control over how audio or video should be
 output, it may create the audio/video sink elements itself (for example
-using <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElementFactory.html#gst-element-factory-make"
-><code class="function">gst_element_factory_make()</code></a>) and provide them to playbin using the
-<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title='The "audio-sink" property'><span class="type">"audio-sink"</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title='The "video-sink" property'><span class="type">"video-sink"</span></a> property.
-</p>
-<p>
+using <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElementFactory.html#gst-element-factory-make"><code class="function">gst_element_factory_make()</code></a>) and provide them to playbin using the
+<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--audio-sink" title="The “audio-sink” property"><span class="type">“audio-sink”</span></a> or <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin--video-sink" title="The “video-sink” property"><span class="type">“video-sink”</span></a> property.
+
 GNOME-based applications, for example, will usually want to create
 gconfaudiosink and gconfvideosink elements and make playbin use those,
 so that output happens to whatever the user has configured in the GNOME
-Multimedia System Selector confinguration dialog.
-</p>
-<p>
+Multimedia System Selector configuration dialog.
+
 The sink elements do not necessarily need to be ready-made sinks. It is
 possible to create container elements that look like a sink to playbin,
 but in reality contain a number of custom elements linked together. This
-can be achieved by creating a <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBin.html"
-><span class="type">GstBin</span></a> and putting elements in there and
-linking them, and then creating a sink <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstGhostPad.html"
-><span class="type">GstGhostPad</span></a> for the bin and pointing
+can be achieved by creating a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html"><span class="type">GstBin</span></a> and putting elements in there and
+linking them, and then creating a sink <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstGhostPad.html"><span class="type">GstGhostPad</span></a> for the bin and pointing
 it to the sink pad of the first element within the bin. This can be used
 for a number of purposes, for example to force output to a particular
 format or to modify or observe the data before it is output.
-</p>
-<p>
+
 It is also possible to 'suppress' audio and/or video output by using
 'fakesink' elements (or capture it from there using the fakesink element's
 "handoff" signal, which, nota bene, is fired from the streaming thread!).
 </p>
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2621852"></a><h3>Retrieving Tags and Other Meta Data</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.7"></a><h3>Retrieving Tags and Other Meta Data</h3>
 <p>
 Most of the common meta data (artist, title, etc.) can be retrieved by
 watching for TAG messages on the pipeline's bus (see above).
-</p>
-<p>
+
 Other more specific meta information like width/height/framerate of video
 streams or samplerate/number of channels of audio streams can be obtained
-using the  <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'><span class="type">"stream-info"</span></a> property, which will return a GList of
-stream info objects, one for each stream. These are opaque objects that can
-only be accessed via the standard GObject property interface, ie. <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#g-object-get"
-><code class="function">g_object_get()</code></a>.
-Each stream info object has the following properties:
-</p>
-<div class="itemizedlist"><ul type="disc">
-<li>"object" (GstObject) (the decoder source pad usually)</li>
-<li>"type" (enum) (if this is an audio/video/subtitle stream)</li>
-<li>"decoder" (string) (name of decoder used to decode this stream)</li>
-<li>"mute" (boolean) (to mute or unmute this stream)</li>
-<li>"caps" (GstCaps) (caps of the decoded stream)</li>
-<li>"language-code" (string) (ISO-639 language code for this stream, mostly used for audio/subtitle streams)</li>
-<li>"codec" (string) (format this stream was encoded in)</li>
-</ul></div>
-<p>
-Stream information from the <a class="link" href="GstPlayBaseBin.html#GstPlayBaseBin--stream-info" title='The "stream-info" property'><span class="type">"stream-info"</span></a> property is best queried once
-playbin has changed into PAUSED or PLAYING state (which can be detected
-via a state-changed message on the <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstBus.html"
-><span class="type">GstBus</span></a> where old_state=READY and
-new_state=PAUSED), since before that the list might not be complete yet or
-not contain all available information (like language-codes).
+from the negotiated caps on the sink pads of the sinks.
 </p>
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2625038"></a><h3>Buffering</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.8"></a><h3>Buffering</h3>
 Playbin handles buffering automatically for the most part, but applications
 need to handle parts of the buffering process as well. Whenever playbin is
 buffering, it will post BUFFERING messages on the bus with a percentage
 value that shows the progress of the buffering process. Applications need
 to set playbin to PLAYING or PAUSED state in response to these messages.
 They may also want to convey the buffering progress to the user in some
-way. Here is how to extract the percentage information from the message
-(requires GStreamer &gt;= 0.10.11):
-<div class="informalexample"><pre class="programlisting">
-switch (GST_MESSAGE_TYPE (msg)) {
-  case GST_MESSAGE_BUFFERING: {
-    gint percent = 0;
-    gst_message_parse_buffering (msg, &amp;percent);
-    g_print ("Buffering (%%u percent done)", percent);
-    break;
-  }
-  ...
-}
-</pre></div>
+way. Here is how to extract the percentage information from the message:
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">switch</span> <span class="gtkdoc opt">(</span><span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#GST-MESSAGE-TYPE:CAPS">GST_MESSAGE_TYPE</a></span> <span class="gtkdoc opt">(</span>msg<span class="gtkdoc opt">)) {</span>
+  <span class="keyword">case</span> GST_MESSAGE_BUFFERING<span class="gtkdoc opt">: {</span>
+    gint percent <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span>
+    <span class="function"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-parse-buffering">gst_message_parse_buffering</a></span> <span class="gtkdoc opt">(</span>msg<span class="gtkdoc opt">, &amp;</span>percent<span class="gtkdoc opt">);</span>
+    <span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Buffering (%u percent done)&quot;</span><span class="gtkdoc opt">,</span> percent<span class="gtkdoc opt">);</span>
+    <span class="keyword">break</span><span class="gtkdoc opt">;</span>
+  <span class="gtkdoc opt">}</span>
+  <span class="gtkdoc opt">...</span>
+<span class="gtkdoc opt">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 Note that applications should keep/set the pipeline in the PAUSED state when
 a BUFFERING message is received with a buffer percent value &lt; 100 and set
 the pipeline back to PLAYING state when a BUFFERING message with a value
 of 100 percent is received (if PLAYING is the desired state, that is).
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2625070"></a><h3>Embedding the video window in your application</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.9"></a><h3>Embedding the video window in your application</h3>
 By default, playbin (or rather the video sinks used) will create their own
 window. Applications will usually want to force output to a window of their
-own, however. This can be done using the <a
-href="/usr/share/gtk-doc/html/gst-plugins-base-libs-0.10/gst-plugins-base-libs-gstxoverlay.html#GstXOverlay"
-><span class="type">GstXOverlay</span></a> interface, which most
+own, however. This can be done using the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface, which most
 video sinks implement. See the documentation there for more details.
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2625090"></a><h3>Specifying which CD/DVD device to use</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.10"></a><h3>Specifying which CD/DVD device to use</h3>
 The device to use for CDs/DVDs needs to be set on the source element
-playbin creates before it is opened. The only way to do this at the moment
-is to connect to playbin's "notify::source" signal, which will be emitted
-by playbin when it has created the source element for a particular URI.
-In the signal callback you can check if the source element has a "device"
-property and set it appropriately. In future ways might be added to specify
-the device as part of the URI, but at the time of writing this is not
-possible yet.
+playbin creates before it is opened. The most generic way of doing this
+is to connect to playbin's "source-setup" (or "notify::source") signal,
+which will be emitted by playbin when it has created the source element
+for a particular URI. In the signal callback you can check if the source
+element has a "device" property and set it appropriately. In some cases
+the device can also be set as part of the URI, but it depends on the
+elements involved if this will work or not. For example, for DVD menu
+playback, the following syntax might work (if the resindvd plugin is used):
+dvd://[/path/to/device]
 </div>
-<p>
-</p>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2625106"></a><h3>Examples</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v playbin uri=file:///path/to/somefile.avi
-</pre></div> This will play back the given AVI video file, given that the video and
+<div class="refsect2">
+<a name="id-1.2.28.9.11"></a><h3>Handling redirects</h3>
+<p>
+Some elements may post 'redirect' messages on the bus to tell the
+application to open another location. These are element messages containing
+a structure named 'redirect' along with a 'new-location' field of string
+type. The new location may be a relative or an absolute URI. Examples
+for such redirects can be found in many quicktime movie trailers.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.28.9.12"></a><h3>Examples</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v playbin uri<span class="gtkdoc opt">=</span>file<span class="gtkdoc opt">:</span><span class="gtkdoc slc">///path/to/somefile.mp4</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This will play back the given AVI video file, given that the video and
 audio decoders required to decode the content are installed. Since no
-special audio sink or video sink is supplied (not possible via gst-launch),
-playbin will try to find a suitable audio and video sink automatically
-using the autoaudiosink and autovideosink elements.
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v playbin uri=cdda://4
-</pre></div> This will play back track 4 on an audio CD in your disc drive (assuming
+special audio sink or video sink is supplied (via playbin's audio-sink or
+video-sink properties) playbin will try to find a suitable audio and
+video sink automatically using the autoaudiosink and autovideosink elements.
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v playbin uri<span class="gtkdoc opt">=</span>cdda<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//4</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This will play back track 4 on an audio CD in your disc drive (assuming
 the drive is detected automatically by the plugin).
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v playbin uri=dvd://1
-</pre></div> This will play back title 1 of a DVD in your disc drive (assuming
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v playbin uri<span class="gtkdoc opt">=</span>dvd<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This will play back the DVD in your disc drive (assuming
 the drive is detected automatically by the plugin).
 </div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2625150"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.28.9.13.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
 <td>
-            playbin
+            <a class="link" href="gst-plugins-base-plugins-plugin-playback.html#plugin-playback">playback</a>
           </td>
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -396,122 +630,1036 @@ the drive is detected automatically by the plugin).
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2625213"></a><h3>Element Pads</h3>
+<div class="refsect2">
+<a name="id-1.2.28.9.13.2"></a><h3>Element Pads</h3>
 </div>
 </div>
-<div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2625227"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">plugin</span></p></td>
-<td>
-            playbin
-          </td>
-</tr>
-<tr>
-<td><p><span class="term">author</span></p></td>
-<td>Wim Taymans &lt;wim@fluendo.com&gt;</td>
-</tr>
-<tr>
-<td><p><span class="term">class</span></p></td>
-<td>Generic/Bin/Player</td>
-</tr>
-</tbody>
-</table></div>
 </div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2625290"></a><h3>Element Pads</h3>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.functions_details"></a><h2>Functions</h2>
+<p></p>
 </div>
-</div>
-<p>
-</p>
-</div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-plugins-playbin.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
 <a name="GstPlayBin-struct"></a><h3>struct GstPlayBin</h3>
 <pre class="programlisting">struct GstPlayBin;</pre>
-<p>
-High-level player element</p>
-<p>
-</p>
+<p>playbin element structure</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayFlags"></a><h3>enum GstPlayFlags</h3>
+<p>Extra flags to configure the behaviour of the sinks.</p>
+<div class="refsect3">
+<a name="id-1.2.28.11.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-VIDEO:CAPS"></a>GST_PLAY_FLAG_VIDEO</p></td>
+<td class="enum_member_description">
+<p>Enable rendering of the video stream</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-AUDIO:CAPS"></a>GST_PLAY_FLAG_AUDIO</p></td>
+<td class="enum_member_description">
+<p>Enable rendering of the audio stream</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-TEXT:CAPS"></a>GST_PLAY_FLAG_TEXT</p></td>
+<td class="enum_member_description">
+<p>Enable rendering of subtitles</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-VIS:CAPS"></a>GST_PLAY_FLAG_VIS</p></td>
+<td class="enum_member_description">
+<p>Enable rendering of visualisations when there is
+      no video stream.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-SOFT-VOLUME:CAPS"></a>GST_PLAY_FLAG_SOFT_VOLUME</p></td>
+<td class="enum_member_description">
+<p>Use software volume</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-NATIVE-AUDIO:CAPS"></a>GST_PLAY_FLAG_NATIVE_AUDIO</p></td>
+<td class="enum_member_description">
+<p>only allow native audio formats, this omits
+  configuration of audioconvert and audioresample.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-NATIVE-VIDEO:CAPS"></a>GST_PLAY_FLAG_NATIVE_VIDEO</p></td>
+<td class="enum_member_description">
+<p>only allow native video formats, this omits
+  configuration of videoconvert and videoscale.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-DOWNLOAD:CAPS"></a>GST_PLAY_FLAG_DOWNLOAD</p></td>
+<td class="enum_member_description">
+<p>enable progressice download buffering for selected
+  formats.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-BUFFERING:CAPS"></a>GST_PLAY_FLAG_BUFFERING</p></td>
+<td class="enum_member_description">
+<p>enable buffering of the demuxed or parsed data.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-DEINTERLACE:CAPS"></a>GST_PLAY_FLAG_DEINTERLACE</p></td>
+<td class="enum_member_description">
+<p>deinterlace raw video (if native not forced).</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-SOFT-COLORBALANCE:CAPS"></a>GST_PLAY_FLAG_SOFT_COLORBALANCE</p></td>
+<td class="enum_member_description">
+<p>Use a software filter for colour balance</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-PLAY-FLAG-FORCE-FILTERS:CAPS"></a>GST_PLAY_FLAG_FORCE_FILTERS</p></td>
+<td class="enum_member_description">
+<p>force audio/video filters to be applied if
+  set.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
-<div class="refsect1" lang="en">
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-plugins-playbin.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--audio-sink"></a><h3>The <code class="literal">"audio-sink"</code> property</h3>
-<pre class="programlisting">  "audio-sink"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write</pre>
+<div class="refsect2">
+<a name="GstPlayBin--audio-sink"></a><h3>The <code class="literal">“audio-sink”</code> property</h3>
+<pre class="programlisting">  “audio-sink”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
 <p>the audio output element to use (NULL = default sink).</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--frame"></a><h3>The <code class="literal">"frame"</code> property</h3>
-<pre class="programlisting">  "frame"                    <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstBuffer.html#GstBuffer"
->GstBuffer</a>*            : Read</pre>
-<p>The last frame (NULL = no video available).</p>
+<div class="refsect2">
+<a name="GstPlayBin--audio-stream-combiner"></a><h3>The <code class="literal">“audio-stream-combiner”</code> property</h3>
+<pre class="programlisting">  “audio-stream-combiner”    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Get or set the current audio stream combiner. By default, an input-selector
+is created and deleted as-needed.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--subtitle-font-desc"></a><h3>The <code class="literal">"subtitle-font-desc"</code> property</h3>
-<pre class="programlisting">  "subtitle-font-desc"       <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Write</pre>
-<p>Pango font description of font to be used for subtitle rendering.</p>
+<div class="refsect2">
+<a name="GstPlayBin--av-offset"></a><h3>The <code class="literal">“av-offset”</code> property</h3>
+<pre class="programlisting">  “av-offset”                <span class="type">gint64</span></pre>
+<p>Control the synchronisation offset between the audio and video streams.
+Positive values make the audio ahead of the video and negative values make
+the audio go behind the video.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--buffer-duration"></a><h3>The <code class="literal">“buffer-duration”</code> property</h3>
+<pre class="programlisting">  “buffer-duration”          <span class="type">gint64</span></pre>
+<p>Buffer duration when buffering network streams.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--buffer-size"></a><h3>The <code class="literal">“buffer-size”</code> property</h3>
+<pre class="programlisting">  “buffer-size”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Buffer size when buffering network streams.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--connection-speed"></a><h3>The <code class="literal">“connection-speed”</code> property</h3>
+<pre class="programlisting">  “connection-speed”         <span class="type">guint64</span></pre>
+<p>Network connection speed in kbps (0 = unknown).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= 18446744073709551</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--current-audio"></a><h3>The <code class="literal">“current-audio”</code> property</h3>
+<pre class="programlisting">  “current-audio”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get or set the currently playing audio stream. By default the first audio
+stream with data is played.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--current-suburi"></a><h3>The <code class="literal">“current-suburi”</code> property</h3>
+<pre class="programlisting">  “current-suburi”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>The currently playing subtitle uri.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--video-sink"></a><h3>The <code class="literal">"video-sink"</code> property</h3>
-<pre class="programlisting">  "video-sink"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write</pre>
+<div class="refsect2">
+<a name="GstPlayBin--current-text"></a><h3>The <code class="literal">“current-text”</code> property</h3>
+<pre class="programlisting">  “current-text”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get or set the currently playing subtitle stream. By default the first
+subtitle stream with data is played.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--current-uri"></a><h3>The <code class="literal">“current-uri”</code> property</h3>
+<pre class="programlisting">  “current-uri”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>The currently playing uri.</p>
+<p>Flags: Read</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--current-video"></a><h3>The <code class="literal">“current-video”</code> property</h3>
+<pre class="programlisting">  “current-video”            <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get or set the currently playing video stream. By default the first video
+stream with data is played.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--flags"></a><h3>The <code class="literal">“flags”</code> property</h3>
+<pre class="programlisting">  “flags”                    <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayFlags" title="enum GstPlayFlags"><span class="type">GstPlayFlags</span></a></pre>
+<p>Control the behaviour of playbin.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Render the video stream|Render the audio stream|Render subtitles|Use software volume|Deinterlace video if necessary|Use software color balance</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--force-aspect-ratio"></a><h3>The <code class="literal">“force-aspect-ratio”</code> property</h3>
+<pre class="programlisting">  “force-aspect-ratio”       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>When enabled, scaling will respect original aspect ratio.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--mute"></a><h3>The <code class="literal">“mute”</code> property</h3>
+<pre class="programlisting">  “mute”                     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Mute the audio channel without changing the volume.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--n-audio"></a><h3>The <code class="literal">“n-audio”</code> property</h3>
+<pre class="programlisting">  “n-audio”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get the total number of available audio streams.</p>
+<p>Flags: Read</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--n-text"></a><h3>The <code class="literal">“n-text”</code> property</h3>
+<pre class="programlisting">  “n-text”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get the total number of available subtitle streams.</p>
+<p>Flags: Read</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--n-video"></a><h3>The <code class="literal">“n-video”</code> property</h3>
+<pre class="programlisting">  “n-video”                  <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Get the total number of available video streams.</p>
+<p>Flags: Read</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--ring-buffer-max-size"></a><h3>The <code class="literal">“ring-buffer-max-size”</code> property</h3>
+<pre class="programlisting">  “ring-buffer-max-size”     <span class="type">guint64</span></pre>
+<p>The maximum size of the ring buffer in bytes. If set to 0, the ring
+buffer is disabled. Default 0.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &lt;= G_MAXUINT</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--sample"></a><h3>The <code class="literal">“sample”</code> property</h3>
+<pre class="programlisting">  “sample”                   <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> *</pre>
+<p>Get the currently rendered or prerolled sample in the video sink.
+The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> in the sample will describe the format of the buffer.</p>
+<p>Flags: Read</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--source"></a><h3>The <code class="literal">“source”</code> property</h3>
+<pre class="programlisting">  “source”                   <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Source element.</p>
+<p>Flags: Read</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--subtitle-encoding"></a><h3>The <code class="literal">“subtitle-encoding”</code> property</h3>
+<pre class="programlisting">  “subtitle-encoding”        <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--subtitle-font-desc"></a><h3>The <code class="literal">“subtitle-font-desc”</code> property</h3>
+<pre class="programlisting">  “subtitle-font-desc”       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Pango font description of font to be used for subtitle rendering.</p>
+<p>Flags: Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--suburi"></a><h3>The <code class="literal">“suburi”</code> property</h3>
+<pre class="programlisting">  “suburi”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Set the next subtitle URI that playbin will play. This property can be
+set from the about-to-finish signal to queue the next subtitle media file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--text-sink"></a><h3>The <code class="literal">“text-sink”</code> property</h3>
+<pre class="programlisting">  “text-sink”                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>the text output element to use (NULL = default subtitleoverlay).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--text-stream-combiner"></a><h3>The <code class="literal">“text-stream-combiner”</code> property</h3>
+<pre class="programlisting">  “text-stream-combiner”     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Get or set the current text stream combiner. By default, an input-selector
+is created and deleted as-needed.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--uri"></a><h3>The <code class="literal">“uri”</code> property</h3>
+<pre class="programlisting">  “uri”                      <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Set the next URI that playbin will play. This property can be set from the
+about-to-finish signal to queue the next media file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--video-sink"></a><h3>The <code class="literal">“video-sink”</code> property</h3>
+<pre class="programlisting">  “video-sink”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
 <p>the video output element to use (NULL = default sink).</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--vis-plugin"></a><h3>The <code class="literal">"vis-plugin"</code> property</h3>
-<pre class="programlisting">  "vis-plugin"               <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>*           : Read / Write</pre>
-<p>the visualization element to use (NULL = none).</p>
+<div class="refsect2">
+<a name="GstPlayBin--video-stream-combiner"></a><h3>The <code class="literal">“video-stream-combiner”</code> property</h3>
+<pre class="programlisting">  “video-stream-combiner”    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Get or set the current video stream combiner. By default, an input-selector
+is created and deleted as-needed.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--volume"></a><h3>The <code class="literal">"volume"</code> property</h3>
-<pre class="programlisting">  "volume"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
->gdouble</a>               : Read / Write</pre>
-<p>
-Get or set the current audio stream volume. 1.0 means 100%,
+<div class="refsect2">
+<a name="GstPlayBin--vis-plugin"></a><h3>The <code class="literal">“vis-plugin”</code> property</h3>
+<pre class="programlisting">  “vis-plugin”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>the visualization element to use (NULL = default).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--volume"></a><h3>The <code class="literal">“volume”</code> property</h3>
+<pre class="programlisting">  “volume”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></pre>
+<p>Get or set the current audio stream volume. 1.0 means 100%,
 0.0 means mute. This uses a linear volume scale.</p>
-<p>
-</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,10]</p>
 <p>Default value: 1</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstPlayBin--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
-<pre class="programlisting">  "connection-speed"         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"
->guint</a>                 : Read / Write</pre>
-<p>Network connection speed in kbps (0 = unknown).</p>
-<p>Default value: 0</p>
+<div class="refsect2">
+<a name="GstPlayBin--audio-filter"></a><h3>The <code class="literal">“audio-filter”</code> property</h3>
+<pre class="programlisting">  “audio-filter”             <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>the audio filter(s) to apply, if possible.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--video-filter"></a><h3>The <code class="literal">“video-filter”</code> property</h3>
+<pre class="programlisting">  “video-filter”             <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>the video filter(s) to apply, if possible.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--video-multiview-flags"></a><h3>The <code class="literal">“video-multiview-flags”</code> property</h3>
+<pre class="programlisting">  “video-multiview-flags”    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoMultiviewFlags"><span class="type">GstVideoMultiviewFlags</span></a></pre>
+<p>Override details of the multiview frame layout.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin--video-multiview-mode"></a><h3>The <code class="literal">“video-multiview-mode”</code> property</h3>
+<pre class="programlisting">  “video-multiview-mode”     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideo.html#GstVideoMultiviewFramePacking"><span class="type">GstVideoMultiviewFramePacking</span></a></pre>
+<p>Re-interpret a video stream as one of several frame-packed stereoscopic modes.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: GST_VIDEO_MULTIVIEW_FRAME_PACKING_NONE</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playbin.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstPlayBin-about-to-finish"></a><h3>The <code class="literal">“about-to-finish”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted when the current uri is about to finish. You can
+set the uri and suburi to make sure that playback continues.</p>
+<p>This signal is emitted from the context of a GStreamer streaming thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.2.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-audio-changed"></a><h3>The <code class="literal">“audio-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the number or order of the audio
+streams has changed. The application will most likely want to select
+a new audio stream.</p>
+<p>This signal may be emitted from the context of a GStreamer streaming thread.
+You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>
+to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.3.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-audio-tags-changed"></a><h3>The <code class="literal">“audio-tags-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the tags of an audio stream have changed.
+The application will most likely want to get the new tags.</p>
+<p>This signal may be emitted from the context of a GStreamer streaming thread.
+You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>
+to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>stream index with changed tags</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-convert-sample"></a><h3>The <code class="literal">“convert-sample”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a>    *caps,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the currently playing video frame in the format
+specified by <em class="parameter"><code>caps</code></em>
+.
+If <em class="parameter"><code>caps</code></em>
+ is <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, no conversion will be performed and this function is
+equivalent to the <span class="type">“frame”</span> property.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p>the target format of the frame</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.5.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> of the current video frame converted to <span class="type">caps</span>.
+The caps on the sample will describe the final layout of the buffer data.
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> is returned when no current buffer can be retrieved or when the
+conversion failed.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-audio-pad"></a><h3>The <code class="literal">“get-audio-pad”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the stream-combiner sinkpad for a specific
+audio stream.
+This pad can be used for notifications of caps changes, stream-specific
+queries, etc.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>an audio stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.6.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a>, or NULL when the stream number does not exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-audio-tags"></a><h3>The <code class="literal">“get-audio-tags”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the tags of a specific audio stream number.
+This information can be used to select a stream.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>an audio stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.7.6"></a><h4>Returns</h4>
+<p> a GstTagList with tags or NULL when the stream number does not
+exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-text-pad"></a><h3>The <code class="literal">“get-text-pad”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the stream-combiner sinkpad for a specific
+text stream.
+This pad can be used for notifications of caps changes, stream-specific
+queries, etc.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>a text stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.8.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a>, or NULL when the stream number does not exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-text-tags"></a><h3>The <code class="literal">“get-text-tags”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the tags of a specific text stream number.
+This information can be used to select a stream.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>a text stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.9.6"></a><h4>Returns</h4>
+<p> a GstTagList with tags or NULL when the stream number does not
+exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-video-pad"></a><h3>The <code class="literal">“get-video-pad”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="returnvalue">GstPad</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the stream-combiner sinkpad for a specific
+video stream.
+This pad can be used for notifications of caps changes, stream-specific
+queries, etc.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>a video stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.10.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a>, or NULL when the stream number does not exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-get-video-tags"></a><h3>The <code class="literal">“get-video-tags”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="returnvalue">GstTagList</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Action signal to retrieve the tags of a specific video stream number.
+This information can be used to select a stream.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>a video stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.28.13.11.6"></a><h4>Returns</h4>
+<p> a GstTagList with tags or NULL when the stream number does not
+exist.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-source-setup"></a><h3>The <code class="literal">“source-setup”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *source,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted after the source element has been created, so
+it can be configured by setting additional properties (e.g. set a
+proxy server for an http source, or set the device and read speed for
+an audio cd source). This is functionally equivalent to connecting to
+the notify::source signal, but more convenient.</p>
+<p>This signal is usually emitted from the context of a GStreamer streaming
+thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.12.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>source element</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-text-changed"></a><h3>The <code class="literal">“text-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the number or order of the text
+streams has changed. The application will most likely want to select
+a new text stream.</p>
+<p>This signal may be emitted from the context of a GStreamer streaming thread.
+You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>
+to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.13.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-text-tags-changed"></a><h3>The <code class="literal">“text-tags-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the tags of a text stream have changed.
+The application will most likely want to get the new tags.</p>
+<p>This signal may be emitted from the context of a GStreamer streaming thread.
+You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>
+to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.14.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>stream index with changed tags</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-video-changed"></a><h3>The <code class="literal">“video-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the number or order of the video
+streams has changed. The application will most likely want to select
+a new video stream.</p>
+<p>This signal is usually emitted from the context of a GStreamer streaming
+thread. You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a> to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.15.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlayBin-video-tags-changed"></a><h3>The <code class="literal">“video-tags-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a> *playbin,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>        stream,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>This signal is emitted whenever the tags of a video stream have changed.
+The application will most likely want to get the new tags.</p>
+<p>This signal may be emitted from the context of a GStreamer streaming thread.
+You can use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstMessage.html#gst-message-new-application"><code class="function">gst_message_new_application()</code></a> and <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#gst-element-post-message"><code class="function">gst_element_post_message()</code></a>
+to notify your application's main thread.</p>
+<div class="refsect3">
+<a name="id-1.2.28.13.16.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playbin</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayBin"><span class="type">GstPlayBin</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stream</p></td>
+<td class="parameter_description"><p>stream index with changed tags</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS">Run Last</a></p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

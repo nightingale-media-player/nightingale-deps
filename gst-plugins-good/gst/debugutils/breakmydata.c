@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /**
  * SECTION:element-breakmydata
@@ -45,13 +45,15 @@ GST_DEBUG_CATEGORY_STATIC (gst_break_my_data_debug);
 #define GST_IS_BREAK_MY_DATA_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_BREAK_MY_DATA))
 
+GType gst_break_my_data_get_type (void);
+
 enum
 {
-  ARG_0,
-  ARG_SEED,
-  ARG_SET_TO,
-  ARG_SKIP,
-  ARG_PROBABILITY
+  PROP_0,
+  PROP_SEED,
+  PROP_SET_TO,
+  PROP_SKIP,
+  PROP_PROBABILITY
 };
 
 typedef struct _GstBreakMyData GstBreakMyData;
@@ -85,11 +87,6 @@ static GstFlowReturn gst_break_my_data_transform_ip (GstBaseTransform * trans,
 static gboolean gst_break_my_data_stop (GstBaseTransform * trans);
 static gboolean gst_break_my_data_start (GstBaseTransform * trans);
 
-static const GstElementDetails details = GST_ELEMENT_DETAILS ("Break my data",
-    "Testing",
-    "randomly change data in the stream",
-    "Benjamin Otte <otte@gnome>");
-
 GstStaticPadTemplate bmd_src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
@@ -100,58 +97,55 @@ GstStaticPadTemplate bmd_sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
-
-#define DEBUG_INIT(bla) \
-  GST_DEBUG_CATEGORY_INIT (gst_break_my_data_debug, "breakmydata", 0, \
-      "debugging category for breakmydata element");
-
-GST_BOILERPLATE_FULL (GstBreakMyData, gst_break_my_data, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
+#define gst_break_my_data_parent_class parent_class
+G_DEFINE_TYPE (GstBreakMyData, gst_break_my_data, GST_TYPE_BASE_TRANSFORM);
 
 
 static void
-gst_break_my_data_base_init (gpointer g_class)
+gst_break_my_data_class_init (GstBreakMyDataClass * klass)
 {
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+  GstBaseTransformClass *gstbasetrans_class;
+  GstElementClass *gstelement_class;
+  GObjectClass *gobject_class;
+
+  gobject_class = G_OBJECT_CLASS (klass);
+  gstelement_class = GST_ELEMENT_CLASS (klass);
+  gstbasetrans_class = GST_BASE_TRANSFORM_CLASS (klass);
+
+  GST_DEBUG_CATEGORY_INIT (gst_break_my_data_debug, "breakmydata", 0,
+      "debugging category for breakmydata element");
+
+  gobject_class->set_property = gst_break_my_data_set_property;
+  gobject_class->get_property = gst_break_my_data_get_property;
+
+  g_object_class_install_property (gobject_class, PROP_SEED,
+      g_param_spec_uint ("seed", "seed",
+          "seed for randomness (initialized when going from READY to PAUSED)",
+          0, G_MAXUINT32, 0,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_SET_TO,
+      g_param_spec_int ("set-to", "set-to",
+          "set changed bytes to this value (-1 means random value",
+          -1, G_MAXUINT8, -1,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_SKIP,
+      g_param_spec_uint ("skip", "skip",
+          "amount of bytes skipped at the beginning of stream",
+          0, G_MAXUINT, 0,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_PROBABILITY,
+      g_param_spec_double ("probability", "probability",
+          "probability for each byte in the buffer to be changed", 0.0, 1.0,
+          0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&bmd_sink_template));
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&bmd_src_template));
 
-  gst_element_class_set_details (gstelement_class, &details);
-}
-
-static void
-gst_break_my_data_class_init (GstBreakMyDataClass * klass)
-{
-  GstBaseTransformClass *gstbasetrans_class;
-  GObjectClass *gobject_class;
-
-  gobject_class = G_OBJECT_CLASS (klass);
-  gstbasetrans_class = GST_BASE_TRANSFORM_CLASS (klass);
-
-  gobject_class->set_property =
-      GST_DEBUG_FUNCPTR (gst_break_my_data_set_property);
-  gobject_class->get_property =
-      GST_DEBUG_FUNCPTR (gst_break_my_data_get_property);
-
-  g_object_class_install_property (gobject_class, ARG_SEED,
-      g_param_spec_uint ("seed", "seed",
-          "seed for randomness (initialized when going from READY to PAUSED)",
-          0, G_MAXUINT32, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-  g_object_class_install_property (gobject_class, ARG_SET_TO,
-      g_param_spec_int ("set-to", "set-to",
-          "set changed bytes to this value (-1 means random value",
-          -1, G_MAXUINT8, -1, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-  g_object_class_install_property (gobject_class, ARG_SKIP,
-      g_param_spec_uint ("skip", "skip",
-          "amount of bytes skipped at the beginning of stream",
-          0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-  g_object_class_install_property (gobject_class, ARG_PROBABILITY,
-      g_param_spec_double ("probability", "probability",
-          "probability for each byte in the buffer to be changed", 0.0, 1.0,
-          0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+  gst_element_class_set_static_metadata (gstelement_class, "Break my data",
+      "Testing",
+      "randomly change data in the stream", "Benjamin Otte <otte@gnome>");
 
   gstbasetrans_class->transform_ip =
       GST_DEBUG_FUNCPTR (gst_break_my_data_transform_ip);
@@ -160,10 +154,9 @@ gst_break_my_data_class_init (GstBreakMyDataClass * klass)
 }
 
 static void
-gst_break_my_data_init (GstBreakMyData * bmd, GstBreakMyDataClass * g_class)
+gst_break_my_data_init (GstBreakMyData * bmd)
 {
   gst_base_transform_set_in_place (GST_BASE_TRANSFORM (bmd), TRUE);
-  gst_base_transform_set_passthrough (GST_BASE_TRANSFORM (bmd), TRUE);
 }
 
 static void
@@ -175,16 +168,16 @@ gst_break_my_data_set_property (GObject * object, guint prop_id,
   GST_OBJECT_LOCK (bmd);
 
   switch (prop_id) {
-    case ARG_SEED:
+    case PROP_SEED:
       bmd->seed = g_value_get_uint (value);
       break;
-    case ARG_SET_TO:
+    case PROP_SET_TO:
       bmd->set = g_value_get_int (value);
       break;
-    case ARG_SKIP:
+    case PROP_SKIP:
       bmd->skip = g_value_get_uint (value);
       break;
-    case ARG_PROBABILITY:
+    case PROP_PROBABILITY:
       bmd->probability = g_value_get_double (value);
       break;
     default:
@@ -204,16 +197,16 @@ gst_break_my_data_get_property (GObject * object, guint prop_id, GValue * value,
   GST_OBJECT_LOCK (bmd);
 
   switch (prop_id) {
-    case ARG_SEED:
+    case PROP_SEED:
       g_value_set_uint (value, bmd->seed);
       break;
-    case ARG_SET_TO:
+    case PROP_SET_TO:
       g_value_set_int (value, bmd->set);
       break;
-    case ARG_SKIP:
+    case PROP_SKIP:
       g_value_set_uint (value, bmd->skip);
       break;
-    case ARG_PROBABILITY:
+    case PROP_PROBABILITY:
       g_value_set_double (value, bmd->probability);
       break;
     default:
@@ -228,7 +221,8 @@ static GstFlowReturn
 gst_break_my_data_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
 {
   GstBreakMyData *bmd = GST_BREAK_MY_DATA (trans);
-  guint i, size;
+  GstMapInfo map;
+  gsize i;
 
   g_return_val_if_fail (gst_buffer_is_writable (buf), GST_FLOW_ERROR);
 
@@ -240,14 +234,14 @@ gst_break_my_data_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
     i = 0;
   }
 
-  size = GST_BUFFER_SIZE (buf);
+  gst_buffer_map (buf, &map, GST_MAP_READWRITE);
 
   GST_LOG_OBJECT (bmd,
-      "got buffer %p (size %u, timestamp %" G_GUINT64_FORMAT ", offset %"
-      G_GUINT64_FORMAT "", buf, size, GST_BUFFER_TIMESTAMP (buf),
-      GST_BUFFER_OFFSET (buf));
+      "got buffer %p (size %" G_GSIZE_FORMAT ", timestamp %" G_GUINT64_FORMAT
+      ", offset %" G_GUINT64_FORMAT "", buf, map.size,
+      GST_BUFFER_TIMESTAMP (buf), GST_BUFFER_OFFSET (buf));
 
-  for (; i < size; i++) {
+  for (; i < map.size; i++) {
     if (g_rand_double_range (bmd->rand, 0, 1.0) <= bmd->probability) {
       guint8 new;
 
@@ -256,14 +250,16 @@ gst_break_my_data_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
       } else {
         new = bmd->set;
       }
-      GST_INFO_OBJECT (bmd, "changing byte %u from 0x%02X to 0x%02X", i,
-          (guint) GST_READ_UINT8 (GST_BUFFER_DATA (buf) + i),
-          (guint) ((guint8) new));
-      GST_BUFFER_DATA (buf)[i] = new;
+      GST_INFO_OBJECT (bmd,
+          "changing byte %" G_GSIZE_FORMAT " from 0x%02X to 0x%02X", i,
+          (guint) GST_READ_UINT8 (map.data + i), (guint) ((guint8) new));
+      map.data[i] = new;
     }
   }
   /* don't overflow */
-  bmd->skipped += MIN (G_MAXUINT - bmd->skipped, GST_BUFFER_SIZE (buf));
+  bmd->skipped += MIN (G_MAXUINT - bmd->skipped, map.size);
+
+  gst_buffer_unmap (buf, &map);
 
   GST_OBJECT_UNLOCK (bmd);
 

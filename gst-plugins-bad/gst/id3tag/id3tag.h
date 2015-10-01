@@ -13,20 +13,22 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#include "gsttagmux.h"
+#include <gst/tag/gsttagmux.h>
 
 G_BEGIN_DECLS
 
 #define ID3_VERSION_2_3 3
 #define ID3_VERSION_2_4 4
 
-GstBuffer * id3_mux_render_v2_tag (GstTagMux * mux, GstTagList * taglist,
-        int version);
-GstBuffer * id3_mux_render_v1_tag (GstTagMux * mux, GstTagList * taglist);
+GstBuffer * id3_mux_render_v2_tag (GstTagMux        * mux,
+                                   const GstTagList * taglist,
+                                   int                version);
+
+GstBuffer * id3_mux_render_v1_tag (GstTagMux        * mux,
+                                   const GstTagList * taglist);
 
 G_END_DECLS
-

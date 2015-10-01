@@ -1,6 +1,6 @@
 /* GStreamer
- * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
- * Copyright (C) <2005> Tim-Philipp Müller <tim@centricular.net>
+ * Copyright (C) 1999 Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) 2005-2014 Tim-Philipp Müller <tim@centricular.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -14,27 +14,26 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
  * SECTION:element-timeoverlay
- * @see_also: #GstTextOverlay, #GstClockOverlay
+ * @see_also: #GstBaseTextOverlay, #GstClockOverlay
  *
  * This element overlays the buffer time stamps of a video stream on
  * top of itself. You can position the text and configure the font details
- * using the properties of the #GstTextOverlay class. By default, the
+ * using the properties of the #GstBaseTextOverlay class. By default, the
  * time stamp is displayed in the top left corner of the picture, with some
  * padding to the left and to the top.
  *
  * <refsect2>
  * |[
- * gst-launch -v videotestsrc ! timeoverlay ! xvimagesink
- * ]| Display the time stamps in the top left
- * corner of the video picture.
+ * gst-launch-1.0 -v videotestsrc ! timeoverlay ! autovideosink
+ * ]| Display the time stamps in the top left corner of the video picture.
  * |[
- * gst-launch -v videotestsrc ! timeoverlay halign=right valign=bottom text="Stream time:" shaded-background=true ! xvimagesink
+ * gst-launch-1.0 -v videotestsrc ! timeoverlay halignment=right valignment=bottom text="Stream time:" shaded-background=true font-desc="Sans, 24" ! autovideosink
  * ]| Another pipeline that displays the time stamps with some leading
  * text in the bottom right corner of the video picture, with the background
  * of the text being shaded in order to make it more legible on top of a
@@ -48,20 +47,40 @@
 
 #include <gst/video/video.h>
 
-#include <gsttimeoverlay.h>
+#include "gsttimeoverlay.h"
 
-GST_BOILERPLATE (GstTimeOverlay, gst_time_overlay, GstTextOverlay,
-    GST_TYPE_TEXT_OVERLAY);
+#define DEFAULT_TIME_LINE GST_TIME_OVERLAY_TIME_LINE_BUFFER_TIME
 
-static void
-gst_time_overlay_base_init (gpointer g_class)
+enum
 {
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  PROP_0,
+  PROP_TIME_LINE
+};
 
-  gst_element_class_set_details_simple (element_class, "Time overlay",
-      "Filter/Editor/Video",
-      "Overlays buffer time stamps on a video stream",
-      "Tim-Philipp Müller <tim@centricular.net>");
+#define gst_time_overlay_parent_class parent_class
+G_DEFINE_TYPE (GstTimeOverlay, gst_time_overlay, GST_TYPE_BASE_TEXT_OVERLAY);
+
+static void gst_time_overlay_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_time_overlay_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
+
+#define GST_TYPE_TIME_OVERLAY_TIME_LINE (gst_time_overlay_time_line_type())
+static GType
+gst_time_overlay_time_line_type (void)
+{
+  static GType time_line_type = 0;
+  static const GEnumValue modes[] = {
+    {GST_TIME_OVERLAY_TIME_LINE_BUFFER_TIME, "buffer-time", "buffer-time"},
+    {GST_TIME_OVERLAY_TIME_LINE_STREAM_TIME, "stream-time", "stream-time"},
+    {GST_TIME_OVERLAY_TIME_LINE_RUNNING_TIME, "running-time", "running-time"},
+    {0, NULL, NULL},
+  };
+
+  if (!time_line_type) {
+    time_line_type = g_enum_register_static ("GstTimeOverlayTimeLine", modes);
+  }
+  return time_line_type;
 }
 
 static gchar *
@@ -82,23 +101,43 @@ gst_time_overlay_render_time (GstTimeOverlay * overlay, GstClockTime time)
 
 /* Called with lock held */
 static gchar *
-gst_time_overlay_get_text (GstTextOverlay * overlay, GstBuffer * video_frame)
+gst_time_overlay_get_text (GstBaseTextOverlay * overlay,
+    GstBuffer * video_frame)
 {
-  GstClockTime time = GST_BUFFER_TIMESTAMP (video_frame);
+  GstTimeOverlayTimeLine time_line;
+  GstClockTime ts, ts_buffer;
+  GstSegment *segment = &overlay->segment;
   gchar *time_str, *txt, *ret;
 
   overlay->need_render = TRUE;
 
-  if (!GST_CLOCK_TIME_IS_VALID (time)) {
+  ts_buffer = GST_BUFFER_TIMESTAMP (video_frame);
+
+  if (!GST_CLOCK_TIME_IS_VALID (ts_buffer)) {
     GST_DEBUG ("buffer without valid timestamp");
     return g_strdup ("");
   }
 
-  GST_DEBUG ("buffer with timestamp %" GST_TIME_FORMAT, GST_TIME_ARGS (time));
+  GST_DEBUG ("buffer with timestamp %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (ts_buffer));
+
+  time_line = g_atomic_int_get (&GST_TIME_OVERLAY_CAST (overlay)->time_line);
+  switch (time_line) {
+    case GST_TIME_OVERLAY_TIME_LINE_STREAM_TIME:
+      ts = gst_segment_to_stream_time (segment, GST_FORMAT_TIME, ts_buffer);
+      break;
+    case GST_TIME_OVERLAY_TIME_LINE_RUNNING_TIME:
+      ts = gst_segment_to_running_time (segment, GST_FORMAT_TIME, ts_buffer);
+      break;
+    case GST_TIME_OVERLAY_TIME_LINE_BUFFER_TIME:
+    default:
+      ts = ts_buffer;
+      break;
+  }
 
   txt = g_strdup (overlay->default_text);
 
-  time_str = gst_time_overlay_render_time (GST_TIME_OVERLAY (overlay), time);
+  time_str = gst_time_overlay_render_time (GST_TIME_OVERLAY (overlay), ts);
   if (txt != NULL && *txt != '\0') {
     ret = g_strdup_printf ("%s %s", txt, time_str);
   } else {
@@ -115,23 +154,33 @@ gst_time_overlay_get_text (GstTextOverlay * overlay, GstBuffer * video_frame)
 static void
 gst_time_overlay_class_init (GstTimeOverlayClass * klass)
 {
-  GstTextOverlayClass *gsttextoverlay_class;
+  GstElementClass *gstelement_class;
+  GstBaseTextOverlayClass *gsttextoverlay_class;
+  GObjectClass *gobject_class;
+  PangoContext *context;
+  PangoFontDescription *font_description;
 
-  gsttextoverlay_class = (GstTextOverlayClass *) klass;
+  gsttextoverlay_class = (GstBaseTextOverlayClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+  gobject_class = (GObjectClass *) klass;
+
+  gst_element_class_set_static_metadata (gstelement_class, "Time overlay",
+      "Filter/Editor/Video",
+      "Overlays buffer time stamps on a video stream",
+      "Tim-Philipp Müller <tim@centricular.net>");
 
   gsttextoverlay_class->get_text = gst_time_overlay_get_text;
-}
 
-static void
-gst_time_overlay_init (GstTimeOverlay * overlay, GstTimeOverlayClass * klass)
-{
-  PangoFontDescription *font_description;
-  GstTextOverlay *textoverlay;
-  PangoContext *context;
+  gobject_class->set_property = gst_time_overlay_set_property;
+  gobject_class->get_property = gst_time_overlay_get_property;
 
-  textoverlay = GST_TEXT_OVERLAY (overlay);
+  g_object_class_install_property (gobject_class, PROP_TIME_LINE,
+      g_param_spec_enum ("time-mode", "Time Mode", "What time to show",
+          GST_TYPE_TIME_OVERLAY_TIME_LINE, DEFAULT_TIME_LINE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  context = GST_TEXT_OVERLAY_CLASS (klass)->pango_context;
+  g_mutex_lock (gsttextoverlay_class->pango_lock);
+  context = gsttextoverlay_class->pango_context;
 
   pango_context_set_language (context, pango_language_from_string ("en_US"));
   pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
@@ -145,7 +194,50 @@ gst_time_overlay_init (GstTimeOverlay * overlay, GstTimeOverlayClass * klass)
   pango_font_description_set_size (font_description, 18 * PANGO_SCALE);
   pango_context_set_font_description (context, font_description);
   pango_font_description_free (font_description);
+  g_mutex_unlock (gsttextoverlay_class->pango_lock);
+}
 
-  textoverlay->valign = GST_TEXT_OVERLAY_VALIGN_TOP;
-  textoverlay->halign = GST_TEXT_OVERLAY_HALIGN_LEFT;
+static void
+gst_time_overlay_init (GstTimeOverlay * overlay)
+{
+  GstBaseTextOverlay *textoverlay;
+
+  textoverlay = GST_BASE_TEXT_OVERLAY (overlay);
+
+  textoverlay->valign = GST_BASE_TEXT_OVERLAY_VALIGN_TOP;
+  textoverlay->halign = GST_BASE_TEXT_OVERLAY_HALIGN_LEFT;
+
+  overlay->time_line = DEFAULT_TIME_LINE;
+}
+
+static void
+gst_time_overlay_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
+{
+  GstTimeOverlay *overlay = GST_TIME_OVERLAY (object);
+
+  switch (prop_id) {
+    case PROP_TIME_LINE:
+      g_atomic_int_set (&overlay->time_line, g_value_get_enum (value));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+gst_time_overlay_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstTimeOverlay *overlay = GST_TIME_OVERLAY (object);
+
+  switch (prop_id) {
+    case PROP_TIME_LINE:
+      g_value_set_enum (value, g_atomic_int_get (&overlay->time_line));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
 }

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MVE_MUX_H__
@@ -114,6 +114,13 @@ struct _GstMveMuxClass {
 };
 
 GType gst_mve_mux_get_type (void);
+
+GstFlowReturn mve_encode_frame8 (GstMveMux * mve,
+    GstBuffer * frame, const guint32 * palette, guint16 max_data);
+GstFlowReturn mve_encode_frame16 (GstMveMux * mve,
+    GstBuffer * frame, guint16 max_data);
+gint mve_compress_audio (guint8 * dest,
+    const guint8 * src, guint16 len, guint8 channels);
 
 G_END_DECLS
 

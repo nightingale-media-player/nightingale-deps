@@ -22,8 +22,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -39,7 +39,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v videotestsrc ! dicetv ! ffmpegcolorspace ! autovideosink
+ * gst-launch-1.0 -v videotestsrc ! dicetv ! videoconvert ! autovideosink
  * ]| This pipeline shows the effect of dicetv on a test stream.
  * </refsect2>
  */
@@ -53,9 +53,6 @@
 #include "gstdice.h"
 #include "gsteffectv.h"
 
-#include <gst/video/video.h>
-#include <gst/controller/gstcontroller.h>
-
 #define DEFAULT_CUBE_BITS   4
 #define MAX_CUBE_BITS       5
 #define MIN_CUBE_BITS       0
@@ -68,24 +65,23 @@ typedef enum _dice_dir
   DICE_LEFT = 3
 } DiceDir;
 
-GST_BOILERPLATE (GstDiceTV, gst_dicetv, GstVideoFilter, GST_TYPE_VIDEO_FILTER);
+#define gst_dicetv_parent_class parent_class
+G_DEFINE_TYPE (GstDiceTV, gst_dicetv, GST_TYPE_VIDEO_FILTER);
 
-static void gst_dicetv_create_map (GstDiceTV * filter);
+static void gst_dicetv_create_map (GstDiceTV * filter, GstVideoInfo * info);
 
 static GstStaticPadTemplate gst_dicetv_src_template =
-    GST_STATIC_PAD_TEMPLATE ("src",
+GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_RGBx ";" GST_VIDEO_CAPS_xRGB ";"
-        GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_xBGR)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("{ RGBx, xRGB, BGRx, xBGR }"))
     );
 
 static GstStaticPadTemplate gst_dicetv_sink_template =
-    GST_STATIC_PAD_TEMPLATE ("sink",
+GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_RGBx ";" GST_VIDEO_CAPS_xRGB ";"
-        GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_xBGR)
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("{ RGBx, xRGB, BGRx, xBGR }"))
     );
 
 enum
@@ -95,62 +91,65 @@ enum
 };
 
 static gboolean
-gst_dicetv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
-    GstCaps * outcaps)
+gst_dicetv_set_info (GstVideoFilter * vfilter, GstCaps * incaps,
+    GstVideoInfo * in_info, GstCaps * outcaps, GstVideoInfo * out_info)
 {
-  GstDiceTV *filter = GST_DICETV (btrans);
-  GstStructure *structure;
-  gboolean ret = FALSE;
+  GstDiceTV *filter = GST_DICETV (vfilter);
 
-  structure = gst_caps_get_structure (incaps, 0);
+  g_free (filter->dicemap);
+  filter->dicemap =
+      (guint8 *) g_malloc (GST_VIDEO_INFO_WIDTH (in_info) *
+      GST_VIDEO_INFO_WIDTH (in_info));
+  gst_dicetv_create_map (filter, in_info);
 
-  if (gst_structure_get_int (structure, "width", &filter->width) &&
-      gst_structure_get_int (structure, "height", &filter->height)) {
-    g_free (filter->dicemap);
-    filter->dicemap = (guint8 *) g_malloc (filter->height * filter->width);
-    gst_dicetv_create_map (filter);
-    ret = TRUE;
-  }
-
-  return ret;
+  return TRUE;
 }
 
 static GstFlowReturn
-gst_dicetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
+gst_dicetv_transform_frame (GstVideoFilter * vfilter, GstVideoFrame * in_frame,
+    GstVideoFrame * out_frame)
 {
-  GstDiceTV *filter = GST_DICETV (trans);
+  GstDiceTV *filter = GST_DICETV (vfilter);
   guint32 *src, *dest;
   gint i, map_x, map_y, map_i, base, dx, dy, di;
-  gint video_width, g_cube_bits, g_cube_size;
-  GstFlowReturn ret = GST_FLOW_OK;
+  gint video_stride, g_cube_bits, g_cube_size;
+  gint g_map_height, g_map_width;
   GstClockTime timestamp, stream_time;
+  const guint8 *dicemap;
 
-  src = (guint32 *) GST_BUFFER_DATA (in);
-  dest = (guint32 *) GST_BUFFER_DATA (out);
-
-  timestamp = GST_BUFFER_TIMESTAMP (in);
+  timestamp = GST_BUFFER_TIMESTAMP (in_frame->buffer);
   stream_time =
-      gst_segment_to_stream_time (&trans->segment, GST_FORMAT_TIME, timestamp);
+      gst_segment_to_stream_time (&GST_BASE_TRANSFORM (vfilter)->segment,
+      GST_FORMAT_TIME, timestamp);
 
   GST_DEBUG_OBJECT (filter, "sync to %" GST_TIME_FORMAT,
       GST_TIME_ARGS (timestamp));
 
   if (GST_CLOCK_TIME_IS_VALID (stream_time))
-    gst_object_sync_values (G_OBJECT (filter), stream_time);
+    gst_object_sync_values (GST_OBJECT (filter), stream_time);
 
-  video_width = filter->width;
+  src = (guint32 *) GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
+  dest = (guint32 *) GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
+  video_stride = GST_VIDEO_FRAME_PLANE_STRIDE (in_frame, 0);
+
+  GST_OBJECT_LOCK (filter);
   g_cube_bits = filter->g_cube_bits;
   g_cube_size = filter->g_cube_size;
+  g_map_height = filter->g_map_height;
+  g_map_width = filter->g_map_width;
+
+  dicemap = filter->dicemap;
+  video_stride /= 4;
 
   map_i = 0;
-  for (map_y = 0; map_y < filter->g_map_height; map_y++) {
-    for (map_x = 0; map_x < filter->g_map_width; map_x++) {
-      base = (map_y << g_cube_bits) * video_width + (map_x << g_cube_bits);
+  for (map_y = 0; map_y < g_map_height; map_y++) {
+    for (map_x = 0; map_x < g_map_width; map_x++) {
+      base = (map_y << g_cube_bits) * video_stride + (map_x << g_cube_bits);
 
-      switch (filter->dicemap[map_i]) {
+      switch (dicemap[map_i]) {
         case DICE_UP:
           for (dy = 0; dy < g_cube_size; dy++) {
-            i = base + dy * video_width;
+            i = base + dy * video_stride;
             for (dx = 0; dx < g_cube_size; dx++) {
               dest[i] = src[i];
               i++;
@@ -159,10 +158,10 @@ gst_dicetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
           break;
         case DICE_LEFT:
           for (dy = 0; dy < g_cube_size; dy++) {
-            i = base + dy * video_width;
+            i = base + dy * video_stride;
 
             for (dx = 0; dx < g_cube_size; dx++) {
-              di = base + (dx * video_width) + (g_cube_size - dy - 1);
+              di = base + (dx * video_stride) + (g_cube_size - dy - 1);
               dest[di] = src[i];
               i++;
             }
@@ -170,8 +169,8 @@ gst_dicetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
           break;
         case DICE_DOWN:
           for (dy = 0; dy < g_cube_size; dy++) {
-            di = base + dy * video_width;
-            i = base + (g_cube_size - dy - 1) * video_width + g_cube_size;
+            di = base + dy * video_stride;
+            i = base + (g_cube_size - dy - 1) * video_stride + g_cube_size;
             for (dx = 0; dx < g_cube_size; dx++) {
               i--;
               dest[di] = src[i];
@@ -181,9 +180,9 @@ gst_dicetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
           break;
         case DICE_RIGHT:
           for (dy = 0; dy < g_cube_size; dy++) {
-            i = base + (dy * video_width);
+            i = base + (dy * video_stride);
             for (dx = 0; dx < g_cube_size; dx++) {
-              di = base + dy + (g_cube_size - dx - 1) * video_width;
+              di = base + dy + (g_cube_size - dx - 1) * video_stride;
               dest[di] = src[i];
               i++;
             }
@@ -196,20 +195,25 @@ gst_dicetv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
       map_i++;
     }
   }
+  GST_OBJECT_UNLOCK (filter);
 
-  return ret;
+  return GST_FLOW_OK;
 }
 
 static void
-gst_dicetv_create_map (GstDiceTV * filter)
+gst_dicetv_create_map (GstDiceTV * filter, GstVideoInfo * info)
 {
   gint x, y, i;
+  gint width, height;
 
-  if (filter->height <= 0 || filter->width <= 0)
+  width = GST_VIDEO_INFO_WIDTH (info);
+  height = GST_VIDEO_INFO_HEIGHT (info);
+
+  if (width <= 0 || height <= 0)
     return;
 
-  filter->g_map_height = filter->height >> filter->g_cube_bits;
-  filter->g_map_width = filter->width >> filter->g_cube_bits;
+  filter->g_map_height = height >> filter->g_cube_bits;
+  filter->g_map_width = width >> filter->g_cube_bits;
   filter->g_cube_size = 1 << filter->g_cube_bits;
 
   i = 0;
@@ -231,8 +235,10 @@ gst_dicetv_set_property (GObject * object, guint prop_id, const GValue * value,
 
   switch (prop_id) {
     case PROP_CUBE_BITS:
+      GST_OBJECT_LOCK (filter);
       filter->g_cube_bits = g_value_get_int (value);
-      gst_dicetv_create_map (filter);
+      gst_dicetv_create_map (filter, &GST_VIDEO_FILTER (filter)->in_info);
+      GST_OBJECT_UNLOCK (filter);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -268,26 +274,11 @@ gst_dicetv_finalize (GObject * object)
 }
 
 static void
-gst_dicetv_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (element_class, "DiceTV effect",
-      "Filter/Effect/Video",
-      "'Dices' the screen up into many small squares",
-      "Wim Taymans <wim.taymans@chello.be>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_dicetv_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_dicetv_src_template));
-}
-
-static void
 gst_dicetv_class_init (GstDiceTVClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
-  GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
+  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->set_property = gst_dicetv_set_property;
   gobject_class->get_property = gst_dicetv_get_property;
@@ -298,19 +289,27 @@ gst_dicetv_class_init (GstDiceTVClass * klass)
           MIN_CUBE_BITS, MAX_CUBE_BITS, DEFAULT_CUBE_BITS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | GST_PARAM_CONTROLLABLE));
 
-  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_dicetv_set_caps);
-  trans_class->transform = GST_DEBUG_FUNCPTR (gst_dicetv_transform);
+  gst_element_class_set_static_metadata (gstelement_class, "DiceTV effect",
+      "Filter/Effect/Video",
+      "'Dices' the screen up into many small squares",
+      "Wim Taymans <wim.taymans@gmail.be>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_dicetv_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_dicetv_src_template));
+
+  vfilter_class->set_info = GST_DEBUG_FUNCPTR (gst_dicetv_set_info);
+  vfilter_class->transform_frame =
+      GST_DEBUG_FUNCPTR (gst_dicetv_transform_frame);
 }
 
 static void
-gst_dicetv_init (GstDiceTV * filter, GstDiceTVClass * klass)
+gst_dicetv_init (GstDiceTV * filter)
 {
   filter->dicemap = NULL;
   filter->g_cube_bits = DEFAULT_CUBE_BITS;
   filter->g_cube_size = 0;
   filter->g_map_height = 0;
   filter->g_map_width = 0;
-
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SINK_PAD (filter));
-  gst_pad_use_fixed_caps (GST_BASE_TRANSFORM_SRC_PAD (filter));
 }

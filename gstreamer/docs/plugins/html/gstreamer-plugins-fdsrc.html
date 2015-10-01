@@ -2,137 +2,128 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>fdsrc</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Core Plugins 0.10 Plugins Reference Manual">
+<title>fdsrc: GStreamer Core Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Core Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gstreamer Elements">
 <link rel="prev" href="gstreamer-plugins-fdsink.html" title="fdsink">
 <link rel="next" href="gstreamer-plugins-filesrc.html" title="filesrc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gstreamer Elements">
-<link rel="chapter" href="ch02.html" title="gstreamer Plugins">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gstreamer-plugins-fdsink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Core Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-plugins-filesrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gstreamer-plugins-fdsrc.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gstreamer-plugins-fdsrc.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gstreamer-plugins-fdsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gstreamer-plugins-fdsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                 | 
-                <a href="#gstreamer-plugins-fdsrc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-fdsrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-fdsrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-fdsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-fdsrc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-plugins-fdsink.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-plugins-filesrc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gstreamer-plugins-fdsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gstreamer-plugins-fdsrc.top_of_page"></a>fdsrc</span></h2>
-<p>fdsrc — Read from a file descriptor</p>
+<p>fdsrc</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gstreamer-plugins-fdsrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstFdSrc"></a><pre class="synopsis">
-                    <a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc-struct" title="GstFdSrc">GstFdSrc</a>;
-</pre>
+<div class="refsect1">
+<a name="gstreamer-plugins-fdsrc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--fd" title="The “fd” property">fd</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout" title="The “timeout” property">timeout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
 </div>
-<div class="refsect1" lang="en">
+<a name="GstFdSrc"></a><div class="refsect1">
+<a name="gstreamer-plugins-fdsrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc-struct" title="struct GstFdSrc">GstFdSrc</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
 <a name="gstreamer-plugins-fdsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="../gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="../gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----<a
-href="../gstreamer-libs-0.10/GstBaseSrc.html"
->GstBaseSrc</a>
-                     +----<a
-href="../gstreamer-libs-0.10/GstPushSrc.html"
->GstPushSrc</a>
-                           +----GstFdSrc
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> GstFdSrc
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gstreamer-plugins-fdsrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
 <p>
 GstFdSrc implements
- <a
-href="../gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
->GstURIHandler</a>.</p>
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>.</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gstreamer-plugins-fdsrc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--fd" title='The "fd" property'>fd</a>"                       <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout" title='The "timeout" property'>timeout</a>"                  <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read / Write
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gstreamer-plugins-fdsrc.description"></a><h2>Description</h2>
-<p>
-Read data from a unix file descriptor.
-</p>
-<p>
-To generate data, enter some data on the console folowed by enter.
-The above mentioned pipeline should dump data packets to the console.
-</p>
-<p>
-If the <a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout" title='The "timeout" property'><span class="type">"timeout"</span></a> property is set to a value bigger than 0, fdsrc will
-generate an element message named
-<code class="classname">"GstFdSrcTimeout"</code>
-if no data was recieved in the given timeout.
-The message's structure contains one field:
-</p>
-<div class="itemizedlist"><ul type="disc"><li><p>
-  <a
-href="../glib/glib-Basic-Types.html#guint64"
-><span class="type">guint64</span></a>
+<p>Read data from a unix file descriptor.</p>
+<p>To generate data, enter some data on the console followed by enter.
+The above mentioned pipeline should dump data packets to the console.</p>
+<p>If the <a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout" title="The “timeout” property"><span class="type">“timeout”</span></a> property is set to a value bigger than 0, fdsrc will
+generate an element message named <code class="classname">"GstFdSrcTimeout"</code>
+if no data was received in the given timeout.</p>
+<p>The message's structure contains one field:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+  <span class="type">guint64</span>
   <code class="classname">"timeout"</code>: the timeout in microseconds that
   expired when waiting for data.
   </p></li></ul></div>
-<p>
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2767168"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-echo "Hello GStreamer" | gst-launch -v fdsrc ! fakesink dump=true
-</pre></div> A simple pipeline to read from the standard input and dump the data
+<div class="refsect2">
+<a name="id-1.2.8.8.7"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">echo <span class="string">&quot;Hello GStreamer&quot;</span> <span class="gtkdoc opt">|</span> gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v fdsrc <span class="gtkdoc opt">!</span> fakesink dump<span class="gtkdoc opt">=</span><span class="keyword">true</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ A simple pipeline to read from the standard input and dump the data
 with a fakesink as hex ascii block.
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2008-06-20 (0.10.21)</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2824061"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.8.8.8.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -152,10 +143,13 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2824124"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.8.8.8.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -177,52 +171,44 @@ Last reviewed on 2008-06-20 (0.10.21)</p>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gstreamer-plugins-fdsrc.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstFdSrc-struct"></a><h3>GstFdSrc</h3>
-<pre class="programlisting">typedef struct _GstFdSrc GstFdSrc;</pre>
-<p>
-Opaque <a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc"><span class="type">GstFdSrc</span></a> data structure.</p>
-<p>
-</p>
+<div class="refsect1">
+<a name="gstreamer-plugins-fdsrc.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-fdsrc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstFdSrc-struct"></a><h3>struct GstFdSrc</h3>
+<pre class="programlisting">struct GstFdSrc;</pre>
+<p>Opaque <a class="link" href="gstreamer-plugins-fdsrc.html#GstFdSrc"><span class="type">GstFdSrc</span></a> data structure.</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gstreamer-plugins-fdsrc.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstFdSrc--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
-<pre class="programlisting">  "fd"                       <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstFdSrc--fd"></a><h3>The <code class="literal">“fd”</code> property</h3>
+<pre class="programlisting">  “fd”                       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>An open file descriptor to read from.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 0</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstFdSrc--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
-<pre class="programlisting">  "timeout"                  <a
-href="../glib/glib-Basic-Types.html#guint64"
->guint64</a>               : Read / Write</pre>
-<p>
-Post a message after timeout microseconds</p>
-<p>
-</p>
+<div class="refsect2">
+<a name="GstFdSrc--timeout"></a><h3>The <code class="literal">“timeout”</code> property</h3>
+<pre class="programlisting">  “timeout”                  <span class="type">guint64</span></pre>
+<p>Post a message after timeout microseconds</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 0</p>
-<p>Since 0.10.21</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gstreamer-plugins-fdsrc.see-also"></a><h2>See Also</h2>
-#GstFdSink
+<p><a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink"><span class="type">GstFdSink</span></a></p>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

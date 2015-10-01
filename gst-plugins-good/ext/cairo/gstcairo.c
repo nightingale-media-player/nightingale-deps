@@ -14,17 +14,16 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <gsttimeoverlay.h>
-#include <gsttextoverlay.h>
-#include <gstcairorender.h>
+#include <gstcairooverlay.h>
+
 #include <string.h>
 #include <math.h>
 
@@ -33,18 +32,14 @@ GST_DEBUG_CATEGORY (cairo_debug);
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  gst_element_register (plugin, "cairotextoverlay", GST_RANK_NONE,
-      GST_TYPE_CAIRO_TEXT_OVERLAY);
-  gst_element_register (plugin, "cairotimeoverlay", GST_RANK_NONE,
-      GST_TYPE_CAIRO_TIME_OVERLAY);
-  gst_element_register (plugin, "cairorender", GST_RANK_SECONDARY,
-      GST_TYPE_CAIRO_RENDER);
+  gst_element_register (plugin, "cairooverlay", GST_RANK_NONE,
+      GST_TYPE_CAIRO_OVERLAY);
 
   GST_DEBUG_CATEGORY_INIT (cairo_debug, "cairo", 0, "Cairo elements");
 
   return TRUE;
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, "cairo",
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, cairo,
     "Cairo-based elements", plugin_init, VERSION,
     GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

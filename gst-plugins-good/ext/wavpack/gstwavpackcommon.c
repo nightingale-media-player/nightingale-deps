@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,7 +29,6 @@
 #include <string.h>
 
 #include <gst/gst.h>
-#include <gst/audio/multichannel.h>
 
 GST_DEBUG_CATEGORY_EXTERN (wavpack_debug);
 #define GST_CAT_DEFAULT wavpack_debug
@@ -37,13 +36,9 @@ GST_DEBUG_CATEGORY_EXTERN (wavpack_debug);
 gboolean
 gst_wavpack_read_header (WavpackHeader * header, guint8 * buf)
 {
-  g_memmove (header, buf, sizeof (WavpackHeader));
+  memmove (header, buf, sizeof (WavpackHeader));
 
-#ifndef WAVPACK_OLD_API
-  WavpackLittleEndianToNative (header, WavpackHeaderFormat);
-#else
-  little_endian_to_native (header, WavpackHeaderFormat);
-#endif
+  WavpackLittleEndianToNative (header, (char *) WavpackHeaderFormat);
 
   return (memcmp (header->ckID, "wvpk", 4) == 0);
 }
@@ -147,7 +142,7 @@ static const struct
   0x00001, GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT}, {
   0x00002, GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT}, {
   0x00004, GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER}, {
-  0x00008, GST_AUDIO_CHANNEL_POSITION_LFE}, {
+  0x00008, GST_AUDIO_CHANNEL_POSITION_LFE1}, {
   0x00010, GST_AUDIO_CHANNEL_POSITION_REAR_LEFT}, {
   0x00020, GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT}, {
   0x00040, GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER}, {
@@ -155,37 +150,25 @@ static const struct
   0x00100, GST_AUDIO_CHANNEL_POSITION_REAR_CENTER}, {
   0x00200, GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT}, {
   0x00400, GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT}, {
-  0x00800, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_CENTER       */
-  {
-  0x01000, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_FRONT_LEFT   */
-  {
-  0x02000, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_FRONT_CENTER */
-  {
-  0x04000, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_FRONT_RIGHT  */
-  {
-  0x08000, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_BACK_LEFT    */
-  {
-  0x10000, GST_AUDIO_CHANNEL_POSITION_INVALID}, /* TOP_BACK_CENTER  */
-  {
-  0x20000, GST_AUDIO_CHANNEL_POSITION_INVALID}  /* TOP_BACK_RIGHT   */
+  0x00800, GST_AUDIO_CHANNEL_POSITION_TOP_CENTER}, {
+  0x01000, GST_AUDIO_CHANNEL_POSITION_TOP_FRONT_LEFT}, {
+  0x02000, GST_AUDIO_CHANNEL_POSITION_TOP_FRONT_CENTER}, {
+  0x04000, GST_AUDIO_CHANNEL_POSITION_TOP_FRONT_RIGHT}, {
+  0x08000, GST_AUDIO_CHANNEL_POSITION_TOP_REAR_LEFT}, {
+  0x10000, GST_AUDIO_CHANNEL_POSITION_TOP_REAR_CENTER}, {
+  0x20000, GST_AUDIO_CHANNEL_POSITION_TOP_REAR_RIGHT}
 };
 
 #define MAX_CHANNEL_POSITIONS G_N_ELEMENTS (layout_mapping)
 
 gboolean
-gst_wavpack_set_channel_layout (GstCaps * caps, gint layout)
+gst_wavpack_get_channel_positions (gint num_channels, gint layout,
+    GstAudioChannelPosition * pos)
 {
-  GstAudioChannelPosition pos[MAX_CHANNEL_POSITIONS];
-  GstStructure *s;
-  gint num_channels, i, p;
-
-  s = gst_caps_get_structure (caps, 0);
-  if (!gst_structure_get_int (s, "channels", &num_channels))
-    g_return_val_if_reached (FALSE);
+  gint i, p;
 
   if (num_channels == 1 && layout == 0x00004) {
-    pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
-    gst_audio_set_channel_positions (s, pos);
+    pos[0] = GST_AUDIO_CHANNEL_POSITION_MONO;
     return TRUE;
   }
 
@@ -214,7 +197,6 @@ gst_wavpack_set_channel_layout (GstCaps * caps, gint layout)
     return FALSE;
   }
 
-  gst_audio_set_channel_positions (s, pos);
   return TRUE;
 }
 
@@ -242,7 +224,7 @@ gst_wavpack_get_channel_mask_from_positions (GstAudioChannelPosition * pos,
   gint channel_mask = 0;
   gint i, j;
 
-  if (nchannels == 1 && pos[0] == GST_AUDIO_CHANNEL_POSITION_FRONT_MONO) {
+  if (nchannels == 1 && pos[0] == GST_AUDIO_CHANNEL_POSITION_MONO) {
     channel_mask = 0x00000004;
     return channel_mask;
   }

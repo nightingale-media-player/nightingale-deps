@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* Implementation of SMPTE 388M - Mapping A-Law coded audio into the MXF
@@ -80,6 +80,42 @@ mxf_alaw_handle_essence_element (const MXFUL * key, GstBuffer * buffer,
   return GST_FLOW_OK;
 }
 
+static MXFEssenceWrapping
+mxf_alaw_get_track_wrapping (const MXFMetadataTimelineTrack * track)
+{
+  guint i;
+
+  g_return_val_if_fail (track != NULL, MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING);
+
+  if (track->parent.descriptor == NULL) {
+    GST_ERROR ("No descriptor found for this track");
+    return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+  }
+
+  for (i = 0; i < track->parent.n_descriptor; i++) {
+    if (!track->parent.descriptor[i])
+      continue;
+
+    if (!MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (track->parent.
+            descriptor[i]))
+      continue;
+
+    switch (track->parent.descriptor[i]->essence_container.u[14]) {
+      case 0x01:
+        return MXF_ESSENCE_WRAPPING_FRAME_WRAPPING;
+        break;
+      case 0x02:
+        return MXF_ESSENCE_WRAPPING_CLIP_WRAPPING;
+        break;
+      case 0x03:
+      default:
+        return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+        break;
+    }
+  }
+
+  return MXF_ESSENCE_WRAPPING_CUSTOM_WRAPPING;
+}
 
 static GstCaps *
 mxf_alaw_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
@@ -118,13 +154,13 @@ mxf_alaw_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
   if (s && s->audio_sampling_rate.n != 0 && s->audio_sampling_rate.d != 0 &&
       s->channel_count != 0) {
 
-    caps = gst_caps_new_simple ("audio/x-alaw", NULL);
+    caps = gst_caps_new_empty_simple ("audio/x-alaw");
     mxf_metadata_generic_sound_essence_descriptor_set_caps (s, caps);
 
     /* TODO: Handle channel layout somehow?
      * Or is alaw limited to two channels? */
     if (!*tags)
-      *tags = gst_tag_list_new ();
+      *tags = gst_tag_list_new_empty ();
 
     gst_tag_list_add (*tags, GST_TAG_MERGE_APPEND, GST_TAG_AUDIO_CODEC,
         "A-law encoded audio", NULL);
@@ -136,6 +172,7 @@ mxf_alaw_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
 
 static const MXFEssenceElementHandler mxf_alaw_essence_element_handler = {
   mxf_is_alaw_essence_track,
+  mxf_alaw_get_track_wrapping,
   mxf_alaw_create_caps
 };
 
@@ -147,7 +184,7 @@ typedef struct
 } ALawMappingData;
 
 static GstFlowReturn
-mxf_alaw_write_func (GstBuffer * buffer, GstCaps * caps, gpointer mapping_data,
+mxf_alaw_write_func (GstBuffer * buffer, gpointer mapping_data,
     GstAdapter * adapter, GstBuffer ** outbuf, gboolean flush)
 {
   ALawMappingData *md = mapping_data;
@@ -210,14 +247,14 @@ mxf_alaw_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   }
 
   ret = (MXFMetadataGenericSoundEssenceDescriptor *)
-      gst_mini_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR);
+      g_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR, NULL);
 
   memcpy (&ret->parent.essence_container, &alaw_essence_container_ul, 16);
   memcpy (&ret->sound_essence_compression, &mxf_sound_essence_compression_alaw,
       16);
 
   if (!mxf_metadata_generic_sound_essence_descriptor_from_caps (ret, caps)) {
-    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
+    g_object_unref (ret);
     return NULL;
   }
 

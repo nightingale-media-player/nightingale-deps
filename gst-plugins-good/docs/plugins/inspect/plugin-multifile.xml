@@ -1,9 +1,9 @@
 <plugin>
   <name>multifile</name>
-  <description>Writes buffers to sequentially named files</description>
+  <description>Reads/Writes buffers from/to sequentially named files</description>
   <filename>../../gst/multifile/.libs/libgstmultifile.so</filename>
   <basename>libgstmultifile.so</basename>
-  <version>0.10.16</version>
+  <version>1.6.0</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -35,6 +35,75 @@
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
+          <details>ANY</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>splitfilesrc</name>
+      <longname>Split-File Source</longname>
+      <class>Source/File</class>
+      <description>Read a sequentially named set of files as if it was one large file</description>
+      <author>Tim-Philipp Müller &lt;tim.muller@collabora.co.uk&gt;</author>
+      <pads>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>ANY</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>splitmuxsink</name>
+      <longname>Split Muxing Bin</longname>
+      <class>Generic/Bin/Muxer</class>
+      <description>Convenience bin that muxes incoming streams into multiple time/size limited files</description>
+      <author>Jan Schmidt &lt;jan@centricular.com&gt;</author>
+      <pads>
+        <caps>
+          <name>audio_%u</name>
+          <direction>sink</direction>
+          <presence>request</presence>
+          <details>ANY</details>
+        </caps>
+        <caps>
+          <name>subtitle_%u</name>
+          <direction>sink</direction>
+          <presence>request</presence>
+          <details>ANY</details>
+        </caps>
+        <caps>
+          <name>video</name>
+          <direction>sink</direction>
+          <presence>request</presence>
+          <details>ANY</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>splitmuxsrc</name>
+      <longname>Split File Demuxing Bin</longname>
+      <class>Generic/Bin/Demuxer</class>
+      <description>Source that reads a set of files created by splitmuxsink</description>
+      <author>Jan Schmidt &lt;jan@centricular.com&gt;</author>
+      <pads>
+        <caps>
+          <name>audio_%u</name>
+          <direction>source</direction>
+          <presence>sometimes</presence>
+          <details>ANY</details>
+        </caps>
+        <caps>
+          <name>subtitle_%u</name>
+          <direction>source</direction>
+          <presence>sometimes</presence>
+          <details>ANY</details>
+        </caps>
+        <caps>
+          <name>video</name>
+          <direction>source</direction>
+          <presence>sometimes</presence>
           <details>ANY</details>
         </caps>
       </pads>

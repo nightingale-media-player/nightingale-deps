@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -37,6 +37,7 @@ GST_START_TEST (test_first_buffer_has_offset)
   GstStateChangeReturn ret;
   GstElement *pipe, *src, *sink;
   GstBuffer *buf = NULL;
+  gchar **cookies;
 
   pipe = gst_pipeline_new (NULL);
 
@@ -52,6 +53,11 @@ GST_START_TEST (test_first_buffer_has_offset)
 
   g_object_set (src, "location", "http://gstreamer.freedesktop.org/", NULL);
   g_object_set (src, "automatic-redirect", TRUE, NULL);
+
+  /* set some cookies (shouldn't hurt) */
+  cookies = g_strsplit ("foo=1234,bar=9871615348162523726337x99FB", ",", -1);
+  g_object_set (src, "cookies", cookies, NULL);
+  g_strfreev (cookies);
 
   g_object_set (sink, "signal-handoffs", TRUE, NULL);
   g_signal_connect (sink, "preroll-handoff", G_CALLBACK (handoff_cb), &buf);

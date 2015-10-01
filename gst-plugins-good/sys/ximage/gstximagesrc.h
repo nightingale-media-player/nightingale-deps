@@ -12,8 +12,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_XIMAGE_SRC_H__
@@ -49,12 +49,17 @@ struct _GstXImageSrc
 
   /* Information on display */
   GstXContext *xcontext;
+  gint x;
+  gint y;
   gint width;
   gint height;
 
   Window xwindow;
   gchar *display_name;
-  guint screen_num;
+
+  /* Window selection */
+  guint64 xid;
+  gchar *xname;
 
   /* Desired output framerate */
   gint fps_n;
@@ -65,10 +70,10 @@ struct _GstXImageSrc
   gint64 last_frame_no;
 
   /* Protect X Windows calls */
-  GMutex *x_lock;
+  GMutex  x_lock;
 
   /* Gathered pool of emitted buffers */
-  GMutex *pool_lock;
+  GMutex  pool_lock;
   GSList *buffer_pool;
 
   /* XFixes and XDamage support */
@@ -83,6 +88,9 @@ struct _GstXImageSrc
   guint endx;
   guint endy;
 
+  /* whether to use remote friendly calls */
+  gboolean remote;
+
 #ifdef HAVE_XFIXES
   int fixes_event_base;
   XFixesCursorImage *cursor_image;
@@ -92,7 +100,7 @@ struct _GstXImageSrc
   int damage_event_base;
   XserverRegion damage_region;
   GC damage_copy_gc;
-  GstXImageSrcBuffer *last_ximage;
+  GstBuffer *last_ximage;
 #endif
 };
 

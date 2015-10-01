@@ -14,10 +14,11 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <gst/gst.h>
@@ -27,7 +28,7 @@ static guint spect_bands = 20;
 #define AUDIOFREQ 32000
 
 /* receive spectral data from element message */
-gboolean
+static gboolean
 message_handler (GstBus * bus, GstMessage * message, gpointer data)
 {
   if (message->type == GST_MESSAGE_ELEMENT) {
@@ -87,14 +88,14 @@ main (int argc, char *argv[])
 
   spectrum = gst_element_factory_make ("spectrum", "spectrum");
   g_object_set (G_OBJECT (spectrum), "bands", spect_bands, "threshold", -80,
-      "message", TRUE, "message-phase", TRUE, NULL);
+      "post-messages", TRUE, "message-phase", TRUE, NULL);
 
   sink = gst_element_factory_make ("fakesink", "sink");
   g_object_set (G_OBJECT (sink), "sync", TRUE, NULL);
 
   gst_bin_add_many (GST_BIN (bin), src, audioconvert, spectrum, sink, NULL);
 
-  caps = gst_caps_new_simple ("audio/x-raw-int",
+  caps = gst_caps_new_simple ("audio/x-raw",
       "rate", G_TYPE_INT, AUDIOFREQ, NULL);
 
   if (!gst_element_link (src, audioconvert) ||

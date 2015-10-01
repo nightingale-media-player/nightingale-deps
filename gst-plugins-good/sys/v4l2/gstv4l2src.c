@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -30,11 +30,11 @@
  * <refsect2>
  * <title>Example launch lines</title>
  * |[
- * gst-launch v4l2src ! xvimagesink
+ * gst-launch-1.0 v4l2src ! xvimagesink
  * ]| This pipeline shows the video captured from /dev/video0 tv card and for
  * webcams.
  * |[
- * gst-launch v4l2src ! jpegdec ! xvimagesink
+ * gst-launch-1.0 v4l2src ! jpegdec ! xvimagesink
  * ]| This pipeline shows the video captured from a webcam that delivers jpeg
  * images.
  * </refsect2>
@@ -46,31 +46,21 @@
 
 #include <string.h>
 #include <sys/time.h>
-#include "v4l2src_calls.h"
 #include <unistd.h>
+
+#include <gst/video/gstvideometa.h>
+#include <gst/video/gstvideopool.h>
+
+#include "gstv4l2src.h"
 
 #include "gstv4l2colorbalance.h"
 #include "gstv4l2tuner.h"
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-#include "gstv4l2xoverlay.h"
-#endif
 #include "gstv4l2vidorient.h"
 
 #include "gst/gst-i18n-plugin.h"
 
-static const GstElementDetails gst_v4l2src_details =
-GST_ELEMENT_DETAILS ("Video (video4linux2) Source",
-    "Source/Video",
-    "Reads frames from a video4linux2 (BT8x8) device",
-    "Ronald Bultje <rbultje@ronald.bitfreak.net>,"
-    " Edgard Lima <edgard.lima@indt.org.br>,"
-    " Stefan Kost <ensonic@users.sf.net>");
-
 GST_DEBUG_CATEGORY (v4l2src_debug);
 #define GST_CAT_DEFAULT v4l2src_debug
-
-#define PROP_DEF_QUEUE_SIZE         2
-#define PROP_DEF_ALWAYS_COPY        TRUE
 
 #define DEFAULT_PROP_DEVICE   "/dev/video0"
 
@@ -78,108 +68,34 @@ enum
 {
   PROP_0,
   V4L2_STD_OBJECT_PROPS,
-  PROP_QUEUE_SIZE,
-  PROP_ALWAYS_COPY
+  PROP_LAST
 };
 
-GST_IMPLEMENT_V4L2_PROBE_METHODS (GstV4l2SrcClass, gst_v4l2src);
+/* signals and args */
+enum
+{
+  SIGNAL_PRE_SET_FORMAT,
+  LAST_SIGNAL
+};
+
+static guint gst_v4l2_signals[LAST_SIGNAL] = { 0 };
+
 GST_IMPLEMENT_V4L2_COLOR_BALANCE_METHODS (GstV4l2Src, gst_v4l2src);
 GST_IMPLEMENT_V4L2_TUNER_METHODS (GstV4l2Src, gst_v4l2src);
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-GST_IMPLEMENT_V4L2_XOVERLAY_METHODS (GstV4l2Src, gst_v4l2src);
-#endif
 GST_IMPLEMENT_V4L2_VIDORIENT_METHODS (GstV4l2Src, gst_v4l2src);
 
-static gboolean
-gst_v4l2src_iface_supported (GstImplementsInterface * iface, GType iface_type)
-{
-  GstV4l2Object *v4l2object = GST_V4L2SRC (iface)->v4l2object;
+static void gst_v4l2src_uri_handler_init (gpointer g_iface,
+    gpointer iface_data);
 
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  g_assert (iface_type == GST_TYPE_TUNER ||
-      iface_type == GST_TYPE_X_OVERLAY ||
-      iface_type == GST_TYPE_COLOR_BALANCE ||
-      iface_type == GST_TYPE_VIDEO_ORIENTATION);
-#else
-  g_assert (iface_type == GST_TYPE_TUNER ||
-      iface_type == GST_TYPE_COLOR_BALANCE ||
-      iface_type == GST_TYPE_VIDEO_ORIENTATION);
-#endif
+#define gst_v4l2src_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstV4l2Src, gst_v4l2src, GST_TYPE_PUSH_SRC,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_v4l2src_uri_handler_init);
+    G_IMPLEMENT_INTERFACE (GST_TYPE_TUNER, gst_v4l2src_tuner_interface_init);
+    G_IMPLEMENT_INTERFACE (GST_TYPE_COLOR_BALANCE,
+        gst_v4l2src_color_balance_interface_init);
+    G_IMPLEMENT_INTERFACE (GST_TYPE_VIDEO_ORIENTATION,
+        gst_v4l2src_video_orientation_interface_init));
 
-  if (v4l2object->video_fd == -1)
-    return FALSE;
-
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  if (iface_type == GST_TYPE_X_OVERLAY && !GST_V4L2_IS_OVERLAY (v4l2object))
-    return FALSE;
-#endif
-
-  return TRUE;
-}
-
-static void
-gst_v4l2src_interface_init (GstImplementsInterfaceClass * klass)
-{
-  /*
-   * default virtual functions 
-   */
-  klass->supported = gst_v4l2src_iface_supported;
-}
-
-void
-gst_v4l2src_init_interfaces (GType type)
-{
-  static const GInterfaceInfo v4l2iface_info = {
-    (GInterfaceInitFunc) gst_v4l2src_interface_init,
-    NULL,
-    NULL,
-  };
-  static const GInterfaceInfo v4l2_tuner_info = {
-    (GInterfaceInitFunc) gst_v4l2src_tuner_interface_init,
-    NULL,
-    NULL,
-  };
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  static const GInterfaceInfo v4l2_xoverlay_info = {
-    (GInterfaceInitFunc) gst_v4l2src_xoverlay_interface_init,
-    NULL,
-    NULL,
-  };
-#endif
-  static const GInterfaceInfo v4l2_colorbalance_info = {
-    (GInterfaceInitFunc) gst_v4l2src_color_balance_interface_init,
-    NULL,
-    NULL,
-  };
-  static const GInterfaceInfo v4l2_videoorientation_info = {
-    (GInterfaceInitFunc) gst_v4l2src_video_orientation_interface_init,
-    NULL,
-    NULL,
-  };
-  static const GInterfaceInfo v4l2_propertyprobe_info = {
-    (GInterfaceInitFunc) gst_v4l2src_property_probe_interface_init,
-    NULL,
-    NULL,
-  };
-
-  g_type_add_interface_static (type,
-      GST_TYPE_IMPLEMENTS_INTERFACE, &v4l2iface_info);
-  g_type_add_interface_static (type, GST_TYPE_TUNER, &v4l2_tuner_info);
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  g_type_add_interface_static (type, GST_TYPE_X_OVERLAY, &v4l2_xoverlay_info);
-#endif
-  g_type_add_interface_static (type,
-      GST_TYPE_COLOR_BALANCE, &v4l2_colorbalance_info);
-  g_type_add_interface_static (type,
-      GST_TYPE_VIDEO_ORIENTATION, &v4l2_videoorientation_info);
-  g_type_add_interface_static (type, GST_TYPE_PROPERTY_PROBE,
-      &v4l2_propertyprobe_info);
-}
-
-GST_BOILERPLATE_FULL (GstV4l2Src, gst_v4l2src, GstPushSrc, GST_TYPE_PUSH_SRC,
-    gst_v4l2src_init_interfaces);
-
-static void gst_v4l2src_dispose (GObject * object);
 static void gst_v4l2src_finalize (GstV4l2Src * v4l2src);
 
 /* element methods */
@@ -192,34 +108,18 @@ static gboolean gst_v4l2src_unlock (GstBaseSrc * src);
 static gboolean gst_v4l2src_unlock_stop (GstBaseSrc * src);
 static gboolean gst_v4l2src_stop (GstBaseSrc * src);
 static gboolean gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps);
-static GstCaps *gst_v4l2src_get_caps (GstBaseSrc * src);
+static GstCaps *gst_v4l2src_get_caps (GstBaseSrc * src, GstCaps * filter);
 static gboolean gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query);
+static gboolean gst_v4l2src_decide_allocation (GstBaseSrc * src,
+    GstQuery * query);
 static GstFlowReturn gst_v4l2src_create (GstPushSrc * src, GstBuffer ** out);
-static void gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
+static GstCaps *gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
 static gboolean gst_v4l2src_negotiate (GstBaseSrc * basesrc);
 
 static void gst_v4l2src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_v4l2src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-
-static void
-gst_v4l2src_base_init (gpointer g_class)
-{
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-  GstV4l2SrcClass *gstv4l2src_class = GST_V4L2SRC_CLASS (g_class);
-
-  gstv4l2src_class->v4l2_class_devices = NULL;
-
-  GST_DEBUG_CATEGORY_INIT (v4l2src_debug, "v4l2src", 0, "V4L2 source element");
-
-  gst_element_class_set_details (gstelement_class, &gst_v4l2src_details);
-
-  gst_element_class_add_pad_template
-      (gstelement_class,
-      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-          gst_v4l2_object_get_all_caps ()));
-}
 
 static void
 gst_v4l2src_class_init (GstV4l2SrcClass * klass)
@@ -234,7 +134,6 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
   basesrc_class = GST_BASE_SRC_CLASS (klass);
   pushsrc_class = GST_PUSH_SRC_CLASS (klass);
 
-  gobject_class->dispose = gst_v4l2src_dispose;
   gobject_class->finalize = (GObjectFinalizeFunc) gst_v4l2src_finalize;
   gobject_class->set_property = gst_v4l2src_set_property;
   gobject_class->get_property = gst_v4l2src_get_property;
@@ -243,15 +142,36 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
 
   gst_v4l2_object_install_properties_helper (gobject_class,
       DEFAULT_PROP_DEVICE);
-  g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
-      g_param_spec_uint ("queue-size", "Queue size",
-          "Number of buffers to be enqueud in the driver in streaming mode",
-          GST_V4L2_MIN_BUFFERS, GST_V4L2_MAX_BUFFERS, PROP_DEF_QUEUE_SIZE,
-          G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, PROP_ALWAYS_COPY,
-      g_param_spec_boolean ("always-copy", "Always Copy",
-          "If the buffer will or not be used directly from mmap",
-          PROP_DEF_ALWAYS_COPY, G_PARAM_READWRITE));
+
+  /**
+   * GstV4l2Src::prepare-format:
+   * @v4l2src: the v4l2src instance
+   * @fd: the file descriptor of the current device
+   * @caps: the caps of the format being set
+   *
+   * This signal gets emitted before calling the v4l2 VIDIOC_S_FMT ioctl
+   * (set format). This allows for any custom configuration of the device to
+   * happen prior to the format being set.
+   * This is mostly useful for UVC H264 encoding cameras which need the H264
+   * Probe & Commit to happen prior to the normal Probe & Commit.
+   *
+   * Since: 0.10.32
+   */
+  gst_v4l2_signals[SIGNAL_PRE_SET_FORMAT] = g_signal_new ("prepare-format",
+      G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL, G_TYPE_NONE, 2, G_TYPE_INT, GST_TYPE_CAPS);
+
+  gst_element_class_set_static_metadata (element_class,
+      "Video (video4linux2) Source", "Source/Video",
+      "Reads frames from a Video4Linux2 device",
+      "Edgard Lima <edgard.lima@indt.org.br>, "
+      "Stefan Kost <ensonic@users.sf.net>");
+
+  gst_element_class_add_pad_template
+      (element_class,
+      gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
+          gst_v4l2_object_get_all_caps ()));
 
   basesrc_class->get_caps = GST_DEBUG_FUNCPTR (gst_v4l2src_get_caps);
   basesrc_class->set_caps = GST_DEBUG_FUNCPTR (gst_v4l2src_set_caps);
@@ -262,43 +182,26 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
   basesrc_class->query = GST_DEBUG_FUNCPTR (gst_v4l2src_query);
   basesrc_class->fixate = GST_DEBUG_FUNCPTR (gst_v4l2src_fixate);
   basesrc_class->negotiate = GST_DEBUG_FUNCPTR (gst_v4l2src_negotiate);
+  basesrc_class->decide_allocation =
+      GST_DEBUG_FUNCPTR (gst_v4l2src_decide_allocation);
 
   pushsrc_class->create = GST_DEBUG_FUNCPTR (gst_v4l2src_create);
+
+  klass->v4l2_class_devices = NULL;
+
+  GST_DEBUG_CATEGORY_INIT (v4l2src_debug, "v4l2src", 0, "V4L2 source element");
 }
 
 static void
-gst_v4l2src_init (GstV4l2Src * v4l2src, GstV4l2SrcClass * klass)
+gst_v4l2src_init (GstV4l2Src * v4l2src)
 {
   /* fixme: give an update_fps_function */
   v4l2src->v4l2object = gst_v4l2_object_new (GST_ELEMENT (v4l2src),
       V4L2_BUF_TYPE_VIDEO_CAPTURE, DEFAULT_PROP_DEVICE,
       gst_v4l2_get_input, gst_v4l2_set_input, NULL);
 
-  /* number of buffers requested */
-  v4l2src->num_buffers = PROP_DEF_QUEUE_SIZE;
-
-  v4l2src->always_copy = PROP_DEF_ALWAYS_COPY;
-
-  v4l2src->is_capturing = FALSE;
-
   gst_base_src_set_format (GST_BASE_SRC (v4l2src), GST_FORMAT_TIME);
   gst_base_src_set_live (GST_BASE_SRC (v4l2src), TRUE);
-
-  v4l2src->fps_d = 0;
-  v4l2src->fps_n = 0;
-}
-
-
-static void
-gst_v4l2src_dispose (GObject * object)
-{
-  GstV4l2Src *v4l2src = GST_V4L2SRC (object);
-
-  if (v4l2src->probed_caps) {
-    gst_caps_unref (v4l2src->probed_caps);
-  }
-
-  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 
@@ -320,19 +223,12 @@ gst_v4l2src_set_property (GObject * object,
   if (!gst_v4l2_object_set_property_helper (v4l2src->v4l2object,
           prop_id, value, pspec)) {
     switch (prop_id) {
-      case PROP_QUEUE_SIZE:
-        v4l2src->num_buffers = g_value_get_uint (value);
-        break;
-      case PROP_ALWAYS_COPY:
-        v4l2src->always_copy = g_value_get_boolean (value);
-        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
     }
   }
 }
-
 
 static void
 gst_v4l2src_get_property (GObject * object,
@@ -343,12 +239,6 @@ gst_v4l2src_get_property (GObject * object,
   if (!gst_v4l2_object_get_property_helper (v4l2src->v4l2object,
           prop_id, value, pspec)) {
     switch (prop_id) {
-      case PROP_QUEUE_SIZE:
-        g_value_set_uint (value, v4l2src->num_buffers);
-        break;
-      case PROP_ALWAYS_COPY:
-        g_value_set_boolean (value, v4l2src->always_copy);
-        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
@@ -356,9 +246,8 @@ gst_v4l2src_get_property (GObject * object,
   }
 }
 
-
 /* this function is a bit of a last resort */
-static void
+static GstCaps *
 gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
 {
   GstStructure *structure;
@@ -366,34 +255,35 @@ gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
 
   GST_DEBUG_OBJECT (basesrc, "fixating caps %" GST_PTR_FORMAT, caps);
 
-  for (i = 0; i < gst_caps_get_size (caps); ++i) {
-    const GValue *v;
+  caps = gst_caps_make_writable (caps);
 
+  for (i = 0; i < gst_caps_get_size (caps); ++i) {
     structure = gst_caps_get_structure (caps, i);
 
-    /* FIXME such sizes? we usually fixate to something in the 320x200
-     * range... */
-    /* We are fixating to greater possble size (limited to GST_V4L2_MAX_SIZE)
+    /* We are fixating to a reasonable 320x200 resolution
        and the maximum framerate resolution for that size */
-    gst_structure_fixate_field_nearest_int (structure, "width",
-        GST_V4L2_MAX_SIZE);
-    gst_structure_fixate_field_nearest_int (structure, "height",
-        GST_V4L2_MAX_SIZE);
-    gst_structure_fixate_field_nearest_fraction (structure, "framerate",
-        G_MAXINT, 1);
+    if (gst_structure_has_field (structure, "width"))
+      gst_structure_fixate_field_nearest_int (structure, "width", 320);
 
-    v = gst_structure_get_value (structure, "format");
-    if (v && G_VALUE_TYPE (v) != GST_TYPE_FOURCC) {
-      guint32 fourcc;
+    if (gst_structure_has_field (structure, "height"))
+      gst_structure_fixate_field_nearest_int (structure, "height", 200);
 
-      g_return_if_fail (G_VALUE_TYPE (v) == GST_TYPE_LIST);
+    if (gst_structure_has_field (structure, "framerate"))
+      gst_structure_fixate_field_nearest_fraction (structure, "framerate",
+          100, 1);
 
-      fourcc = gst_value_get_fourcc (gst_value_list_get_value (v, 0));
-      gst_structure_set (structure, "format", GST_TYPE_FOURCC, fourcc, NULL);
-    }
+    if (gst_structure_has_field (structure, "format"))
+      gst_structure_fixate_field (structure, "format");
+
+    if (gst_structure_has_field (structure, "interlace-mode"))
+      gst_structure_fixate_field (structure, "interlace-mode");
   }
 
   GST_DEBUG_OBJECT (basesrc, "fixated caps %" GST_PTR_FORMAT, caps);
+
+  caps = GST_BASE_SRC_CLASS (parent_class)->fixate (basesrc, caps);
+
+  return caps;
 }
 
 
@@ -406,7 +296,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
   gboolean result = FALSE;
 
   /* first see what is possible on our source pad */
-  thiscaps = gst_pad_get_caps (GST_BASE_SRC_PAD (basesrc));
+  thiscaps = gst_pad_query_caps (GST_BASE_SRC_PAD (basesrc), NULL);
   GST_DEBUG_OBJECT (basesrc, "caps of src: %" GST_PTR_FORMAT, thiscaps);
   LOG_CAPS (basesrc, thiscaps);
 
@@ -414,8 +304,8 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
   if (thiscaps == NULL || gst_caps_is_any (thiscaps))
     goto no_nego_needed;
 
-  /* get the peer caps */
-  peercaps = gst_pad_peer_get_caps (GST_BASE_SRC_PAD (basesrc));
+  /* get the peer caps without a filter as we'll filter ourselves later on */
+  peercaps = gst_pad_peer_query_caps (GST_BASE_SRC_PAD (basesrc), NULL);
   GST_DEBUG_OBJECT (basesrc, "caps of peer: %" GST_PTR_FORMAT, peercaps);
   LOG_CAPS (basesrc, peercaps);
   if (peercaps && !gst_caps_is_any (peercaps)) {
@@ -447,11 +337,8 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
        * resolution strictly bigger then the first peer caps */
       if (gst_caps_get_size (icaps) > 1) {
         GstStructure *s = gst_caps_get_structure (peercaps, 0);
-
         int best = 0;
-
         int twidth, theight;
-
         int width = G_MAXINT, height = G_MAXINT;
 
         if (gst_structure_get_int (s, "width", &twidth)
@@ -462,7 +349,6 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
            */
           for (i = gst_caps_get_size (icaps) - 1; i >= 0; i--) {
             GstStructure *is = gst_caps_get_structure (icaps, i);
-
             int w, h;
 
             if (gst_structure_get_int (is, "width", &w)
@@ -483,18 +369,18 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
       }
     }
     gst_caps_unref (thiscaps);
-    gst_caps_unref (peercaps);
   } else {
     /* no peer or peer have ANY caps, work with our own caps then */
     caps = thiscaps;
   }
+  if (peercaps)
+    gst_caps_unref (peercaps);
   if (caps) {
-    caps = gst_caps_make_writable (caps);
-    gst_caps_truncate (caps);
+    caps = gst_caps_truncate (caps);
 
     /* now fixate */
     if (!gst_caps_is_empty (caps)) {
-      gst_pad_fixate_caps (GST_BASE_SRC_PAD (basesrc), caps);
+      caps = gst_v4l2src_fixate (basesrc, caps);
       GST_DEBUG_OBJECT (basesrc, "fixated to: %" GST_PTR_FORMAT, caps);
       LOG_CAPS (basesrc, caps);
 
@@ -504,8 +390,7 @@ gst_v4l2src_negotiate (GstBaseSrc * basesrc)
         result = TRUE;
       } else if (gst_caps_is_fixed (caps)) {
         /* yay, fixed caps, use those then */
-        gst_pad_set_caps (GST_BASE_SRC_PAD (basesrc), caps);
-        result = TRUE;
+        result = gst_base_src_set_caps (basesrc, caps);
       }
     }
     gst_caps_unref (caps);
@@ -522,143 +407,156 @@ no_nego_needed:
 }
 
 static GstCaps *
-gst_v4l2src_get_caps (GstBaseSrc * src)
+gst_v4l2src_get_caps (GstBaseSrc * src, GstCaps * filter)
 {
-  GstV4l2Src *v4l2src = GST_V4L2SRC (src);
-  GstCaps *ret;
-  GSList *walk;
-  GSList *formats;
+  GstV4l2Src *v4l2src;
+  GstV4l2Object *obj;
 
-  if (!GST_V4L2_IS_OPEN (v4l2src->v4l2object)) {
-    /* FIXME: copy? */
-    return
-        gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD
-            (v4l2src)));
+  v4l2src = GST_V4L2SRC (src);
+  obj = v4l2src->v4l2object;
+
+  if (!GST_V4L2_IS_OPEN (obj)) {
+    return gst_pad_get_pad_template_caps (GST_BASE_SRC_PAD (v4l2src));
   }
 
-  if (v4l2src->probed_caps)
-    return gst_caps_ref (v4l2src->probed_caps);
+  return gst_v4l2_object_get_caps (obj, filter);
+}
 
-  formats = gst_v4l2_object_get_format_list (v4l2src->v4l2object);
+static gboolean
+gst_v4l2src_set_format (GstV4l2Src * v4l2src, GstCaps * caps)
+{
+  GstV4l2Object *obj;
 
-  ret = gst_caps_new_empty ();
+  obj = v4l2src->v4l2object;
 
-  for (walk = v4l2src->v4l2object->formats; walk; walk = walk->next) {
-    struct v4l2_fmtdesc *format;
+  g_signal_emit (v4l2src, gst_v4l2_signals[SIGNAL_PRE_SET_FORMAT], 0,
+      v4l2src->v4l2object->video_fd, caps);
 
-    GstStructure *template;
+  if (!gst_v4l2_object_set_format (obj, caps))
+    /* error already posted */
+    return FALSE;
 
-    format = (struct v4l2_fmtdesc *) walk->data;
-
-    template = gst_v4l2_object_v4l2fourcc_to_structure (format->pixelformat);
-
-    if (template) {
-      GstCaps *tmp;
-
-      tmp =
-          gst_v4l2_object_probe_caps_for_format (v4l2src->v4l2object,
-          format->pixelformat, template);
-      if (tmp)
-        gst_caps_append (ret, tmp);
-
-      gst_structure_free (template);
-    } else {
-      GST_DEBUG_OBJECT (v4l2src, "unknown format %u", format->pixelformat);
-    }
-  }
-
-  v4l2src->probed_caps = gst_caps_ref (ret);
-
-  GST_INFO_OBJECT (v4l2src, "probed caps: %" GST_PTR_FORMAT, ret);
-
-  return ret;
+  return TRUE;
 }
 
 static gboolean
 gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps)
 {
   GstV4l2Src *v4l2src;
-  gint w = 0, h = 0;
-  struct v4l2_fmtdesc *format;
-  guint fps_n, fps_d;
-  guint size;
+  GstV4l2Object *obj;
 
   v4l2src = GST_V4L2SRC (src);
+  obj = v4l2src->v4l2object;
 
-  /* if we're not open, punt -- we'll get setcaps'd later via negotiate */
-  if (!GST_V4L2_IS_OPEN (v4l2src->v4l2object))
-    return FALSE;
+  /* make sure the caps changed before doing anything */
+  if (gst_v4l2_object_caps_equal (obj, caps))
+    return TRUE;
 
-  /* make sure we stop capturing and dealloc buffers */
-  if (GST_V4L2_IS_ACTIVE (v4l2src->v4l2object)) {
-    /* both will throw an element-error on failure */
-    if (!gst_v4l2src_capture_stop (v4l2src))
+  if (GST_V4L2_IS_ACTIVE (obj)) {
+    /* Just check if the format is acceptable, once we know
+     * no buffers should be outstanding we try S_FMT.
+     *
+     * Basesrc will do an allocation query that
+     * should indirectly reclaim buffers, after that we can
+     * set the format and then configure our pool */
+    if (gst_v4l2_object_try_format (obj, caps)) {
+      v4l2src->renegotiation_adjust = v4l2src->offset + 1;
+      v4l2src->pending_set_fmt = TRUE;
+    } else
       return FALSE;
-    if (!gst_v4l2src_capture_deinit (v4l2src))
+  } else {
+    /* make sure we stop capturing and dealloc buffers */
+    if (!gst_v4l2_object_stop (obj))
       return FALSE;
+
+    return gst_v4l2src_set_format (v4l2src, caps);
   }
-
-  /* we want our own v4l2 type of fourcc codes */
-  if (!gst_v4l2_object_get_caps_info (v4l2src->v4l2object, caps, &format, &w,
-          &h, &fps_n, &fps_d, &size)) {
-    GST_DEBUG_OBJECT (v4l2src,
-        "can't get capture format from caps %" GST_PTR_FORMAT, caps);
-    return FALSE;
-  }
-
-  GST_DEBUG_OBJECT (v4l2src, "trying to set_capture %dx%d at %d/%d fps, "
-      "format %s", w, h, fps_n, fps_d, format->description);
-
-  if (!gst_v4l2src_set_capture (v4l2src, format->pixelformat, w, h, fps_n,
-          fps_d))
-    /* error already posted */
-    return FALSE;
-
-  if (!gst_v4l2src_capture_init (v4l2src, caps))
-    return FALSE;
-
-  if (!gst_v4l2src_capture_start (v4l2src))
-    return FALSE;
-
-  /* now store the expected output size */
-  v4l2src->frame_byte_size = size;
 
   return TRUE;
+}
+
+static gboolean
+gst_v4l2src_decide_allocation (GstBaseSrc * bsrc, GstQuery * query)
+{
+  GstV4l2Src *src = GST_V4L2SRC (bsrc);
+  gboolean ret = TRUE;
+
+  if (src->pending_set_fmt) {
+    GstCaps *caps = gst_pad_get_current_caps (GST_BASE_SRC_PAD (bsrc));
+
+    if (!gst_v4l2_object_stop (src->v4l2object))
+      return FALSE;
+    ret = gst_v4l2src_set_format (src, caps);
+    gst_caps_unref (caps);
+    src->pending_set_fmt = FALSE;
+  }
+
+  if (ret) {
+    ret = gst_v4l2_object_decide_allocation (src->v4l2object, query);
+    if (ret)
+      ret = GST_BASE_SRC_CLASS (parent_class)->decide_allocation (bsrc, query);
+  }
+
+  if (ret) {
+    if (!gst_buffer_pool_set_active (src->v4l2object->pool, TRUE))
+      goto activate_failed;
+  }
+
+  return ret;
+
+activate_failed:
+  {
+    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS,
+        (_("Failed to allocate required memory.")),
+        ("Buffer pool activation failed"));
+    return FALSE;
+  }
 }
 
 static gboolean
 gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query)
 {
   GstV4l2Src *src;
-
+  GstV4l2Object *obj;
   gboolean res = FALSE;
 
   src = GST_V4L2SRC (bsrc);
+  obj = src->v4l2object;
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_LATENCY:{
       GstClockTime min_latency, max_latency;
+      guint32 fps_n, fps_d;
+      guint num_buffers = 0;
 
       /* device must be open */
-      if (!GST_V4L2_IS_OPEN (src->v4l2object)) {
+      if (!GST_V4L2_IS_OPEN (obj)) {
         GST_WARNING_OBJECT (src,
             "Can't give latency since device isn't open !");
         goto done;
       }
 
+      fps_n = GST_V4L2_FPS_N (obj);
+      fps_d = GST_V4L2_FPS_D (obj);
+
       /* we must have a framerate */
-      if (src->fps_n <= 0 || src->fps_d <= 0) {
+      if (fps_n <= 0 || fps_d <= 0) {
         GST_WARNING_OBJECT (src,
             "Can't give latency since framerate isn't fixated !");
         goto done;
       }
 
       /* min latency is the time to capture one frame */
-      min_latency =
-          gst_util_uint64_scale_int (GST_SECOND, src->fps_d, src->fps_n);
+      min_latency = gst_util_uint64_scale_int (GST_SECOND, fps_d, fps_n);
 
       /* max latency is total duration of the frame buffer */
-      max_latency = src->num_buffers * min_latency;
+      if (obj->pool != NULL)
+        num_buffers = GST_V4L2_BUFFER_POOL_CAST (obj->pool)->max_latency;
+
+      if (num_buffers == 0)
+        max_latency = -1;
+      else
+        max_latency = num_buffers * min_latency;
 
       GST_DEBUG_OBJECT (bsrc,
           "report latency min %" GST_TIME_FORMAT " max %" GST_TIME_FORMAT,
@@ -691,6 +589,14 @@ gst_v4l2src_start (GstBaseSrc * src)
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
 
   v4l2src->offset = 0;
+  v4l2src->renegotiation_adjust = 0;
+
+  /* activate settings for first frame */
+  v4l2src->ctrl_time = 0;
+  gst_object_sync_values (GST_OBJECT (src), v4l2src->ctrl_time);
+
+  v4l2src->has_bad_timestamp = FALSE;
+  v4l2src->last_timestamp = 0;
 
   return TRUE;
 }
@@ -699,11 +605,7 @@ static gboolean
 gst_v4l2src_unlock (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
-
-  GST_LOG_OBJECT (src, "Flushing");
-  gst_poll_set_flushing (v4l2src->v4l2object->poll, TRUE);
-
-  return TRUE;
+  return gst_v4l2_object_unlock (v4l2src->v4l2object);
 }
 
 static gboolean
@@ -711,28 +613,23 @@ gst_v4l2src_unlock_stop (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
 
-  GST_LOG_OBJECT (src, "No longer flushing");
-  gst_poll_set_flushing (v4l2src->v4l2object->poll, FALSE);
+  v4l2src->last_timestamp = 0;
 
-  return TRUE;
+  return gst_v4l2_object_unlock_stop (v4l2src->v4l2object);
 }
 
 static gboolean
 gst_v4l2src_stop (GstBaseSrc * src)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+  GstV4l2Object *obj = v4l2src->v4l2object;
 
-  if (GST_V4L2_IS_ACTIVE (v4l2src->v4l2object)
-      && !gst_v4l2src_capture_stop (v4l2src))
-    return FALSE;
-
-  if (v4l2src->v4l2object->buffer != NULL) {
-    if (!gst_v4l2src_capture_deinit (v4l2src))
+  if (GST_V4L2_IS_ACTIVE (obj)) {
+    if (!gst_v4l2_object_stop (obj))
       return FALSE;
   }
 
-  v4l2src->fps_d = 0;
-  v4l2src->fps_n = 0;
+  v4l2src->pending_set_fmt = FALSE;
 
   return TRUE;
 }
@@ -742,11 +639,12 @@ gst_v4l2src_change_state (GstElement * element, GstStateChange transition)
 {
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
   GstV4l2Src *v4l2src = GST_V4L2SRC (element);
+  GstV4l2Object *obj = v4l2src->v4l2object;
 
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       /* open the device */
-      if (!gst_v4l2_object_start (v4l2src->v4l2object))
+      if (!gst_v4l2_object_open (obj))
         return GST_STATE_CHANGE_FAILURE;
       break;
     default:
@@ -758,13 +656,9 @@ gst_v4l2src_change_state (GstElement * element, GstStateChange transition)
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_NULL:
       /* close the device */
-      if (!gst_v4l2_object_stop (v4l2src->v4l2object))
+      if (!gst_v4l2_object_close (obj))
         return GST_STATE_CHANGE_FAILURE;
 
-      if (v4l2src->probed_caps) {
-        gst_caps_unref (v4l2src->probed_caps);
-        v4l2src->probed_caps = NULL;
-      }
       break;
     default:
       break;
@@ -774,168 +668,252 @@ gst_v4l2src_change_state (GstElement * element, GstStateChange transition)
 }
 
 static GstFlowReturn
-gst_v4l2src_get_read (GstV4l2Src * v4l2src, GstBuffer ** buf)
-{
-  gint amount;
-  gint ret;
-
-  gint buffersize;
-
-  buffersize = v4l2src->frame_byte_size;
-
-  *buf = gst_buffer_new_and_alloc (buffersize);
-
-  do {
-    ret = gst_poll_wait (v4l2src->v4l2object->poll, GST_CLOCK_TIME_NONE);
-    if (G_UNLIKELY (ret < 0)) {
-      if (errno == EBUSY)
-        goto stopped;
-      if (errno == ENXIO) {
-        GST_DEBUG_OBJECT (v4l2src,
-            "v4l2 device doesn't support polling. Disabling");
-        v4l2src->v4l2object->can_poll_device = FALSE;
-      } else {
-        if (errno != EAGAIN && errno != EINTR)
-          goto select_error;
-      }
-    }
-    amount =
-        v4l2_read (v4l2src->v4l2object->video_fd, GST_BUFFER_DATA (*buf),
-        buffersize);
-    if (amount == buffersize) {
-      break;
-    } else if (amount == -1) {
-      if (errno == EAGAIN || errno == EINTR) {
-        continue;
-      } else
-        goto read_error;
-    } else {
-      /* short reads can happen if a signal interrupts the read */
-      continue;
-    }
-  } while (TRUE);
-
-  /* we set the buffer metadata in gst_v4l2src_create() */
-
-  return GST_FLOW_OK;
-
-  /* ERRORS */
-select_error:
-  {
-    GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ, (NULL),
-        ("select error %d: %s (%d)", ret, g_strerror (errno), errno));
-    return GST_FLOW_ERROR;
-  }
-stopped:
-  {
-    GST_DEBUG ("stop called");
-    return GST_FLOW_WRONG_STATE;
-  }
-read_error:
-  {
-    GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ,
-        (_("Error reading %d bytes from device '%s'."),
-            buffersize, v4l2src->v4l2object->videodev), GST_ERROR_SYSTEM);
-    gst_buffer_unref (*buf);
-    return GST_FLOW_ERROR;
-  }
-}
-
-static GstFlowReturn
-gst_v4l2src_get_mmap (GstV4l2Src * v4l2src, GstBuffer ** buf)
-{
-  GstBuffer *temp;
-  GstFlowReturn ret;
-  guint size;
-  guint count = 0;
-
-again:
-  ret = gst_v4l2src_grab_frame (v4l2src, &temp);
-  if (ret != GST_FLOW_OK)
-    goto done;
-
-  if (v4l2src->frame_byte_size > 0) {
-    size = GST_BUFFER_SIZE (temp);
-
-    /* if size does not match what we expected, try again */
-    if (size != v4l2src->frame_byte_size) {
-      GST_ELEMENT_WARNING (v4l2src, RESOURCE, READ,
-          (_("Got unexpected frame size of %u instead of %u."),
-              size, v4l2src->frame_byte_size), (NULL));
-      gst_buffer_unref (temp);
-      if (count++ > 50)
-        goto size_error;
-
-      goto again;
-    }
-  }
-
-  *buf = temp;
-done:
-  return ret;
-
-  /* ERRORS */
-size_error:
-  {
-    GST_ELEMENT_ERROR (v4l2src, RESOURCE, READ,
-        (_("Error reading %d bytes on device '%s'."),
-            v4l2src->frame_byte_size, v4l2src->v4l2object->videodev), (NULL));
-    return GST_FLOW_ERROR;
-  }
-}
-
-static GstFlowReturn
 gst_v4l2src_create (GstPushSrc * src, GstBuffer ** buf)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
+  GstV4l2Object *obj = v4l2src->v4l2object;
+  GstV4l2BufferPool *pool = GST_V4L2_BUFFER_POOL_CAST (obj->pool);
   GstFlowReturn ret;
+  GstClock *clock;
+  GstClockTime abs_time, base_time, timestamp, duration;
+  GstClockTime delay;
+  GstMessage *qos_msg;
 
-  if (v4l2src->use_mmap) {
-    ret = gst_v4l2src_get_mmap (v4l2src, buf);
+  do {
+    ret = GST_BASE_SRC_CLASS (parent_class)->alloc (GST_BASE_SRC (src), 0,
+        obj->info.size, buf);
+
+    if (G_UNLIKELY (ret != GST_FLOW_OK))
+      goto alloc_failed;
+
+    ret = gst_v4l2_buffer_pool_process (pool, buf);
+
+  } while (ret == GST_V4L2_FLOW_CORRUPTED_BUFFER);
+
+  if (G_UNLIKELY (ret != GST_FLOW_OK))
+    goto error;
+
+  timestamp = GST_BUFFER_TIMESTAMP (*buf);
+  duration = obj->duration;
+
+  /* timestamps, LOCK to get clock and base time. */
+  /* FIXME: element clock and base_time is rarely changing */
+  GST_OBJECT_LOCK (v4l2src);
+  if ((clock = GST_ELEMENT_CLOCK (v4l2src))) {
+    /* we have a clock, get base time and ref clock */
+    base_time = GST_ELEMENT (v4l2src)->base_time;
+    gst_object_ref (clock);
   } else {
-    ret = gst_v4l2src_get_read (v4l2src, buf);
+    /* no clock, can't set timestamps */
+    base_time = GST_CLOCK_TIME_NONE;
   }
-  /* set buffer metadata */
-  if (ret == GST_FLOW_OK && *buf) {
-    GstClock *clock;
-    GstClockTime timestamp;
+  GST_OBJECT_UNLOCK (v4l2src);
 
+  /* sample pipeline clock */
+  if (clock) {
+    abs_time = gst_clock_get_time (clock);
+    gst_object_unref (clock);
+  } else {
+    abs_time = GST_CLOCK_TIME_NONE;
+  }
+
+retry:
+  if (!v4l2src->has_bad_timestamp && timestamp != GST_CLOCK_TIME_NONE) {
+    struct timespec now;
+    GstClockTime gstnow;
+
+    /* v4l2 specs say to use the system time although many drivers switched to
+     * the more desirable monotonic time. We first try to use the monotonic time
+     * and see how that goes */
+    clock_gettime (CLOCK_MONOTONIC, &now);
+    gstnow = GST_TIMESPEC_TO_TIME (now);
+
+    if (timestamp > gstnow || (gstnow - timestamp) > (10 * GST_SECOND)) {
+      GTimeVal now;
+
+      /* very large diff, fall back to system time */
+      g_get_current_time (&now);
+      gstnow = GST_TIMEVAL_TO_TIME (now);
+    }
+
+    /* Detect buggy drivers here, and stop using their timestamp. Failing any
+     * of these condition would imply a very buggy driver:
+     *   - Timestamp in the future
+     *   - Timestamp is going backward compare to last seen timestamp
+     *   - Timestamp is jumping forward for less then a frame duration
+     *   - Delay is bigger then the actual timestamp
+     * */
+    if (timestamp > gstnow) {
+      GST_WARNING_OBJECT (v4l2src,
+          "Timestamp in the future detected, ignoring driver timestamps");
+      v4l2src->has_bad_timestamp = TRUE;
+      goto retry;
+    }
+
+    if (v4l2src->last_timestamp > timestamp) {
+      GST_WARNING_OBJECT (v4l2src,
+          "Timestamp going backward, ignoring driver timestamps");
+      v4l2src->has_bad_timestamp = TRUE;
+      goto retry;
+    }
+
+    delay = gstnow - timestamp;
+
+    if (delay > timestamp) {
+      GST_WARNING_OBJECT (v4l2src,
+          "Timestamp does not correlate with any clock, ignoring driver timestamps");
+      v4l2src->has_bad_timestamp = TRUE;
+      goto retry;
+    }
+
+    /* Save last timestamp for sanity checks */
+    v4l2src->last_timestamp = timestamp;
+
+    GST_DEBUG_OBJECT (v4l2src, "ts: %" GST_TIME_FORMAT " now %" GST_TIME_FORMAT
+        " delay %" GST_TIME_FORMAT, GST_TIME_ARGS (timestamp),
+        GST_TIME_ARGS (gstnow), GST_TIME_ARGS (delay));
+  } else {
+    /* we assume 1 frame latency otherwise */
+    if (GST_CLOCK_TIME_IS_VALID (duration))
+      delay = duration;
+    else
+      delay = 0;
+  }
+
+  /* set buffer metadata */
+
+  if (G_LIKELY (abs_time != GST_CLOCK_TIME_NONE)) {
+    /* the time now is the time of the clock minus the base time */
+    timestamp = abs_time - base_time;
+
+    /* adjust for delay in the device */
+    if (timestamp > delay)
+      timestamp -= delay;
+    else
+      timestamp = 0;
+  } else {
+    timestamp = GST_CLOCK_TIME_NONE;
+  }
+
+  /* activate settings for next frame */
+  if (GST_CLOCK_TIME_IS_VALID (duration)) {
+    v4l2src->ctrl_time += duration;
+  } else {
+    /* this is not very good (as it should be the next timestamp),
+     * still good enough for linear fades (as long as it is not -1)
+     */
+    v4l2src->ctrl_time = timestamp;
+  }
+  gst_object_sync_values (GST_OBJECT (src), v4l2src->ctrl_time);
+
+  GST_INFO_OBJECT (src, "sync to %" GST_TIME_FORMAT " out ts %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (v4l2src->ctrl_time), GST_TIME_ARGS (timestamp));
+
+  /* use generated offset values only if there are not already valid ones
+   * set by the v4l2 device */
+  if (!GST_BUFFER_OFFSET_IS_VALID (*buf) || !GST_BUFFER_OFFSET_END_IS_VALID (*buf)) {
     GST_BUFFER_OFFSET (*buf) = v4l2src->offset++;
     GST_BUFFER_OFFSET_END (*buf) = v4l2src->offset;
+  } else {
+    /* adjust raw v4l2 device sequence, will restart at null in case of renegotiation
+     * (streamoff/streamon) */
+    GST_BUFFER_OFFSET (*buf) += v4l2src->renegotiation_adjust;
+    GST_BUFFER_OFFSET_END (*buf) += v4l2src->renegotiation_adjust;
+    /* check for frame loss with given (from v4l2 device) buffer offset */
+    if ((v4l2src->offset != 0) && (GST_BUFFER_OFFSET (*buf) != (v4l2src->offset + 1))) {
+      guint64 lost_frame_count = GST_BUFFER_OFFSET (*buf) - v4l2src->offset - 1;
+      GST_WARNING_OBJECT (v4l2src,
+          "lost frames detected: count = %" G_GUINT64_FORMAT " - ts: %" GST_TIME_FORMAT,
+              lost_frame_count, GST_TIME_ARGS (timestamp));
 
-    /* timestamps, LOCK to get clock and base time. */
-    GST_OBJECT_LOCK (v4l2src);
-    if ((clock = GST_ELEMENT_CLOCK (v4l2src))) {
-      /* we have a clock, get base time and ref clock */
-      timestamp = GST_ELEMENT (v4l2src)->base_time;
-      gst_object_ref (clock);
-    } else {
-      /* no clock, can't set timestamps */
-      timestamp = GST_CLOCK_TIME_NONE;
+      qos_msg = gst_message_new_qos (GST_OBJECT_CAST (v4l2src), TRUE,
+          GST_CLOCK_TIME_NONE, GST_CLOCK_TIME_NONE, timestamp,
+          GST_CLOCK_TIME_IS_VALID (duration) ? lost_frame_count * duration : GST_CLOCK_TIME_NONE);
+      gst_element_post_message (GST_ELEMENT_CAST (v4l2src), qos_msg);
+
     }
-    GST_OBJECT_UNLOCK (v4l2src);
-
-    if (clock) {
-      /* the time now is the time of the clock minus the base time */
-      timestamp = gst_clock_get_time (clock) - timestamp;
-      gst_object_unref (clock);
-
-      /* if we have a framerate adjust timestamp for frame latency */
-      if (v4l2src->fps_n > 0 && v4l2src->fps_d > 0) {
-        GstClockTime latency;
-
-        latency = gst_util_uint64_scale_int (GST_SECOND, v4l2src->fps_d,
-            v4l2src->fps_n);
-
-        if (timestamp > latency)
-          timestamp -= latency;
-        else
-          timestamp = 0;
-      }
-    }
-
-    /* FIXME: use the timestamp from the buffer itself! */
-    GST_BUFFER_TIMESTAMP (*buf) = timestamp;
+    v4l2src->offset = GST_BUFFER_OFFSET (*buf);
   }
+
+  GST_BUFFER_TIMESTAMP (*buf) = timestamp;
+  GST_BUFFER_DURATION (*buf) = duration;
+
   return ret;
+
+  /* ERROR */
+alloc_failed:
+  {
+    if (ret != GST_FLOW_FLUSHING)
+      GST_ELEMENT_ERROR (src, RESOURCE, NO_SPACE_LEFT,
+          ("Failed to allocate a buffer"), (NULL));
+    return ret;
+  }
+error:
+  {
+    if (ret == GST_V4L2_FLOW_LAST_BUFFER) {
+      GST_ELEMENT_ERROR (src, RESOURCE, FAILED,
+          ("Driver returned a buffer with no payload, this most likely "
+              "indicate a bug in the driver."), (NULL));
+      ret = GST_FLOW_ERROR;
+    } else {
+      GST_DEBUG_OBJECT (src, "error processing buffer %d (%s)", ret,
+          gst_flow_get_name (ret));
+    }
+    return ret;
+  }
+}
+
+
+/* GstURIHandler interface */
+static GstURIType
+gst_v4l2src_uri_get_type (GType type)
+{
+  return GST_URI_SRC;
+}
+
+static const gchar *const *
+gst_v4l2src_uri_get_protocols (GType type)
+{
+  static const gchar *protocols[] = { "v4l2", NULL };
+
+  return protocols;
+}
+
+static gchar *
+gst_v4l2src_uri_get_uri (GstURIHandler * handler)
+{
+  GstV4l2Src *v4l2src = GST_V4L2SRC (handler);
+
+  if (v4l2src->v4l2object->videodev != NULL) {
+    return g_strdup_printf ("v4l2://%s", v4l2src->v4l2object->videodev);
+  }
+
+  return g_strdup ("v4l2://");
+}
+
+static gboolean
+gst_v4l2src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
+    GError ** error)
+{
+  GstV4l2Src *v4l2src = GST_V4L2SRC (handler);
+  const gchar *device = DEFAULT_PROP_DEVICE;
+
+  if (strcmp (uri, "v4l2://") != 0) {
+    device = uri + 7;
+  }
+  g_object_set (v4l2src, "device", device, NULL);
+
+  return TRUE;
+}
+
+
+static void
+gst_v4l2src_uri_handler_init (gpointer g_iface, gpointer iface_data)
+{
+  GstURIHandlerInterface *iface = (GstURIHandlerInterface *) g_iface;
+
+  iface->get_type = gst_v4l2src_uri_get_type;
+  iface->get_protocols = gst_v4l2src_uri_get_protocols;
+  iface->get_uri = gst_v4l2src_uri_get_uri;
+  iface->set_uri = gst_v4l2src_uri_set_uri;
 }

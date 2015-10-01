@@ -177,8 +177,8 @@ Random_Simis (PluginInfo * goomInfo, FRACTAL * F, SIMI * Cur, int i)
     Cur->c_y = Gauss_Rand (goomInfo, 0.0, .8, 4.0);
     Cur->r = Gauss_Rand (goomInfo, F->r_mean, F->dr_mean, 3.0);
     Cur->r2 = Half_Gauss_Rand (goomInfo, 0.0, F->dr2_mean, 2.0);
-    Cur->A = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (M_PI / 180.0);
-    Cur->A2 = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (M_PI / 180.0);
+    Cur->A = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (G_PI / 180.0);
+    Cur->A2 = Gauss_Rand (goomInfo, 0.0, 360.0, 4.0) * (G_PI / 180.0);
     Cur++;
   }
 }
@@ -605,7 +605,7 @@ ifs_update (PluginInfo * goomInfo, Pixel * data, Pixel * back, int increment,
     if (((col[VERT] > 32) && (col[ROUGE] < col[VERT] + 40)
             && (col[VERT] < col[ROUGE] + 20) && (col[BLEU] < 64)
             && (RAND () % 20 == 0)) && (justChanged < 0)) {
-      mode = RAND () % 3 ? MOD_FEU : MOD_MERVER;
+      mode = (RAND () % 3) ? MOD_FEU : MOD_MERVER;
       justChanged = 250;
     }
   } else if (mode == MOD_MERVER) {
@@ -656,7 +656,7 @@ ifs_update (PluginInfo * goomInfo, Pixel * data, Pixel * back, int increment,
     if (((col[VERT] > 32) && (col[ROUGE] < col[VERT] + 40)
             && (col[VERT] < col[ROUGE] + 20) && (col[BLEU] < 64)
             && (RAND () % 20 == 0)) && (justChanged < 0)) {
-      mode = RAND () % 3 ? MOD_FEU : MOD_MER;
+      mode = (RAND () % 3) ? MOD_FEU : MOD_MER;
       justChanged = 250;
     }
   } else if (mode == MOD_FEU) {
@@ -714,7 +714,7 @@ ifs_update (PluginInfo * goomInfo, Pixel * data, Pixel * back, int increment,
     if (((col[ROUGE] < 64) && (col[VERT] > 32) && (col[VERT] < col[BLEU])
             && (col[BLEU] > 32)
             && (RAND () % 20 == 0)) && (justChanged < 0)) {
-      mode = RAND () % 2 ? MOD_MER : MOD_MERVER;
+      mode = (RAND () % 2) ? MOD_MER : MOD_MERVER;
       justChanged = 250;
     }
   }
@@ -762,15 +762,13 @@ ifs_vfx_free (VisualFX * _this)
   free (data);
 }
 
-VisualFX
-ifs_visualfx_create (void)
+void
+ifs_visualfx_create (VisualFX * vfx)
 {
-  VisualFX vfx;
 
-  vfx.init = ifs_vfx_init;
-  vfx.free = ifs_vfx_free;
-  vfx.apply = ifs_vfx_apply;
-  vfx.fx_data = NULL;
-  vfx.params = NULL;
-  return vfx;
+  vfx->init = ifs_vfx_init;
+  vfx->free = ifs_vfx_free;
+  vfx->apply = ifs_vfx_apply;
+  vfx->fx_data = NULL;
+  vfx->params = NULL;
 }

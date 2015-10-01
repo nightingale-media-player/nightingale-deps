@@ -1,5 +1,6 @@
 /* GStreamer
  * Copyright (C) <2005,2006> Wim Taymans <wim@fluendo.com>
+ *               <2013> Wim Taymans <wim.taymans@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -46,8 +47,6 @@
  * @see_also: GstRtspSrc
  *
  * A simple RTP session manager used internally by rtspsrc.
- *
- * Last reviewed on 2006-06-20 (0.10.4)
  */
 
 /* #define HAVE_RTCP */
@@ -56,17 +55,12 @@
 #include "rdtmanager.h"
 #include "rdtjitterbuffer.h"
 
+#include <gst/glib-compat-private.h>
+
 #include <stdio.h>
 
 GST_DEBUG_CATEGORY_STATIC (rdtmanager_debug);
 #define GST_CAT_DEFAULT (rdtmanager_debug)
-
-/* elementfactory information */
-static const GstElementDetails rdtmanager_details =
-GST_ELEMENT_DETAILS ("RTP Decoder",
-    "Codec/Parser/Network",
-    "Accepts raw RTP and RTCP packets and sends them forward",
-    "Wim Taymans <wim@fluendo.com>");
 
 /* GstRDTManager signals and args */
 enum
@@ -82,6 +76,7 @@ enum
   SIGNAL_ON_BYE_SSRC,
   SIGNAL_ON_BYE_TIMEOUT,
   SIGNAL_ON_TIMEOUT,
+  SIGNAL_ON_NPT_STOP,
   LAST_SIGNAL
 };
 
@@ -94,28 +89,28 @@ enum
 };
 
 static GstStaticPadTemplate gst_rdt_manager_recv_rtp_sink_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtp_sink_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtp_sink_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rdt")
     );
 
 static GstStaticPadTemplate gst_rdt_manager_recv_rtcp_sink_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtcp_sink_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtcp_sink_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rtcp")
     );
 
 static GstStaticPadTemplate gst_rdt_manager_recv_rtp_src_template =
-GST_STATIC_PAD_TEMPLATE ("recv_rtp_src_%d_%d_%d",
+GST_STATIC_PAD_TEMPLATE ("recv_rtp_src_%u_%u_%u",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS ("application/x-rdt")
     );
 
 static GstStaticPadTemplate gst_rdt_manager_rtcp_src_template =
-GST_STATIC_PAD_TEMPLATE ("rtcp_src_%d",
+GST_STATIC_PAD_TEMPLATE ("rtcp_src_%u",
     GST_PAD_SRC,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("application/x-rtcp")
@@ -127,30 +122,32 @@ static void gst_rdt_manager_set_property (GObject * object,
 static void gst_rdt_manager_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-static gboolean gst_rdt_manager_query_src (GstPad * pad, GstQuery * query);
-static gboolean gst_rdt_manager_src_activate_push (GstPad * pad,
-    gboolean active);
+static gboolean gst_rdt_manager_query_src (GstPad * pad, GstObject * parent,
+    GstQuery * query);
+static gboolean gst_rdt_manager_src_activate_mode (GstPad * pad,
+    GstObject * parent, GstPadMode mode, gboolean active);
 
 static GstClock *gst_rdt_manager_provide_clock (GstElement * element);
 static GstStateChangeReturn gst_rdt_manager_change_state (GstElement * element,
     GstStateChange transition);
 static GstPad *gst_rdt_manager_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name);
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps);
 static void gst_rdt_manager_release_pad (GstElement * element, GstPad * pad);
 
 static gboolean gst_rdt_manager_parse_caps (GstRDTManager * rdtmanager,
     GstRDTManagerSession * session, GstCaps * caps);
-static gboolean gst_rdt_manager_setcaps (GstPad * pad, GstCaps * caps);
+static gboolean gst_rdt_manager_event_rdt (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 
 static GstFlowReturn gst_rdt_manager_chain_rdt (GstPad * pad,
-    GstBuffer * buffer);
+    GstObject * parent, GstBuffer * buffer);
 static GstFlowReturn gst_rdt_manager_chain_rtcp (GstPad * pad,
-    GstBuffer * buffer);
+    GstObject * parent, GstBuffer * buffer);
 static void gst_rdt_manager_loop (GstPad * pad);
 
 static guint gst_rdt_manager_signals[LAST_SIGNAL] = { 0 };
 
-#define JBUF_LOCK(sess)   (g_mutex_lock ((sess)->jbuf_lock))
+#define JBUF_LOCK(sess)   (g_mutex_lock (&(sess)->jbuf_lock))
 
 #define JBUF_LOCK_CHECK(sess,label) G_STMT_START {    \
   JBUF_LOCK (sess);                                   \
@@ -158,8 +155,8 @@ static guint gst_rdt_manager_signals[LAST_SIGNAL] = { 0 };
     goto label;                                       \
 } G_STMT_END
 
-#define JBUF_UNLOCK(sess) (g_mutex_unlock ((sess)->jbuf_lock))
-#define JBUF_WAIT(sess)   (g_cond_wait ((sess)->jbuf_cond, (sess)->jbuf_lock))
+#define JBUF_UNLOCK(sess) (g_mutex_unlock (&(sess)->jbuf_lock))
+#define JBUF_WAIT(sess)   (g_cond_wait (&(sess)->jbuf_cond, &(sess)->jbuf_lock))
 
 #define JBUF_WAIT_CHECK(sess,label) G_STMT_START {    \
   JBUF_WAIT(sess);                                    \
@@ -167,7 +164,7 @@ static guint gst_rdt_manager_signals[LAST_SIGNAL] = { 0 };
     goto label;                                       \
 } G_STMT_END
 
-#define JBUF_SIGNAL(sess) (g_cond_signal ((sess)->jbuf_cond))
+#define JBUF_SIGNAL(sess) (g_cond_signal (&(sess)->jbuf_cond))
 
 /* Manages the receiving end of the packets.
  *
@@ -213,8 +210,8 @@ struct _GstRDTManagerSession
 
   /* jitterbuffer, lock and cond */
   RDTJitterBuffer *jbuf;
-  GMutex *jbuf_lock;
-  GCond *jbuf_cond;
+  GMutex jbuf_lock;
+  GCond jbuf_cond;
 
   /* some accounting */
   guint64 num_late;
@@ -246,11 +243,21 @@ create_session (GstRDTManager * rdtmanager, gint id)
   sess->id = id;
   sess->dec = rdtmanager;
   sess->jbuf = rdt_jitter_buffer_new ();
-  sess->jbuf_lock = g_mutex_new ();
-  sess->jbuf_cond = g_cond_new ();
+  g_mutex_init (&sess->jbuf_lock);
+  g_cond_init (&sess->jbuf_cond);
   rdtmanager->sessions = g_slist_prepend (rdtmanager->sessions, sess);
 
   return sess;
+}
+
+static gboolean
+forward_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
+{
+  GstPad *srcpad = GST_PAD_CAST (user_data);
+
+  gst_pad_push_event (srcpad, gst_event_ref (*event));
+
+  return TRUE;
 }
 
 static gboolean
@@ -295,21 +302,24 @@ activate_session (GstRDTManager * rdtmanager, GstRDTManagerSession * session,
   if (caps)
     gst_rdt_manager_parse_caps (rdtmanager, session, caps);
 
-  name = g_strdup_printf ("recv_rtp_src_%d_%u_%d", session->id, ssrc, pt);
+  name = g_strdup_printf ("recv_rtp_src_%u_%u_%u", session->id, ssrc, pt);
   klass = GST_ELEMENT_GET_CLASS (rdtmanager);
-  templ = gst_element_class_get_pad_template (klass, "recv_rtp_src_%d_%d_%d");
+  templ = gst_element_class_get_pad_template (klass, "recv_rtp_src_%u_%u_%u");
   session->recv_rtp_src = gst_pad_new_from_template (templ, name);
   g_free (name);
 
+  gst_pad_set_element_private (session->recv_rtp_src, session);
+  gst_pad_set_query_function (session->recv_rtp_src, gst_rdt_manager_query_src);
+  gst_pad_set_activatemode_function (session->recv_rtp_src,
+      gst_rdt_manager_src_activate_mode);
+
+  gst_pad_set_active (session->recv_rtp_src, TRUE);
+
+  gst_pad_sticky_events_foreach (session->recv_rtp_sink, forward_sticky_events,
+      session->recv_rtp_src);
   gst_pad_set_caps (session->recv_rtp_src, caps);
   gst_caps_unref (caps);
 
-  gst_pad_set_element_private (session->recv_rtp_src, session);
-  gst_pad_set_query_function (session->recv_rtp_src, gst_rdt_manager_query_src);
-  gst_pad_set_activatepush_function (session->recv_rtp_src,
-      gst_rdt_manager_src_activate_push);
-
-  gst_pad_set_active (session->recv_rtp_src, TRUE);
   gst_element_add_pad (GST_ELEMENT_CAST (rdtmanager), session->recv_rtp_src);
 
   return TRUE;
@@ -319,36 +329,18 @@ static void
 free_session (GstRDTManagerSession * session)
 {
   g_object_unref (session->jbuf);
-  g_cond_free (session->jbuf_cond);
-  g_mutex_free (session->jbuf_lock);
+  g_cond_clear (&session->jbuf_cond);
+  g_mutex_clear (&session->jbuf_lock);
   g_free (session);
 }
 
-GST_BOILERPLATE (GstRDTManager, gst_rdt_manager, GstElement, GST_TYPE_ELEMENT);
-
-static void
-gst_rdt_manager_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  /* sink pads */
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_manager_recv_rtp_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_manager_recv_rtcp_sink_template));
-  /* src pads */
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_manager_recv_rtp_src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_rdt_manager_rtcp_src_template));
-
-  gst_element_class_set_details (element_class, &rdtmanager_details);
-}
+#define gst_rdt_manager_parent_class parent_class
+G_DEFINE_TYPE (GstRDTManager, gst_rdt_manager, GST_TYPE_ELEMENT);
 
 /* BOXED:UINT,UINT */
 #define g_marshal_value_peek_uint(v)     g_value_get_uint (v)
 
-void
+static void
 gst_rdt_manager_marshal_BOXED__UINT_UINT (GClosure * closure,
     GValue * return_value,
     guint n_param_values,
@@ -383,7 +375,7 @@ gst_rdt_manager_marshal_BOXED__UINT_UINT (GClosure * closure,
   g_value_take_boxed (return_value, v_return);
 }
 
-void
+static void
 gst_rdt_manager_marshal_VOID__UINT_UINT (GClosure * closure,
     GValue * return_value,
     guint n_param_values,
@@ -432,7 +424,7 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
   g_object_class_install_property (gobject_class, PROP_LATENCY,
       g_param_spec_uint ("latency", "Buffer latency in ms",
           "Amount of ms to buffer", 0, G_MAXUINT, DEFAULT_LATENCY_MS,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstRDTManager::request-pt-map:
@@ -464,7 +456,7 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
    * GstRDTManager::on-bye-ssrc:
    * @rtpbin: the object which received the signal
    * @session: the session
-   * @ssrc: the SSRC 
+   * @ssrc: the SSRC
    *
    * Notify of an SSRC that became inactive because of a BYE packet.
    */
@@ -477,7 +469,7 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
    * GstRDTManager::on-bye-timeout:
    * @rtpbin: the object which received the signal
    * @session: the session
-   * @ssrc: the SSRC 
+   * @ssrc: the SSRC
    *
    * Notify of an SSRC that has timed out because of BYE
    */
@@ -490,7 +482,7 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
    * GstRDTManager::on-timeout:
    * @rtpbin: the object which received the signal
    * @session: the session
-   * @ssrc: the SSRC 
+   * @ssrc: the SSRC
    *
    * Notify of an SSRC that has timed out
    */
@@ -499,6 +491,21 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstRDTManagerClass, on_timeout),
       NULL, NULL, gst_rdt_manager_marshal_VOID__UINT_UINT, G_TYPE_NONE, 2,
       G_TYPE_UINT, G_TYPE_UINT);
+
+  /**
+   * GstRDTManager::on-npt-stop:
+   * @rtpbin: the object which received the signal
+   * @session: the session
+   * @ssrc: the SSRC
+   *
+   * Notify that SSRC sender has sent data up to the configured NPT stop time.
+   */
+  gst_rdt_manager_signals[SIGNAL_ON_NPT_STOP] =
+      g_signal_new ("on-npt-stop", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstRDTManagerClass, on_npt_stop),
+      NULL, NULL, gst_rdt_manager_marshal_VOID__UINT_UINT, G_TYPE_NONE, 2,
+      G_TYPE_UINT, G_TYPE_UINT);
+
 
   gstelement_class->provide_clock =
       GST_DEBUG_FUNCPTR (gst_rdt_manager_provide_clock);
@@ -509,14 +516,31 @@ gst_rdt_manager_class_init (GstRDTManagerClass * g_class)
   gstelement_class->release_pad =
       GST_DEBUG_FUNCPTR (gst_rdt_manager_release_pad);
 
+  /* sink pads */
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_manager_recv_rtp_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_manager_recv_rtcp_sink_template));
+  /* src pads */
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_manager_recv_rtp_src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_rdt_manager_rtcp_src_template));
+
+  gst_element_class_set_static_metadata (gstelement_class, "RTP Decoder",
+      "Codec/Parser/Network",
+      "Accepts raw RTP and RTCP packets and sends them forward",
+      "Wim Taymans <wim.taymans@gmail.com>");
+
   GST_DEBUG_CATEGORY_INIT (rdtmanager_debug, "rdtmanager", 0, "RTP decoder");
 }
 
 static void
-gst_rdt_manager_init (GstRDTManager * rdtmanager, GstRDTManagerClass * klass)
+gst_rdt_manager_init (GstRDTManager * rdtmanager)
 {
   rdtmanager->provided_clock = gst_system_clock_obtain ();
   rdtmanager->latency = DEFAULT_LATENCY_MS;
+  GST_OBJECT_FLAG_SET (rdtmanager, GST_ELEMENT_FLAG_PROVIDE_CLOCK);
 }
 
 static void
@@ -533,12 +557,12 @@ gst_rdt_manager_finalize (GObject * object)
 }
 
 static gboolean
-gst_rdt_manager_query_src (GstPad * pad, GstQuery * query)
+gst_rdt_manager_query_src (GstPad * pad, GstObject * parent, GstQuery * query)
 {
   GstRDTManager *rdtmanager;
   gboolean res;
 
-  rdtmanager = GST_RDT_MANAGER (GST_PAD_PARENT (pad));
+  rdtmanager = GST_RDT_MANAGER (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_LATENCY:
@@ -556,58 +580,67 @@ gst_rdt_manager_query_src (GstPad * pad, GstQuery * query)
       break;
     }
     default:
-      res = gst_pad_query_default (pad, query);
+      res = gst_pad_query_default (pad, parent, query);
       break;
   }
   return res;
 }
 
 static gboolean
-gst_rdt_manager_src_activate_push (GstPad * pad, gboolean active)
+gst_rdt_manager_src_activate_mode (GstPad * pad, GstObject * parent,
+    GstPadMode mode, gboolean active)
 {
-  gboolean result = TRUE;
+  gboolean result;
   GstRDTManager *rdtmanager;
   GstRDTManagerSession *session;
 
   session = gst_pad_get_element_private (pad);
   rdtmanager = session->dec;
 
-  if (active) {
-    /* allow data processing */
-    JBUF_LOCK (session);
-    GST_DEBUG_OBJECT (rdtmanager, "Enabling pop on queue");
-    /* Mark as non flushing */
-    session->srcresult = GST_FLOW_OK;
-    gst_segment_init (&session->segment, GST_FORMAT_TIME);
-    session->last_popped_seqnum = -1;
-    session->last_out_time = -1;
-    session->next_seqnum = -1;
-    session->eos = FALSE;
-    JBUF_UNLOCK (session);
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      if (active) {
+        /* allow data processing */
+        JBUF_LOCK (session);
+        GST_DEBUG_OBJECT (rdtmanager, "Enabling pop on queue");
+        /* Mark as non flushing */
+        session->srcresult = GST_FLOW_OK;
+        gst_segment_init (&session->segment, GST_FORMAT_TIME);
+        session->last_popped_seqnum = -1;
+        session->last_out_time = -1;
+        session->next_seqnum = -1;
+        session->eos = FALSE;
+        JBUF_UNLOCK (session);
 
-    /* start pushing out buffers */
-    GST_DEBUG_OBJECT (rdtmanager, "Starting task on srcpad");
-    gst_pad_start_task (pad, (GstTaskFunction) gst_rdt_manager_loop, pad);
-  } else {
-    /* make sure all data processing stops ASAP */
-    JBUF_LOCK (session);
-    /* mark ourselves as flushing */
-    session->srcresult = GST_FLOW_WRONG_STATE;
-    GST_DEBUG_OBJECT (rdtmanager, "Disabling pop on queue");
-    /* this unblocks any waiting pops on the src pad task */
-    JBUF_SIGNAL (session);
-    /* unlock clock, we just unschedule, the entry will be released by
-     * the locking streaming thread. */
-    if (session->clock_id)
-      gst_clock_id_unschedule (session->clock_id);
-    JBUF_UNLOCK (session);
+        /* start pushing out buffers */
+        GST_DEBUG_OBJECT (rdtmanager, "Starting task on srcpad");
+        result =
+            gst_pad_start_task (pad, (GstTaskFunction) gst_rdt_manager_loop,
+            pad, NULL);
+      } else {
+        /* make sure all data processing stops ASAP */
+        JBUF_LOCK (session);
+        /* mark ourselves as flushing */
+        session->srcresult = GST_FLOW_FLUSHING;
+        GST_DEBUG_OBJECT (rdtmanager, "Disabling pop on queue");
+        /* this unblocks any waiting pops on the src pad task */
+        JBUF_SIGNAL (session);
+        /* unlock clock, we just unschedule, the entry will be released by
+         * the locking streaming thread. */
+        if (session->clock_id)
+          gst_clock_id_unschedule (session->clock_id);
+        JBUF_UNLOCK (session);
 
-    /* NOTE this will hardlock if the state change is called from the src pad
-     * task thread because we will _join() the thread. */
-    GST_DEBUG_OBJECT (rdtmanager, "Stopping task on srcpad");
-    result = gst_pad_stop_task (pad);
+        /* NOTE this will hardlock if the state change is called from the src pad
+         * task thread because we will _join() the thread. */
+        GST_DEBUG_OBJECT (rdtmanager, "Stopping task on srcpad");
+        result = gst_pad_stop_task (pad);
+      }
+      break;
+    default:
+      result = FALSE;
+      break;
   }
-
   return result;
 }
 
@@ -718,23 +751,35 @@ wrong_rate:
 }
 
 static gboolean
-gst_rdt_manager_setcaps (GstPad * pad, GstCaps * caps)
+gst_rdt_manager_event_rdt (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstRDTManager *rdtmanager;
   GstRDTManagerSession *session;
   gboolean res;
 
-  rdtmanager = GST_RDT_MANAGER (GST_PAD_PARENT (pad));
+  rdtmanager = GST_RDT_MANAGER (parent);
   /* find session */
   session = gst_pad_get_element_private (pad);
 
-  res = gst_rdt_manager_parse_caps (rdtmanager, session, caps);
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps *caps;
 
+      gst_event_parse_caps (event, &caps);
+      res = gst_rdt_manager_parse_caps (rdtmanager, session, caps);
+      gst_event_unref (event);
+      break;
+    }
+    default:
+      res = gst_pad_event_default (pad, parent, event);
+      break;
+  }
   return res;
 }
 
 static GstFlowReturn
-gst_rdt_manager_chain_rdt (GstPad * pad, GstBuffer * buffer)
+gst_rdt_manager_chain_rdt (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstFlowReturn res;
   GstRDTManager *rdtmanager;
@@ -745,7 +790,7 @@ gst_rdt_manager_chain_rdt (GstPad * pad, GstBuffer * buffer)
   guint8 pt;
   gboolean more;
 
-  rdtmanager = GST_RDT_MANAGER (GST_PAD_PARENT (pad));
+  rdtmanager = GST_RDT_MANAGER (parent);
 
   GST_DEBUG_OBJECT (rdtmanager, "got RDT packet");
 
@@ -847,7 +892,6 @@ gst_rdt_manager_loop (GstPad * pad)
     session->discont = FALSE;
   }
 
-  gst_buffer_set_caps (buffer, GST_PAD_CAPS (session->recv_rtp_src));
   JBUF_UNLOCK (session);
 
   result = gst_pad_push (session->recv_rtp_src, buffer);
@@ -868,7 +912,7 @@ do_eos:
   {
     /* store result, we are flushing now */
     GST_DEBUG_OBJECT (rdtmanager, "We are EOS, pushing EOS downstream");
-    session->srcresult = GST_FLOW_UNEXPECTED;
+    session->srcresult = GST_FLOW_EOS;
     gst_pad_pause_task (session->recv_rtp_src);
     gst_pad_push_event (session->recv_rtp_src, gst_event_new_eos ());
     JBUF_UNLOCK (session);
@@ -891,7 +935,8 @@ pause:
 }
 
 static GstFlowReturn
-gst_rdt_manager_chain_rtcp (GstPad * pad, GstBuffer * buffer)
+gst_rdt_manager_chain_rtcp (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer)
 {
   GstRDTManager *src;
 
@@ -901,7 +946,7 @@ gst_rdt_manager_chain_rtcp (GstPad * pad, GstBuffer * buffer)
   gboolean more;
 #endif
 
-  src = GST_RDT_MANAGER (GST_PAD_PARENT (pad));
+  src = GST_RDT_MANAGER (parent);
 
   GST_DEBUG_OBJECT (src, "got rtcp packet");
 
@@ -1128,7 +1173,7 @@ create_recv_rtp (GstRDTManager * rdtmanager, GstPadTemplate * templ,
   GstRDTManagerSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "recv_rtp_sink_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "recv_rtp_sink_%u", &sessid) != 1)
     goto no_name;
 
   GST_DEBUG_OBJECT (rdtmanager, "finding session %d", sessid);
@@ -1150,8 +1195,8 @@ create_recv_rtp (GstRDTManager * rdtmanager, GstPadTemplate * templ,
 
   session->recv_rtp_sink = gst_pad_new_from_template (templ, name);
   gst_pad_set_element_private (session->recv_rtp_sink, session);
-  gst_pad_set_setcaps_function (session->recv_rtp_sink,
-      gst_rdt_manager_setcaps);
+  gst_pad_set_event_function (session->recv_rtp_sink,
+      gst_rdt_manager_event_rdt);
   gst_pad_set_chain_function (session->recv_rtp_sink,
       gst_rdt_manager_chain_rdt);
   gst_pad_set_active (session->recv_rtp_sink, TRUE);
@@ -1188,7 +1233,7 @@ create_recv_rtcp (GstRDTManager * rdtmanager, GstPadTemplate * templ,
   GstRDTManagerSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "recv_rtcp_sink_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "recv_rtcp_sink_%u", &sessid) != 1)
     goto no_name;
 
   GST_DEBUG_OBJECT (rdtmanager, "finding session %d", sessid);
@@ -1242,7 +1287,7 @@ create_rtcp (GstRDTManager * rdtmanager, GstPadTemplate * templ,
   GstRDTManagerSession *session;
 
   /* first get the session number */
-  if (name == NULL || sscanf (name, "rtcp_src_%d", &sessid) != 1)
+  if (name == NULL || sscanf (name, "rtcp_src_%u", &sessid) != 1)
     goto no_name;
 
   /* get or create session */
@@ -1283,7 +1328,7 @@ existed:
  */
 static GstPad *
 gst_rdt_manager_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name)
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
 {
   GstRDTManager *rdtmanager;
   GstElementClass *klass;
@@ -1296,12 +1341,12 @@ gst_rdt_manager_request_new_pad (GstElement * element,
   klass = GST_ELEMENT_GET_CLASS (element);
 
   /* figure out the template */
-  if (templ == gst_element_class_get_pad_template (klass, "recv_rtp_sink_%d")) {
+  if (templ == gst_element_class_get_pad_template (klass, "recv_rtp_sink_%u")) {
     result = create_recv_rtp (rdtmanager, templ, name);
   } else if (templ == gst_element_class_get_pad_template (klass,
-          "recv_rtcp_sink_%d")) {
+          "recv_rtcp_sink_%u")) {
     result = create_recv_rtcp (rdtmanager, templ, name);
-  } else if (templ == gst_element_class_get_pad_template (klass, "rtcp_src_%d")) {
+  } else if (templ == gst_element_class_get_pad_template (klass, "rtcp_src_%u")) {
     result = create_rtcp (rdtmanager, templ, name);
   } else
     goto wrong_template;

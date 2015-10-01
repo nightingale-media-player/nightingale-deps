@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __KSHELPERS_H__
@@ -37,21 +37,22 @@ struct _KsDeviceEntry
 
 gboolean ks_is_valid_handle (HANDLE h);
 
-GList * ks_enumerate_devices (const GUID * category);
+GList * ks_enumerate_devices (const GUID * devtype, const GUID * direction_category);
 void ks_device_entry_free (KsDeviceEntry * entry);
 void ks_device_list_free (GList * devices);
 
-gboolean ks_filter_get_pin_property (HANDLE filter_handle, gulong pin_id, GUID prop_set, gulong prop_id, gpointer value, gulong value_size);
-gboolean ks_filter_get_pin_property_multi (HANDLE filter_handle, gulong pin_id, GUID prop_set, gulong prop_id, KSMULTIPLE_ITEM ** items);
+gboolean ks_filter_get_pin_property (HANDLE filter_handle, gulong pin_id, GUID prop_set, gulong prop_id, gpointer value, gulong value_size, gulong * error);
+gboolean ks_filter_get_pin_property_multi (HANDLE filter_handle, gulong pin_id, GUID prop_set, gulong prop_id, KSMULTIPLE_ITEM ** items, gulong * error);
 
-gboolean ks_object_query_property (HANDLE handle, GUID prop_set, gulong prop_id, gulong prop_flags, gpointer * value, gulong * value_size);
-gboolean ks_object_get_property (HANDLE handle, GUID prop_set, gulong prop_id, gpointer * value, gulong * value_size);
-gboolean ks_object_set_property (HANDLE handle, GUID prop_set, gulong prop_id, gpointer value, gulong value_size);
+gboolean ks_object_query_property (HANDLE handle, GUID prop_set, gulong prop_id, gulong prop_flags, gpointer * value, gulong * value_size, gulong * error);
+gboolean ks_object_get_property (HANDLE handle, GUID prop_set, gulong prop_id, gpointer * value, gulong * value_size, gulong * error);
+gboolean ks_object_set_property (HANDLE handle, GUID prop_set, gulong prop_id, gpointer value, gulong value_size, gulong * error);
 
 gboolean ks_object_get_supported_property_sets (HANDLE handle, GUID ** propsets, gulong * len);
 
-gboolean ks_object_set_connection_state (HANDLE handle, KSSTATE state);
+gboolean ks_object_set_connection_state (HANDLE handle, KSSTATE state, gulong * error);
 
+gchar * ks_guid_to_string (const GUID * guid);
 const gchar * ks_state_to_string (KSSTATE state);
 gchar * ks_options_flags_to_string (gulong flags);
 gchar * ks_property_set_to_string (const GUID * guid);

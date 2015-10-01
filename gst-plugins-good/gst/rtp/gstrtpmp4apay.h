@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_MP4A_PAY_H__
 #define __GST_RTP_MP4A_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -42,7 +42,7 @@ typedef struct _GstRtpMP4APayClass GstRtpMP4APayClass;
 
 struct _GstRtpMP4APay
 {
-  GstBaseRTPPayload    payload;
+  GstRTPBasePayload    payload;
 
   gint          rate;
   gchar        *params;
@@ -53,8 +53,10 @@ struct _GstRtpMP4APay
 
 struct _GstRtpMP4APayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_mp4a_pay_get_type (void);
 
 gboolean gst_rtp_mp4a_pay_plugin_init (GstPlugin * plugin);
 

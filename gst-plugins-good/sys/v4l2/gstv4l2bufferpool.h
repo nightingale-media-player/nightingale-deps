@@ -4,7 +4,7 @@
  *               2006 Edgard Lima <edgard.lima@indt.org.br>
  *               2009 Texas Instruments, Inc - http://www.ti.com/
  *
- * gstv4l2src.h: BT8x8/V4L2 source element
+ * gstv4l2bufferpool.h V4L2 buffer pool class
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,80 +18,98 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GSTV4L2BUFFER_H__
-#define __GSTV4L2BUFFER_H__
+#ifndef __GST_V4L2_BUFFER_POOL_H__
+#define __GST_V4L2_BUFFER_POOL_H__
 
 #include <gst/gst.h>
-#include "v4l2_calls.h"
+
+typedef struct _GstV4l2BufferPool GstV4l2BufferPool;
+typedef struct _GstV4l2BufferPoolClass GstV4l2BufferPoolClass;
+typedef struct _GstV4l2Meta GstV4l2Meta;
+
+#include "gstv4l2object.h"
+#include "gstv4l2allocator.h"
 
 GST_DEBUG_CATEGORY_EXTERN (v4l2buffer_debug);
 
 G_BEGIN_DECLS
 
 
-GType gst_v4l2_buffer_get_type (void);
-#define GST_TYPE_V4L2_BUFFER (gst_v4l2_buffer_get_type())
-#define GST_IS_V4L2_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_V4L2_BUFFER))
-#define GST_V4L2_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_V4L2_BUFFER, GstV4l2Buffer))
+#define GST_TYPE_V4L2_BUFFER_POOL      (gst_v4l2_buffer_pool_get_type())
+#define GST_IS_V4L2_BUFFER_POOL(obj)   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_V4L2_BUFFER_POOL))
+#define GST_V4L2_BUFFER_POOL(obj)      (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_V4L2_BUFFER_POOL, GstV4l2BufferPool))
+#define GST_V4L2_BUFFER_POOL_CAST(obj) ((GstV4l2BufferPool*)(obj))
 
-GType gst_v4l2_buffer_pool_get_type (void);
-#define GST_TYPE_V4L2_BUFFER_POOL (gst_v4l2_buffer_pool_get_type())
-#define GST_IS_V4L2_BUFFER_POOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_V4L2_BUFFER_POOL))
-#define GST_V4L2_BUFFER_POOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_V4L2_BUFFER_POOL, GstV4l2BufferPool))
+/* This flow return is used to indicated that the last buffer of a
+ * drain or a resoltuion change has been found. This should normally
+ * only occure for mem-2-mem devices. */
+#define GST_V4L2_FLOW_LAST_BUFFER GST_FLOW_CUSTOM_SUCCESS
 
-
-
-typedef struct _GstV4l2BufferPool GstV4l2BufferPool;
-typedef struct _GstV4l2Buffer GstV4l2Buffer;
-
+/* This flow return is used to indicated that the returned buffer was marked
+ * with the error flag and had no payload. This error should be recovered by
+ * simply waiting for next buffer. */
+#define GST_V4L2_FLOW_CORRUPTED_BUFFER GST_FLOW_CUSTOM_SUCCESS_1
 
 struct _GstV4l2BufferPool
 {
-  GstMiniObject parent;
+  GstBufferPool parent;
 
-  GstElement *v4l2elem;      /* the v4l2 src/sink that owns us.. maybe we should be owned by v4l2object? */
-  gboolean requeuebuf;       /* if true, unusued buffers are automatically re-QBUF'd */
-  enum v4l2_buf_type type;   /* V4L2_BUF_TYPE_VIDEO_CAPTURE, V4L2_BUF_TYPE_VIDEO_OUTPUT */
-
-  GMutex *lock;
-  gboolean running;          /* with lock */
-  gint num_live_buffers;     /* number of buffers not with driver */
-  GAsyncQueue* avail_buffers;/* pool of available buffers, not with the driver and which aren't held outside the bufferpool */
+  GstV4l2Object *obj;        /* the v4l2 object */
   gint video_fd;             /* a dup(2) of the v4l2object's video_fd */
-  guint buffer_count;
-  GstV4l2Buffer **buffers;
+  GstPoll *poll;             /* a poll for video_fd */
+  GstPollFD pollfd;
+  gboolean can_poll_device;
+
+  gboolean empty;
+  GCond empty_cond;
+
+  GstV4l2Allocator *vallocator;
+  GstAllocator *allocator;
+  GstAllocationParams params;
+  GstBufferPool *other_pool;
+  guint size;
+  GstVideoInfo caps_info;   /* Default video information */
+
+  gboolean add_videometa;    /* set if video meta should be added */
+  gboolean enable_copy_threshold; /* If copy_threshold should be set */
+
+  guint min_latency;         /* number of buffers we will hold */
+  guint max_latency;         /* number of buffers we can hold */
+  guint num_queued;          /* number of buffers queued in the driver */
+  guint copy_threshold;      /* when our pool runs lower, start handing out copies */
+
+  gboolean streaming;
+  gboolean flushing;
+
+  GstBuffer *buffers[VIDEO_MAX_FRAME];
+
+  /* signal handlers */
+  gulong group_released_handler;
+
+  /* Control to warn only once on buggy feild driver bug */
+  gboolean has_warned_on_buggy_field;
 };
 
-struct _GstV4l2Buffer {
-  GstBuffer   buffer;
-
-  struct v4l2_buffer vbuffer;
-
-  /* FIXME: have GstV4l2Src* instead, as this has GstV4l2BufferPool* */
-  /* FIXME: do we really want to fix this if GstV4l2Buffer/Pool is shared
-   * between v4l2src and v4l2sink??
-   */
-  GstV4l2BufferPool *pool;
+struct _GstV4l2BufferPoolClass
+{
+  GstBufferPoolClass parent_class;
 };
+
+GType gst_v4l2_buffer_pool_get_type (void);
+
+GstBufferPool *     gst_v4l2_buffer_pool_new     (GstV4l2Object *obj, GstCaps *caps);
+
+GstFlowReturn       gst_v4l2_buffer_pool_process (GstV4l2BufferPool * bpool, GstBuffer ** buf);
+
+void                gst_v4l2_buffer_pool_set_other_pool (GstV4l2BufferPool * pool,
+                                                         GstBufferPool * other_pool);
+void                gst_v4l2_buffer_pool_copy_at_threshold (GstV4l2BufferPool * pool,
+                                                            gboolean copy);
 
 G_END_DECLS
 
-void gst_v4l2_buffer_pool_destroy (GstV4l2BufferPool * pool);
-GstV4l2BufferPool *gst_v4l2_buffer_pool_new (GstElement *v4l2elem, gint fd, gint num_buffers, GstCaps * caps, gboolean requeuebuf, enum v4l2_buf_type type);
-
-
-GstV4l2Buffer *gst_v4l2_buffer_pool_get (GstV4l2BufferPool *pool);
-gboolean gst_v4l2_buffer_pool_qbuf (GstV4l2BufferPool *pool, GstV4l2Buffer *buf);
-GstV4l2Buffer *gst_v4l2_buffer_pool_dqbuf (GstV4l2BufferPool *pool);
-
-gint gst_v4l2_buffer_pool_available_buffers (GstV4l2BufferPool *pool);
-
-
-#define GST_V4L2_BUFFER_POOL_LOCK(pool)     g_mutex_lock ((pool)->lock)
-#define GST_V4L2_BUFFER_POOL_UNLOCK(pool)   g_mutex_unlock ((pool)->lock)
-
-#endif /* __GSTV4L2BUFFER_H__ */
+#endif /*__GST_V4L2_BUFFER_POOL_H__ */

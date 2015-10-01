@@ -20,8 +20,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RIPPLE_H__
@@ -29,6 +29,7 @@
 
 #include <gst/gst.h>
 
+#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 
 G_BEGIN_DECLS
@@ -52,8 +53,6 @@ struct _GstRippleTV
   GstVideoFilter element;
 
   /* < private > */
-  gint width, height;
-
   gint mode;
 
   gint16 *background;

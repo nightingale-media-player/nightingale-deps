@@ -1,227 +1,209 @@
 <plugin>
   <name>ladspa</name>
-  <description>All LADSPA plugins</description>
+  <description>LADSPA plugin</description>
   <filename>../../ext/ladspa/.libs/libgstladspa.so</filename>
   <basename>libgstladspa.so</basename>
-  <version>0.10.16</version>
+  <version>1.6.0</version>
   <license>LGPL</license>
   <source>gst-plugins-bad</source>
-  <package>GStreamer Bad Plug-ins prerelease</package>
+  <package>GStreamer Bad Plug-ins source release</package>
   <origin>Unknown package origin</origin>
   <elements>
     <element>
-      <name>ladspa-amp-mono</name>
+      <name>ladspa-amp-so-amp-mono</name>
       <longname>Mono Amplifier</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Mono Amplifier</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-amp-stereo</name>
+      <name>ladspa-amp-so-amp-stereo</name>
       <longname>Stereo Amplifier</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Stereo Amplifier</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output_-Right-</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input_-Right-</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)2, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
         <caps>
-          <name>Output_-Left-</name>
+          <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input_-Left-</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)2, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-delay-5s</name>
+      <name>ladspa-delay-so-delay-5s</name>
       <longname>Simple Delay Line</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Simple Delay Line</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-hpf</name>
+      <name>ladspa-filter-so-hpf</name>
       <longname>Simple High Pass Filter</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Simple High Pass Filter</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-lpf</name>
+      <name>ladspa-filter-so-lpf</name>
       <longname>Simple Low Pass Filter</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Simple Low Pass Filter</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Input</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
-      </pads>
-    </element>
-    <element>
-      <name>ladspa-noise-white</name>
-      <longname>White Noise Source</longname>
-      <class>Source/Audio/LADSPA</class>
-      <description>White Noise Source</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
-      <pads>
         <caps>
-          <name>Output</name>
+          <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-sine-faaa</name>
+      <name>ladspa-sine-so-sine-faaa</name>
       <longname>Sine Oscillator (Freq:audio, Amp:audio)</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Sine Oscillator (Freq:audio, Amp:audio)</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)2, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Amplitude</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Frequency_-Hz-</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-sine-faac</name>
+      <name>ladspa-sine-so-sine-faac</name>
       <longname>Sine Oscillator (Freq:audio, Amp:control)</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Sine Oscillator (Freq:audio, Amp:control)</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Frequency_-Hz-</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-sine-fcaa</name>
+      <name>ladspa-sine-so-sine-fcaa</name>
       <longname>Sine Oscillator (Freq:control, Amp:audio)</longname>
       <class>Filter/Effect/Audio/LADSPA</class>
       <description>Sine Oscillator (Freq:control, Amp:audio)</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
-        </caps>
-        <caps>
-          <name>Amplitude</name>
+          <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>
     <element>
-      <name>ladspa-sine-fcac</name>
+      <name>ladspasrc-noise-so-noise-white</name>
+      <longname>White Noise Source</longname>
+      <class>Source/Audio/LADSPA</class>
+      <description>White Noise Source</description>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
+      <pads>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>ladspasrc-sine-so-sine-fcac</name>
       <longname>Sine Oscillator (Freq:control, Amp:control)</longname>
       <class>Source/Audio/LADSPA</class>
       <description>Sine Oscillator (Freq:control, Amp:control)</description>
-      <author>Richard Furse (LADSPA example plugins)</author>
+      <author>Richard Furse (LADSPA example plugins), Juan Manuel Borges Caño &lt;juanmabcmail@gmail.com&gt;, Andy Wingo &lt;wingo at pobox.com&gt;, Steve Baker &lt;stevebaker_org@yahoo.co.uk&gt;, Erik Walthinsen &lt;omega@cse.ogi.edu&gt;, Stefan Sauer &lt;ensonic@users.sf.net&gt;, Wim Taymans &lt;wim@fluendo.com&gt;</author>
       <pads>
         <caps>
-          <name>Output</name>
+          <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>audio/x-raw-float, endianness=(int)1234, width=(int)32, channels=(int)1, channel-positions=(GstAudioChannelPosition)&lt; { GST_AUDIO_CHANNEL_POSITION_FRONT_MONO } &gt;</details>
+          <details>audio/x-raw, format=(string)F32LE, channels=(int)1, rate=(int)[ 1, 2147483647 ], layout=(string)interleaved</details>
         </caps>
       </pads>
     </element>

@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -63,15 +63,13 @@ GST_START_TEST (test_memory_stream)
   GstElement *bin;
   GstElement *src, *sink;
   GstBus *bus;
-
   GMemoryInputStream *input;
   GMemoryOutputStream *output;
-
   guint8 *in_data;
   guint8 *out_data;
   gint i;
-  GstFormat fmt = GST_FORMAT_BYTES;
   gint64 duration;
+  guint bus_watch = 0;
 
   got_eos = FALSE;
 
@@ -105,13 +103,13 @@ GST_START_TEST (test_memory_stream)
   fail_unless (gst_element_link_many (src, sink, NULL));
 
   bus = gst_element_get_bus (bin);
-  gst_bus_add_watch (bus, message_handler, loop);
+  bus_watch = gst_bus_add_watch (bus, message_handler, loop);
   gst_object_unref (bus);
 
   gst_element_set_state (bin, GST_STATE_PAUSED);
   gst_element_get_state (bin, NULL, NULL, -1);
 
-  fail_unless (gst_element_query_duration (bin, &fmt, &duration));
+  fail_unless (gst_element_query_duration (bin, GST_FORMAT_BYTES, &duration));
   fail_unless_equals_int (duration, 512);
 
   gst_element_set_state (bin, GST_STATE_PLAYING);
@@ -131,7 +129,7 @@ GST_START_TEST (test_memory_stream)
   gst_element_set_state (bin, GST_STATE_PAUSED);
   gst_element_get_state (bin, NULL, NULL, -1);
 
-  fail_unless (gst_element_query_duration (bin, &fmt, &duration));
+  fail_unless (gst_element_query_duration (bin, GST_FORMAT_BYTES, &duration));
   fail_unless_equals_int (duration, 512);
 
   gst_element_set_state (bin, GST_STATE_PLAYING);
@@ -147,12 +145,13 @@ GST_START_TEST (test_memory_stream)
   g_object_unref (output);
 
   g_main_loop_unref (loop);
+  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
 
 static Suite *
-gio_testsuite (void)
+gio_suite (void)
 {
   Suite *s = suite_create ("gio");
   TCase *tc_chain = tcase_create ("general");
@@ -163,19 +162,4 @@ gio_testsuite (void)
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = gio_testsuite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (gio);

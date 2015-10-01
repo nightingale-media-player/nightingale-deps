@@ -1,0 +1,809 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstDeviceProvider: GStreamer 1.0 Core Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="gstreamer-device-probing.html" title="GStreamer Device Discovery and Device Probing">
+<link rel="prev" href="gstreamer-GstDevice.html" title="GstDevice">
+<link rel="next" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-GstDeviceProvider.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-device-probing.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-GstDevice.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GstDeviceProviderFactory.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gstreamer-GstDeviceProvider"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-GstDeviceProvider.top_of_page"></a>GstDeviceProvider</span></h2>
+<p>GstDeviceProvider — A device provider</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-can-monitor" title="gst_device_provider_can_monitor ()">gst_device_provider_can_monitor</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-add-metadata" title="gst_device_provider_class_add_metadata ()">gst_device_provider_class_add_metadata</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-add-static-metadata" title="gst_device_provider_class_add_static_metadata ()">gst_device_provider_class_add_static_metadata</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-get-metadata" title="gst_device_provider_class_get_metadata ()">gst_device_provider_class_get_metadata</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-set-metadata" title="gst_device_provider_class_set_metadata ()">gst_device_provider_class_set_metadata</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-set-static-metadata" title="gst_device_provider_class_set_static_metadata ()">gst_device_provider_class_set_static_metadata</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-device-add" title="gst_device_provider_device_add ()">gst_device_provider_device_add</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-device-remove" title="gst_device_provider_device_remove ()">gst_device_provider_device_remove</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstBus.html" title="GstBus"><span class="returnvalue">GstBus</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-get-bus" title="gst_device_provider_get_bus ()">gst_device_provider_get_bus</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-get-devices" title="gst_device_provider_get_devices ()">gst_device_provider_get_devices</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory"><span class="returnvalue">GstDeviceProviderFactory</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-get-factory" title="gst_device_provider_get_factory ()">gst_device_provider_get_factory</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-register" title="gst_device_provider_register ()">gst_device_provider_register</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-start" title="gst_device_provider_start ()">gst_device_provider_start</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-stop" title="gst_device_provider_stop ()">gst_device_provider_stop</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider">GstDeviceProvider</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass">GstDeviceProviderClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.description"></a><h2>Description</h2>
+<p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> subclass is provided by a plugin that handles devices
+if there is a way to programatically list connected devices. It can also
+optionally provide updates to the list of connected devices.</p>
+<p>Each <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> subclass is a singleton, a plugin should
+normally provide a single subclass for all devices.</p>
+<p>Applications would normally use a <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a> to monitor devices
+from all relevant providers.</p>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-device-provider-can-monitor"></a><h3>gst_device_provider_can_monitor ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_device_provider_can_monitor (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-class-add-metadata"></a><h3>gst_device_provider_class_add_metadata ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_class_add_metadata
+                               (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a> *klass</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
+<p>Set <em class="parameter"><code>key</code></em>
+ with <em class="parameter"><code>value</code></em>
+ as metadata in <em class="parameter"><code>klass</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>klass</p></td>
+<td class="parameter_description"><p>class to set metadata for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>the key to set</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>value</p></td>
+<td class="parameter_description"><p>the value to set</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-class-add-static-metadata"></a><h3>gst_device_provider_class_add_static_metadata ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_class_add_static_metadata
+                               (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a> *klass</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
+<p>Set <em class="parameter"><code>key</code></em>
+ with <em class="parameter"><code>value</code></em>
+ as metadata in <em class="parameter"><code>klass</code></em>
+.</p>
+<p>Same as <a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-add-metadata" title="gst_device_provider_class_add_metadata ()"><code class="function">gst_device_provider_class_add_metadata()</code></a>, but <em class="parameter"><code>value</code></em>
+ must be a static string
+or an inlined string, as it will not be copied. (GStreamer plugins will
+be made resident once loaded, so this function can be used even from
+dynamically loaded plugins.)</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>klass</p></td>
+<td class="parameter_description"><p>class to set metadata for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>the key to set</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>value</p></td>
+<td class="parameter_description"><p> the value to set. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-class-get-metadata"></a><h3>gst_device_provider_class_get_metadata ()</h3>
+<pre class="programlisting">const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_device_provider_class_get_metadata
+                               (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a> *klass</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);</pre>
+<p>Get metadata with <em class="parameter"><code>key</code></em>
+ in <em class="parameter"><code>klass</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>klass</p></td>
+<td class="parameter_description"><p>class to get metadata for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>the key to get</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.5.6"></a><h4>Returns</h4>
+<p> the metadata for <em class="parameter"><code>key</code></em>
+.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-class-set-metadata"></a><h3>gst_device_provider_class_set_metadata ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_class_set_metadata
+                               (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a> *klass</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *longname</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *classification</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *description</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *author</code></em>);</pre>
+<p>Sets the detailed information for a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a>.</p>
+<div class="note">This function is for use in _class_init functions only.</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.6.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>klass</p></td>
+<td class="parameter_description"><p>class to set metadata for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>longname</p></td>
+<td class="parameter_description"><p>The long English name of the device provider. E.g. "File Sink"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>classification</p></td>
+<td class="parameter_description"><p>String describing the type of device provider, as an
+unordered list separated with slashes ('/'). See draft-klass.txt of the
+design docs
+for more details and common types. E.g: "Sink/File"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>description</p></td>
+<td class="parameter_description"><p>Sentence describing the purpose of the device provider.
+E.g: "Write stream to a file"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>author</p></td>
+<td class="parameter_description"><p>Name and contact details of the author(s). Use \n to separate
+multiple author metadata. E.g: "Joe Bloggs &lt;joe.blogs at foo.com&gt;"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-class-set-static-metadata"></a><h3>gst_device_provider_class_set_static_metadata ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_class_set_static_metadata
+                               (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a> *klass</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *longname</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *classification</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *description</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *author</code></em>);</pre>
+<p>Sets the detailed information for a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a>.</p>
+<div class="note">This function is for use in _class_init functions only.</div>
+<p>Same as <a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-class-set-metadata" title="gst_device_provider_class_set_metadata ()"><code class="function">gst_device_provider_class_set_metadata()</code></a>, but <em class="parameter"><code>longname</code></em>
+, <em class="parameter"><code>classification</code></em>
+,
+<em class="parameter"><code>description</code></em>
+, and <em class="parameter"><code>author</code></em>
+ must be static strings or inlined strings, as
+they will not be copied. (GStreamer plugins will be made resident once
+loaded, so this function can be used even from dynamically loaded plugins.)</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.7.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>klass</p></td>
+<td class="parameter_description"><p>class to set metadata for</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>longname</p></td>
+<td class="parameter_description"><p> The long English name of the element. E.g. "File Sink". </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>classification</p></td>
+<td class="parameter_description"><p> String describing the type of element, as
+an unordered list separated with slashes ('/'). See draft-klass.txt of the
+design docs for more details and common types. E.g: "Sink/File". </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>description</p></td>
+<td class="parameter_description"><p> Sentence describing the purpose of the
+element.  E.g: "Write stream to a file". </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>author</p></td>
+<td class="parameter_description"><p> Name and contact details of the author(s). Use \n
+to separate multiple author metadata. E.g: "Joe Bloggs &lt;joe.blogs at
+foo.com&gt;". </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-device-add"></a><h3>gst_device_provider_device_add ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_device_add (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>,
+                                <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> *device</code></em>);</pre>
+<p>Posts a message on the provider's <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> to inform applications that
+a new device has been added.</p>
+<p>This is for use by subclasses.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.8.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>device</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> that has been added. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-device-remove"></a><h3>gst_device_provider_device_remove ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_device_remove (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>,
+                                   <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> *device</code></em>);</pre>
+<p>Posts a message on the provider's <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> to inform applications that
+a device has been removed.</p>
+<p>This is for use by subclasses.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.9.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>device</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> that has been removed</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-get-bus"></a><h3>gst_device_provider_get_bus ()</h3>
+<pre class="programlisting"><a class="link" href="GstBus.html" title="GstBus"><span class="returnvalue">GstBus</span></a> *
+gst_device_provider_get_bus (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+<p>Gets the <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a> of this <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p>
+<div class="refsect3">
+<a name="id-1.4.4.7.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.10.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="GstBus.html" title="GstBus"><span class="type">GstBus</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-get-devices"></a><h3>gst_device_provider_get_devices ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+gst_device_provider_get_devices (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+<p>Gets a list of devices that this provider understands. This may actually
+probe the hardware if the provider is not currently started.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.11.6"></a><h4>Returns</h4>
+<p> a <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of
+<a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstDevice]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-get-factory"></a><h3>gst_device_provider_get_factory ()</h3>
+<pre class="programlisting"><a class="link" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory"><span class="returnvalue">GstDeviceProviderFactory</span></a> *
+gst_device_provider_get_factory (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+<p>Retrieves the factory that was used to create this device provider.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> to request the device provider factory of.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.12.6"></a><h4>Returns</h4>
+<p> the <a class="link" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory"><span class="type">GstDeviceProviderFactory</span></a> used for
+creating this device provider. no refcounting is needed. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-register"></a><h3>gst_device_provider_register ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_device_provider_register (<em class="parameter"><code><a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a> *plugin</code></em>,
+                              <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> rank</code></em>,
+                              <em class="parameter"><code><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> type</code></em>);</pre>
+<p>Create a new device providerfactory capable of instantiating objects of the
+<em class="parameter"><code>type</code></em>
+ and add the factory to <em class="parameter"><code>plugin</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>plugin</p></td>
+<td class="parameter_description"><p> <a class="link" href="GstPlugin.html" title="GstPlugin"><span class="type">GstPlugin</span></a> to register the device provider with, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for
+a static device provider. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>name of device providers of this type</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rank</p></td>
+<td class="parameter_description"><p>rank of device provider (higher rank means more importance when autoplugging)</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>GType of device provider to register</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.13.6"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, if the registering succeeded, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> on error</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-start"></a><h3>gst_device_provider_start ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_device_provider_start (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+<p>Starts providering the devices. This will cause <a class="link" href="GstMessage.html#GST-MESSAGE-DEVICE-ADDED:CAPS"><span class="type">GST_MESSAGE_DEVICE_ADDED</span></a>
+and <a class="link" href="GstMessage.html#GST-MESSAGE-DEVICE-REMOVED:CAPS"><span class="type">GST_MESSAGE_DEVICE_REMOVED</span></a> messages to be posted on the provider's bus
+when devices are added or removed from the system.</p>
+<p>Since the <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> is a singleton,
+<a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-start" title="gst_device_provider_start ()"><code class="function">gst_device_provider_start()</code></a> may already have been called by another
+user of the object, <a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-stop" title="gst_device_provider_stop ()"><code class="function">gst_device_provider_stop()</code></a> needs to be called the same
+number of times.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.14.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.4.4.7.14.7"></a><h4>Returns</h4>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the device providering could be started</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-device-provider-stop"></a><h3>gst_device_provider_stop ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_device_provider_stop (<em class="parameter"><code><a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> *provider</code></em>);</pre>
+<p>Decreases the use-count by one. If the use count reaches zero, this
+<a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> will stop providering the devices. This needs to be
+called the same number of times that <a class="link" href="gstreamer-GstDeviceProvider.html#gst-device-provider-start" title="gst_device_provider_start ()"><code class="function">gst_device_provider_start()</code></a> was called.</p>
+<div class="refsect3">
+<a name="id-1.4.4.7.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>provider</p></td>
+<td class="parameter_description"><p>A <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstDeviceProvider"></a><h3>struct GstDeviceProvider</h3>
+<pre class="programlisting">struct GstDeviceProvider {
+  GstObject         parent;
+
+  /* Protected by the Object lock */
+  GList *devices;
+};
+</pre>
+<p>The structure of the base <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a></p>
+<div class="refsect3">
+<a name="id-1.4.4.8.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> <em class="structfield"><code><a name="GstDeviceProvider.parent"></a>parent</code></em>;</p></td>
+<td class="struct_member_description"><p>The parent <a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *<em class="structfield"><code><a name="GstDeviceProvider.devices"></a>devices</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of the <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> objects</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstDeviceProviderClass"></a><h3>struct GstDeviceProviderClass</h3>
+<pre class="programlisting">struct GstDeviceProviderClass {
+  GstObjectClass    parent_class;
+
+  GstDeviceProviderFactory     *factory;
+
+  GList*      (*probe) (GstDeviceProvider * provider);
+
+  gboolean    (*start) (GstDeviceProvider * provider);
+  void        (*stop)  (GstDeviceProvider * provider);
+};
+</pre>
+<p>The structure of the base <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProviderClass" title="struct GstDeviceProviderClass"><span class="type">GstDeviceProviderClass</span></a></p>
+<div class="refsect3">
+<a name="id-1.4.4.8.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstObject.html#GstObjectClass" title="struct GstObjectClass"><span class="type">GstObjectClass</span></a> <em class="structfield"><code><a name="GstDeviceProviderClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent <a class="link" href="GstObject.html#GstObjectClass" title="struct GstObjectClass"><span class="type">GstObjectClass</span></a> structure</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory"><span class="type">GstDeviceProviderFactory</span></a> *<em class="structfield"><code><a name="GstDeviceProviderClass.factory"></a>factory</code></em>;</p></td>
+<td class="struct_member_description"><p>a pointer to the <a class="link" href="GstDeviceProviderFactory.html" title="GstDeviceProviderFactory"><span class="type">GstDeviceProviderFactory</span></a> that creates this
+provider</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstDeviceProviderClass.probe"></a>probe</code></em> ()</p></td>
+<td class="struct_member_description"><p>Returns a list of devices that are currently available.
+This should never block.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstDeviceProviderClass.start"></a>start</code></em> ()</p></td>
+<td class="struct_member_description"><p>Starts monitoring for new devices. Only subclasses that can know
+that devices have been added or remove need to implement this method.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstDeviceProviderClass.stop"></a>stop</code></em> ()</p></td>
+<td class="struct_member_description"><p>Stops monitoring for new devices. Only subclasses that implement
+the <code class="function">start()</code> method need to implement this method.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-1.4">1.4</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-GstDeviceProvider.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>, <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

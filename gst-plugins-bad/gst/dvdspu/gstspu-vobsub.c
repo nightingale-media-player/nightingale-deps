@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -187,10 +187,10 @@ gst_dvd_spu_exec_cmd_blk (GstDVDSpu * dvdspu, guint8 * data, guint8 * end)
         if (G_UNLIKELY (data + 7 >= end))
           return;               /* Invalid SET_DAREA cmd at the end of the blk */
 
-        r->top = ((data[4] & 0x3f) << 4) | ((data[5] & 0xe0) >> 4);
-        r->left = ((data[1] & 0x3f) << 4) | ((data[2] & 0xf0) >> 4);
-        r->right = ((data[2] & 0x03) << 8) | data[3];
-        r->bottom = ((data[5] & 0x03) << 8) | data[6];
+        r->top = ((data[4] & 0xff) << 4) | ((data[5] & 0xf0) >> 4);
+        r->left = ((data[1] & 0xff) << 4) | ((data[2] & 0xf0) >> 4);
+        r->right = ((data[2] & 0x0f) << 8) | data[3];
+        r->bottom = ((data[5] & 0x0f) << 8) | data[6];
 
         GST_DEBUG_OBJECT (dvdspu,
             " Set Display Area top %u left %u bottom %u right %u", r->top,
@@ -261,8 +261,10 @@ gst_dvd_spu_setup_cmd_blk (GstDVDSpu * dvdspu, guint16 cmd_blk_offset,
   guint16 delay;
   guint8 *cmd_blk = start + cmd_blk_offset;
 
-  if (G_UNLIKELY (cmd_blk + 5 >= end))
+  if (G_UNLIKELY (cmd_blk + 5 >= end)) {
+    GST_DEBUG_OBJECT (dvdspu, "No valid command block");
     return FALSE;               /* No valid command block to read */
+  }
 
   delay = GST_READ_UINT16_BE (cmd_blk);
   state->next_ts = state->vobsub.base_ts + STM_TO_GST (delay);
@@ -322,6 +324,7 @@ void
 gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
     GstBuffer * buf)
 {
+  GstMapInfo map;
   guint8 *start, *end;
   SpuState *state = &dvdspu->spu_state;
 
@@ -329,7 +332,7 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
   gst_dvd_spu_dump_dcsq (dvdspu, event_ts, buf);
 #endif
 
-  if (G_UNLIKELY (GST_BUFFER_SIZE (buf) < 4))
+  if (G_UNLIKELY (gst_buffer_get_size (buf) < 4))
     goto invalid;
 
   if (state->vobsub.buf != NULL) {
@@ -339,8 +342,9 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
   state->vobsub.buf = buf;
   state->vobsub.base_ts = event_ts;
 
-  start = GST_BUFFER_DATA (state->vobsub.buf);
-  end = start + GST_BUFFER_SIZE (state->vobsub.buf);
+  gst_buffer_map (state->vobsub.buf, &map, GST_MAP_READ);
+  start = map.data;
+  end = start + map.size;
 
   /* Configure the first command block in this buffer as our initial blk */
   state->vobsub.cur_cmd_blk = GST_READ_UINT16_BE (start + 2);
@@ -351,6 +355,7 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
     g_free (state->vobsub.line_ctrl_i);
     state->vobsub.line_ctrl_i = NULL;
   }
+  gst_buffer_unmap (state->vobsub.buf, &map);
   return;
 
 invalid:
@@ -361,9 +366,11 @@ invalid:
 gboolean
 gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
 {
+  GstMapInfo map;
   guint8 *start, *cmd_blk, *end;
   guint16 next_blk;
   SpuState *state = &dvdspu->spu_state;
+  gboolean ret = TRUE;
 
   if (state->vobsub.buf == NULL)
     return FALSE;
@@ -372,12 +379,14 @@ gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
       " @ offset %u", GST_TIME_ARGS (state->next_ts),
       state->vobsub.cur_cmd_blk);
 
-  start = GST_BUFFER_DATA (state->vobsub.buf);
-  end = start + GST_BUFFER_SIZE (state->vobsub.buf);
+  gst_buffer_map (state->vobsub.buf, &map, GST_MAP_READ);
+  start = map.data;
+  end = start + map.size;
 
   cmd_blk = start + state->vobsub.cur_cmd_blk;
 
   if (G_UNLIKELY (cmd_blk + 5 >= end)) {
+    gst_buffer_unmap (state->vobsub.buf, &map);
     /* Invalid. Finish the buffer and loop again */
     gst_dvd_spu_finish_spu_buf (dvdspu);
     return FALSE;
@@ -388,15 +397,17 @@ gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
   next_blk = GST_READ_UINT16_BE (cmd_blk + 2);
   if (next_blk != state->vobsub.cur_cmd_blk) {
     /* Advance to the next block of commands */
-    gst_dvd_spu_setup_cmd_blk (dvdspu, next_blk, start, end);
+    ret = gst_dvd_spu_setup_cmd_blk (dvdspu, next_blk, start, end);
+    gst_buffer_unmap (state->vobsub.buf, &map);
   } else {
     /* Next Block points to the current block, so we're finished with this
      * SPU buffer */
+    gst_buffer_unmap (state->vobsub.buf, &map);
     gst_dvd_spu_finish_spu_buf (dvdspu);
-    return FALSE;
+    ret = FALSE;
   }
 
-  return TRUE;
+  return ret;
 }
 
 gboolean

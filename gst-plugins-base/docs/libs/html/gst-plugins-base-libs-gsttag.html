@@ -2,553 +2,910 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>gsttag</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Base Plugins 0.10 Library Reference Manual">
+<title>gsttag: GStreamer Base Plugins 1.0 Library Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="prev" href="gstreamer-tag.html" title="Tag Support Library">
 <link rel="next" href="gst-plugins-base-libs-gsttagvorbis.html" title="gsttagvorbis">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="part" href="gstreamer-plugins-base.html" title="Part I. GStreamer Base Plugins Libraries">
-<link rel="chapter" href="gstreamer-app.html" title="App Library">
-<link rel="chapter" href="gstreamer-audio.html" title="Audio Library">
-<link rel="chapter" href="gstreamer-cdda.html" title="CDDA Library">
-<link rel="chapter" href="gstreamer-ffft.html" title="FFT Library">
-<link rel="chapter" href="gstreamer-floatcast.html" title="FloatCast Library">
-<link rel="chapter" href="gstreamer-interfaces.html" title="Interfaces Library">
-<link rel="chapter" href="gstreamer-netbuffer.html" title="Network Buffer Library">
-<link rel="chapter" href="gstreamer-riff.html" title="Riff Media Library">
-<link rel="chapter" href="gstreamer-rtp.html" title="RTP Library">
-<link rel="chapter" href="gstreamer-rtsp.html" title="RTSP Library">
-<link rel="chapter" href="gstreamer-sdp.html" title="SDP Library">
-<link rel="chapter" href="gstreamer-tag.html" title="Tag Support Library">
-<link rel="chapter" href="gstreamer-base-utils.html" title="Base Utils Library">
-<link rel="chapter" href="gstreamer-video.html" title="Video Library">
-<link rel="part" href="gstreamer-libs-hierarchy.html" title="Part II. Object Hierarchy">
-<link rel="index" href="api-index.html" title="Index">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gstreamer-tag.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-tag.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 0.10 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-gsttagvorbis.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-libs-gsttag.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-base-libs-gsttag.description" class="shortcut">Description</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gsttag.description" class="shortcut">Description</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-tag.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-tag.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gsttagvorbis.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-base-libs-gsttag"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gsttag.top_of_page"></a>gsttag</span></h2>
 <p>gsttag — additional tag definitions for plugins and applications</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-libs-gsttag.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-
-#include &lt;gst/tag/tag.h&gt;
-
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRACKID--CAPS" title="GST_TAG_MUSICBRAINZ_TRACKID">GST_TAG_MUSICBRAINZ_TRACKID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ARTISTID--CAPS" title="GST_TAG_MUSICBRAINZ_ARTISTID">GST_TAG_MUSICBRAINZ_ARTISTID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMID--CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMID">GST_TAG_MUSICBRAINZ_ALBUMID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMARTISTID--CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMARTISTID">GST_TAG_MUSICBRAINZ_ALBUMARTISTID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRMID--CAPS" title="GST_TAG_MUSICBRAINZ_TRMID">GST_TAG_MUSICBRAINZ_TRMID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-SORTNAME--CAPS" title="GST_TAG_MUSICBRAINZ_SORTNAME">GST_TAG_MUSICBRAINZ_SORTNAME</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID--CAPS" title="GST_TAG_CDDA_CDDB_DISCID">GST_TAG_CDDA_CDDB_DISCID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID-FULL--CAPS" title="GST_TAG_CDDA_CDDB_DISCID_FULL">GST_TAG_CDDA_CDDB_DISCID_FULL</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID--CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID">GST_TAG_CDDA_MUSICBRAINZ_DISCID</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL--CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL">GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-TRACK-TAGS--CAPS" title="GST_TAG_CDDA_TRACK_TAGS">GST_TAG_CDDA_TRACK_TAGS</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-CLIP--CAPS" title="GST_TAG_CMML_CLIP">GST_TAG_CMML_CLIP</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-HEAD--CAPS" title="GST_TAG_CMML_HEAD">GST_TAG_CMML_HEAD</a>
-#define             <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-STREAM--CAPS" title="GST_TAG_CMML_STREAM">GST_TAG_CMML_STREAM</a>
-void                <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-register-musicbrainz-tags" title="gst_tag_register_musicbrainz_tags ()">gst_tag_register_musicbrainz_tags</a>   (void);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *             <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8" title="gst_tag_freeform_string_to_utf8 ()">gst_tag_freeform_string_to_utf8</a>     (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> size,
-                                                         const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **env_vars);
-<a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment" title="gst_tag_parse_extended_comment ()">gst_tag_parse_extended_comment</a>      (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *ext_comment,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **key,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **lang,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **value,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> fail_if_no_key);
-enum                <a class="link" href="gst-plugins-base-libs-gsttag.html#GstTagImageType" title="enum GstTagImageType">GstTagImageType</a>;
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttag.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-register-musicbrainz-tags" title="gst_tag_register_musicbrainz_tags ()">gst_tag_register_musicbrainz_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-freeform-string-to-utf8" title="gst_tag_freeform_string_to_utf8 ()">gst_tag_freeform_string_to_utf8</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-parse-extended-comment" title="gst_tag_parse_extended_comment ()">gst_tag_parse_extended_comment</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-image-data-to-image-sample" title="gst_tag_image_data_to_image_sample ()">gst_tag_image_data_to_image_sample</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttag.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRACKID:CAPS" title="GST_TAG_MUSICBRAINZ_TRACKID">GST_TAG_MUSICBRAINZ_TRACKID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ARTISTID:CAPS" title="GST_TAG_MUSICBRAINZ_ARTISTID">GST_TAG_MUSICBRAINZ_ARTISTID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMID:CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMID">GST_TAG_MUSICBRAINZ_ALBUMID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS" title="GST_TAG_MUSICBRAINZ_ALBUMARTISTID">GST_TAG_MUSICBRAINZ_ALBUMARTISTID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICBRAINZ-TRMID:CAPS" title="GST_TAG_MUSICBRAINZ_TRMID">GST_TAG_MUSICBRAINZ_TRMID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID:CAPS" title="GST_TAG_CDDA_CDDB_DISCID">GST_TAG_CDDA_CDDB_DISCID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS" title="GST_TAG_CDDA_CDDB_DISCID_FULL">GST_TAG_CDDA_CDDB_DISCID_FULL</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID">GST_TAG_CDDA_MUSICBRAINZ_DISCID</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS" title="GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL">GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-CLIP:CAPS" title="GST_TAG_CMML_CLIP">GST_TAG_CMML_CLIP</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-HEAD:CAPS" title="GST_TAG_CMML_HEAD">GST_TAG_CMML_HEAD</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CMML-STREAM:CAPS" title="GST_TAG_CMML_STREAM">GST_TAG_CMML_STREAM</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-SHUTTER-SPEED:CAPS" title="GST_TAG_CAPTURING_SHUTTER_SPEED">GST_TAG_CAPTURING_SHUTTER_SPEED</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-FOCAL-RATIO:CAPS" title="GST_TAG_CAPTURING_FOCAL_RATIO">GST_TAG_CAPTURING_FOCAL_RATIO</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-FOCAL-LENGTH:CAPS" title="GST_TAG_CAPTURING_FOCAL_LENGTH">GST_TAG_CAPTURING_FOCAL_LENGTH</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-DIGITAL-ZOOM-RATIO:CAPS" title="GST_TAG_CAPTURING_DIGITAL_ZOOM_RATIO">GST_TAG_CAPTURING_DIGITAL_ZOOM_RATIO</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-ISO-SPEED:CAPS" title="GST_TAG_CAPTURING_ISO_SPEED">GST_TAG_CAPTURING_ISO_SPEED</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-EXPOSURE-PROGRAM:CAPS" title="GST_TAG_CAPTURING_EXPOSURE_PROGRAM">GST_TAG_CAPTURING_EXPOSURE_PROGRAM</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-EXPOSURE-MODE:CAPS" title="GST_TAG_CAPTURING_EXPOSURE_MODE">GST_TAG_CAPTURING_EXPOSURE_MODE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-SCENE-CAPTURE-TYPE:CAPS" title="GST_TAG_CAPTURING_SCENE_CAPTURE_TYPE">GST_TAG_CAPTURING_SCENE_CAPTURE_TYPE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-GAIN-ADJUSTMENT:CAPS" title="GST_TAG_CAPTURING_GAIN_ADJUSTMENT">GST_TAG_CAPTURING_GAIN_ADJUSTMENT</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-WHITE-BALANCE:CAPS" title="GST_TAG_CAPTURING_WHITE_BALANCE">GST_TAG_CAPTURING_WHITE_BALANCE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-CONTRAST:CAPS" title="GST_TAG_CAPTURING_CONTRAST">GST_TAG_CAPTURING_CONTRAST</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-SATURATION:CAPS" title="GST_TAG_CAPTURING_SATURATION">GST_TAG_CAPTURING_SATURATION</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-SHARPNESS:CAPS" title="GST_TAG_CAPTURING_SHARPNESS">GST_TAG_CAPTURING_SHARPNESS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-FLASH-FIRED:CAPS" title="GST_TAG_CAPTURING_FLASH_FIRED">GST_TAG_CAPTURING_FLASH_FIRED</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-FLASH-MODE:CAPS" title="GST_TAG_CAPTURING_FLASH_MODE">GST_TAG_CAPTURING_FLASH_MODE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-METERING-MODE:CAPS" title="GST_TAG_CAPTURING_METERING_MODE">GST_TAG_CAPTURING_METERING_MODE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-SOURCE:CAPS" title="GST_TAG_CAPTURING_SOURCE">GST_TAG_CAPTURING_SOURCE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-CAPTURING-EXPOSURE-COMPENSATION:CAPS" title="GST_TAG_CAPTURING_EXPOSURE_COMPENSATION">GST_TAG_CAPTURING_EXPOSURE_COMPENSATION</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-IMAGE-HORIZONTAL-PPI:CAPS" title="GST_TAG_IMAGE_HORIZONTAL_PPI">GST_TAG_IMAGE_HORIZONTAL_PPI</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-IMAGE-VERTICAL-PPI:CAPS" title="GST_TAG_IMAGE_VERTICAL_PPI">GST_TAG_IMAGE_VERTICAL_PPI</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-ID3V2-HEADER-SIZE:CAPS" title="GST_TAG_ID3V2_HEADER_SIZE">GST_TAG_ID3V2_HEADER_SIZE</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-MUSICAL-KEY:CAPS" title="GST_TAG_MUSICAL_KEY">GST_TAG_MUSICAL_KEY</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gsttag.html#GstTagImageType" title="enum GstTagImageType">GstTagImageType</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttag.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/tag/tag.h&gt;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gsttag.description"></a><h2>Description</h2>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2920435"></a><p>
+<div class="refsect2">
+<a name="id-1.2.13.3.6.2"></a><p>
 Contains additional standardized GStreamer tag definitions for plugins
 and applications, and functions to register them with the GStreamer
 tag system.
 </p>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-base-libs-gsttag.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-TRACKID--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRACKID</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRACKID	"musicbrainz-trackid"
-</pre>
-<p>
-MusicBrainz track ID</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-ARTISTID--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ARTISTID</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ARTISTID	"musicbrainz-artistid"
-</pre>
-<p>
-MusicBrainz artist ID</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-ALBUMID--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMID</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMID	"musicbrainz-albumid"
-</pre>
-<p>
-MusicBrainz album ID</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-ALBUMARTISTID--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMARTISTID</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMARTISTID	"musicbrainz-albumartistid"
-</pre>
-<p>
-MusicBrainz album artist ID</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-TRMID--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRMID</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRMID	"musicbrainz-trmid"
-</pre>
-<p>
-MusicBrainz track TRM ID</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-MUSICBRAINZ-SORTNAME--CAPS"></a><h3>GST_TAG_MUSICBRAINZ_SORTNAME</h3>
-<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_SORTNAME	GST_TAG_ARTIST_SORTNAME
-</pre>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p><code class="literal">GST_TAG_MUSICBRAINZ_SORTNAME</code> is deprecated and should not be used in newly-written code.</p>
-</div>
-<p>
-MusicBrainz artist sort name
-</p>
-<p>
-Deprecated.  Use GST_TAG_ARTIST_SORTNAME instead.</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CDDA-CDDB-DISCID--CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID</h3>
-<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID              "discid"
-</pre>
-<p>
-CDDB disc id in its short form (e.g. 'aa063d0f')</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CDDA-CDDB-DISCID-FULL--CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID_FULL</h3>
-<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID_FULL         "discid-full"
-</pre>
-<p>
-CDDB disc id including all details</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID--CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID</h3>
-<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID       "musicbrainz-discid"
-</pre>
-<p>
-Musicbrainz disc id (e.g. 'ahg7JUcfR3vCYBphSDIogOOWrr0-')</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL--CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</h3>
-<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL  "musicbrainz-discid-full"
-</pre>
-<p>
-Musicbrainz disc id details</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CDDA-TRACK-TAGS--CAPS"></a><h3>GST_TAG_CDDA_TRACK_TAGS</h3>
-<pre class="programlisting">#define GST_TAG_CDDA_TRACK_TAGS               "track-tags"
-</pre>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CMML-CLIP--CAPS"></a><h3>GST_TAG_CMML_CLIP</h3>
-<pre class="programlisting">#define GST_TAG_CMML_CLIP "cmml-clip"
-</pre>
-<p>
-Annodex CMML clip element tag</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CMML-HEAD--CAPS"></a><h3>GST_TAG_CMML_HEAD</h3>
-<pre class="programlisting">#define GST_TAG_CMML_HEAD "cmml-head"
-</pre>
-<p>
-Annodex CMML head element tag</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="GST-TAG-CMML-STREAM--CAPS"></a><h3>GST_TAG_CMML_STREAM</h3>
-<pre class="programlisting">#define GST_TAG_CMML_STREAM "cmml-stream"
-</pre>
-<p>
-Annodex CMML stream element tag</p>
-<p>
-</p>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="gst-tag-register-musicbrainz-tags"></a><h3>gst_tag_register_musicbrainz_tags ()</h3>
-<pre class="programlisting">void                gst_tag_register_musicbrainz_tags   (void);</pre>
-<p>
-Registers additional musicbrainz-specific tags with the GStreamer tag
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttag.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-tag-register-musicbrainz-tags"></a><h3>gst_tag_register_musicbrainz_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_tag_register_musicbrainz_tags (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Registers additional musicbrainz-specific tags with the GStreamer tag
 system. Plugins and applications that use these tags should call this
 function before using them. Can be called multiple times.</p>
-<p>
-</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-tag-freeform-string-to-utf8"></a><h3>gst_tag_freeform_string_to_utf8 ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *             gst_tag_freeform_string_to_utf8     (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *data,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a> size,
-                                                         const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **env_vars);</pre>
-<p>
-Convenience function to read a string with unknown character encoding. If
+<div class="refsect2">
+<a name="gst-tag-freeform-string-to-utf8"></a><h3>gst_tag_freeform_string_to_utf8 ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_tag_freeform_string_to_utf8 (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *data</code></em>,
+                                 <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> size</code></em>,
+                                 <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **env_vars</code></em>);</pre>
+<p>Convenience function to read a string with unknown character encoding. If
 the string is already in UTF-8 encoding, it will be returned right away.
+If not it tries to detect byte-order-mark for UTF-16/32 cases and use that.
 Otherwise, the environment will be searched for a number of environment
 variables (whose names are specified in the NULL-terminated string array
-<em class="parameter"><code>env_vars</code></em>) containing a list of character encodings to try/use. If none
+<em class="parameter"><code>env_vars</code></em>
+) containing a list of character encodings to try/use. If none
 are specified, the current locale will be tried. If that also doesn't work,
-ISO-8859-1 is assumed (which will almost always succeed).</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+WINDOWS-1252/ISO-8859-1 is assumed (which will almost always succeed).</p>
+<div class="refsect3">
+<a name="id-1.2.13.3.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td> string data
-</td>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>string data</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td> length of string data, or -1 if the string is NUL-terminated
-</td>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>length of string data, or -1 if the string is NUL-terminated</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>env_vars</code></em> :</span></p></td>
-<td> a NULL-terminated string array of environment variable names,
-           or NULL
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> a newly-allocated string in UTF-8 encoding, or NULL
-
-</td>
+<td class="parameter_name"><p>env_vars</p></td>
+<td class="parameter_description"><p>a NULL-terminated string array of environment variable names,
+or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.13</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.3.7.3.6"></a><h4>Returns</h4>
+<p> a newly-allocated string in UTF-8 encoding, or NULL</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="gst-tag-parse-extended-comment"></a><h3>gst_tag_parse_extended_comment ()</h3>
-<pre class="programlisting"><a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>            gst_tag_parse_extended_comment      (const <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> *ext_comment,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **key,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **lang,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a> **value,
-                                                         <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a> fail_if_no_key);</pre>
-<p>
-Convenience function to parse a GST_TAG_EXTENDED_COMMENT string and
-separate it into its components.
-</p>
-<p>
-If successful, <em class="parameter"><code>key</code></em>, <em class="parameter"><code>lang</code></em> and/or <em class="parameter"><code>value</code></em> will be set to newly allocated
-strings that you need to free with <a
-href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"
-><code class="function">g_free()</code></a> when done. <em class="parameter"><code>key</code></em> and <em class="parameter"><code>lang</code></em>
+<div class="refsect2">
+<a name="gst-tag-parse-extended-comment"></a><h3>gst_tag_parse_extended_comment ()</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_tag_parse_extended_comment (<em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *ext_comment</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **key</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **lang</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **value</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> fail_if_no_key</code></em>);</pre>
+<p>Convenience function to parse a GST_TAG_EXTENDED_COMMENT string and
+separate it into its components.</p>
+<p>If successful, <em class="parameter"><code>key</code></em>
+, <em class="parameter"><code>lang</code></em>
+ and/or <em class="parameter"><code>value</code></em>
+ will be set to newly allocated
+strings that you need to free with <a href="https://developer.gnome.org/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> when done. <em class="parameter"><code>key</code></em>
+ and <em class="parameter"><code>lang</code></em>
+
 may also be set to NULL by this function if there is no key or no language
 code in the extended comment string.</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect3">
+<a name="id-1.2.13.3.7.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ext_comment</code></em> :</span></p></td>
-<td> an extended comment string, see <a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstTagList.html#GST-TAG-EXTENDED-COMMENT--CAPS"
-><span class="type">GST_TAG_EXTENDED_COMMENT</span></a>
-</td>
+<td class="parameter_name"><p>ext_comment</p></td>
+<td class="parameter_description"><p>an extended comment string, see <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html#GST-TAG-EXTENDED-COMMENT:CAPS"><span class="type">GST_TAG_EXTENDED_COMMENT</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>key</code></em> :</span></p></td>
-<td> return location for the comment description key, or NULL
-</td>
+<td class="parameter_name"><p>key</p></td>
+<td class="parameter_description"><p>return location for the comment description key, or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>lang</code></em> :</span></p></td>
-<td> return location for the comment ISO-639 language code, or NULL
-</td>
+<td class="parameter_name"><p>lang</p></td>
+<td class="parameter_description"><p>return location for the comment ISO-639 language code, or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>value</code></em> :</span></p></td>
-<td> return location for the actual comment string, or NULL
-</td>
+<td class="parameter_name"><p>value</p></td>
+<td class="parameter_description"><p>return location for the actual comment string, or NULL</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>fail_if_no_key</code></em> :</span></p></td>
-<td> whether to fail if strings are not in key=value form
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> TRUE if the string could be parsed, otherwise FALSE
-
-</td>
+<td class="parameter_name"><p>fail_if_no_key</p></td>
+<td class="parameter_description"><p>whether to fail if strings are not in key=value form</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.10</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.3.7.4.7"></a><h4>Returns</h4>
+<p> TRUE if the string could be parsed, otherwise FALSE</p>
+</div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstTagImageType"></a><h3>enum GstTagImageType</h3>
-<pre class="programlisting">typedef enum {
-  GST_TAG_IMAGE_TYPE_NONE = -1,
-  GST_TAG_IMAGE_TYPE_UNDEFINED = 0,
-  GST_TAG_IMAGE_TYPE_FRONT_COVER,
-  GST_TAG_IMAGE_TYPE_BACK_COVER,
-  GST_TAG_IMAGE_TYPE_LEAFLET_PAGE,
-  GST_TAG_IMAGE_TYPE_MEDIUM,
-  GST_TAG_IMAGE_TYPE_LEAD_ARTIST,
-  GST_TAG_IMAGE_TYPE_ARTIST,
-  GST_TAG_IMAGE_TYPE_CONDUCTOR,
-  GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA,
-  GST_TAG_IMAGE_TYPE_COMPOSER,
-  GST_TAG_IMAGE_TYPE_LYRICIST,
-  GST_TAG_IMAGE_TYPE_RECORDING_LOCATION,
-  GST_TAG_IMAGE_TYPE_DURING_RECORDING,
-  GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE,
-  GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE,
-  GST_TAG_IMAGE_TYPE_FISH,
-  GST_TAG_IMAGE_TYPE_ILLUSTRATION,
-  GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO,
-  GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO
-} GstTagImageType;
-</pre>
-<p>
-Type of image contained in an image tag (specified as field in
-the image buffer's caps structure)</p>
-<p>
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<div class="refsect2">
+<a name="gst-tag-image-data-to-image-sample"></a><h3>gst_tag_image_data_to_image_sample ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a> *
+gst_tag_image_data_to_image_sample (<em class="parameter"><code>const <span class="type">guint8</span> *image_data</code></em>,
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> image_data_len</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gsttag.html#GstTagImageType" title="enum GstTagImageType"><span class="type">GstTagImageType</span></a> image_type</code></em>);</pre>
+<p>Helper function for tag-reading plugins to create a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> suitable to
+add to a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a> as an image tag (such as <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html#GST-TAG-IMAGE:CAPS"><span class="type">GST_TAG_IMAGE</span></a> or
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html#GST-TAG-PREVIEW-IMAGE:CAPS"><span class="type">GST_TAG_PREVIEW_IMAGE</span></a>) from the encoded image data and an (optional) image
+type.</p>
+<p>Background: cover art and other images in tags are usually stored as a
+blob of binary image data, often accompanied by a MIME type or some other
+content type string (e.g. 'png', 'jpeg', 'jpg'). Sometimes there is also an
+'image type' to indicate what kind of image this is (e.g. front cover,
+back cover, artist, etc.). The image data may also be an URI to the image
+rather than the image itself.</p>
+<p>In GStreamer, image tags are <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a>s containing the raw image
+data, with the sample caps describing the content type of the image
+(e.g. image/jpeg, image/png, text/uri-list). The sample info may contain
+an additional 'image-type' field of <span class="type">GST_TYPE_TAG_IMAGE_TYPE</span> to describe
+the type of image (front cover, back cover etc.). <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html#GST-TAG-PREVIEW-IMAGE:CAPS"><span class="type">GST_TAG_PREVIEW_IMAGE</span></a>
+tags should not carry an image type, their type is already indicated via
+the special tag name.</p>
+<p>This function will do various checks and typefind the encoded image
+data (we can't trust the declared mime type).</p>
+<div class="refsect3">
+<a name="id-1.2.13.3.7.5.8"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
 <tbody>
 <tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-NONE--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_NONE</code></span></p></td>
-<td> No image type. Can be used to
-     tell functions such as <code class="function">gst_tag_image_data_to_image_buffer()</code> that no
-     image type should be set. (Since: 0.10.20)
-</td>
+<td class="parameter_name"><p>image_data</p></td>
+<td class="parameter_description"><p>the (encoded) image</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-UNDEFINED--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_UNDEFINED</code></span></p></td>
-<td> Undefined/other image type
-</td>
+<td class="parameter_name"><p>image_data_len</p></td>
+<td class="parameter_description"><p>the length of the encoded image data at <em class="parameter"><code>image_data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-FRONT-COVER--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_FRONT_COVER</code></span></p></td>
-<td> Cover (front)
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-BACK-COVER--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BACK_COVER</code></span></p></td>
-<td> Cover (back)
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-LEAFLET-PAGE--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LEAFLET_PAGE</code></span></p></td>
-<td> Leaflet page
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-MEDIUM--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_MEDIUM</code></span></p></td>
-<td> Medium (e.g. label side of CD)
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-LEAD-ARTIST--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LEAD_ARTIST</code></span></p></td>
-<td> Lead artist/lead performer/soloist
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-ARTIST--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_ARTIST</code></span></p></td>
-<td> Artist/performer
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-CONDUCTOR--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_CONDUCTOR</code></span></p></td>
-<td> Conductor
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-BAND-ORCHESTRA--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA</code></span></p></td>
-<td> Band/orchestra
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-COMPOSER--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_COMPOSER</code></span></p></td>
-<td> Composer
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-LYRICIST--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_LYRICIST</code></span></p></td>
-<td> Lyricist/text writer
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-RECORDING-LOCATION--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_RECORDING_LOCATION</code></span></p></td>
-<td> Recording location
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-DURING-RECORDING--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_DURING_RECORDING</code></span></p></td>
-<td> During recording
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-DURING-PERFORMANCE--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE</code></span></p></td>
-<td> During performance
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-VIDEO-CAPTURE--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE</code></span></p></td>
-<td> Movie/video screen capture
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-FISH--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_FISH</code></span></p></td>
-<td> A fish as funny as the ID3v2 spec
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-ILLUSTRATION--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_ILLUSTRATION</code></span></p></td>
-<td> Illustration
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-BAND-ARTIST-LOGO--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO</code></span></p></td>
-<td> Band/artist logotype
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-TAG-IMAGE-TYPE-PUBLISHER-STUDIO-LOGO--CAPS"></a><span class="term"><code class="literal">GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO</code></span></p></td>
-<td> Publisher/studio logotype
-</td>
+<td class="parameter_name"><p>image_type</p></td>
+<td class="parameter_description"><p>type of the image, or <a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-IMAGE-TYPE-UNDEFINED:CAPS"><span class="type">GST_TAG_IMAGE_TYPE_UNDEFINED</span></a>. Pass
+<a class="link" href="gst-plugins-base-libs-gsttag.html#GST-TAG-IMAGE-TYPE-NONE:CAPS"><span class="type">GST_TAG_IMAGE_TYPE_NONE</span></a> if no image type should be set at all (e.g.
+for preview images)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
-<p class="since">Since 0.10.9</p>
+</div>
+<div class="refsect3">
+<a name="id-1.2.13.3.7.5.9"></a><h4>Returns</h4>
+<p> a newly-allocated image sample for use in tag lists, or NULL</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gsttag.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GST-TAG-MUSICBRAINZ-TRACKID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRACKID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRACKID "musicbrainz-trackid"
+</pre>
+<p>MusicBrainz track ID</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-MUSICBRAINZ-ARTISTID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ARTISTID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ARTISTID "musicbrainz-artistid"
+</pre>
+<p>MusicBrainz artist ID</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-MUSICBRAINZ-ALBUMID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMID "musicbrainz-albumid"
+</pre>
+<p>MusicBrainz album ID</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-MUSICBRAINZ-ALBUMARTISTID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_ALBUMARTISTID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_ALBUMARTISTID "musicbrainz-albumartistid"
+</pre>
+<p>MusicBrainz album artist ID</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-MUSICBRAINZ-TRMID:CAPS"></a><h3>GST_TAG_MUSICBRAINZ_TRMID</h3>
+<pre class="programlisting">#define GST_TAG_MUSICBRAINZ_TRMID "musicbrainz-trmid"
+</pre>
+<p>MusicBrainz track TRM ID</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CDDA-CDDB-DISCID:CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID              "discid"
+</pre>
+<p>CDDB disc id in its short form (e.g. 'aa063d0f')</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CDDA-CDDB-DISCID-FULL:CAPS"></a><h3>GST_TAG_CDDA_CDDB_DISCID_FULL</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_CDDB_DISCID_FULL         "discid-full"
+</pre>
+<p>CDDB disc id including all details</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID:CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID       "musicbrainz-discid"
+</pre>
+<p>Musicbrainz disc id (e.g. 'ahg7JUcfR3vCYBphSDIogOOWrr0-')</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CDDA-MUSICBRAINZ-DISCID-FULL:CAPS"></a><h3>GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL</h3>
+<pre class="programlisting">#define GST_TAG_CDDA_MUSICBRAINZ_DISCID_FULL  "musicbrainz-discid-full"
+</pre>
+<p>Musicbrainz disc id details</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CMML-CLIP:CAPS"></a><h3>GST_TAG_CMML_CLIP</h3>
+<pre class="programlisting">#define GST_TAG_CMML_CLIP "cmml-clip"
+</pre>
+<p>Annodex CMML clip element tag</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CMML-HEAD:CAPS"></a><h3>GST_TAG_CMML_HEAD</h3>
+<pre class="programlisting">#define GST_TAG_CMML_HEAD "cmml-head"
+</pre>
+<p>Annodex CMML head element tag</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CMML-STREAM:CAPS"></a><h3>GST_TAG_CMML_STREAM</h3>
+<pre class="programlisting">#define GST_TAG_CMML_STREAM "cmml-stream"
+</pre>
+<p>Annodex CMML stream element tag</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-SHUTTER-SPEED:CAPS"></a><h3>GST_TAG_CAPTURING_SHUTTER_SPEED</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_SHUTTER_SPEED        "capturing-shutter-speed"
+</pre>
+<p>Shutter speed used when capturing an image, in seconds. (fraction)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-FOCAL-RATIO:CAPS"></a><h3>GST_TAG_CAPTURING_FOCAL_RATIO</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_FOCAL_RATIO          "capturing-focal-ratio"
+</pre>
+<p>Focal ratio (f-number) used when capturing an image. (double)</p>
+<p>The value stored is the denominator of the focal ratio (f-number).
+For example, if this tag value is 2, the focal ratio is f/2.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-FOCAL-LENGTH:CAPS"></a><h3>GST_TAG_CAPTURING_FOCAL_LENGTH</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_FOCAL_LENGTH         "capturing-focal-length"
+</pre>
+<p>Focal length used when capturing an image, in mm. (double)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-DIGITAL-ZOOM-RATIO:CAPS"></a><h3>GST_TAG_CAPTURING_DIGITAL_ZOOM_RATIO</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_DIGITAL_ZOOM_RATIO   "capturing-digital-zoom-ratio"
+</pre>
+<p>Digital zoom ratio used when capturing an image. (double)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-ISO-SPEED:CAPS"></a><h3>GST_TAG_CAPTURING_ISO_SPEED</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_ISO_SPEED           "capturing-iso-speed"
+</pre>
+<p>ISO speed used when capturing an image. (integer)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-EXPOSURE-PROGRAM:CAPS"></a><h3>GST_TAG_CAPTURING_EXPOSURE_PROGRAM</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_EXPOSURE_PROGRAM     "capturing-exposure-program"
+</pre>
+<p>Type of exposure control used when capturing an image. (string)</p>
+<p>The allowed values are:
+  "undefined"
+  "manual"
+  "normal" - automatically controlled
+  "aperture-priority" - user selects aperture value
+  "shutter-priority" - user selects shutter speed
+  "creative" - biased towards depth of field
+  "action" - biased towards fast shutter speed
+  "portrait" - closeup, leaving background out of focus
+  "landscape" - landscape photos, background in focus</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-EXPOSURE-MODE:CAPS"></a><h3>GST_TAG_CAPTURING_EXPOSURE_MODE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_EXPOSURE_MODE       "capturing-exposure-mode"
+</pre>
+<p>Exposure mode used when capturing an image. (string)</p>
+<p>The allowed values are:
+  "auto-exposure"
+  "manual-exposure"
+  "auto-bracket"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-SCENE-CAPTURE-TYPE:CAPS"></a><h3>GST_TAG_CAPTURING_SCENE_CAPTURE_TYPE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_SCENE_CAPTURE_TYPE  "capturing-scene-capture-type"
+</pre>
+<p>Scene mode used when capturing an image. (string)</p>
+<p>The allowed values are:
+  "standard"
+  "landscape"
+  "portrait"
+  "night-scene"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-GAIN-ADJUSTMENT:CAPS"></a><h3>GST_TAG_CAPTURING_GAIN_ADJUSTMENT</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_GAIN_ADJUSTMENT     "capturing-gain-adjustment"
+</pre>
+<p>Gain adjustment applied to an image. (string)</p>
+<p>The allowed values are:
+  "none"
+  "low-gain-up"
+  "high-gain-up"
+  "low-gain-down"
+  "high-gain-down"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-WHITE-BALANCE:CAPS"></a><h3>GST_TAG_CAPTURING_WHITE_BALANCE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_WHITE_BALANCE       "capturing-white-balance"
+</pre>
+<p>White balance mode used when capturing an image. (string)</p>
+<p>The allowed values are:
+  "auto"
+  "manual"
+  "daylight"
+  "cloudy"
+  "tungsten"
+  "fluorescent"
+  "fluorescent h" (newer daylight-calibrated fluorescents)
+  "flash"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-CONTRAST:CAPS"></a><h3>GST_TAG_CAPTURING_CONTRAST</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_CONTRAST            "capturing-contrast"
+</pre>
+<p>Direction of contrast processing applied when capturing an image. (string)</p>
+<p>The allowed values are:
+ "normal"
+ "soft"
+ "hard"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-SATURATION:CAPS"></a><h3>GST_TAG_CAPTURING_SATURATION</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_SATURATION          "capturing-saturation"
+</pre>
+<p>Direction of saturation processing applied when capturing an image. (string)</p>
+<p>The allowed values are:
+ "normal"
+ "low-saturation"
+ "high-saturation"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-SHARPNESS:CAPS"></a><h3>GST_TAG_CAPTURING_SHARPNESS</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_SHARPNESS          "capturing-sharpness"
+</pre>
+<p>Direction of sharpness processing applied when capturing an image. (string)</p>
+<p>The allowed values are:
+ "normal"
+ "soft"
+ "hard"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-FLASH-FIRED:CAPS"></a><h3>GST_TAG_CAPTURING_FLASH_FIRED</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_FLASH_FIRED         "capturing-flash-fired"
+</pre>
+<p>If flash was fired during the capture of an image. (boolean)</p>
+<p>Note that if this tag isn't present, it should not be assumed that
+the flash did not fire. It should be treated as unknown.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-FLASH-MODE:CAPS"></a><h3>GST_TAG_CAPTURING_FLASH_MODE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_FLASH_MODE         "capturing-flash-mode"
+</pre>
+<p>The flash mode selected during the capture of an image. (string)</p>
+<p>The allowed values are:
+ "auto"
+ "always"
+ "never"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-METERING-MODE:CAPS"></a><h3>GST_TAG_CAPTURING_METERING_MODE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_METERING_MODE      "capturing-metering-mode"
+</pre>
+<p>Defines the way a camera determines the exposure. (string)</p>
+<p>The allowed values are:
+  "unknown"
+  "average"
+  "center-weighted-average"
+  "spot"
+  "multi-spot"
+  "pattern"
+  "partial"
+  "other"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-SOURCE:CAPS"></a><h3>GST_TAG_CAPTURING_SOURCE</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_SOURCE             "capturing-source"
+</pre>
+<p>Indicates the source of capture. The device/medium used to do the
+capture. (string)</p>
+<p>Allowed values are:
+  "dsc" (= digital still camera)
+  "transparent-scanner"
+  "reflex-scanner"
+  "other"</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-CAPTURING-EXPOSURE-COMPENSATION:CAPS"></a><h3>GST_TAG_CAPTURING_EXPOSURE_COMPENSATION</h3>
+<pre class="programlisting">#define GST_TAG_CAPTURING_EXPOSURE_COMPENSATION "capturing-exposure-compensation"
+</pre>
+<p>Exposure compensation using when capturing an image in EV. (double)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-IMAGE-HORIZONTAL-PPI:CAPS"></a><h3>GST_TAG_IMAGE_HORIZONTAL_PPI</h3>
+<pre class="programlisting">#define GST_TAG_IMAGE_HORIZONTAL_PPI         "image-horizontal-ppi"
+</pre>
+<p>Media (image/video) intended horizontal pixel density in ppi. (double)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-IMAGE-VERTICAL-PPI:CAPS"></a><h3>GST_TAG_IMAGE_VERTICAL_PPI</h3>
+<pre class="programlisting">#define GST_TAG_IMAGE_VERTICAL_PPI           "image-vertical-ppi"
+</pre>
+<p>Media (image/video) intended vertical pixel density in ppi. (double)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-ID3V2-HEADER-SIZE:CAPS"></a><h3>GST_TAG_ID3V2_HEADER_SIZE</h3>
+<pre class="programlisting">#define GST_TAG_ID3V2_HEADER_SIZE            10
+</pre>
+<p>ID3V2 header size considered minimum input for some functions such as
+<a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-list-from-id3v2-tag" title="gst_tag_list_from_id3v2_tag ()"><code class="function">gst_tag_list_from_id3v2_tag()</code></a> and <a class="link" href="gst-plugins-base-libs-gsttagid3.html#gst-tag-get-id3v2-tag-size" title="gst_tag_get_id3v2_tag_size ()"><code class="function">gst_tag_get_id3v2_tag_size()</code></a> for example.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-TAG-MUSICAL-KEY:CAPS"></a><h3>GST_TAG_MUSICAL_KEY</h3>
+<pre class="programlisting">#define GST_TAG_MUSICAL_KEY                   "musical-key"
+</pre>
+<p>Musical key in which the sound starts. It is represented as a string
+with a maximum length of three characters. The ground keys are
+represented with "A","B","C","D","E", "F" and "G" and halfkeys
+represented with "b" and "#". Minor is represented as "m" (e.g. "Dbm").
+Off key is represented with an "o" only.
+This notation might be extended in the future to support non-minor/major
+keys.</p>
+<p class="since">Since: 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstTagImageType"></a><h3>enum GstTagImageType</h3>
+<p>Type of image contained in an image tag (specified as "image-type" field in
+the info structure in the image's <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a>)</p>
+<div class="refsect3">
+<a name="id-1.2.13.3.8.36.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-NONE:CAPS"></a>GST_TAG_IMAGE_TYPE_NONE</p></td>
+<td class="enum_member_description">
+<p>No image type. Can be used to
+     tell functions such as <a class="link" href="gst-plugins-base-libs-gsttag.html#gst-tag-image-data-to-image-sample" title="gst_tag_image_data_to_image_sample ()"><code class="function">gst_tag_image_data_to_image_sample()</code></a> that no
+     image type should be set.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-UNDEFINED:CAPS"></a>GST_TAG_IMAGE_TYPE_UNDEFINED</p></td>
+<td class="enum_member_description">
+<p>Undefined/other image type</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-FRONT-COVER:CAPS"></a>GST_TAG_IMAGE_TYPE_FRONT_COVER</p></td>
+<td class="enum_member_description">
+<p>Cover (front)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-BACK-COVER:CAPS"></a>GST_TAG_IMAGE_TYPE_BACK_COVER</p></td>
+<td class="enum_member_description">
+<p>Cover (back)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-LEAFLET-PAGE:CAPS"></a>GST_TAG_IMAGE_TYPE_LEAFLET_PAGE</p></td>
+<td class="enum_member_description">
+<p>Leaflet page</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-MEDIUM:CAPS"></a>GST_TAG_IMAGE_TYPE_MEDIUM</p></td>
+<td class="enum_member_description">
+<p>Medium (e.g. label side of CD)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-LEAD-ARTIST:CAPS"></a>GST_TAG_IMAGE_TYPE_LEAD_ARTIST</p></td>
+<td class="enum_member_description">
+<p>Lead artist/lead performer/soloist</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-ARTIST:CAPS"></a>GST_TAG_IMAGE_TYPE_ARTIST</p></td>
+<td class="enum_member_description">
+<p>Artist/performer</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-CONDUCTOR:CAPS"></a>GST_TAG_IMAGE_TYPE_CONDUCTOR</p></td>
+<td class="enum_member_description">
+<p>Conductor</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-BAND-ORCHESTRA:CAPS"></a>GST_TAG_IMAGE_TYPE_BAND_ORCHESTRA</p></td>
+<td class="enum_member_description">
+<p>Band/orchestra</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-COMPOSER:CAPS"></a>GST_TAG_IMAGE_TYPE_COMPOSER</p></td>
+<td class="enum_member_description">
+<p>Composer</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-LYRICIST:CAPS"></a>GST_TAG_IMAGE_TYPE_LYRICIST</p></td>
+<td class="enum_member_description">
+<p>Lyricist/text writer</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-RECORDING-LOCATION:CAPS"></a>GST_TAG_IMAGE_TYPE_RECORDING_LOCATION</p></td>
+<td class="enum_member_description">
+<p>Recording location</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-DURING-RECORDING:CAPS"></a>GST_TAG_IMAGE_TYPE_DURING_RECORDING</p></td>
+<td class="enum_member_description">
+<p>During recording</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-DURING-PERFORMANCE:CAPS"></a>GST_TAG_IMAGE_TYPE_DURING_PERFORMANCE</p></td>
+<td class="enum_member_description">
+<p>During performance</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-VIDEO-CAPTURE:CAPS"></a>GST_TAG_IMAGE_TYPE_VIDEO_CAPTURE</p></td>
+<td class="enum_member_description">
+<p>Movie/video screen capture</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-FISH:CAPS"></a>GST_TAG_IMAGE_TYPE_FISH</p></td>
+<td class="enum_member_description">
+<p>A fish as funny as the ID3v2 spec</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-ILLUSTRATION:CAPS"></a>GST_TAG_IMAGE_TYPE_ILLUSTRATION</p></td>
+<td class="enum_member_description">
+<p>Illustration</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-BAND-ARTIST-LOGO:CAPS"></a>GST_TAG_IMAGE_TYPE_BAND_ARTIST_LOGO</p></td>
+<td class="enum_member_description">
+<p>Band/artist logotype</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-TAG-IMAGE-TYPE-PUBLISHER-STUDIO-LOGO:CAPS"></a>GST_TAG_IMAGE_TYPE_PUBLISHER_STUDIO_LOGO</p></td>
+<td class="enum_member_description">
+<p>Publisher/studio logotype</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-base-libs-gsttag.see-also"></a><h2>See Also</h2>
-#GstTagList
+<p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagList.html"><span class="type">GstTagList</span></a></p>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

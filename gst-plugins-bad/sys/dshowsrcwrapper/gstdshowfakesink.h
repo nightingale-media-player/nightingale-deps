@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_DHOW_FAKESINK_H__
@@ -30,8 +30,8 @@ static const GUID CLSID_DshowFakeSink =
     0x73}
 };
 
-typedef bool (*push_buffer_func) (byte * buffer, long size, gpointer src_object,
-    UINT64 start, UINT64 stop);
+typedef bool (*push_buffer_func) (guint8 * buffer, guint size, gpointer src_object,
+    GstClockTime duration);
 
 class CDshowFakeSink:public CBaseRenderer
 {

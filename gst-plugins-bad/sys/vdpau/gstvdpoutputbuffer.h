@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef _GST_VDP_OUTPUT_BUFFER_H_
@@ -25,29 +25,38 @@
 
 #include "gstvdpdevice.h"
 
-typedef struct _GstVdpOutputBuffer GstVdpOutputBuffer;
+GType gst_vdpau_output_meta_api_get_type (void);
 
-#define GST_TYPE_VDP_OUTPUT_BUFFER (gst_vdp_output_buffer_get_type())
-#define GST_IS_VDP_OUTPUT_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_VDP_OUTPUT_BUFFER))
-#define GST_VDP_OUTPUT_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_VDP_OUTPUT_BUFFER, GstVdpOutputBuffer))
+const GstMetaInfo * gst_vdpau_output_meta_get_info (void);
 
-struct _GstVdpOutputBuffer {
-  GstBuffer buffer;
+#define GST_VDPAU_OUTPUT_META_GET(buf) ((GstVdpauMeta *)gst_buffer_get_meta(buf,gst_vdpau_output_meta_api_get_type()))
+#define GST_VDPAU_OUTPUT_META_ADD(buf) ((GstVdpauMeta *)gst_buffer_add_meta(buf,gst_vdpau_output_meta_get_info(),NULL))
 
+struct _GstVdpauOutputMeta {
+  GstMeta meta;
+
+  /* FIXME : Check we actually need all of this */
   GstVdpDevice *device;
+  VdpRGBAFormat rgba_format;
+  gint width, height;
+  
   VdpOutputSurface surface;
 };
 
-GType gst_vdp_output_buffer_get_type (void);
-
-GstVdpOutputBuffer* gst_vdp_output_buffer_new (GstVdpDevice * device, VdpRGBAFormat rgba_format, gint width, gint height);
-
+#if 0
+/* FIXME : Replace with GST_VIDEO_FORMAT... and GST_VIDEO_CHROMA_... */
+GstCaps *gst_vdp_output_buffer_get_template_caps (void);
 GstCaps *gst_vdp_output_buffer_get_allowed_caps (GstVdpDevice *device);
+gboolean gst_vdp_caps_to_rgba_format (GstCaps *caps, VdpRGBAFormat *rgba_format);
+
+gboolean gst_vdp_output_buffer_calculate_size (GstVdpOutputBuffer *output_buf, guint *size);
+/* FIXME : Replace with map/unmap  */
+gboolean gst_vdp_output_buffer_download (GstVdpOutputBuffer *output_buf, GstBuffer *outbuf, GError **error);
 
 #define GST_VDP_OUTPUT_CAPS \
   "video/x-vdpau-output, " \
   "rgba-format = (int)[0,4], " \
   "width = (int)[1,8192], " \
   "height = (int)[1,8192]"
-
+#endif
 #endif

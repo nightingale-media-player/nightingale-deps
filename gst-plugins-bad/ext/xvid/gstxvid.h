@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_XVID_H__
@@ -42,15 +42,15 @@ G_BEGIN_DECLS
   "green_mask = (int) " G_STRINGIFY (g_mask) ", " \
   "blue_mask = (int) " G_STRINGIFY (b_mask)
 
-extern gchar *	gst_xvid_error (int errorcode);
-extern gboolean	gst_xvid_init  (void);
+extern const gchar *gst_xvid_error (int errorcode);
+extern gboolean	    gst_xvid_init  (void);
 
-extern gint     gst_xvid_structure_to_csp (GstStructure *structure);
-extern GstCaps *gst_xvid_csp_to_caps      (gint csp, gint w, gint h);
-extern gint     gst_xvid_image_get_size (gint csp,
+extern gint         gst_xvid_structure_to_csp (GstStructure *structure);
+extern GstCaps *    gst_xvid_csp_to_caps      (gint csp, gint w, gint h);
+extern gint         gst_xvid_image_get_size (gint csp,
+                                             gint width, gint height);
+extern gint         gst_xvid_image_fill (xvid_image_t * im, void * ptr, gint csp,
                                          gint width, gint height);
-extern gint     gst_xvid_image_fill (xvid_image_t * im, void * ptr, gint csp,
-                                     gint width, gint height);
 
 G_END_DECLS
 

@@ -1,9 +1,18 @@
-# This plugin isn't buildable with autotools at this point in time, so just
-# ensure everything's listed in EXTRA_DIST
+plugin_LTLIBRARIES = libgstwinks.la
 
-EXTRA_DIST = \
-	gstksclock.c gstksclock.h \
-	gstksvideodevice.c gstksvideodevice.h \
-	gstksvideosrc.c gstksvideosrc.h \
+libgstwinks_la_SOURCES = gstksclock.c \
+	gstksvideodevice.c \
+	gstksvideosrc.c \
+	ksdeviceprovider.c ksdeviceprovider.h \
 	kshelpers.c kshelpers.h \
-	ksvideohelpers.c ksvideohelpers.h
+	ksvideohelpers.c 
+libgstwinks_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) $(DIRECTX_CFLAGS) -Wno-error=missing-braces
+libgstwinks_la_LIBADD = \
+	$(GST_BASE_LIBS) $(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) \
+	$(DIRECTX_LDFLAGS) $(WINKS_LIBS)
+libgstwinks_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstwinks_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
+
+noinst_HEADERS= gstksclock.h ksvideohelpers.h gstksvideodevice.h gstksvideosrc.h
+

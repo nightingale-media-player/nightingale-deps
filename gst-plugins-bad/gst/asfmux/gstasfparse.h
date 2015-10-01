@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,6 +23,7 @@
 
 
 #include <gst/gst.h>
+#include <gst/base/gstbaseparse.h>
 #include <gst/base/gstadapter.h>
 #include <gst/base/gstbytereader.h>
 
@@ -54,29 +55,19 @@ typedef struct _GstAsfParse GstAsfParse;
 typedef struct _GstAsfParseClass GstAsfParseClass;
 
 struct _GstAsfParse {
-  GstElement element;
+  GstBaseParse baseparse;
 
   enum GstAsfParsingState parse_state;
 
-  GstAdapter *adapter;
-
-  GstPad *srcpad;
-  GstPad *sinkpad;
-  GstCaps *outcaps;
-
   guint64 parsed_packets;
-
-  guint64 offset; /* used in pull mode */
 
   /* parsed info */
   GstAsfFileInfo *asfinfo;
-  GstAsfPacketInfo *packetinfo; /* we keep it here to avoid allocs */
-  guint64 headers_size;
-  guint64 data_size;
+  GstAsfPacketInfo *packetinfo;
 };
 
 struct _GstAsfParseClass {
-  GstElementClass parent_class;
+  GstBaseParseClass parent_class;
 };
 
 GType gst_asf_parse_get_type(void);

@@ -7,48 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-0.8.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-05 13:46+0100\n"
+"POT-Creation-Date: 2015-09-25 22:48+0200\n"
 "PO-Revision-Date: 2004-03-19 18:29+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
+"Language: az\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
-
-msgid "Master"
-msgstr ""
-
-msgid "Bass"
-msgstr "Bas"
-
-msgid "Treble"
-msgstr "İncə"
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Synth"
-msgstr "Sint"
-
-msgid "Line-in"
-msgstr "Xətd-giriş"
-
-msgid "CD"
-msgstr "CD"
-
-msgid "Microphone"
-msgstr "Mikrofon"
-
-#, fuzzy
-msgid "PC Speaker"
-msgstr "Spiker"
-
-msgid "Playback"
-msgstr ""
-
-msgid "Capture"
-msgstr ""
 
 #, fuzzy
 msgid "Could not open device for playback in mono mode."
@@ -70,6 +37,9 @@ msgstr ""
 #, fuzzy
 msgid "Could not open audio device for playback."
 msgstr "\"%s\" audio avadanlığı yazma üçün açıla bilmədi."
+
+msgid "Error outputting to audio device. The device has been disconnected."
+msgstr ""
 
 #, fuzzy
 msgid "Could not open device for recording in mono mode."
@@ -93,6 +63,9 @@ msgstr "\"%s\" avadanlığı oxuma və yazma üçün açıla bilmədi."
 msgid "Could not open audio device for recording."
 msgstr "CD avadanlığı oxuma üçün açıla bilmədi."
 
+msgid "Error recording from audio device. The device has been disconnected."
+msgstr ""
+
 msgid "Could not open CD device for reading."
 msgstr "CD avadanlığı oxuma üçün açıla bilmədi."
 
@@ -104,88 +77,33 @@ msgstr "\"%s\" vfs faylı bağlana bilmədi."
 msgid "Could not read CD."
 msgstr "\"%s\" avadanlığına yazıla bilmədi."
 
-#, fuzzy, c-format
-msgid "Could not open vfs file \"%s\" for writing: %s."
-msgstr "\"%s\" vfs faylı yazma üçün açıla bilmədi."
-
-#, fuzzy
-msgid "No filename given"
-msgstr "Fayl adı verilməyib."
-
-#, c-format
-msgid "Could not close vfs file \"%s\"."
-msgstr "\"%s\" vfs faylı bağlana bilmədi."
-
-#, fuzzy, c-format
-msgid "Error while writing to file \"%s\"."
-msgstr "\"%s\" faylı bağlana bilmədi."
-
 msgid "Internal data stream error."
-msgstr ""
-
-#, c-format
-msgid "A %s plugin is required to play this stream, but not installed."
-msgstr ""
-
-msgid "This appears to be a text file"
-msgstr ""
-
-#, fuzzy
-msgid "Could not determine type of stream"
-msgstr "\"%s\" faylına yazıla bilmədi."
-
-#, c-format
-msgid "Invalid subtitle URI \"%s\", subtitles disabled."
-msgstr ""
-
-msgid "No URI specified to play from."
-msgstr ""
-
-#, c-format
-msgid "Invalid URI \"%s\"."
-msgstr ""
-
-msgid "RTSP streams cannot be played yet."
-msgstr ""
-
-msgid "Could not create \"decodebin\" element."
-msgstr ""
-
-msgid "Source element is invalid."
-msgstr ""
-
-msgid ""
-"Only a subtitle stream was detected. Either you are loading a subtitle file "
-"or some other type of text file, or the media file was not recognized."
-msgstr ""
-
-msgid ""
-"You do not have a decoder installed to handle this file. You might need to "
-"install the necessary plugins."
-msgstr ""
-
-#, fuzzy
-msgid "This is not a media file"
-msgstr "\"%s\" avadanlığı capture avadanlığı deyil."
-
-msgid "A subtitle stream was detected, but no video stream."
-msgstr ""
-
-msgid "Both autovideosink and xvimagesink elements are missing."
 msgstr ""
 
 #, c-format
 msgid "Missing element '%s' - check your GStreamer installation."
 msgstr ""
 
-msgid "Both autoaudiosink and alsasink elements are missing."
+#, fuzzy
+msgid "Could not determine type of stream"
+msgstr "\"%s\" faylına yazıla bilmədi."
+
+msgid "This appears to be a text file"
 msgstr ""
+
+#, fuzzy
+msgid "Could not create \"uridecodebin\" element."
+msgstr "\"%s\" faylına yazıla bilmədi."
 
 #, c-format
 msgid "Both autovideosink and %s elements are missing."
 msgstr ""
 
 msgid "The autovideosink element is missing."
+msgstr ""
+
+#, c-format
+msgid "Configured videosink %s is not working."
 msgstr ""
 
 #, c-format
@@ -209,35 +127,28 @@ msgid "The autoaudiosink element is missing."
 msgstr ""
 
 #, c-format
+msgid "Configured audiosink %s is not working."
+msgstr ""
+
+#, c-format
 msgid "Both autoaudiosink and %s elements are not working."
 msgstr ""
 
 msgid "The autoaudiosink element is not working."
 msgstr ""
 
-msgid "Can't play a text file without video."
-msgstr ""
-
-msgid "Can't display both text subtitles and subpictures."
-msgstr ""
-
-#, fuzzy
-msgid "No Temp directory specified."
-msgstr "Avadanlıq bildirilməyib."
-
-#, fuzzy, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "\"%s\" faylına yazıla bilmədi."
-
-#, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "\"%s\" faylı oxuma üçün açıla bilmədi."
-
-msgid "Internal data flow error."
+msgid "Can't play a text file without video or visualizations."
 msgstr ""
 
 #, c-format
 msgid "No decoder available for type '%s'."
+msgstr ""
+
+msgid "No URI specified to play from."
+msgstr ""
+
+#, c-format
+msgid "Invalid URI \"%s\"."
 msgstr ""
 
 msgid "This stream type cannot be played yet."
@@ -247,66 +158,14 @@ msgstr ""
 msgid "No URI handler implemented for \"%s\"."
 msgstr ""
 
-msgid "Could not create \"decodebin2\" element."
+msgid "Source element is invalid."
 msgstr ""
-
-msgid "Could not create \"queue2\" element."
-msgstr ""
-
-#, fuzzy
-msgid "Could not create \"typefind\" element."
-msgstr "\"%s\" faylına yazıla bilmədi."
 
 #, fuzzy, c-format
 msgid "Error while sending data to \"%s:%d\"."
 msgstr "\"%s\" faylı bağlana bilmədi."
 
-#, c-format
-msgid "Error while sending gdp header data to \"%s:%d\"."
-msgstr ""
-
-#, c-format
-msgid "Error while sending gdp payload data to \"%s:%d\"."
-msgstr ""
-
-#, c-format
-msgid "Connection to %s:%d refused."
-msgstr ""
-
 msgid "Can't record audio fast enough"
-msgstr ""
-
-msgid "Failed to read tag: not enough data"
-msgstr ""
-
-msgid "track ID"
-msgstr ""
-
-msgid "MusicBrainz track ID"
-msgstr ""
-
-msgid "artist ID"
-msgstr ""
-
-msgid "MusicBrainz artist ID"
-msgstr ""
-
-msgid "album ID"
-msgstr ""
-
-msgid "MusicBrainz album ID"
-msgstr ""
-
-msgid "album artist ID"
-msgstr ""
-
-msgid "MusicBrainz album artist ID"
-msgstr ""
-
-msgid "track TRM ID"
-msgstr ""
-
-msgid "MusicBrainz TRM ID"
 msgstr ""
 
 msgid "This CD has no audio tracks"
@@ -342,10 +201,22 @@ msgstr ""
 msgid "Lossless MSZH"
 msgstr ""
 
-msgid "Uncompressed Gray Image"
+msgid "Run-length encoding"
 msgstr ""
 
-msgid "Run-length encoding"
+msgid "Timed Text"
+msgstr ""
+
+msgid "Subtitle"
+msgstr ""
+
+msgid "MPL2 subtitle format"
+msgstr ""
+
+msgid "DKS subtitle format"
+msgstr ""
+
+msgid "QTtext subtitle format"
 msgstr ""
 
 msgid "Sami subtitle format"
@@ -357,37 +228,22 @@ msgstr ""
 msgid "Kate subtitle format"
 msgstr ""
 
-msgid "Uncompressed planar YUV 4:2:0"
+msgid "Uncompressed video"
 msgstr ""
 
-msgid "Uncompressed planar YVU 4:2:0"
+msgid "Uncompressed gray"
 msgstr ""
 
-msgid "Uncompressed packed YUV 4:2:2"
+#, c-format
+msgid "Uncompressed packed YUV %s"
 msgstr ""
 
-msgid "Uncompressed packed YUV 4:1:0"
+#, c-format
+msgid "Uncompressed semi-planar YUV %s"
 msgstr ""
 
-msgid "Uncompressed packed YVU 4:1:0"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:1:1"
-msgstr ""
-
-msgid "Uncompressed packed YUV 4:4:4"
-msgstr ""
-
-msgid "Uncompressed planar YUV 4:2:2"
-msgstr ""
-
-msgid "Uncompressed planar YUV 4:1:1"
-msgstr ""
-
-msgid "Uncompressed black and white Y-plane"
-msgstr ""
-
-msgid "Uncompressed YUV"
+#, c-format
+msgid "Uncompressed planar YUV %s"
 msgstr ""
 
 #, c-format
@@ -395,21 +251,18 @@ msgid "Uncompressed palettized %d-bit %s"
 msgstr ""
 
 #, c-format
+msgid "Uncompressed %d-bit %s"
+msgstr ""
+
+#, c-format
 msgid "DivX MPEG-4 Version %d"
 msgstr ""
 
-#, c-format
-msgid "Raw %d-bit PCM audio"
-msgstr ""
-
-msgid "Raw PCM audio"
+msgid "Uncompressed audio"
 msgstr ""
 
 #, c-format
-msgid "Raw %d-bit floating-point audio"
-msgstr ""
-
-msgid "Raw floating-point audio"
+msgid "Raw %d-bit %s audio"
 msgstr ""
 
 msgid "Audio CD source"
@@ -490,20 +343,371 @@ msgstr ""
 msgid "Plugin or element of unknown type"
 msgstr ""
 
-msgid "No device specified."
-msgstr "Avadanlıq bildirilməyib."
+msgid "Failed to read tag: not enough data"
+msgstr ""
 
-#, c-format
-msgid "Device \"%s\" does not exist."
-msgstr "\"%s\" avadanlığı mövcud deyil."
+msgid "track ID"
+msgstr ""
+
+msgid "MusicBrainz track ID"
+msgstr ""
+
+msgid "artist ID"
+msgstr ""
+
+msgid "MusicBrainz artist ID"
+msgstr ""
+
+msgid "album ID"
+msgstr ""
+
+msgid "MusicBrainz album ID"
+msgstr ""
+
+msgid "album artist ID"
+msgstr ""
+
+msgid "MusicBrainz album artist ID"
+msgstr ""
+
+msgid "track TRM ID"
+msgstr ""
+
+msgid "MusicBrainz TRM ID"
+msgstr ""
+
+msgid "capturing shutter speed"
+msgstr ""
+
+msgid "Shutter speed used when capturing an image, in seconds"
+msgstr ""
+
+msgid "capturing focal ratio"
+msgstr ""
+
+msgid "Focal ratio (f-number) used when capturing the image"
+msgstr ""
+
+msgid "capturing focal length"
+msgstr ""
+
+msgid "Focal length of the lens used capturing the image, in mm"
+msgstr ""
+
+msgid "capturing digital zoom ratio"
+msgstr ""
+
+msgid "Digital zoom ratio used when capturing an image"
+msgstr ""
+
+msgid "capturing iso speed"
+msgstr ""
+
+msgid "The ISO speed used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure program"
+msgstr ""
+
+msgid "The exposure program used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure mode"
+msgstr ""
+
+msgid "The exposure mode used when capturing an image"
+msgstr ""
+
+msgid "capturing exposure compensation"
+msgstr ""
+
+msgid "The exposure compensation used when capturing an image"
+msgstr ""
+
+msgid "capturing scene capture type"
+msgstr ""
+
+msgid "The scene capture mode used when capturing an image"
+msgstr ""
+
+msgid "capturing gain adjustment"
+msgstr ""
+
+msgid "The overall gain adjustment applied on an image"
+msgstr ""
+
+msgid "capturing white balance"
+msgstr ""
+
+msgid "The white balance mode set when capturing an image"
+msgstr ""
+
+msgid "capturing contrast"
+msgstr ""
+
+msgid "The direction of contrast processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing saturation"
+msgstr ""
+
+msgid "The direction of saturation processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing sharpness"
+msgstr ""
+
+msgid "The direction of sharpness processing applied when capturing an image"
+msgstr ""
+
+msgid "capturing flash fired"
+msgstr ""
+
+msgid "If the flash fired while capturing an image"
+msgstr ""
+
+msgid "capturing flash mode"
+msgstr ""
+
+msgid "The selected flash mode while capturing an image"
+msgstr ""
+
+msgid "capturing metering mode"
+msgstr ""
+
+msgid ""
+"The metering mode used while determining exposure for capturing an image"
+msgstr ""
+
+msgid "capturing source"
+msgstr ""
+
+msgid "The source or type of device used for the capture"
+msgstr ""
+
+msgid "image horizontal ppi"
+msgstr ""
+
+msgid "Media (image/video) intended horizontal pixel density in ppi"
+msgstr ""
+
+msgid "image vertical ppi"
+msgstr ""
+
+msgid "Media (image/video) intended vertical pixel density in ppi"
+msgstr ""
+
+msgid "ID3v2 frame"
+msgstr ""
+
+msgid "unparsed id3v2 tag frame"
+msgstr ""
+
+msgid "musical-key"
+msgstr ""
+
+msgid "Initial key in which the sound starts"
+msgstr ""
+
+msgid "Print version information and exit"
+msgstr ""
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
 
 #, fuzzy, c-format
-msgid "Device \"%s\" is already being used."
-msgstr "\"%s\" OSS avadanlığı başqa bir proqram tərəfindən istifadədədir."
+msgid "Volume: %.0f%%"
+msgstr "Səs"
+
+msgid "Buffering..."
+msgstr ""
+
+msgid "Clock lost, selecting a new one\n"
+msgstr ""
+
+msgid "Reached end of play list."
+msgstr ""
+
+msgid "Paused"
+msgstr ""
 
 #, c-format
-msgid "Could not open device \"%s\" for reading and writing."
-msgstr "\"%s\" avadanlığı oxuma və yazma üçün açıla bilmədi."
+msgid "Now playing %s\n"
+msgstr ""
+
+#, c-format
+msgid "About to finish, preparing next title: %s"
+msgstr ""
+
+#, c-format
+msgid "Playback rate: %.2f"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Could not change playback rate to %.2f"
+msgstr "CD avadanlığı oxuma üçün açıla bilmədi."
+
+msgid "space"
+msgstr ""
+
+msgid "pause/unpause"
+msgstr ""
+
+msgid "q or ESC"
+msgstr ""
+
+msgid "quit"
+msgstr ""
+
+msgid "play next"
+msgstr ""
+
+msgid "play previous"
+msgstr ""
+
+msgid "seek forward"
+msgstr ""
+
+msgid "seek backward"
+msgstr ""
+
+#, fuzzy
+msgid "volume up"
+msgstr "Səs"
+
+msgid "volume down"
+msgstr ""
+
+msgid "increase playback rate"
+msgstr ""
+
+msgid "decrease playback rate"
+msgstr ""
+
+msgid "change playback direction"
+msgstr ""
+
+msgid "enable/disable trick modes"
+msgstr ""
+
+msgid "change audio track"
+msgstr ""
+
+msgid "change video track"
+msgstr ""
+
+msgid "change subtitle track"
+msgstr ""
+
+msgid "show keyboard shortcuts"
+msgstr ""
+
+msgid "Interactive mode - keyboard controls:"
+msgstr ""
+
+msgid "Video sink to use (default is autovideosink)"
+msgstr ""
+
+msgid "Audio sink to use (default is autoaudiosink)"
+msgstr ""
+
+msgid "Enable gapless playback"
+msgstr ""
+
+msgid "Shuffle playlist"
+msgstr ""
+
+msgid "Disable interactive control via the keyboard"
+msgstr ""
+
+msgid "Volume"
+msgstr "Səs"
+
+msgid "Playlist file containing input media files"
+msgstr ""
+
+msgid "Do not print any output (apart from errors)"
+msgstr ""
+
+#, c-format
+msgid "Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."
+msgstr ""
+
+msgid "You must provide at least one filename or URI to play."
+msgstr ""
+
+msgid "Press 'k' to see a list of keyboard shortcuts.\n"
+msgstr ""
+
+#~ msgid "Bass"
+#~ msgstr "Bas"
+
+#~ msgid "Treble"
+#~ msgstr "İncə"
+
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "Synth"
+#~ msgstr "Sint"
+
+#~ msgid "Line-in"
+#~ msgstr "Xətd-giriş"
+
+#~ msgid "CD"
+#~ msgstr "CD"
+
+#~ msgid "Microphone"
+#~ msgstr "Mikrofon"
+
+#, fuzzy
+#~ msgid "PC Speaker"
+#~ msgstr "Spiker"
+
+#, fuzzy
+#~ msgid "Could not open vfs file \"%s\" for writing: %s."
+#~ msgstr "\"%s\" vfs faylı yazma üçün açıla bilmədi."
+
+#, fuzzy
+#~ msgid "No filename given"
+#~ msgstr "Fayl adı verilməyib."
+
+#~ msgid "Could not close vfs file \"%s\"."
+#~ msgstr "\"%s\" vfs faylı bağlana bilmədi."
+
+#, fuzzy
+#~ msgid "Error while writing to file \"%s\"."
+#~ msgstr "\"%s\" faylı bağlana bilmədi."
+
+#, fuzzy
+#~ msgid "This is not a media file"
+#~ msgstr "\"%s\" avadanlığı capture avadanlığı deyil."
+
+#~ msgid "No device specified."
+#~ msgstr "Avadanlıq bildirilməyib."
+
+#~ msgid "Device \"%s\" does not exist."
+#~ msgstr "\"%s\" avadanlığı mövcud deyil."
+
+#, fuzzy
+#~ msgid "Device \"%s\" is already being used."
+#~ msgstr "\"%s\" OSS avadanlığı başqa bir proqram tərəfindən istifadədədir."
+
+#~ msgid "Could not open device \"%s\" for reading and writing."
+#~ msgstr "\"%s\" avadanlığı oxuma və yazma üçün açıla bilmədi."
+
+#, fuzzy
+#~ msgid "No Temp directory specified."
+#~ msgstr "Avadanlıq bildirilməyib."
+
+#, fuzzy
+#~ msgid "Could not create temp file \"%s\"."
+#~ msgstr "\"%s\" faylına yazıla bilmədi."
+
+#~ msgid "Could not open file \"%s\" for reading."
+#~ msgstr "\"%s\" faylı oxuma üçün açıla bilmədi."
 
 #~ msgid "Device is not open."
 #~ msgstr "Avadanlıq açıq deyil."
@@ -556,9 +760,6 @@ msgstr "\"%s\" avadanlığı oxuma və yazma üçün açıla bilmədi."
 
 #~ msgid "Could not open device \"%s\" for reading."
 #~ msgstr "\"%s\" avadanlığı oxuma üçün açıla bilmədi."
-
-#~ msgid "Volume"
-#~ msgstr "Səs"
 
 #~ msgid "Speaker"
 #~ msgstr "Spiker"

@@ -2,128 +2,143 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>modplug</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<title>modplug: GStreamer Bad Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="prev" href="gst-plugins-bad-plugins-mimdec.html" title="mimdec">
+<link rel="prev" href="gst-plugins-bad-plugins-mirror.html" title="mirror">
 <link rel="next" href="gst-plugins-bad-plugins-mpeg2enc.html" title="mpeg2enc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
-<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-mimdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-mpeg2enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-bad-plugins-modplug.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-bad-plugins-modplug.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-bad-plugins-modplug.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                 | 
-                <a href="#gst-plugins-bad-plugins-modplug.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
-<div class="refentry" lang="en">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-modplug.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-modplug.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-modplug.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-mirror.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-mpeg2enc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
 <a name="gst-plugins-bad-plugins-modplug"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-modplug.top_of_page"></a>modplug</span></h2>
-<p>modplug — Module decoder based on modplug engine</p>
+<p>modplug</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-bad-plugins-modplug.synopsis"></a><h2>Synopsis</h2>
-<a name="GstModPlug"></a><pre class="synopsis">
-                    <a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug-struct" title="GstModPlug">GstModPlug</a>;
-</pre>
-</div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-bad-plugins-modplug.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a
-href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
-   +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
->GstObject</a>
-         +----<a
-href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
->GstElement</a>
-               +----GstModPlug
-</pre>
-</div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-bad-plugins-modplug.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass" title='The "megabass" property'>megabass</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass-amount" title='The "megabass-amount" property'>megabass-amount</a>"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass-range" title='The "megabass-range" property'>megabass-range</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--noise-reduction" title='The "noise-reduction" property'>noise-reduction</a>"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--oversamp" title='The "oversamp" property'>oversamp</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb" title='The "reverb" property'>reverb</a>"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb-delay" title='The "reverb-delay" property'>reverb-delay</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb-depth" title='The "reverb-depth" property'>reverb-depth</a>"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--songname" title='The "songname" property'>songname</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround" title='The "surround" property'>surround</a>"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround-delay" title='The "surround-delay" property'>surround-delay</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround-depth" title='The "surround-depth" property'>surround-depth</a>"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass" title="The “megabass” property">megabass</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass-amount" title="The “megabass-amount” property">megabass-amount</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--megabass-range" title="The “megabass-range” property">megabass-range</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--noise-reduction" title="The “noise-reduction” property">noise-reduction</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--oversamp" title="The “oversamp” property">oversamp</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb" title="The “reverb” property">reverb</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb-delay" title="The “reverb-delay” property">reverb-delay</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--reverb-depth" title="The “reverb-depth” property">reverb-depth</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--songname" title="The “songname” property">songname</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround" title="The “surround” property">surround</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround-delay" title="The “surround-delay” property">surround-delay</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug--surround-depth" title="The “surround-depth” property">surround-depth</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstModPlug"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-modplug.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-plugins-modplug.html#GstModPlug-struct" title="GstModPlug">GstModPlug</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-modplug.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstModPlug
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-bad-plugins-modplug.description"></a><h2>Description</h2>
-<p>
-Modplug uses the <a class="ulink" href="http://modplug-xmms.sourceforge.net/" target="_top">modplug</a>
-library to decode tracked music in the MOD/S3M/XM/IT and related formats.
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2859248"></a><h3>Example pipeline</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch -v filesrc location=1990s-nostalgia.xm ! modplug ! audioconvert ! alsasink
-</pre></div> Play a FastTracker xm file.
-</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2864110"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.47.7.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">plugin</span></p></td>
@@ -143,35 +158,13 @@ gst-launch -v filesrc location=1990s-nostalgia.xm ! modplug ! audioconvert ! als
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2891279"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
+<div class="refsect2">
+<a name="id-1.2.47.7.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int){ 8000, 11025, 22050, 44100 }, channels=(int)2</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)false, width=(int)8, depth=(int)8, rate=(int){ 8000, 11025, 22050, 44100 }, channels=(int)[ 1, 2 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -207,37 +200,11 @@ gst-launch -v filesrc location=1990s-nostalgia.xm ! modplug ! audioconvert ! als
 </tr>
 </tbody>
 </table></div>
-</div>
-</div>
-<div class="refsynopsisdiv">
-<h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2891492"></a><h3>Element Information</h3>
-<div class="variablelist"><table border="0">
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
 <col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">plugin</span></p></td>
-<td>
-            <a class="link" href="gst-plugins-bad-plugins-plugin-modplug.html#plugin-modplug">modplug</a>
-          </td>
-</tr>
-<tr>
-<td><p><span class="term">author</span></p></td>
-<td>Jeremy SIMON &lt;jsimon13@yahoo.fr&gt;</td>
-</tr>
-<tr>
-<td><p><span class="term">class</span></p></td>
-<td>Codec/Decoder/Audio</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2" lang="en">
-<a name="id2891555"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
+<col>
+</colgroup>
 <tbody>
 <tr>
 <td><p><span class="term">name</span></p></td>
@@ -253,184 +220,130 @@ gst-launch -v filesrc location=1990s-nostalgia.xm ! modplug ! audioconvert ! als
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int){ 8000, 11025, 22050, 44100 }, channels=(int)2</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-raw-int, endianness=(int)1234, signed=(boolean)false, width=(int)8, depth=(int)8, rate=(int){ 8000, 11025, 22050, 44100 }, channels=(int)[ 1, 2 ]</td>
-</tr>
-</tbody>
-</table></div>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>sink</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-mod</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-xm</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-it</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-s3m</td>
-</tr>
-<tr>
-<td><p><span class="term"></span></p></td>
-<td> audio/x-stm</td>
+<td>audio/x-raw, format=(string){ S32LE, S16LE, U8 }, layout=(string)interleaved, rate=(int){ 8000, 11025, 22050, 44100 }, channels=(int)[ 1, 2 ]</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<p>
-</p>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-bad-plugins-modplug.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-modplug.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-modplug.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
 <a name="GstModPlug-struct"></a><h3>GstModPlug</h3>
 <pre class="programlisting">typedef struct _GstModPlug GstModPlug;</pre>
-<p>
-</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-bad-plugins-modplug.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--megabass"></a><h3>The <code class="literal">"megabass"</code> property</h3>
-<pre class="programlisting">  "megabass"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--megabass"></a><h3>The <code class="literal">“megabass”</code> property</h3>
+<pre class="programlisting">  “megabass”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Megabass.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--megabass-amount"></a><h3>The <code class="literal">"megabass-amount"</code> property</h3>
-<pre class="programlisting">  "megabass-amount"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--megabass-amount"></a><h3>The <code class="literal">“megabass-amount”</code> property</h3>
+<pre class="programlisting">  “megabass-amount”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Megabass amount.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 40</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--megabass-range"></a><h3>The <code class="literal">"megabass-range"</code> property</h3>
-<pre class="programlisting">  "megabass-range"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--megabass-range"></a><h3>The <code class="literal">“megabass-range”</code> property</h3>
+<pre class="programlisting">  “megabass-range”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Megabass range.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 30</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--noise-reduction"></a><h3>The <code class="literal">"noise-reduction"</code> property</h3>
-<pre class="programlisting">  "noise-reduction"          <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--noise-reduction"></a><h3>The <code class="literal">“noise-reduction”</code> property</h3>
+<pre class="programlisting">  “noise-reduction”          <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>noise reduction.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--oversamp"></a><h3>The <code class="literal">"oversamp"</code> property</h3>
-<pre class="programlisting">  "oversamp"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--oversamp"></a><h3>The <code class="literal">“oversamp”</code> property</h3>
+<pre class="programlisting">  “oversamp”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>oversamp.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--reverb"></a><h3>The <code class="literal">"reverb"</code> property</h3>
-<pre class="programlisting">  "reverb"                   <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--reverb"></a><h3>The <code class="literal">“reverb”</code> property</h3>
+<pre class="programlisting">  “reverb”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Reverb.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--reverb-delay"></a><h3>The <code class="literal">"reverb-delay"</code> property</h3>
-<pre class="programlisting">  "reverb-delay"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--reverb-delay"></a><h3>The <code class="literal">“reverb-delay”</code> property</h3>
+<pre class="programlisting">  “reverb-delay”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Reverb delay.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,200]</p>
 <p>Default value: 100</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--reverb-depth"></a><h3>The <code class="literal">"reverb-depth"</code> property</h3>
-<pre class="programlisting">  "reverb-depth"             <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--reverb-depth"></a><h3>The <code class="literal">“reverb-depth”</code> property</h3>
+<pre class="programlisting">  “reverb-depth”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Reverb depth.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 30</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--songname"></a><h3>The <code class="literal">"songname"</code> property</h3>
-<pre class="programlisting">  "songname"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
->gchar</a>*                : Read</pre>
+<div class="refsect2">
+<a name="GstModPlug--songname"></a><h3>The <code class="literal">“songname”</code> property</h3>
+<pre class="programlisting">  “songname”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>The song name.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--surround"></a><h3>The <code class="literal">"surround"</code> property</h3>
-<pre class="programlisting">  "surround"                 <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
->gboolean</a>              : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--surround"></a><h3>The <code class="literal">“surround”</code> property</h3>
+<pre class="programlisting">  “surround”                 <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Surround.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--surround-delay"></a><h3>The <code class="literal">"surround-delay"</code> property</h3>
-<pre class="programlisting">  "surround-delay"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--surround-delay"></a><h3>The <code class="literal">“surround-delay”</code> property</h3>
+<pre class="programlisting">  “surround-delay”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Surround delay.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,40]</p>
 <p>Default value: 20</p>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="GstModPlug--surround-depth"></a><h3>The <code class="literal">"surround-depth"</code> property</h3>
-<pre class="programlisting">  "surround-depth"           <a
-href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
->gint</a>                  : Read / Write</pre>
+<div class="refsect2">
+<a name="GstModPlug--surround-depth"></a><h3>The <code class="literal">“surround-depth”</code> property</h3>
+<pre class="programlisting">  “surround-depth”           <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Surround depth.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 20</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.11</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

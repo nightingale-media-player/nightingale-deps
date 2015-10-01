@@ -5,6 +5,8 @@
 Convert a C program to valid XML to be included in docbook
 """
 
+from __future__ import print_function, unicode_literals
+
 import sys
 import os
 from xml.sax import saxutils
@@ -22,13 +24,13 @@ def main():
     content = open(source, "r").read()
 
     # print header
-    print '<?xml version="1.0"?>'
-    print '<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">'
-    print
-    print '<programlisting>'
+    print ('<?xml version="1.0"?>')
+    print ('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">')
+    print ()
+    print ('<programlisting>')
 
     # print content
-    print saxutils.escape(content).encode('UTF-8')
-    print '</programlisting>'
+    print (saxutils.escape(content))
+    print ('</programlisting>')
 
 main()

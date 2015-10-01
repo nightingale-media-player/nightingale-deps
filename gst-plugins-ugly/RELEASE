@@ -1,15 +1,18 @@
 
-Release notes for GStreamer Ugly Plug-ins 0.10.13 "Appointed Point"
-        
-
-The GStreamer team is proud to announce a new release
-in the 0.10.x stable series of the
-GStreamer Ugly Plug-ins.
+Release notes for GStreamer Ugly Plugins 1.6.0
 
 
-The 0.10.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.8.x series.
-It is, however, parallel installable with the 0.8.x series.
+The GStreamer team is proud to announce a new major feature release in the
+stable 1.x API series of your favourite cross-platform multimedia framework!
+
+
+This release has been in the works for more than a year and is packed with new
+features, bug fixes and other improvements.
+
+
+See
+http://gstreamer.freedesktop.org/releases/1.6/
+for the full list of changes.
 
 
 
@@ -18,102 +21,83 @@ It is, however, parallel installable with the 0.8.x series.
 
 There are times when the world needs a color between black and white.
 Quality code to match the good's, but two-timing, backstabbing and ready to
-sell your freedom down the river.  These plug-ins might have a patent noose
+sell your freedom down the river.  These plugins might have a patent noose
 around their neck, or a lock-up license, or any other problem that makes you
 think twice about shipping them.
 
 
 We don't call them ugly because we like them less.  Does a mother love her
 son less because he's not as pretty as the other ones ? No  - she commends
-him on his great personality.  These plug-ins are the life of the party.
+him on his great personality.  These plugins are the life of the party.
 And we'll still step in and set them straight if you report any unacceptable
 behaviour - because there are two kinds of people in the world, my friend:
 those with a rope around their neck and the people who do the cutting.
 
 
-This module contains a set of plug-ins that have good quality and correct
+This module contains a set of plugins that have good quality and correct
 functionality, but distributing them might pose problems.  The license
-on either the plug-ins or the supporting libraries might not be how we'd
+on either the plugins or the supporting libraries might not be how we'd
 like. The code might be widely known to present patent problems.
-Distributors should check if they want/can ship these plug-ins.
+Distributors should check if they want/can ship these plugins.
 
 
-Other modules containing plug-ins are:
+Other modules containing plugins are:
 
 
 gst-plugins-base
-contains a basic set of well-supported plug-ins
+contains a basic set of well-supported plugins
 gst-plugins-good
-contains a set of well-supported plug-ins under our preferred license
+contains a set of well-supported plugins under our preferred license
 gst-plugins-bad
-contains a set of less supported plug-ins that haven't passed the
-    rigorous quality testing we expect
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 
 
   
 
-Features of this release
+There were no bugs fixed in this release
     
-      * Improve A52 decoder
-      * Add AMR-WB decoder and AMR-NB decoder/encoder based on OpenCore codecs
-      * ASF playback improvements
-      * Improve mp3 parser and seeking
 
-Bugs fixed in this release
-     
-      * 519721 : [asfdemux] wma tags are not copied when converting to another format
-      * 584890 : AMR plugins based on Opencore codecs
-      * 585956 : [mp3parse] indexing improvements
-      * 590432 : It's only possible to build the mad plugin when building id3tag as well
-      * 591348 : AMR plugins should check for opencore-amr .pc files
-      * 592787 : a52dec: Allow liba52 to use djbfft based IMDCT transform
-      * 596517 : x264 element no longer compiles against changed upstream API
-      * 598272 : a52dec leaks input buffers
-      * 598370 : Properly detect pre-releases
+==== Download ====
 
-Download
+You can find source releases of gst-plugins-ugly in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
 
-You can find source releases of gst-plugins-ugly in the download directory:
-http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-ugly/
 
-GStreamer Homepage
+==== Homepage ====
 
-More details can be found on the project's website:
-http://gstreamer.freedesktop.org/
+The project's website is http://gstreamer.freedesktop.org/
 
-Support and Bugs
+==== Support and Bugs ====
 
 We use GNOME's bugzilla for bug reports and feature requests:
 http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
-Developers
+Please submit patches via bugzilla as well.
 
-GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
-Interested developers of the core library, plug-ins, and applications should
-subscribe to the gstreamer-devel list. If there is sufficient interest we
-will create more lists as necessary.
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
 
         
-Applications
-  
 Contributors to this release
     
-      * Christian Schaller
-      * David Schleef
-      * Edward Hervey
-      * Iago Toral
       * Jan Schmidt
-      * Josep Torra
-      * Mark Nauwelaerts
-      * Mart Raudsepp
-      * Marvin Schmidt
-      * Michael Smith
-      * Olivier Crête
-      * René Stadler
       * Sebastian Dröge
-      * Stefan Kost
-      * Thiago Santos
       * Tim-Philipp Müller
-      * Wim Taymans
  

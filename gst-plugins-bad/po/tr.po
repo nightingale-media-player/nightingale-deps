@@ -1,19 +1,117 @@
-# translation of gst-plugins-bad-0.10.10.2.po to Turkish
+# translation of gst-plugins-bad-0.10.21.2.po to Turkish
 # This file is put in the public domain.
+# This file is distributed under the same license as the gst-plugins-bad package.
 #
-# Server Acim <serveracim@gmail.com>, 2009.
+# Server Acim <serveracim@gmail.com>, 2009, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad-0.10.13.2\n"
+"Project-Id-Version: gst-plugins-bad-1.4.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2009-10-23 23:15+0100\n"
-"PO-Revision-Date: 2009-08-12 19:51+0200\n"
-"Last-Translator: Server Acim <serveracim@gmail.com>\n"
+"POT-Creation-Date: 2015-09-25 22:59+0200\n"
+"PO-Revision-Date: 2015-01-10 21:07+0100\n"
+"Last-Translator: Volkan Gezer <volkangezer@gmail.com>\n"
 "Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "format wasn't negotiated before get function"
+msgstr "get fonksiyonundan önce biçim görüşülemedi"
+
+msgid "default GStreamer sound events audiosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play audio using any number of output elements. Some possible "
+"choices are osssink, pulsesink and alsasink. The audiosink can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer sound events audiosink"
+msgstr ""
+
+msgid "Describes the selected audiosink element."
+msgstr ""
+
+msgid "default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid ""
+"description for default GStreamer audiosink for Audio/Video Conferencing"
+msgstr ""
+
+msgid "default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "description for default GStreamer audiosink for Music and Movies"
+msgstr ""
+
+msgid "default GStreamer videosink"
+msgstr ""
+
+msgid ""
+"GStreamer can play video using any number of output elements. Some possible "
+"choices are xvimagesink, ximagesink, sdlvideosink and aasink. The videosink "
+"can be a partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosink"
+msgstr ""
+
+msgid "Describes the selected videosink element."
+msgstr ""
+
+msgid "default GStreamer audiosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record audio using any number of input elements. Some possible "
+"choices are osssrc, pulsesrc and alsasrc. The audio source can be a partial "
+"pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer audiosrc"
+msgstr ""
+
+msgid "Describes the selected audiosrc element."
+msgstr ""
+
+msgid "default GStreamer videosrc"
+msgstr ""
+
+msgid ""
+"GStreamer can record video from any number of input elements. Some possible "
+"choices are v4lsrc, v4l2src and videotestsrc. The video source can be a "
+"partial pipeline instead of just one element."
+msgstr ""
+
+msgid "description for default GStreamer videosrc"
+msgstr ""
+
+msgid "Describes the selected videosrc element."
+msgstr ""
+
+msgid "default GStreamer visualization"
+msgstr ""
+
+msgid ""
+"GStreamer can put visualization plugins in a pipeline to transform audio "
+"streams in video frames. Some possible choices are goom, goom2k1 and "
+"synaesthesia. The visualization plugin can be a partial pipeline instead of "
+"just one element."
+msgstr ""
+
+msgid "description for default GStreamer visualization"
+msgstr ""
+
+msgid "Describes the selected visualization element."
+msgstr ""
+
+msgid "OpenCV failed to load template image"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "DVD'deki başlık bilgisi okunamıyor."
@@ -25,25 +123,75 @@ msgstr "DVD aygıtı açılamadı '%s'."
 msgid "Failed to set PGC based seeking."
 msgstr "PGC temelli arama ayarı yapılamadı."
 
-msgid "Internal clock error."
-msgstr "İç saat hatası."
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+"DVD okunamıyor. DVD şifrelenmiş veya DVD şifre çözme kitaplığı kurulmamış "
+"olabilir."
+
+msgid "Could not read DVD."
+msgstr "DVD okunamıyor."
+
+msgid "This file contains no playable streams."
+msgstr "Dosya çalınabilir akışlar içermiyor."
+
+msgid "Could not open sndfile stream for reading."
+msgstr "Sndfile akışı okumak için açamıyor."
+
+msgid "Could not establish connection to sndio"
+msgstr "Sndio ile bağlantı kurulamadı"
+
+msgid "Failed to query sndio capabilities"
+msgstr "Sndio yetenekleri sorgulanamadı"
+
+msgid "Could not configure sndio"
+msgstr "Sndio yapılandırılamadı"
+
+msgid "Could not start sndio"
+msgstr "Sndio başlatılamadı"
 
 msgid "Internal data flow error."
 msgstr "İç veri akış hatası."
+
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+"Oluşturlmuş dosya, akışlarının süresinden daha büyük preroll zamanına sahip"
+
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr "Eksik öge '%s' - GStreamer kurulumunuzu kontrol ediniz."
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+"Dosya konumunuz BOŞ bir değere ayarlı, lütfen geçerli bir dosya adı için "
+"ayarlayın"
+
+msgid "Digitalzoom element couldn't be created"
+msgstr ""
+
+msgid "Subpicture format was not configured before data flow"
+msgstr "Alt resim biçimi, veri  akışından önce yapılandırılmış"
+
+msgid "Failed to get fragment URL."
+msgstr "Parça adresi alınamadı."
+
+msgid "Internal data stream error."
+msgstr "İç veri akım hatası."
+
+msgid "Couldn't download fragments"
+msgstr "Parçalar indirilemedi"
 
 msgid "No file name specified for writing."
 msgstr "Yazmak için dosya adı belirtilmedi."
 
 #, c-format
-msgid "Could not open file \"%s\" for writing."
-msgstr "Dosyayı \"%s\" yazmak için açamıyor."
-
-msgid "Internal data stream error."
-msgstr "İç veri akım hatası."
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr "Verilen dosya adı \"%s\" yerel dosya adı kodlamasına dönüştürülemiyor."
 
 #, c-format
-msgid "Could not write to file \"%s\"."
-msgstr "Dosya yazılamıyor \"%s\"."
+msgid "Could not open file \"%s\" for writing."
+msgstr "Dosyayı \"%s\" yazmak için açamıyor."
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -58,357 +206,382 @@ msgid "Could not get settings from frontend device \"%s\"."
 msgstr "Aygıt ayarları bulunamadı \"%s\"."
 
 #, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr "\"%s\" ön yüz aygıtından iletim sistemleri numaralandırılanamıyor"
+
+#, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr "Dosyayı \"%s\" okumak için açamıyor."
 
-msgid "Could not open audio device for mixer control handling."
-msgstr "Karıştırıcı işlemi için ses aygıtı açılamıyor."
-
-msgid ""
-"Could not open audio device for mixer control handling. This version of the "
-"Open Sound System is not supported by this element."
-msgstr ""
-"Karıştırıcı işlemi için ses aygıtı açılamıyor. Bu öğe tarafından Açık Ses "
-"Sistemi'nin bu sürümü desteklenmiyor."
-
-msgid "Volume"
-msgstr "Gürlük"
-
-msgid "Master"
-msgstr "Ana"
-
-msgid "Front"
-msgstr "Ön"
-
-msgid "Rear"
-msgstr "Arka"
-
-msgid "Headphones"
-msgstr "Kulaklıklar"
-
-msgid "Center"
-msgstr "Merkez"
-
-msgid "LFE"
-msgstr "LFE"
-
-msgid "Surround"
-msgstr "Surround"
-
-msgid "Side"
-msgstr "Yan"
-
-msgid "Built-in Speaker"
-msgstr "Varsayılan Hoparlör"
-
-msgid "AUX 1 Out"
-msgstr "AUX 1 Çıkış"
-
-msgid "AUX 2 Out"
-msgstr "AUX 2 Çıkış"
-
-msgid "AUX Out"
-msgstr "AUX Çıkış"
-
-msgid "Bass"
-msgstr "Bas"
-
-msgid "Treble"
-msgstr "Tiz"
-
-msgid "3D Depth"
-msgstr "3D Derinlik"
-
-msgid "3D Center"
-msgstr "3D Merkez"
-
-msgid "3D Enhance"
-msgstr "3D Genişlik"
-
-msgid "Telephone"
-msgstr "Telefon"
-
-msgid "Microphone"
-msgstr "Mikrofon"
-
-msgid "Line Out"
-msgstr "Hat Çıkışı"
-
-msgid "Line In"
-msgstr "Hat girişi"
-
-msgid "Internal CD"
-msgstr "Dahili CD"
-
-msgid "Video In"
-msgstr "Vidyo Girişi"
-
-msgid "AUX 1 In"
-msgstr "AUX 1 Giriş"
-
-msgid "AUX 2 In"
-msgstr "AUX 2 Giriş"
-
-msgid "AUX In"
-msgstr "AUX Giriş"
-
-msgid "PCM"
-msgstr "PCM"
-
-msgid "Record Gain"
-msgstr "Kayıt Kazancı"
-
-msgid "Output Gain"
-msgstr "Çıkış Kazancı"
-
-msgid "Microphone Boost"
-msgstr "Mikrofon güçlendirme"
-
-msgid "Loopback"
-msgstr "Döngü"
-
-msgid "Diagnostic"
-msgstr "Yapılandırma"
-
-msgid "Bass Boost"
-msgstr "Bass Boost"
-
-msgid "Playback Ports"
-msgstr "Çalma Portları"
-
-msgid "Input"
-msgstr "Giriş"
-
-msgid "Record Source"
-msgstr "Kayıt Kaynağı"
-
-msgid "Monitor Source"
-msgstr "Hoparlör Kaynağı"
-
-msgid "Keyboard Beep"
-msgstr "Klavye Biplemesi"
-
-msgid "Monitor"
-msgstr "Hoparlör"
-
-msgid "Simulate Stereo"
-msgstr "Stereo Benzeşimi"
-
-msgid "Stereo"
-msgstr "Stereo"
-
-msgid "Surround Sound"
-msgstr "Surround Ses"
-
-msgid "Microphone Gain"
-msgstr "Mikrofon Kazancı"
-
-msgid "Speaker Source"
-msgstr "Hoparlör Kaynağı"
-
-msgid "Microphone Source"
-msgstr "Mikrofon Kaynağı"
-
-msgid "Jack"
-msgstr "Jack"
-
-msgid "Center / LFE"
-msgstr "Merkez / LFE"
-
-msgid "Stereo Mix"
-msgstr "Stereo Karışım"
-
-msgid "Mono Mix"
-msgstr "Mono Karışım"
-
-msgid "Input Mix"
-msgstr "Giriş Karışımı"
-
-msgid "SPDIF In"
-msgstr "SPDIF Girişi"
-
-msgid "SPDIF Out"
-msgstr "SPDIF Çıkışı"
-
-msgid "Microphone 1"
-msgstr "Mikrofon 1"
-
-msgid "Microphone 2"
-msgstr "Mikrofon 2"
-
-msgid "Digital Out"
-msgstr "Sayısal Çıkış"
-
-msgid "Digital In"
-msgstr "Sayısal Giriş"
-
-msgid "HDMI"
-msgstr "HDMI"
-
-msgid "Modem"
-msgstr "Modem"
-
-msgid "Handset"
-msgstr "Elde taşıma"
-
-msgid "Other"
-msgstr "Diğer"
-
-msgid "None"
-msgstr "Yok"
-
-msgid "On"
-msgstr "Açık"
-
-msgid "Off"
-msgstr "Kapalı"
-
-msgid "Mute"
-msgstr "Kapat"
-
-msgid "Fast"
-msgstr "Hızlı"
-
-msgid "Very Low"
-msgstr "Çok düşük"
-
-msgid "Low"
-msgstr "Düşük"
-
-msgid "Medium"
-msgstr "Orta"
-
-msgid "High"
-msgstr "Yüksek"
-
-msgid "Very High"
-msgstr "Çok Yüksek"
-
-msgid "Production"
-msgstr "Yapım"
-
-msgid "Front Panel Microphone"
-msgstr "Ön panel Mikrofonu"
-
-msgid "Front Panel Line In"
-msgstr "Ön Panel Hat Girişi"
-
-msgid "Front Panel Headphones"
-msgstr "Ön Panel Kulaklıkları"
-
-msgid "Front Panel Line Out"
-msgstr "Ön Panel Hat Çıkışı"
-
-msgid "Green Connector"
-msgstr "Yeşil Konnektör"
-
-msgid "Pink Connector"
-msgstr "Pembe Konnektör"
-
-msgid "Blue Connector"
-msgstr "Mavi Konnektör"
-
-msgid "White Connector"
-msgstr "Beyaz Konnektör"
-
-msgid "Black Connector"
-msgstr "Siyah Konnektör"
-
-msgid "Gray Connector"
-msgstr "Gri Konnektör"
-
-msgid "Orange Connector"
-msgstr "Portakal rengi Konnektör"
-
-msgid "Red Connector"
-msgstr "Kırmızı Konnektör"
-
-msgid "Yellow Connector"
-msgstr "Sarı Konnektör"
-
-msgid "Green Front Panel Connector"
-msgstr "Yeşil Ön Panel Konnektörü"
-
-msgid "Pink Front Panel Connector"
-msgstr "Pembe Ön Panel Könnektörü"
-
-msgid "Blue Front Panel Connector"
-msgstr "Mavi Ön Panel Konnektörü"
-
-msgid "White Front Panel Connector"
-msgstr "Beyaz Ön Panel Konnektörü"
-
-msgid "Black Front Panel Connector"
-msgstr "Siyah Ön Panel Konnektörü"
-
-msgid "Gray Front Panel Connector"
-msgstr "Gri Ön Panel Konnektörü"
-
-msgid "Orange Front Panel Connector"
-msgstr "Portakal rengi Ön Panel Konnektörü"
-
-msgid "Red Front Panel Connector"
-msgstr "Kırmızı Ön Panel Konnektörü"
-
-msgid "Yellow Front Panel Connector"
-msgstr "Sarı Ön Panel Konnektörü"
-
-msgid "Spread Output"
-msgstr "Çıkışı Yay"
-
-msgid "Downmix"
-msgstr "Sonuç Karışımı"
-
-msgid "Virtual Mixer Input"
-msgstr "Sanal Karıştırıcı Girişi"
-
-msgid "Virtual Mixer Output"
-msgstr "Sanal Karıştırıcı Çıkışı"
-
-msgid "Virtual Mixer Channels"
-msgstr "Sanal Karıştırıcı Kanalları"
+msgid "Couldn't find DVB channel configuration file"
+msgstr "DVB kanal yapılandırma dosyası bulunamadı"
 
 #, c-format
-msgid "%s Function"
-msgstr "%s İşlev"
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr "DVB kanal yapılandırma dosyası yüklenemedi: %s"
+
+msgid "DVB channel configuration file doesn't contain any channels"
+msgstr "DVB kanal yapılandırma dosyası herhangi bir kanal içermiyor"
 
 #, c-format
-msgid "%s %d"
-msgstr "%s %d"
+msgid "Couldn't find details for DVB channel %s"
+msgstr "DVB kanalı %s için ayrıntılar bulunamadı"
 
-msgid ""
-"Could not open audio device for playback. Device is being used by another "
-"application."
-msgstr ""
-"Çalmak için ses aygıtı açılamıyor. Aygıt başka bir uygulama tarafından "
-"kullanılıyor."
+#~ msgid "Couldn't get the Manifest's URI"
+#~ msgstr "Manifest URI alınamadı"
 
-msgid ""
-"Could not open audio device for playback. You don't have permission to open "
-"the device."
-msgstr "Çalmak için ses aygıtı açılamıyor. Aygıtı açma izniniz bulunmuyor."
+#~ msgid "Could not write to file \"%s\"."
+#~ msgstr "Dosya yazılamıyor \"%s\"."
 
-msgid "Could not open audio device for playback."
-msgstr "Çalmak için ses aygıtı açılamıyor."
+#~ msgid "Internal clock error."
+#~ msgstr "İç saat hatası."
 
-msgid ""
-"Could not open audio device for playback. This version of the Open Sound "
-"System is not supported by this element."
-msgstr ""
-"Çalmak için ses aygıtı açılamıyor. Açık Ses Sistemi'nin bu sürümü bu öğe "
-"tarafından desteklenmiyor."
+#~ msgid "Could not open audio device for mixer control handling."
+#~ msgstr "Karıştırıcı işlemi için ses aygıtı açılamıyor."
 
-msgid "Playback is not supported by this audio device."
-msgstr "Bu ses aygıtı çalma işlevini desteklemiyor."
+#~ msgid ""
+#~ "Could not open audio device for mixer control handling. This version of "
+#~ "the Open Sound System is not supported by this element."
+#~ msgstr ""
+#~ "Karıştırıcı işlemi için ses aygıtı açılamıyor. Bu öğe tarafından Açık Ses "
+#~ "Sistemi'nin bu sürümü desteklenmiyor."
 
-msgid "Audio playback error."
-msgstr "Ses çalma hatası."
+#~ msgid "Volume"
+#~ msgstr "Gürlük"
 
-msgid "Recording is not supported by this audio device."
-msgstr "Bu ses aygıtı kayıt işlevini desteklemiyor."
+#~ msgid "Master"
+#~ msgstr "Ana"
 
-msgid "Error recording from audio device."
-msgstr "Ses aygıtı ile kayıtta hata."
+#~ msgid "Front"
+#~ msgstr "Ön"
+
+#~ msgid "Rear"
+#~ msgstr "Arka"
+
+#~ msgid "Headphones"
+#~ msgstr "Kulaklıklar"
+
+#~ msgid "Center"
+#~ msgstr "Merkez"
+
+#~ msgid "LFE"
+#~ msgstr "LFE"
+
+#~ msgid "Surround"
+#~ msgstr "Surround"
+
+#~ msgid "Side"
+#~ msgstr "Yan"
+
+#~ msgid "Built-in Speaker"
+#~ msgstr "Varsayılan Hoparlör"
+
+#~ msgid "AUX 1 Out"
+#~ msgstr "AUX 1 Çıkış"
+
+#~ msgid "AUX 2 Out"
+#~ msgstr "AUX 2 Çıkış"
+
+#~ msgid "AUX Out"
+#~ msgstr "AUX Çıkış"
+
+#~ msgid "Bass"
+#~ msgstr "Bas"
+
+#~ msgid "Treble"
+#~ msgstr "Tiz"
+
+#~ msgid "3D Depth"
+#~ msgstr "3D Derinlik"
+
+#~ msgid "3D Center"
+#~ msgstr "3D Merkez"
+
+#~ msgid "3D Enhance"
+#~ msgstr "3D Genişlik"
+
+#~ msgid "Telephone"
+#~ msgstr "Telefon"
+
+#~ msgid "Microphone"
+#~ msgstr "Mikrofon"
+
+#~ msgid "Line Out"
+#~ msgstr "Hat Çıkışı"
+
+#~ msgid "Line In"
+#~ msgstr "Hat girişi"
+
+#~ msgid "Internal CD"
+#~ msgstr "Dahili CD"
+
+#~ msgid "Video In"
+#~ msgstr "Vidyo Girişi"
+
+#~ msgid "AUX 1 In"
+#~ msgstr "AUX 1 Giriş"
+
+#~ msgid "AUX 2 In"
+#~ msgstr "AUX 2 Giriş"
+
+#~ msgid "AUX In"
+#~ msgstr "AUX Giriş"
+
+#~ msgid "PCM"
+#~ msgstr "PCM"
+
+#~ msgid "Record Gain"
+#~ msgstr "Kayıt Kazancı"
+
+#~ msgid "Output Gain"
+#~ msgstr "Çıkış Kazancı"
+
+#~ msgid "Microphone Boost"
+#~ msgstr "Mikrofon güçlendirme"
+
+#~ msgid "Loopback"
+#~ msgstr "Döngü"
+
+#~ msgid "Diagnostic"
+#~ msgstr "Yapılandırma"
+
+#~ msgid "Bass Boost"
+#~ msgstr "Bass Boost"
+
+#~ msgid "Playback Ports"
+#~ msgstr "Çalma Portları"
+
+#~ msgid "Input"
+#~ msgstr "Giriş"
+
+#~ msgid "Record Source"
+#~ msgstr "Kayıt Kaynağı"
+
+#~ msgid "Monitor Source"
+#~ msgstr "Hoparlör Kaynağı"
+
+#~ msgid "Keyboard Beep"
+#~ msgstr "Klavye Biplemesi"
+
+#~ msgid "Monitor"
+#~ msgstr "Hoparlör"
+
+#~ msgid "Simulate Stereo"
+#~ msgstr "Stereo Benzeşimi"
+
+#~ msgid "Stereo"
+#~ msgstr "Stereo"
+
+#~ msgid "Surround Sound"
+#~ msgstr "Surround Ses"
+
+#~ msgid "Microphone Gain"
+#~ msgstr "Mikrofon Kazancı"
+
+#~ msgid "Speaker Source"
+#~ msgstr "Hoparlör Kaynağı"
+
+#~ msgid "Microphone Source"
+#~ msgstr "Mikrofon Kaynağı"
+
+#~ msgid "Jack"
+#~ msgstr "Jack"
+
+#~ msgid "Center / LFE"
+#~ msgstr "Merkez / LFE"
+
+#~ msgid "Stereo Mix"
+#~ msgstr "Stereo Karışım"
+
+#~ msgid "Mono Mix"
+#~ msgstr "Mono Karışım"
+
+#~ msgid "Input Mix"
+#~ msgstr "Giriş Karışımı"
+
+#~ msgid "SPDIF In"
+#~ msgstr "SPDIF Girişi"
+
+#~ msgid "SPDIF Out"
+#~ msgstr "SPDIF Çıkışı"
+
+#~ msgid "Microphone 1"
+#~ msgstr "Mikrofon 1"
+
+#~ msgid "Microphone 2"
+#~ msgstr "Mikrofon 2"
+
+#~ msgid "Digital Out"
+#~ msgstr "Sayısal Çıkış"
+
+#~ msgid "Digital In"
+#~ msgstr "Sayısal Giriş"
+
+#~ msgid "HDMI"
+#~ msgstr "HDMI"
+
+#~ msgid "Modem"
+#~ msgstr "Modem"
+
+#~ msgid "Handset"
+#~ msgstr "Elde taşıma"
+
+#~ msgid "Other"
+#~ msgstr "Diğer"
+
+#~ msgid "None"
+#~ msgstr "Yok"
+
+#~ msgid "On"
+#~ msgstr "Açık"
+
+#~ msgid "Off"
+#~ msgstr "Kapalı"
+
+#~ msgid "Mute"
+#~ msgstr "Kapat"
+
+#~ msgid "Fast"
+#~ msgstr "Hızlı"
+
+#~ msgid "Very Low"
+#~ msgstr "Çok düşük"
+
+#~ msgid "Low"
+#~ msgstr "Düşük"
+
+#~ msgid "Medium"
+#~ msgstr "Orta"
+
+#~ msgid "High"
+#~ msgstr "Yüksek"
+
+#~ msgid "Very High"
+#~ msgstr "Çok Yüksek"
+
+#~ msgid "Production"
+#~ msgstr "Yapım"
+
+#~ msgid "Front Panel Microphone"
+#~ msgstr "Ön panel Mikrofonu"
+
+#~ msgid "Front Panel Line In"
+#~ msgstr "Ön Panel Hat Girişi"
+
+#~ msgid "Front Panel Headphones"
+#~ msgstr "Ön Panel Kulaklıkları"
+
+#~ msgid "Front Panel Line Out"
+#~ msgstr "Ön Panel Hat Çıkışı"
+
+#~ msgid "Green Connector"
+#~ msgstr "Yeşil Konnektör"
+
+#~ msgid "Pink Connector"
+#~ msgstr "Pembe Konnektör"
+
+#~ msgid "Blue Connector"
+#~ msgstr "Mavi Konnektör"
+
+#~ msgid "White Connector"
+#~ msgstr "Beyaz Konnektör"
+
+#~ msgid "Black Connector"
+#~ msgstr "Siyah Konnektör"
+
+#~ msgid "Gray Connector"
+#~ msgstr "Gri Konnektör"
+
+#~ msgid "Orange Connector"
+#~ msgstr "Portakal rengi Konnektör"
+
+#~ msgid "Red Connector"
+#~ msgstr "Kırmızı Konnektör"
+
+#~ msgid "Yellow Connector"
+#~ msgstr "Sarı Konnektör"
+
+#~ msgid "Green Front Panel Connector"
+#~ msgstr "Yeşil Ön Panel Konnektörü"
+
+#~ msgid "Pink Front Panel Connector"
+#~ msgstr "Pembe Ön Panel Könnektörü"
+
+#~ msgid "Blue Front Panel Connector"
+#~ msgstr "Mavi Ön Panel Konnektörü"
+
+#~ msgid "White Front Panel Connector"
+#~ msgstr "Beyaz Ön Panel Konnektörü"
+
+#~ msgid "Black Front Panel Connector"
+#~ msgstr "Siyah Ön Panel Konnektörü"
+
+#~ msgid "Gray Front Panel Connector"
+#~ msgstr "Gri Ön Panel Konnektörü"
+
+#~ msgid "Orange Front Panel Connector"
+#~ msgstr "Portakal rengi Ön Panel Konnektörü"
+
+#~ msgid "Red Front Panel Connector"
+#~ msgstr "Kırmızı Ön Panel Konnektörü"
+
+#~ msgid "Yellow Front Panel Connector"
+#~ msgstr "Sarı Ön Panel Konnektörü"
+
+#~ msgid "Spread Output"
+#~ msgstr "Çıkışı Yay"
+
+#~ msgid "Downmix"
+#~ msgstr "Sonuç Karışımı"
+
+#~ msgid "Virtual Mixer Input"
+#~ msgstr "Sanal Karıştırıcı Girişi"
+
+#~ msgid "Virtual Mixer Output"
+#~ msgstr "Sanal Karıştırıcı Çıkışı"
+
+#~ msgid "Virtual Mixer Channels"
+#~ msgstr "Sanal Karıştırıcı Kanalları"
+
+#~ msgid "%s Function"
+#~ msgstr "%s İşlev"
+
+#~ msgid "%s %d"
+#~ msgstr "%s %d"
+
+#~ msgid ""
+#~ "Could not open audio device for playback. Device is being used by another "
+#~ "application."
+#~ msgstr ""
+#~ "Çalmak için ses aygıtı açılamıyor. Aygıt başka bir uygulama tarafından "
+#~ "kullanılıyor."
+
+#~ msgid ""
+#~ "Could not open audio device for playback. You don't have permission to "
+#~ "open the device."
+#~ msgstr "Çalmak için ses aygıtı açılamıyor. Aygıtı açma izniniz bulunmuyor."
+
+#~ msgid "Could not open audio device for playback."
+#~ msgstr "Çalmak için ses aygıtı açılamıyor."
+
+#~ msgid ""
+#~ "Could not open audio device for playback. This version of the Open Sound "
+#~ "System is not supported by this element."
+#~ msgstr ""
+#~ "Çalmak için ses aygıtı açılamıyor. Açık Ses Sistemi'nin bu sürümü bu öğe "
+#~ "tarafından desteklenmiyor."
+
+#~ msgid "Playback is not supported by this audio device."
+#~ msgstr "Bu ses aygıtı çalma işlevini desteklemiyor."
+
+#~ msgid "Audio playback error."
+#~ msgstr "Ses çalma hatası."
+
+#~ msgid "Recording is not supported by this audio device."
+#~ msgstr "Bu ses aygıtı kayıt işlevini desteklemiyor."
+
+#~ msgid "Error recording from audio device."
+#~ msgstr "Ses aygıtı ile kayıtta hata."
 
 #~ msgid "PCM 1"
 #~ msgstr "PCM 1"
@@ -475,6 +648,3 @@ msgstr "Ses aygıtı ile kayıtta hata."
 
 #~ msgid "Yellow front panel connector function"
 #~ msgstr "Sarı ön panel konnektör işlevi"
-
-#~ msgid "Virtual mixer channel configuration"
-#~ msgstr "Sanal karıştırıcı kanal yapılandırması"

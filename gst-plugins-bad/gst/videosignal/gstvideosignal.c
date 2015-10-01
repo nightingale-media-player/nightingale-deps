@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -22,8 +22,8 @@
 #endif
 
 #include "gstvideoanalyse.h"
-#include "gstvideodetect.h"
-#include "gstvideomark.h"
+#include "gstsimplevideomarkdetect.h"
+#include "gstsimplevideomark.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -33,17 +33,21 @@ plugin_init (GstPlugin * plugin)
   res = gst_element_register (plugin, "videoanalyse", GST_RANK_NONE,
       GST_TYPE_VIDEO_ANALYSE);
 
-  res &= gst_element_register (plugin, "videodetect", GST_RANK_NONE,
-      GST_TYPE_VIDEO_DETECT);
+  /* FIXME under no circumstances is anyone allowed to revive the
+   * element formerly known as simplevideomarkdetect without changing the name
+   * first.  XOXO  --ds  */
 
-  res &= gst_element_register (plugin, "videomark", GST_RANK_NONE,
-      GST_TYPE_VIDEO_MARK);
+  res &= gst_element_register (plugin, "simplevideomarkdetect", GST_RANK_NONE,
+      GST_TYPE_SIMPLE_VIDEO_MARK_DETECT);
+
+  res &= gst_element_register (plugin, "simplevideomark", GST_RANK_NONE,
+      GST_TYPE_SIMPLE_VIDEO_MARK);
 
   return res;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "videosignal",
+    videosignal,
     "Various video signal analysers",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

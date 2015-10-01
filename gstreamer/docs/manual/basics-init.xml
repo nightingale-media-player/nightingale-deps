@@ -3,7 +3,7 @@
   <para> 
     When writing a &GStreamer; application, you can simply include
     <filename>gst/gst.h</filename> to get access to the library
-    functions. Besides that, you will also need to intialize the
+    functions. Besides that, you will also need to initialize the
     &GStreamer; library.
   </para>
 
@@ -24,6 +24,7 @@
       <title>Initializing GStreamer</title>
       <programlisting>
 <!-- example-begin init.c -->
+#include &lt;stdio.h&gt;
 #include &lt;gst/gst.h&gt;
 
 int
@@ -96,11 +97,6 @@ main (int   argc,
     { NULL }
   };
 
-  /* we must initialise the threading system before using any
-   * other GLib funtion, such as g_option_context_new() */
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
-
   ctx = g_option_context_new ("- Your application");
   g_option_context_add_main_entries (ctx, entries, NULL);
   g_option_context_add_group (ctx, gst_init_get_option_group ());
@@ -119,7 +115,7 @@ main (int   argc,
     </example>
     <para>
       As shown in this fragment, you can use a <ulink
-      url="http://developer.gnome.org/doc/API/2.0/glib/glib-Commandline-option-parser.html"
+      url="http://developer.gnome.org/glib/stable/glib-Commandline-option-parser.html"
       type="http">GOption</ulink> table to define your application-specific
       command line options, and pass this table to the GLib initialization
       function along with the option group returned from the

@@ -15,13 +15,18 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #include <string.h>
 
 #include "gstcdxaparse.h"
@@ -39,7 +44,6 @@ static gboolean gst_cdxa_parse_sink_activate (GstPad * sinkpad);
 static void gst_cdxa_parse_loop (GstPad * sinkpad);
 static gboolean gst_cdxa_parse_sink_activate_pull (GstPad * sinkpad,
     gboolean active);
-static gboolean gst_cdxa_parse_sink_activate (GstPad * sinkpad);
 static GstStateChangeReturn gst_cdxa_parse_change_state (GstElement * element,
     GstStateChange transition);
 static gboolean gst_cdxa_parse_src_event (GstPad * srcpad, GstEvent * event);
@@ -65,13 +69,11 @@ static void
 gst_cdxa_parse_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-  static const GstElementDetails gst_cdxa_parse_details =
-      GST_ELEMENT_DETAILS ("(S)VCD parser",
+
+  gst_element_class_set_static_metadata (element_class, "(S)VCD parser",
       "Codec/Parser",
       "Parse a .dat file from (S)VCD into raw MPEG-1",
       "Wim Taymans <wim.taymans@tvd.be>");
-
-  gst_element_class_set_details (element_class, &gst_cdxa_parse_details);
 
   /* register src pads */
   gst_element_class_add_pad_template (element_class,
@@ -190,7 +192,7 @@ gst_cdxa_parse_sink_activate_pull (GstPad * sinkpad, gboolean active)
   if (active) {
     /* if we have a scheduler we can start the task */
     gst_pad_start_task (sinkpad, (GstTaskFunction) gst_cdxa_parse_loop,
-        sinkpad);
+        sinkpad, NULL);
   } else {
     gst_pad_stop_task (sinkpad);
   }
@@ -290,6 +292,7 @@ gst_cdxa_parse_loop (GstPad * sinkpad)
 
     req = 8 + GST_CDXA_SECTOR_SIZE;     /* riff chunk header = 8 bytes */
 
+    buf = NULL;
     flow_ret = gst_pad_pull_range (cdxa->sinkpad, cdxa->offset, req, &buf);
 
     if (flow_ret != GST_FLOW_OK) {
@@ -304,6 +307,9 @@ gst_cdxa_parse_loop (GstPad * sinkpad)
     }
 
     sync_offset = gst_cdxa_parse_sync (buf);
+    gst_buffer_unref (buf);
+    buf = NULL;
+
     if (sync_offset >= 0)
       break;
 
@@ -325,6 +331,7 @@ gst_cdxa_parse_loop (GstPad * sinkpad)
   GST_DEBUG_OBJECT (cdxa, "pulling buffer at offset 0x%" G_GINT64_MODIFIER "x",
       cdxa->offset);
 
+  buf = NULL;
   flow_ret = gst_pad_pull_range (cdxa->sinkpad, cdxa->offset,
       GST_CDXA_SECTOR_SIZE, &buf);
 
@@ -358,6 +365,9 @@ gst_cdxa_parse_loop (GstPad * sinkpad)
 eos:
   {
     GST_DEBUG_OBJECT (cdxa, "Sending EOS");
+    if (buf)
+      gst_buffer_unref (buf);
+    buf = NULL;
     gst_pad_push_event (cdxa->srcpad, gst_event_new_eos ());
     /* fallthrough */
   }
@@ -417,7 +427,7 @@ gst_cdxa_parse_do_seek (GstCDXAParse * cdxa, GstEvent * event)
     return FALSE;
   }
 
-  if (format != GST_SEEK_TYPE_SET) {
+  if (start_type != GST_SEEK_TYPE_SET) {
     GST_DEBUG_OBJECT (cdxa, "Can only handle seek from start (SEEK_TYPE_SET)");
     return FALSE;
   }
@@ -456,7 +466,7 @@ gst_cdxa_parse_do_seek (GstCDXAParse * cdxa, GstEvent * event)
 
   /* and restart */
   gst_pad_start_task (cdxa->sinkpad,
-      (GstTaskFunction) gst_cdxa_parse_loop, cdxa->sinkpad);
+      (GstTaskFunction) gst_cdxa_parse_loop, cdxa->sinkpad, NULL);
 
   GST_PAD_STREAM_UNLOCK (cdxa->sinkpad);
   return TRUE;
@@ -570,6 +580,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "cdxaparse",
+    cdxaparse,
     "Parse a .dat file (VCD) into raw mpeg1",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

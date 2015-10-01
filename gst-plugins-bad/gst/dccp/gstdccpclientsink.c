@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -73,14 +73,9 @@ static gboolean gst_dccp_client_sink_stop (GstBaseSink * bsink);
 static gboolean gst_dccp_client_sink_start (GstBaseSink * bsink);
 static GstFlowReturn gst_dccp_client_sink_render (GstBaseSink * bsink,
     GstBuffer * buf);
+static void gst_dccp_client_sink_finalize (GObject * gobject);
 
 GST_DEBUG_CATEGORY_STATIC (dccpclientsink_debug);
-
-static const GstElementDetails gst_dccp_client_sink_details =
-GST_ELEMENT_DETAILS ("DCCP client sink",
-    "Sink/Network",
-    "Send data as a client over the network via DCCP",
-    "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -173,6 +168,16 @@ gst_dccp_client_sink_get_property (GObject * object, guint prop_id,
   }
 }
 
+static void
+gst_dccp_client_sink_finalize (GObject * gobject)
+{
+  GstDCCPClientSink *this = GST_DCCP_CLIENT_SINK (gobject);
+
+  g_free (this->host);
+
+  G_OBJECT_CLASS (parent_class)->finalize (gobject);
+}
+
 /*
  * Starts the element. If the sockfd property was not the default, this method
  * will create a new socket and connect to the server.
@@ -237,7 +242,10 @@ gst_dccp_client_sink_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sinktemplate));
 
-  gst_element_class_set_details (element_class, &gst_dccp_client_sink_details);
+  gst_element_class_set_static_metadata (element_class, "DCCP client sink",
+      "Sink/Network",
+      "Send data as a client over the network via DCCP",
+      "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
 }
 
 static void
@@ -279,31 +287,32 @@ gst_dccp_client_sink_class_init (GstDCCPClientSinkClass * klass)
 
   gobject_class->set_property = gst_dccp_client_sink_set_property;
   gobject_class->get_property = gst_dccp_client_sink_get_property;
+  gobject_class->finalize = gst_dccp_client_sink_finalize;
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PORT,
       g_param_spec_int ("port", "Port",
           "The port to send the packets to", 0, G_MAXUINT16,
-          DCCP_DEFAULT_PORT, G_PARAM_READWRITE));
+          DCCP_DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_HOST,
       g_param_spec_string ("host", "Host",
           "The host IP address to send packets to", DCCP_DEFAULT_HOST,
-          G_PARAM_READWRITE));
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SOCK_FD,
       g_param_spec_int ("sockfd", "Socket fd",
           "The socket file descriptor", -1, G_MAXINT,
-          DCCP_DEFAULT_SOCK_FD, G_PARAM_READWRITE));
+          DCCP_DEFAULT_SOCK_FD, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CLOSE_FD,
       g_param_spec_boolean ("close-socket", "Close",
           "Close socket at end of stream",
-          DCCP_DEFAULT_CLOSED, G_PARAM_READWRITE));
+          DCCP_DEFAULT_CLOSED, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CCID,
       g_param_spec_int ("ccid", "CCID",
           "The Congestion Control IDentified to be used", 2, G_MAXINT,
-          DCCP_DEFAULT_CCID, G_PARAM_READWRITE));
+          DCCP_DEFAULT_CCID, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* signals */
   /**

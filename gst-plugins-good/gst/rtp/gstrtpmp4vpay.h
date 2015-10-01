@@ -13,15 +13,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_RTP_MP4V_PAY_H__
 #define __GST_RTP_MP4V_PAY_H__
 
 #include <gst/gst.h>
-#include <gst/rtp/gstbasertppayload.h>
+#include <gst/rtp/gstrtpbasepayload.h>
 #include <gst/base/gstadapter.h>
 
 G_BEGIN_DECLS
@@ -42,7 +42,7 @@ typedef struct _GstRtpMP4VPayClass GstRtpMP4VPayClass;
 
 struct _GstRtpMP4VPay
 {
-  GstBaseRTPPayload    payload;
+  GstRTPBasePayload    payload;
 
   GstAdapter   *adapter;
   GstClockTime  first_timestamp;
@@ -54,15 +54,18 @@ struct _GstRtpMP4VPay
   gboolean      send_config;
   gboolean      need_config;
 
-  gboolean      buffer_list;
-
-  GstPadEventFunction old_event_func;
+  /* naming might be confusing with send_config; but naming matches h264
+   * payloader */
+  guint         config_interval;
+  GstClockTime  last_config;
 };
 
 struct _GstRtpMP4VPayClass
 {
-  GstBaseRTPPayloadClass parent_class;
+  GstRTPBasePayloadClass parent_class;
 };
+
+GType gst_rtp_mp4v_pay_get_type (void);
 
 gboolean gst_rtp_mp4v_pay_plugin_init (GstPlugin * plugin);
 

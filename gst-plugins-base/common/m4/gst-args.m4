@@ -19,6 +19,7 @@ dnl AG_GST_ARG_ENABLE_EXTERNAL
 dnl AG_GST_ARG_ENABLE_EXPERIMENTAL
 dnl AG_GST_ARG_ENABLE_BROKEN
 
+dnl AG_GST_ARG_DISABLE_FATAL_WARNINGS
 AC_DEFUN([AG_GST_ARG_DEBUG],
 [
   dnl debugging stuff
@@ -66,10 +67,7 @@ AC_DEFUN([AG_GST_ARG_VALGRIND],
   if test "x$USE_VALGRIND" = xyes; then
     PKG_CHECK_MODULES(VALGRIND, valgrind >= $VALGRIND_REQ,
       USE_VALGRIND="yes",
-      [
-        USE_VALGRIND="no"
-        AC_MSG_RESULT([no])
-      ])
+      USE_VALGRIND="no")
   fi
   if test "x$USE_VALGRIND" = xyes; then
     AC_DEFINE(HAVE_VALGRIND, 1, [Define if valgrind should be used])
@@ -113,13 +111,13 @@ AC_DEFUN([AG_GST_ARG_GCOV],
     dnl if gcov is used, we do not want default -O2 CFLAGS
     if test "x$GST_GCOV_ENABLED" = "xyes"
     then
-      CFLAGS="-O0"
+      CFLAGS="$CFLAGS -O0"
       AC_SUBST(CFLAGS)
-      CXXFLAGS="-O0"
+      CXXFLAGS="$CXXFLAGS -O0"
       AC_SUBST(CXXFLAGS)
-      FFLAGS="-O0"
+      FFLAGS="$FFLAGS -O0"
       AC_SUBST(FFLAGS)
-      CCASFLAGS="-O0"
+      CCASFLAGS="$CCASFLAGS -O0"
       AC_SUBST(CCASFLAGS)
       AC_MSG_NOTICE([gcov enabled, setting CFLAGS and friends to $CFLAGS])
     fi
@@ -176,13 +174,16 @@ AC_DEFUN([AG_GST_ARG_WITH_PACKAGE_NAME],
         P=$PACKAGE_NAME
       fi
 
-      dnl default value
-      if test "x$GST_GIT" = "xyes" -o "x$GST_CVS" = "xyes"
+      if test "x$PACKAGE_VERSION_NANO" = "x0"
       then
-        dnl nano >= 1
-        GST_PACKAGE_NAME="$P git/prerelease"
-      else
         GST_PACKAGE_NAME="$P source release"
+      else
+        if test "x$PACKAGE_VERSION_NANO" = "x1"
+        then
+          GST_PACKAGE_NAME="$P git"
+        else
+          GST_PACKAGE_NAME="$P prerelease"
+        fi
       fi
     ]
   )
@@ -225,9 +226,11 @@ AC_DEFUN([AG_GST_ARG_WITH_PLUGINS],
 
   GST_PLUGINS_ALL=""
   GST_PLUGINS_SELECTED=""
+  GST_PLUGINS_NONPORTED=""
 
   AC_SUBST(GST_PLUGINS_ALL)
   AC_SUBST(GST_PLUGINS_SELECTED)
+  AC_SUBST(GST_PLUGINS_NONPORTED)
 ])
 
 dnl AG_GST_CHECK_PLUGIN(PLUGIN-NAME)
@@ -263,10 +266,16 @@ AC_DEFUN([AG_GST_CHECK_PLUGIN],
   fi
   undefine([pname_def])
 
+  dnl First check inclusion
   if [[ -z "$WITH_PLUGINS" ]] || echo " [$WITH_PLUGINS] " | tr , ' ' | grep -i " [$1] " > /dev/null; then
     GST_PLUGINS_SELECTED="$GST_PLUGINS_SELECTED [$1]"
   fi
+  dnl Then check exclusion
   if echo " [$WITHOUT_PLUGINS] " | tr , ' ' | grep -i " [$1] " > /dev/null; then
+    GST_PLUGINS_SELECTED=`echo " $GST_PLUGINS_SELECTED " | $SED -e 's/ [$1] / /'`
+  fi
+  dnl Finally check if the plugin is ported or not
+  if echo " [$GST_PLUGINS_NONPORTED] " | tr , ' ' | grep -i " [$1] " > /dev/null; then
     GST_PLUGINS_SELECTED=`echo " $GST_PLUGINS_SELECTED " | $SED -e 's/ [$1] / /'`
   fi
   AM_CONDITIONAL([USE_PLUGIN_]translit([$1], a-z, A-Z), echo " $GST_PLUGINS_SELECTED " | grep -i " [$1] " > /dev/null)
@@ -323,5 +332,29 @@ AC_DEFUN([AG_GST_ARG_ENABLE_BROKEN],
       AC_MSG_WARN([building broken plug-ins -- no bug reports on these, only patches ...])
     ],[
       AC_MSG_NOTICE([not building broken plug-ins])
+    ])
+])
+
+dnl allow people (or build tools) to override default behaviour
+dnl for fatal compiler warnings
+dnl Enable fatal warnings by default only for development versions
+AC_DEFUN([AG_GST_ARG_DISABLE_FATAL_WARNINGS],
+[
+  AC_ARG_ENABLE(fatal-warnings,
+    AC_HELP_STRING([--disable-fatal-warnings],
+                   [Don't turn compiler warnings into fatal errors]),
+    [
+      case "${enableval}" in
+        yes) FATAL_WARNINGS=yes ;;
+        no)  FATAL_WARNINGS=no ;;
+        *)   AC_MSG_ERROR(bad value ${enableval} for --disable-fatal-warnings) ;;
+      esac
+    ],
+    [
+      if test "x`expr $PACKAGE_VERSION_MINOR % 2`" = "x1" -a "x`expr $PACKAGE_VERSION_MICRO '<' 90`" = "x1"; then
+        FATAL_WARNINGS=yes
+      else
+        FATAL_WARNINGS=no
+      fi
     ])
 ])

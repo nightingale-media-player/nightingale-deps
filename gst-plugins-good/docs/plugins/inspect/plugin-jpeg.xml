@@ -3,7 +3,7 @@
   <description>JPeg plugin library</description>
   <filename>../../ext/jpeg/.libs/libgstjpeg.so</filename>
   <basename>libgstjpeg.so</basename>
-  <version>0.10.16</version>
+  <version>1.6.0</version>
   <license>LGPL</license>
   <source>gst-plugins-good</source>
   <package>GStreamer Good Plug-ins source release</package>
@@ -20,13 +20,13 @@
           <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>image/jpeg, width=(int)[ 16, 65535 ], height=(int)[ 8, 65535 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+          <details>image/jpeg</details>
         </caps>
         <caps>
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+          <details>video/x-raw, format=(string){ I420, RGB, BGR, RGBx, xRGB, BGRx, xBGR, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
         </caps>
       </pads>
     </element>
@@ -38,58 +38,16 @@
       <author>Wim Taymans &lt;wim.taymans@tvd.be&gt;</author>
       <pads>
         <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>image/jpeg, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
-        </caps>
-        <caps>
           <name>sink</name>
           <direction>sink</direction>
           <presence>always</presence>
-          <details>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
-      <name>smokedec</name>
-      <longname>Smoke video decoder</longname>
-      <class>Codec/Decoder/Video</class>
-      <description>Decode video from Smoke format</description>
-      <author>Wim Taymans &lt;wim@fluendo.com&gt;</author>
-      <pads>
-        <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>video/x-smoke, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+          <details>video/x-raw, format=(string){ I420, YV12, YUY2, UYVY, Y41B, Y42B, YVYU, Y444, NV21, NV12, RGB, BGR, RGBx, xRGB, BGRx, xBGR, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
         </caps>
         <caps>
           <name>src</name>
           <direction>source</direction>
           <presence>always</presence>
-          <details>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
-        </caps>
-      </pads>
-    </element>
-    <element>
-      <name>smokeenc</name>
-      <longname>Smoke video encoder</longname>
-      <class>Codec/Encoder/Video</class>
-      <description>Encode images into the Smoke format</description>
-      <author>Wim Taymans &lt;wim@fluendo.com&gt;</author>
-      <pads>
-        <caps>
-          <name>src</name>
-          <direction>source</direction>
-          <presence>always</presence>
-          <details>video/x-smoke, width=(int)[ 16, 4096 ], height=(int)[ 16, 4096 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
-        </caps>
-        <caps>
-          <name>sink</name>
-          <direction>sink</direction>
-          <presence>always</presence>
-          <details>video/x-raw-yuv, format=(fourcc)I420, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+          <details>image/jpeg, width=(int)[ 16, 65535 ], height=(int)[ 16, 65535 ], framerate=(fraction)[ 0/1, 2147483647/1 ], sof-marker=(int){ 0, 1, 2, 9 }</details>
         </caps>
       </pads>
     </element>

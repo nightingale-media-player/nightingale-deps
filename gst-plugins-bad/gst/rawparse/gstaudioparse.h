@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_AUDIO_PARSE_H__
@@ -25,6 +25,7 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/base/gstadapter.h>
+#include <gst/audio/audio.h>
 
 #include "gstrawparse.h"
 
@@ -47,12 +48,15 @@ struct _GstAudioParse
   GstRawParse parent;
 
   /* properties */
+  gboolean use_sink_caps;
   gint format;
+  GstAudioFormat raw_format;
   gint channels;
-  gint width;
-  gint depth;
-  gint signedness;
-  gint endianness;
+  gboolean interleaved;
+  GValueArray *channel_positions;
+
+  GstAudioChannelPosition *channel_pos;
+  GstAudioChannelPosition *channel_order;
 };
 
 struct _GstAudioParseClass

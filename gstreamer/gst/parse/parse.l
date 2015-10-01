@@ -1,15 +1,31 @@
 %{
+#include "../gst_private.h"
+
 #include <math.h>
 #include <string.h>
 
 #include <glib/gprintf.h>
 
-#include "../gst_private.h"
-
 #include "types.h"
 #include "../gstinfo.h"
 #include "../gsturi.h"
 #include "grammar.tab.h"
+
+#ifdef malloc
+#undef malloc
+#endif
+
+#ifdef free
+#undef free
+#endif
+
+#ifdef realloc
+#undef realloc
+#endif
+
+#define malloc g_malloc
+#define free g_free
+#define realloc g_realloc
 
 /* Override the default ECHO so as to avoid fortify warnings. Ignore the
    embedded-NUL case for now. We know yytext is NUL-terminated. */
@@ -35,7 +51,7 @@ PRINT (const char *format, ...)
 %}
 
 _operator [(){}.!,;=]
-_identifier [[:alpha:]][[:alnum:]\-_%:]*
+_identifier [[:alnum:]_][[:alnum:]\-_%:]*
 
 _char ("\\".)|([^[:space:]])
 _string {_char}+|("\""([^\"]|"\\\"")*"\"")|("'"([^']|"\\\'")*"'")
@@ -73,7 +89,7 @@ _link ("!"[[:space:]]*{_caps}([[:space:]]*(";"[[:space:]]*{_caps})*[[:space:]]*)
 {_assignment} {
     /* "=" */
     PRINT ("ASSIGNMENT: %s", yytext);
-    yylval->s = gst_parse_strdup (yytext);
+    yylval->ss = gst_parse_strdup (yytext);
     BEGIN (INITIAL);
     return ASSIGNMENT;
 }
@@ -81,14 +97,14 @@ _link ("!"[[:space:]]*{_caps}([[:space:]]*(";"[[:space:]]*{_caps})*[[:space:]]*)
 {_padref} {
     yytext++;
     PRINT ("PADREF: %s", yytext);
-    yylval->s = gst_parse_strdup (yytext);
+    yylval->ss = gst_parse_strdup (yytext);
     BEGIN (INITIAL);
     return PADREF;
 }
 
 {_ref} {
     PRINT ("REF: %s", yytext);
-    yylval->s = gst_parse_strdup (yytext);
+    yylval->ss = gst_parse_strdup (yytext);
     BEGIN (INITIAL);
     return REF;
 }
@@ -98,14 +114,14 @@ _link ("!"[[:space:]]*{_caps}([[:space:]]*(";"[[:space:]]*{_caps})*[[:space:]]*)
     while (!g_ascii_isspace (*pos) && (*pos != '.')) pos++;
     *pos = '\0';
     PRINT ("BINREF: %s", yytext);
-    yylval->s = gst_parse_strdup (yytext);
+    yylval->ss = gst_parse_strdup (yytext);
     BEGIN (INITIAL);
     return BINREF;
 }
 
 {_identifier} {
     PRINT ("IDENTIFIER: %s", yytext);
-    yylval->s = gst_parse_strdup (yytext);
+    yylval->ss = gst_parse_strdup (yytext);
     BEGIN (INITIAL);
     return IDENTIFIER;
 }
@@ -116,22 +132,22 @@ _link ("!"[[:space:]]*{_caps}([[:space:]]*(";"[[:space:]]*{_caps})*[[:space:]]*)
     c++;
     if (*c) {
       while (g_ascii_isspace (*c)) c++;
-      c = yylval->s = gst_parse_strdup (c);
+      c = yylval->ss = gst_parse_strdup (c);
       while (*c) c++;
       if (*--c != '!')
 	g_assert_not_reached ();
       while (g_ascii_isspace (*--c));
       *++c = '\0';
     } else {
-      yylval->s = NULL;
+      yylval->ss = NULL;
     }
     BEGIN (INITIAL);
     return LINK;
 }
 {_url} {
   PRINT ("URL: %s", yytext);
-  yylval->s = g_strdup (yytext);
-  gst_parse_unescape (yylval->s);
+  yylval->ss = g_strdup (yytext);
+  gst_parse_unescape (yylval->ss);
   BEGIN (INITIAL);
   return PARSE_URL;
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -58,10 +58,10 @@ gst_xvid_init (void)
   return TRUE;
 }
 
-gchar *
+const gchar *
 gst_xvid_error (int errorcode)
 {
-  gchar *error;
+  const gchar *error;
 
   switch (errorcode) {
     case XVID_ERR_FAIL:
@@ -179,17 +179,17 @@ gst_xvid_csp_to_caps (gint csp, gint w, gint h)
 
       switch (csp) {
         case XVID_CSP_RGB555:
-          r_mask = GST_VIDEO_RED_MASK_15_INT;
-          g_mask = GST_VIDEO_GREEN_MASK_15_INT;
-          b_mask = GST_VIDEO_BLUE_MASK_15_INT;
+          r_mask = GST_VIDEO_COMP1_MASK_15_INT;
+          g_mask = GST_VIDEO_COMP2_MASK_15_INT;
+          b_mask = GST_VIDEO_COMP3_MASK_15_INT;
           endianness = G_BYTE_ORDER;
           depth = 15;
           bpp = 16;
           break;
         case XVID_CSP_RGB565:
-          r_mask = GST_VIDEO_RED_MASK_16_INT;
-          g_mask = GST_VIDEO_GREEN_MASK_16_INT;
-          b_mask = GST_VIDEO_BLUE_MASK_16_INT;
+          r_mask = GST_VIDEO_COMP1_MASK_16_INT;
+          g_mask = GST_VIDEO_COMP2_MASK_16_INT;
+          b_mask = GST_VIDEO_COMP3_MASK_16_INT;
           endianness = G_BYTE_ORDER;
           depth = 16;
           bpp = 16;
@@ -359,13 +359,13 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   return (gst_element_register (plugin, "xvidenc",
-          GST_RANK_NONE, GST_TYPE_XVIDENC) &&
+          GST_RANK_SECONDARY, GST_TYPE_XVIDENC) &&
       gst_element_register (plugin, "xviddec",
           GST_RANK_NONE, GST_TYPE_XVIDDEC));
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "xvid",
+    xvid,
     "XviD plugin library", plugin_init, VERSION, "GPL", GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN)

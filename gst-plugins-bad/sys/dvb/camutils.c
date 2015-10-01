@@ -17,9 +17,13 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #include <gst/gst.h>
 #include <string.h>
@@ -167,42 +171,32 @@ cam_read_length_field (guint8 * buff, guint * length)
  */
 
 static guint
-get_ca_descriptors_length (GValueArray * descriptors)
+get_ca_descriptors_length (GPtrArray * descriptors)
 {
   guint i;
+  guint nb_desc = descriptors->len;
   guint len = 0;
-  GValue *value;
-  GString *desc;
 
-  if (descriptors != NULL) {
-    for (i = 0; i < descriptors->n_values; ++i) {
-      value = g_value_array_get_nth (descriptors, i);
-      desc = (GString *) g_value_get_boxed (value);
-
-      if (desc->str[0] == 0x09)
-        len += desc->len;
-    }
+  for (i = 0; i < nb_desc; i++) {
+    GstMpegtsDescriptor *desc = g_ptr_array_index (descriptors, i);
+    if (desc->tag == 0x09)
+      len += desc->length;
   }
 
   return len;
 }
 
 static guint8 *
-write_ca_descriptors (guint8 * body, GValueArray * descriptors)
+write_ca_descriptors (guint8 * body, GPtrArray * descriptors)
 {
-  guint i;
-  GValue *value;
-  GString *desc;
+  guint i, nb_desc;
 
-  if (descriptors != NULL) {
-    for (i = 0; i < descriptors->n_values; ++i) {
-      value = g_value_array_get_nth (descriptors, i);
-      desc = (GString *) g_value_get_boxed (value);
-
-      if (desc->str[0] == 0x09) {
-        memcpy (body, desc->str, desc->len);
-        body += desc->len;
-      }
+  nb_desc = descriptors->len;
+  for (i = 0; i < nb_desc; i++) {
+    GstMpegtsDescriptor *desc = g_ptr_array_index (descriptors, i);
+    if (desc->tag == 0x09) {
+      memcpy (body, desc->data, desc->length);
+      body += desc->length;
     }
   }
 
@@ -210,69 +204,59 @@ write_ca_descriptors (guint8 * body, GValueArray * descriptors)
 }
 
 guint8 *
-cam_build_ca_pmt (GstStructure * pmt, guint8 list_management, guint8 cmd_id,
+cam_build_ca_pmt (GstMpegtsPMT * pmt, guint8 list_management, guint8 cmd_id,
     guint * size)
 {
+  GstMpegtsSection *section = (GstMpegtsSection *) pmt;
   guint body_size = 0;
   guint8 *buffer;
   guint8 *body;
   GList *lengths = NULL;
   guint len = 0;
-  const GValue *streams;
-  guint program_number;
-  guint version_number;
   guint i;
-  const GValue *value;
-  GstStructure *stream;
-  GValueArray *program_descriptors = NULL;
-  GValueArray *stream_descriptors = NULL;
 
-  gst_structure_get_uint (pmt, "program-number", &program_number);
-  gst_structure_get_uint (pmt, "version-number", &version_number);
-  streams = gst_structure_get_value (pmt, "streams");
-  value = gst_structure_get_value (pmt, "descriptors");
-  if (value != NULL) {
-    program_descriptors = g_value_get_boxed (value);
-    /* get the length of program level CA_descriptor()s */
-    len = get_ca_descriptors_length (program_descriptors);
-    if (len > 0)
-      /* add one byte for the program level cmd_id */
-      len += 1;
-  }
+  /* get the length of program level CA_descriptor()s */
+  len = get_ca_descriptors_length (pmt->descriptors);
+  if (len > 0)
+    /* add one byte for the program level cmd_id */
+    len += 1;
+
   lengths = g_list_append (lengths, GINT_TO_POINTER (len));
   body_size += 6 + len;
 
-  /* get the length of stream level CA_descriptor()s */
-  if (streams != NULL) {
-    for (i = 0; i < gst_value_list_get_size (streams); ++i) {
-      value = gst_value_list_get_value (streams, i);
-      stream = g_value_get_boxed (value);
+  for (i = 0; i < pmt->streams->len; i++) {
+    GstMpegtsPMTStream *pmtstream = g_ptr_array_index (pmt->streams, i);
 
-      value = gst_structure_get_value (stream, "descriptors");
-      if (value != NULL) {
-        stream_descriptors = g_value_get_boxed (value);
+    len = get_ca_descriptors_length (pmtstream->descriptors);
+    if (len > 0)
+      /* one byte for the stream level cmd_id */
+      len += 1;
 
-        len = get_ca_descriptors_length (stream_descriptors);
-        if (len > 0)
-          /* one byte for the stream level cmd_id */
-          len += 1;
-      }
-
-      lengths = g_list_append (lengths, GINT_TO_POINTER (len));
-      body_size += 5 + len;
-
-    }
+    lengths = g_list_append (lengths, GINT_TO_POINTER (len));
+    body_size += 5 + len;
   }
+
+  GST_DEBUG ("Body Size %d", body_size);
+
   buffer = g_malloc0 (body_size);
   body = buffer;
 
+  /* ca_pmt_list_management 8 uimsbf */
   *body++ = list_management;
 
-  GST_WRITE_UINT16_BE (body, program_number);
+  /* program_number 16 uimsbf */
+  GST_WRITE_UINT16_BE (body, section->subtable_extension);
   body += 2;
 
-  *body++ = (version_number << 1) | 0x01;
+  /* reserved 2
+   * version_number 5
+   * current_next_indicator 1
+   */
+  *body++ = (section->version_number << 1) | 0x01;
 
+  /* Reserved 4
+   * program_info_length 12
+   */
   len = GPOINTER_TO_INT (lengths->data);
   lengths = g_list_delete_link (lengths, lengths);
   GST_WRITE_UINT16_BE (body, len);
@@ -281,23 +265,14 @@ cam_build_ca_pmt (GstStructure * pmt, guint8 list_management, guint8 cmd_id,
   if (len != 0) {
     *body++ = cmd_id;
 
-    body = write_ca_descriptors (body, program_descriptors);
+    body = write_ca_descriptors (body, pmt->descriptors);
   }
 
-  for (i = 0; i < gst_value_list_get_size (streams); ++i) {
-    guint stream_type;
-    guint stream_pid;
+  for (i = 0; i < pmt->streams->len; i++) {
+    GstMpegtsPMTStream *pmtstream = g_ptr_array_index (pmt->streams, i);
 
-    value = gst_value_list_get_value (streams, i);
-    stream = g_value_get_boxed (value);
-
-    gst_structure_get_uint (stream, "stream-type", &stream_type);
-    gst_structure_get_uint (stream, "pid", &stream_pid);
-    value = gst_structure_get_value (stream, "descriptors");
-    stream_descriptors = g_value_get_boxed (value);
-
-    *body++ = stream_type;
-    GST_WRITE_UINT16_BE (body, stream_pid);
+    *body++ = pmtstream->stream_type;
+    GST_WRITE_UINT16_BE (body, pmtstream->pid);
     body += 2;
     len = GPOINTER_TO_INT (lengths->data);
     lengths = g_list_delete_link (lengths, lengths);
@@ -306,7 +281,7 @@ cam_build_ca_pmt (GstStructure * pmt, guint8 list_management, guint8 cmd_id,
 
     if (len != 0) {
       *body++ = cmd_id;
-      body = write_ca_descriptors (body, stream_descriptors);
+      body = write_ca_descriptors (body, pmtstream->descriptors);
     }
   }
 

@@ -19,11 +19,8 @@
     </para>
     <para> 
       The bin will also manage the elements contained in it. It will
-      figure out how the data will flow in the bin and generate an
-      optimal plan for that data flow. Plan generation is one of the
-      most complicated procedures in &GStreamer;. You will learn more
-      about this process, called scheduling, in <xref
-      linkend="section-threads-scheduling"/>.
+      perform state changes on the elements as well as collect and
+      forward bus messages.
     </para>
 
     <figure float="1" id="section-bin-img">
@@ -42,10 +39,10 @@
     <itemizedlist>
       <listitem>
         <para>
-          A pipeline: a generic container that allows scheduling of the
-          containing elements.  The toplevel bin has to be a pipeline,
-          every application thus needs at least one of these. Pipelines will
-          automatically run themselves in a background thread when started.
+          A pipeline: a generic container that manages the synchronization
+          and bus messages of the contained elements. The toplevel bin has
+          to be a pipeline, every application thus needs at least one of
+          these.
         </para>
       </listitem>
     </itemizedlist>
@@ -98,10 +95,12 @@ main (int   argc,
 }
     <!-- example-end bin.c c --></programlisting>
     <para>
-      There are various functions to lookup elements in a bin. You can
-      also get a list of all elements that a bin contains using the function
-      <function>gst_bin_get_list ()</function>. See the API references of
-      <ulink type="http"
+      There are various functions to lookup elements in a bin. The most
+      commonly used are <function>gst_bin_get_by_name ()</function> and
+      <function>gst_bin_get_by_interface ()</function>. You can also
+      iterate over all elements that a bin contains using the function
+      <function>gst_bin_iterate_elements ()</function>. See the API references
+      of <ulink type="http"
       url="&URLAPI;GstBin.html"><classname>GstBin</classname></ulink>
       for details.
     </para>
@@ -136,17 +135,51 @@ main (int   argc,
 }
     </programlisting>
     <para>
-      Custom bins can be created with a plugin or an XML description. You
+      (This is a silly example of course, there already exists a much more
+      powerful and versatile custom bin like this: the playbin element.)
+    </para>
+    <para>
+      Custom bins can be created with a plugin or from the application. You
       will find more information about creating custom bin in the <ulink
       type="http"
       url="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/pwg/html/index.html">Plugin
       Writers Guide</ulink>.
     </para>
     <para>
-      Examples of such custom bins are the playbin and decodebin elements from<ulink
+      Examples of such custom bins are the playbin and uridecodebin elements from<ulink
       type="http"
       url="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/index.html">
       gst-plugins-base</ulink>.
+    </para>
+  </sect1>
+  <sect1 id="section-bin-state-change-handling">
+    <title>Bins manage states of their children</title>
+    <para>
+      Bins manage the state of all elements contained in them. If you set
+      a bin (or a pipeline, which is a special top-level type of bin) to
+      a certain target state using <function>gst_element_set_state ()</function>,
+      it will make sure all elements contained within it will also be set
+      to this state. This means it's usually only necessary to set the state
+      of the top-level pipeline to start up the pipeline or shut it down.
+    </para>
+    <para>
+      The bin will perform the state changes on all its children from the
+      sink element to the source element. This ensures that the downstream
+      element is ready to receive data when the upstream element is brought
+      to PAUSED or PLAYING. Similarly when shutting down, the sink elements
+      will be set to READY or NULL first, which will cause the upstream
+      elements to receive a FLUSHING error and stop the streaming threads
+      before the elements are set to the READY or NULL state.
+    </para>
+    <para>
+      Note, however, that if elements are added to a bin or pipeline that's
+      already running, , e.g. from within a "pad-added"
+      signal callback, its state will not automatically be brought in line with
+      the current state or target state of the bin or pipeline it was added to.
+      Instead, you have to need to set it to the desired target state yourself
+      using <function>gst_element_set_state ()</function> or
+      <function>gst_element_sync_state_with_parent ()</function> when adding
+      elements to an already-running pipeline.
     </para>
   </sect1>
 </chapter>

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -76,7 +76,7 @@ gst_rtsp_ext_list_init (void)
   GST_DEBUG_CATEGORY_INIT (rtspext_debug, "rtspext", 0, "RTSP extension");
 
   /* get a list of all extensions */
-  extensions = gst_registry_feature_filter (gst_registry_get_default (),
+  extensions = gst_registry_feature_filter (gst_registry_get (),
       (GstPluginFeatureFilter) gst_rtsp_ext_list_filter, FALSE, NULL);
 }
 
@@ -202,6 +202,8 @@ gst_rtsp_ext_list_configure_stream (GstRTSPExtensionList * ext, GstCaps * caps)
     GstRTSPExtension *elem = (GstRTSPExtension *) walk->data;
 
     res = gst_rtsp_extension_configure_stream (elem, caps);
+    if (!res)
+      break;
   }
   return res;
 }

@@ -1,3 +1,5 @@
+/*-*- Mode: C; c-basic-offset: 2 -*-*/
+
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -15,7 +17,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with gst-pulse; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
  *  USA.
  */
 
@@ -27,9 +29,6 @@
 
 #include <pulse/pulseaudio.h>
 #include <pulse/thread-mainloop.h>
-
-#include "pulsemixerctrl.h"
-#include "pulseprobe.h"
 
 G_BEGIN_DECLS
 
@@ -53,12 +52,13 @@ struct _GstPulseSrc
 {
   GstAudioSrc src;
 
-  gchar *server, *device;
+  gchar *server, *device, *client_name;
 
   pa_threaded_mainloop *mainloop;
 
   pa_context *context;
   pa_stream *stream;
+  guint32 source_output_idx;
 
   pa_sample_spec sample_spec;
 
@@ -67,13 +67,23 @@ struct _GstPulseSrc
 
   gchar *device_description;
 
-  GstPulseMixerCtrl *mixer;
-  GstPulseProbe *probe;
+  gdouble volume;
+  gboolean volume_set:1;
+  gboolean mute:1;
+  gboolean mute_set:1;
+  guint32 current_source_idx;
+  gchar *current_source_name;
 
-  gboolean corked;
-  gboolean operation_success;
-  gboolean paused;
-  gboolean in_read;
+  gint notify; /* atomic */
+
+  gboolean corked:1;
+  gboolean stream_connected:1;
+  gboolean operation_success:1;
+  gboolean paused:1;
+  gboolean in_read:1;
+
+  GstStructure *properties;
+  pa_proplist *proplist;
 };
 
 struct _GstPulseSrcClass

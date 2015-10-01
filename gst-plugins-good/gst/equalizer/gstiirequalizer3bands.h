@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_IIR_EQUALIZER_3BANDS__
@@ -43,7 +43,7 @@ struct _GstIirEqualizer3Bands
 
 struct _GstIirEqualizer3BandsClass
 {
-  GstIirEqualizer equalizer_class;
+  GstIirEqualizerClass equalizer_class;
 };
 
 extern GType gst_iir_equalizer_3bands_get_type(void);

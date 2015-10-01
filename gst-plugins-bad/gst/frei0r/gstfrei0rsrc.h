@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_FREI0R_SRC_H__
@@ -45,9 +45,7 @@ struct _GstFrei0rSrc {
   f0r_instance_t *f0r_instance;
   GstFrei0rPropertyValue *property_cache;
 
-  GstVideoFormat fmt;
-  gint width, height;
-  gint fps_n, fps_d;
+  GstVideoInfo info;
 
   guint64 n_frames;
 };
@@ -62,7 +60,7 @@ struct _GstFrei0rSrcClass {
   gint n_properties;
 };
 
-gboolean gst_frei0r_src_register (GstPlugin *plugin, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
+GstFrei0rPluginRegisterReturn gst_frei0r_src_register (GstPlugin *plugin, const gchar * vendor, const f0r_plugin_info_t *info, const GstFrei0rFuncTable *ftable);
 
 G_END_DECLS
 

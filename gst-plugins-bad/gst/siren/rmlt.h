@@ -15,15 +15,15 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
 #ifndef _SIREN7_RMLT_H_
 #define _SIREN7_RMLT_H_
 
-extern void siren_rmlt_init();
+extern void siren_rmlt_init(void);
 extern int siren_rmlt_encode_samples(float *samples, float *old_samples, int dct_length, float *rmlt_coefs);
 extern int siren_rmlt_decode_samples(float *coefs, float *old_coefs, int dct_length, float *samples);
 

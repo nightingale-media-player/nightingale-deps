@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __MXF_QUARK_H__
@@ -191,6 +191,7 @@ typedef enum {
   MXF_QUARK_B_PICTURE_COUNT = 165,
   MXF_QUARK_BITRATE = 166,
   MXF_QUARK_PROFILE_AND_LEVEL = 167,
+  MXF_QUARK_FILLER = 168,
 
   MXF_QUARK_MAX
 } MXFQuarkId;

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -23,6 +23,7 @@
 
 
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -46,19 +47,36 @@ struct _GstWavEnc {
   GstPad    *sinkpad;
   GstPad    *srcpad;
 
+  GstTagList *tags;
+  GstToc    *toc;
+  GList     *cues;
+  GList     *labls;
+  GList     *notes;
+
   /* useful audio data */
+  GstAudioFormat audio_format;
   guint16    format;
   guint      width;
   guint      rate;
   guint      channels;
-  guint32    length;
+  guint64    channel_mask;
+  GstAudioChannelPosition srcPos[64];
+  GstAudioChannelPosition destPos[64];
+  
+  /* data sizes */
+  guint64    audio_length;
+  guint32    meta_length;
 
+  gboolean   use_rf64;
   gboolean   sent_header;
+  gboolean   finished_properly;
 };
 
 struct _GstWavEncClass {
   GstElementClass parent_class;
 };
+
+GType gst_wavenc_get_type (void);
 
 G_END_DECLS
 

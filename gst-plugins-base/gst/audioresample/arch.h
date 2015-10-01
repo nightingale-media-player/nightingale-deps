@@ -197,6 +197,7 @@ typedef float spx_word32_t;
 #define VSHR32(a,shift) (a)
 #define SATURATE16(x,a) (x)
 #define SATURATE32(x,a) (x)
+#define SATURATE32PSHR(x,shift,a) (x)
 
 #define PSHR(a,shift)       (a)
 #define SHR(a,shift)       (a)
@@ -243,11 +244,11 @@ typedef float spx_word32_t;
 #if defined (CONFIG_TI_C54X) || defined (CONFIG_TI_C55X)
 
 /* 2 on TI C5x DSP */
-#define BYTES_PER_CHAR 2
+#define BYTES_PER_CHAR 2 
 #define BITS_PER_CHAR 16
 #define LOG2_BITS_PER_CHAR 4
 
-#else
+#else 
 
 #define BYTES_PER_CHAR 1
 #define BITS_PER_CHAR 8

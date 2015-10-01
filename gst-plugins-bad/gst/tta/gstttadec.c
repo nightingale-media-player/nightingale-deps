@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/gst.h>
@@ -70,7 +70,7 @@ enum
 
 enum
 {
-  ARG_0
+  PROP_0
 };
 
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -89,7 +89,7 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
         "depth = (int) { 8, 16, 24 }, "
         "channels = (int) { 1, 2 }, "
         "rate = (int) [ 8000, 96000 ], "
-        "endianness = (int) LITTLE_ENDIAN, " "signed = (boolean) true")
+        "endianness = (int) BYTE_ORDER, " "signed = (boolean) true")
     );
 
 static void gst_tta_dec_class_init (GstTtaDecClass * klass);
@@ -106,7 +106,6 @@ gst_tta_dec_setcaps (GstPad * pad, GstCaps * caps)
   GstTtaDec *ttadec = GST_TTA_DEC (gst_pad_get_parent (pad));
   GstStructure *structure = gst_caps_get_structure (caps, 0);
   GstCaps *srccaps;
-  guint64 outsize;
   gint bits, channels;
   gint32 samplerate;
 
@@ -125,7 +124,7 @@ gst_tta_dec_setcaps (GstPad * pad, GstCaps * caps)
       "channels", G_TYPE_INT, ttadec->channels,
       "depth", G_TYPE_INT, bits,
       "width", G_TYPE_INT, bits,
-      "endianness", G_TYPE_INT, G_LITTLE_ENDIAN,
+      "endianness", G_TYPE_INT, G_BYTE_ORDER,
       "signed", G_TYPE_BOOLEAN, TRUE, NULL);
 
   if (!gst_pad_set_caps (ttadec->srcpad, srccaps))
@@ -135,8 +134,6 @@ gst_tta_dec_setcaps (GstPad * pad, GstCaps * caps)
 
   ttadec->tta = g_malloc (ttadec->channels * sizeof (decoder));
   ttadec->cache = g_malloc (ttadec->channels * sizeof (long));
-
-  outsize = ttadec->channels * ttadec->frame_length * ttadec->bytes;
 
   ttadec->decdata =
       (guchar *) g_malloc (ttadec->channels * ttadec->frame_length *
@@ -171,18 +168,16 @@ gst_tta_dec_get_type (void)
 static void
 gst_tta_dec_base_init (GstTtaDecClass * klass)
 {
-  static const GstElementDetails plugin_details =
-      GST_ELEMENT_DETAILS ("TTA audio decoder",
-      "Codec/Decoder/Audio",
-      "Decode TTA audio data",
-      "Arwed v. Merkatz <v.merkatz@gmx.net>");
+
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &plugin_details);
+  gst_element_class_set_static_metadata (element_class, "TTA audio decoder",
+      "Codec/Decoder/Audio",
+      "Decode TTA audio data", "Arwed v. Merkatz <v.merkatz@gmx.net>");
 }
 
 static void
@@ -201,10 +196,8 @@ static void
 gst_tta_dec_class_init (GstTtaDecClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
 
   parent = g_type_class_peek_parent (klass);
 
@@ -233,7 +226,7 @@ gst_tta_dec_init (GstTtaDec * ttadec)
   ttadec->tta_buf.buffer_end = ttadec->tta_buf.buffer + TTA_BUFFER_SIZE;
 }
 
-void
+static void
 rice_init (adapt * rice, unsigned long k0, unsigned long k1)
 {
   rice->k0 = k0;
@@ -242,7 +235,7 @@ rice_init (adapt * rice, unsigned long k0, unsigned long k1)
   rice->sum1 = shift_16[k1];
 }
 
-void
+static void
 decoder_init (decoder * tta, long nch, long byte_size)
 {
   long shift = flt_set[byte_size - 1];
@@ -255,7 +248,7 @@ decoder_init (decoder * tta, long nch, long byte_size)
   }
 }
 
-void
+static void
 get_binary (tta_buffer * tta_buf, guchar * buffer, unsigned long buffersize,
     unsigned long *value, unsigned long bits)
 {
@@ -281,7 +274,7 @@ get_binary (tta_buffer * tta_buf, guchar * buffer, unsigned long buffersize,
   tta_buf->bit_cache &= bit_mask[tta_buf->bit_count];
 }
 
-void
+static void
 get_unary (tta_buffer * tta_buf, guchar * buffer, unsigned long buffersize,
     unsigned long *value)
 {
@@ -449,5 +442,5 @@ gboolean
 gst_tta_dec_plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "ttadec",
-      GST_RANK_PRIMARY, GST_TYPE_TTA_DEC);
+      GST_RANK_NONE, GST_TYPE_TTA_DEC);
 }

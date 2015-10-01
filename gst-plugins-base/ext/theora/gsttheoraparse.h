@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -25,7 +25,7 @@
 
 
 #include <gst/gst.h>
-#include <theora/theora.h>
+#include <theora/theoradec.h>
 
 G_BEGIN_DECLS
 
@@ -62,8 +62,8 @@ struct _GstTheoraParse {
   GQueue *		event_queue;
   GQueue *		buffer_queue;
 
-  theora_info		info;
-  theora_comment	comment;
+  th_info		info;
+  th_comment            comment;
 
   gint64		prev_frame;
   gint64		prev_keyframe;

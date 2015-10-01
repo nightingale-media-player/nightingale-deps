@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -26,7 +26,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
-
+#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 
@@ -56,17 +56,16 @@ typedef struct _GstLevelClass GstLevelClass;
 struct _GstLevel {
   GstBaseTransform element;
 
-  gboolean message;             /* whether or not to post messages */
-  guint64 interval;             /* how many seconds between emits */
-
-  gint rate;                    /* caps variables */
-  gint width;
-  gint channels;
-
-  gdouble decay_peak_ttl;       /* time to live for peak in seconds */
+  /* properties */
+  gboolean post_messages;       /* whether or not to post messages */
+  guint64 interval;             /* how many nanoseconds between emits */
+  gdouble decay_peak_ttl;       /* time to live for peak in nanoseconds */
   gdouble decay_peak_falloff;   /* falloff in dB/sec */
+
+  GstAudioInfo info;
   gint num_frames;              /* frame count (1 sample per channel)
                                  * since last emit */
+  gint interval_frames;         /* after how many frame to sent a message */
   GstClockTime message_ts;      /* starttime for next message */
 
   /* per-channel arrays for intermediate values */
@@ -75,10 +74,8 @@ struct _GstLevel {
   gdouble *last_peak;           /* last normalized Peak value over interval */
   gdouble *decay_peak;          /* running decaying normalized Peak */
   gdouble *decay_peak_base;     /* value of last peak we are decaying from */
-  gdouble *MS;                  /* normalized Mean Square of buffer */
-  gdouble *RMS_dB;              /* RMS in dB to emit */
   GstClockTime *decay_peak_age; /* age of last peak */
-  
+
   void (*process)(gpointer, guint, guint, gdouble*, gdouble*);
 };
 

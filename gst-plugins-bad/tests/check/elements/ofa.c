@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/check/gstcheck.h>
@@ -35,9 +35,11 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
       GError *gerror;
       gchar *debug;
 
-      gst_message_parse_error (message, &gerror, &debug);
+      if (message->type == GST_MESSAGE_WARNING)
+        gst_message_parse_warning (message, &gerror, &debug);
+      else
+        gst_message_parse_error (message, &gerror, &debug);
       gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
-      gst_message_unref (message);
       g_error_free (gerror);
       g_free (debug);
       g_main_loop_quit (loop);
@@ -50,6 +52,13 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
 
       gst_message_parse_tag (message, &tag_list);
 
+      GST_DEBUG ("tag message: %" GST_PTR_FORMAT, tag_list);
+
+      if (!gst_tag_list_get_value_index (tag_list, "ofa-fingerprint", 0)) {
+        gst_tag_list_unref (tag_list);
+        break;
+      }
+
       fail_unless (gst_tag_list_get_string (tag_list, "ofa-fingerprint", &fpr));
 
       p = fpr;
@@ -60,7 +69,7 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
       }
 
       g_free (fpr);
-      gst_tag_list_free (tag_list);
+      gst_tag_list_unref (tag_list);
 
       found_fingerprint = TRUE;
 
@@ -81,11 +90,10 @@ GST_START_TEST (test_ofa_le_1ch)
 
   GstBus *bus;
   GMainLoop *loop;
-
   GstCaps *caps;
-
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
+  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -100,12 +108,8 @@ GST_START_TEST (test_ofa_le_1ch)
 
   capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
   fail_unless (capsfilter != NULL);
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, 44100,
-      "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_LITTLE_ENDIAN,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw", "format", G_TYPE_STRING, "S16LE",
+      "rate", G_TYPE_INT, 44100, "channels", G_TYPE_INT, 1, NULL);
   g_object_set (G_OBJECT (capsfilter), "caps", caps, NULL);
   gst_caps_unref (caps);
 
@@ -126,14 +130,14 @@ GST_START_TEST (test_ofa_le_1ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  gst_bus_add_watch (bus, bus_handler, loop);
+  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_main_loop_run (loop);
 
-  fail_unless (gst_element_query_position (audiotestsrc, &fmt, &position));
+  fail_unless (gst_element_query_position (audiotestsrc, fmt, &position));
   fail_unless (position >= 135 * GST_SECOND);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -141,6 +145,7 @@ GST_START_TEST (test_ofa_le_1ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
+  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -150,14 +155,12 @@ GST_START_TEST (test_ofa_be_1ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
-
   GstBus *bus;
   GMainLoop *loop;
-
   GstCaps *caps;
-
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
+  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -172,12 +175,8 @@ GST_START_TEST (test_ofa_be_1ch)
 
   capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
   fail_unless (capsfilter != NULL);
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, 44100,
-      "channels", G_TYPE_INT, 1,
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw", "format", G_TYPE_STRING, "S16BE",
+      "rate", G_TYPE_INT, 44100, "channels", G_TYPE_INT, 1, NULL);
   g_object_set (G_OBJECT (capsfilter), "caps", caps, NULL);
   gst_caps_unref (caps);
 
@@ -198,14 +197,14 @@ GST_START_TEST (test_ofa_be_1ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  gst_bus_add_watch (bus, bus_handler, loop);
+  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_main_loop_run (loop);
 
-  fail_unless (gst_element_query_position (audiotestsrc, &fmt, &position));
+  fail_unless (gst_element_query_position (audiotestsrc, fmt, &position));
   fail_unless (position >= 135 * GST_SECOND);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -213,6 +212,7 @@ GST_START_TEST (test_ofa_be_1ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
+  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -221,14 +221,12 @@ GST_START_TEST (test_ofa_le_2ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
-
   GstBus *bus;
   GMainLoop *loop;
-
   GstCaps *caps;
-
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
+  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -243,12 +241,8 @@ GST_START_TEST (test_ofa_le_2ch)
 
   capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
   fail_unless (capsfilter != NULL);
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, 44100,
-      "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_LITTLE_ENDIAN,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw", "format", G_TYPE_STRING, "S16LE",
+      "rate", G_TYPE_INT, 44100, "channels", G_TYPE_INT, 2, NULL);
   g_object_set (G_OBJECT (capsfilter), "caps", caps, NULL);
   gst_caps_unref (caps);
 
@@ -269,14 +263,14 @@ GST_START_TEST (test_ofa_le_2ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  gst_bus_add_watch (bus, bus_handler, loop);
+  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_main_loop_run (loop);
 
-  fail_unless (gst_element_query_position (audiotestsrc, &fmt, &position));
+  fail_unless (gst_element_query_position (audiotestsrc, fmt, &position));
   fail_unless (position >= 135 * GST_SECOND);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -284,6 +278,7 @@ GST_START_TEST (test_ofa_le_2ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
+  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -293,14 +288,12 @@ GST_START_TEST (test_ofa_be_2ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
-
   GstBus *bus;
   GMainLoop *loop;
-
   GstCaps *caps;
-
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
+  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -315,12 +308,8 @@ GST_START_TEST (test_ofa_be_2ch)
 
   capsfilter = gst_element_factory_make ("capsfilter", "capsfilter");
   fail_unless (capsfilter != NULL);
-  caps = gst_caps_new_simple ("audio/x-raw-int",
-      "rate", G_TYPE_INT, 44100,
-      "channels", G_TYPE_INT, 2,
-      "endianness", G_TYPE_INT, G_BIG_ENDIAN,
-      "width", G_TYPE_INT, 16,
-      "depth", G_TYPE_INT, 16, "signed", G_TYPE_BOOLEAN, TRUE, NULL);
+  caps = gst_caps_new_simple ("audio/x-raw", "format", G_TYPE_STRING, "S16BE",
+      "rate", G_TYPE_INT, 44100, "channels", G_TYPE_INT, 2, NULL);
   g_object_set (G_OBJECT (capsfilter), "caps", caps, NULL);
   gst_caps_unref (caps);
 
@@ -341,14 +330,14 @@ GST_START_TEST (test_ofa_be_2ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  gst_bus_add_watch (bus, bus_handler, loop);
+  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_main_loop_run (loop);
 
-  fail_unless (gst_element_query_position (audiotestsrc, &fmt, &position));
+  fail_unless (gst_element_query_position (audiotestsrc, fmt, &position));
   fail_unless (position >= 135 * GST_SECOND);
 
   gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -356,11 +345,12 @@ GST_START_TEST (test_ofa_be_2ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
+  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
 
-Suite *
+static Suite *
 ofa_suite (void)
 {
   Suite *s = suite_create ("OFA");
@@ -378,19 +368,4 @@ ofa_suite (void)
   return s;
 }
 
-int
-main (int argc, char **argv)
-{
-  int nf;
-
-  Suite *s = ofa_suite ();
-  SRunner *sr = srunner_create (s);
-
-  gst_check_init (&argc, &argv);
-
-  srunner_run_all (sr, CK_NORMAL);
-  nf = srunner_ntests_failed (sr);
-  srunner_free (sr);
-
-  return nf;
-}
+GST_CHECK_MAIN (ofa)

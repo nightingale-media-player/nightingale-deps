@@ -26,7 +26,7 @@ OVERVIEW
 * The source for the documentation is:
   - one or more .xml files, with the main one being gstreamer-(whatever).xml
   - image files
-    - in .fig
+    - in .svg
     - in .png (and maybe others)
 * We want to generate docs in HTML, PS and PDF
 * We want to use xml to to generate these
@@ -120,7 +120,7 @@ GTK-DOC NOTES
   - add all documented symbols to gstreamer-sections.txt in the proper section
     (default),<SUBSECTION Standard>,<SUBSECTION Private>
   - document at least the Short_Description in tmpl/.sgml
-  - document symbols where they are definied, so that when one changes the
+  - document symbols where they are defined, so that when one changes the
     definition, the chaces are good that docs are updated.
     - document functions, signals in the .c files
     - document structs, typedefs, enums in the .h files
@@ -202,9 +202,6 @@ STYLE GUIDE FOR GTK-DOC
     about threadsafety and related issues
 - link to signals from the description like this:
   * The <link linkend="GstBin-element-added">element-added</link> signal
-- the bottom of the description should say when the doc was last reviewed
-  (version and date)
-   * Last reviewed on 2005-10-28 (0.9.4)
 
 WEBSITE DOCUMENTATION
 =====================
@@ -387,7 +384,6 @@ Gtkdoc:
 gtk-doc
 
 Other stuff:
-transfig
 pdftops
 
 DEVHELP INTEGRATION

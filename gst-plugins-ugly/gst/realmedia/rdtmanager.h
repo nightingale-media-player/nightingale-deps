@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -81,6 +81,7 @@ struct _GstRDTManagerClass {
   void     (*on_bye_ssrc)       (GstRDTManager *rtpdec, guint session, guint32 ssrc);
   void     (*on_bye_timeout)    (GstRDTManager *rtpdec, guint session, guint32 ssrc);
   void     (*on_timeout)        (GstRDTManager *rtpdec, guint session, guint32 ssrc);
+  void     (*on_npt_stop)       (GstRDTManager *rtpdec, guint session, guint32 ssrc);
 };
 
 GType gst_rdt_manager_get_type(void);

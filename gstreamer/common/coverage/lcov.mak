@@ -1,5 +1,5 @@
 ## .PHONY so it always rebuilds it
-.PHONY: lcov-reset lcov lcov-run lcov-report lcov-upload
+.PHONY: lcov-reset lcov lcov-run lcov-report lcov-upload lcov-clean
 
 # run lcov from scratch, always
 lcov-reset:
@@ -11,10 +11,14 @@ lcov:
 	$(MAKE) lcov-reset
 
 if GST_GCOV_ENABLED
-# reset run coverage tests
-lcov-run:
+# reset lcov stats
+lcov-clean:
 	@-rm -rf lcov
 	lcov --directory . --zerocounters
+
+# reset run coverage tests
+lcov-run:
+	-$(MAKE) lcov-clean
 	-if test -d tests/check; then $(MAKE) -C tests/check inspect; fi
 	-$(MAKE) check
 
@@ -22,8 +26,9 @@ lcov-run:
 lcov-report:
 	mkdir lcov
 	lcov --compat-libtool --directory . --capture --output-file lcov/lcov.info
-	lcov -l lcov/lcov.info | grep -v "`cd $(top_srcdir) && pwd`" | cut -d: -f1 > lcov/remove
-	lcov -l lcov/lcov.info | grep "tests/check/" | cut -d: -f1 >> lcov/remove
+	lcov --list-full-path -l lcov/lcov.info | grep -v "`cd $(top_srcdir) && pwd`" | cut -d\| -f1 > lcov/remove
+	lcov --list-full-path -l lcov/lcov.info | grep "tests/check/" | cut -d\| -f1 >> lcov/remove
+	lcov --list-full-path -l lcov/lcov.info | grep "docs/plugins/" | cut -d\| -f1 >> lcov/remove
 	lcov -r lcov/lcov.info `cat lcov/remove` > lcov/lcov.cleaned.info
 	rm lcov/remove
 	mv lcov/lcov.cleaned.info lcov/lcov.info

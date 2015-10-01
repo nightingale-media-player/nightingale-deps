@@ -13,16 +13,14 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_WASAPI_SRC_H__
 #define __GST_WASAPI_SRC_H__
 
 #include "gstwasapiutil.h"
-
-#include <gst/base/gstpushsrc.h>
 
 G_BEGIN_DECLS
 
@@ -42,28 +40,20 @@ typedef struct _GstWasapiSrcClass GstWasapiSrcClass;
 
 struct _GstWasapiSrc
 {
-  GstPushSrc audio_src;
+  GstAudioSrc parent;
 
-  GstClock * clock;
-
-  guint rate;
-  GstClockTime buffer_time;
-  GstClockTime period_time;
-  GstClockTime latency;
-  guint samples_per_buffer;
+  GstAudioInfo info;
 
   IAudioClient * client;
   IAudioClock * client_clock;
   guint64 client_clock_freq;
   IAudioCaptureClient * capture_client;
-
-  GstClockTime start_time;
-  GstClockTime next_time;
+  HANDLE event_handle;
 };
 
 struct _GstWasapiSrcClass
 {
-  GstPushSrcClass parent_class;
+  GstAudioSrcClass parent_class;
 };
 
 GType gst_wasapi_src_get_type (void);

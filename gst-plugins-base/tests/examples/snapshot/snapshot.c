@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <gst/gst.h>
@@ -22,38 +22,38 @@
 
 #include <stdlib.h>
 
-#define CAPS "video/x-raw-rgb,width=160,pixel-aspect-ratio=1/1,bpp=(int)24,depth=(int)24,endianness=(int)4321,red_mask=(int)0xff0000, green_mask=(int)0x00ff00, blue_mask=(int)0x0000ff"
+#define CAPS "video/x-raw,format=RGB,width=160,pixel-aspect-ratio=1/1"
 
 int
 main (int argc, char *argv[])
 {
   GstElement *pipeline, *sink;
   gint width, height;
-  GstBuffer *buffer;
+  GstSample *sample;
   gchar *descr;
   GError *error = NULL;
   GdkPixbuf *pixbuf;
   gint64 duration, position;
-  GstFormat format;
   GstStateChangeReturn ret;
   gboolean res;
+  GstMapInfo map;
 
   gst_init (&argc, &argv);
 
   if (argc != 2) {
-    g_print ("usage: %s <uri>\n Writes snapshot.png in the current directory",
+    g_print ("usage: %s <uri>\n Writes snapshot.png in the current directory\n",
         argv[0]);
     exit (-1);
   }
 
   /* create a new pipeline */
   descr =
-      g_strdup_printf ("uridecodebin uri=%s ! ffmpegcolorspace ! videoscale ! "
+      g_strdup_printf ("uridecodebin uri=%s ! videoconvert ! videoscale ! "
       " appsink name=sink caps=\"" CAPS "\"", argv[1]);
   pipeline = gst_parse_launch (descr, &error);
 
   if (error != NULL) {
-    g_print ("could not construct pipeline: %s", error->message);
+    g_print ("could not construct pipeline: %s\n", error->message);
     g_error_free (error);
     exit (-1);
   }
@@ -85,8 +85,7 @@ main (int argc, char *argv[])
   }
 
   /* get the duration */
-  format = GST_FORMAT_TIME;
-  gst_element_query_duration (pipeline, &format, &duration);
+  gst_element_query_duration (pipeline, GST_FORMAT_TIME, &duration);
 
   if (duration != -1)
     /* we have a duration, seek to 5% */
@@ -99,16 +98,18 @@ main (int argc, char *argv[])
    * by seeking to somewhere else we have a bigger chance of getting something
    * more interesting. An optimisation would be to detect black images and then
    * seek a little more */
-  gst_element_seek_simple (pipeline, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH,
-      position);
+  gst_element_seek_simple (pipeline, GST_FORMAT_TIME,
+      GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_FLUSH, position);
 
   /* get the preroll buffer from appsink, this block untils appsink really
    * prerolls */
-  g_signal_emit_by_name (sink, "pull-preroll", &buffer, NULL);
+  g_signal_emit_by_name (sink, "pull-preroll", &sample, NULL);
+  gst_object_unref (sink);
 
   /* if we have a buffer now, convert it to a pixbuf. It's possible that we
    * don't have a buffer because we went EOS right away or had an error. */
-  if (buffer) {
+  if (sample) {
+    GstBuffer *buffer;
     GstCaps *caps;
     GstStructure *s;
 
@@ -116,7 +117,7 @@ main (int argc, char *argv[])
      * that it can only be an rgb buffer. The only thing we have not specified
      * on the caps is the height, which is dependant on the pixel-aspect-ratio
      * of the source material */
-    caps = GST_BUFFER_CAPS (buffer);
+    caps = gst_sample_get_caps (sample);
     if (!caps) {
       g_print ("could not get snapshot format\n");
       exit (-1);
@@ -133,12 +134,15 @@ main (int argc, char *argv[])
 
     /* create pixmap from buffer and save, gstreamer video buffers have a stride
      * that is rounded up to the nearest multiple of 4 */
-    pixbuf = gdk_pixbuf_new_from_data (GST_BUFFER_DATA (buffer),
+    buffer = gst_sample_get_buffer (sample);
+    gst_buffer_map (buffer, &map, GST_MAP_READ);
+    pixbuf = gdk_pixbuf_new_from_data (map.data,
         GDK_COLORSPACE_RGB, FALSE, 8, width, height,
         GST_ROUND_UP_4 (width * 3), NULL, NULL);
 
     /* save the pixbuf */
     gdk_pixbuf_save (pixbuf, "snapshot.png", "png", &error, NULL);
+    gst_buffer_unmap (buffer, &map);
   } else {
     g_print ("could not make snapshot\n");
   }

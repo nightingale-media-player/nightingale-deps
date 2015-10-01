@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 #ifndef __GST_DVD_SPU_H__
 #define __GST_DVD_SPU_H__
@@ -38,8 +38,8 @@ G_BEGIN_DECLS
 #define GST_IS_DVD_SPU_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DVD_SPU))
 
-#define DVD_SPU_LOCK(s) g_mutex_lock ((s)->spu_lock);
-#define DVD_SPU_UNLOCK(s) g_mutex_unlock ((s)->spu_lock);
+#define DVD_SPU_LOCK(s) g_mutex_lock (&(s)->spu_lock);
+#define DVD_SPU_UNLOCK(s) g_mutex_unlock (&(s)->spu_lock);
 
 typedef struct _GstDVDSpuClass GstDVDSpuClass;
 
@@ -69,10 +69,7 @@ struct SpuState {
   GstClockTime next_ts; /* Next event TS in running time */
   SpuStateFlags flags;
 
-  gint fps_n, fps_d;
-  gint16 vid_width, vid_height;
-  gint16 Y_stride, UV_stride;
-  gint16 Y_height, UV_height;
+  GstVideoInfo info;
 
   guint32 *comp_bufs[3]; /* Compositing buffers for U+V & A */
   guint16 comp_left;
@@ -99,7 +96,7 @@ struct _GstDVDSpu {
   GstPad *srcpad;
 
   /* Mutex to protect state we access from different chain funcs */
-  GMutex *spu_lock;
+  GMutex spu_lock;
 
   GstSegment video_seg;
   GstSegment subp_seg;
@@ -126,6 +123,14 @@ struct _GstDVDSpuClass {
 };
 
 GType gst_dvd_spu_get_type (void);
+
+typedef enum {
+  GST_DVD_SPU_DEBUG_RENDER_RECTANGLE = (1 << 0),
+  GST_DVD_SPU_DEBUG_HIGHLIGHT_RECTANGLE = (1 << 1)
+} GstDVDSPUDebugFlags;
+
+extern GstDVDSPUDebugFlags dvdspu_debug_flags;
+
 
 G_END_DECLS
 

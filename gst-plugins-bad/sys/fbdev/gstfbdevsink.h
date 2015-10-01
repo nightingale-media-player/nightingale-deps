@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -40,18 +40,13 @@ G_BEGIN_DECLS
 #define GST_IS_FBDEVSINK_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FBDEVSINK))
 
-typedef enum {
-  GST_FBDEVSINK_OPEN      = (GST_ELEMENT_FLAG_LAST << 0),
-
-  GST_FBDEVSINK_FLAG_LAST = (GST_ELEMENT_FLAG_LAST << 2),
-} GstFBDEVSinkFlags;
-
 typedef struct _GstFBDEVSink GstFBDEVSink;
 typedef struct _GstFBDEVSinkClass GstFBDEVSinkClass;
 
 struct _GstFBDEVSink {
   GstVideoSink videosink;
 
+  /*< private >*/
   struct fb_fix_screeninfo fixinfo;
   struct fb_var_screeninfo varinfo;
 
@@ -67,7 +62,7 @@ struct _GstFBDEVSink {
 };
 
 struct _GstFBDEVSinkClass {
-  GstBaseSinkClass parent_class;
+  GstVideoSinkClass videosink_class;
 
 };
 

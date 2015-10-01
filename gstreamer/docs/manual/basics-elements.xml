@@ -3,7 +3,7 @@
   <para> 
     The most important object in &GStreamer; for the application programmer
     is the <ulink type="http"
-    url="../../gstreamer/html/GstElement.html"><classname>GstElement</classname></ulink>
+    url="&URLAPI;GstElement.html"><classname>GstElement</classname></ulink>
     object. An element is the basic building block for a media pipeline. All
     the different high-level components you will use are derived from
     <classname>GstElement</classname>. Every decoder, encoder, demuxer, video
@@ -270,25 +270,26 @@ main (int   argc,
   return 0;
 }
     ]]><!-- example-end elementget.c --></programlisting>
-    <para> 
+    <para>
       Most plugins provide additional properties to provide more information
-      about their configuration or to configure the element. 
+      about their configuration or to configure the element.
       <command>gst-inspect</command> is a useful tool to query the properties
       of a particular element, it will also use property introspection to give
       a short explanation about the function of the property and about the
-      parameter types and ranges it supports. See the appendix for details
-      about <command>gst-inspect</command>.
-    </para> 
-    <para> 
+      parameter types and ranges it supports. See
+      <xref linkend="section-applications-inspect"/>
+      in the appendix for details about <command>gst-inspect</command>.
+    </para>
+    <para>
       For more information about <classname>GObject</classname>
       properties we recommend you read the <ulink
-      url="http://developer.gnome.org/doc/API/2.0/gobject/index.html"
+      url="http://developer.gnome.org/gobject/stable/rn01.html"
       type="http">GObject manual</ulink> and an introduction to <ulink
-      url="http://developer.gnome.org/doc/API/2.0/gobject/pr01.html" type="http">
+      url="http://developer.gnome.org/gobject/stable/pt01.html" type="http">
 	The Glib Object system</ulink>.
     </para>
     <para>
-      A <ulink type="http" url="&URLAPI;gstreamer/html/GstElementFactory.html">
+      A <ulink type="http" url="&URLAPI;GstElement.html">
       <classname>GstElement</classname></ulink> also provides various 
       <classname>GObject</classname> signals that can be used as a flexible
       callback mechanism. Here, too, you can use <command>gst-inspect</command>
@@ -302,17 +303,14 @@ main (int   argc,
     <title>More about element factories</title>
     <para>
       In the previous section, we briefly introduced the <ulink type="http"
-      url="&URLAPI;GstElement.html"><classname>GstElementFactory</classname></ulink>
+      url="&URLAPI;GstElementFactory.html"><classname>GstElementFactory</classname></ulink>
       object already as a way to create instances of an element. Element
       factories, however, are much more than just that. Element factories
       are the basic types retrieved from the &GStreamer; registry, they
       describe all plugins and elements that &GStreamer; can create. This
       means that element factories are useful for automated element
       instancing, such as what autopluggers do, and for creating lists
-      of available elements, such as what pipeline editing applications
-      (e.g. <ulink type="http"
-      url="http://gstreamer.freedesktop.org/modules/gst-editor.html">&GStreamer;
-      Editor</ulink>) do.
+      of available elements.
     </para>
     
     <sect2 id="section-elements-factories-details">
@@ -357,8 +355,8 @@ main (int   argc,
   g_print ("The '%s' element is a member of the category %s.\n"
            "Description: %s\n",
            gst_plugin_feature_get_name (GST_PLUGIN_FEATURE (factory)),
-           gst_element_factory_get_klass (factory),
-           gst_element_factory_get_description (factory));
+           gst_element_factory_get_metadata (factory, GST_ELEMENT_METADATA_KLASS),
+           gst_element_factory_get_metadata (factory, GST_ELEMENT_METADATA_DESCRIPTION));
 
   return 0;
 }
@@ -472,7 +470,8 @@ main (int   argc,
       a bin will disconnect any already existing links. Also, you cannot
       directly link elements that are not in the same bin or pipeline; if
       you want to link elements or pads at different hierarchy levels, you
-      will need to use ghost pads (more about ghost pads later).
+      will need to use ghost pads (more about ghost pads later,
+      see <xref linkend="section-pads-ghost"/>).
     </para>
   </sect1>
 
@@ -488,7 +487,9 @@ main (int   argc,
       <listitem>
         <para>
           <classname>GST_STATE_NULL</classname>: this is the default state.
-          This state will deallocate all resources held by the element.
+          No resources are allocated in this state, so, transitioning to it
+          will free all resources. The element must be in this state when
+          its refcount reaches 0 and it is freed.
         </para>
       </listitem>
       <listitem>
@@ -522,7 +523,7 @@ main (int   argc,
           video sinks can already play the first frame (since this does
           not affect the clock yet). Autopluggers could use this same
           state transition to already plug together a pipeline. Most other
-          elements, such as codecs or filters, do not need to explicitely
+          elements, such as codecs or filters, do not need to explicitly
           do anything in this state, however.
         </para>
       </listitem>
@@ -550,6 +551,17 @@ main (int   argc,
       thread, by using a <ulink type="http"
       url="&URLAPI;GstBus.html"><classname>GstBus</classname></ulink>. See
       <xref linkend="chapter-bus"/> for details.
+    </para>
+    <para>
+      When you set a bin or pipeline to a certain target state, it will usually
+      propagate the state change to all elements within the bin or pipeline
+      automatically, so it's usually only necessary to set the state of the
+      top-level pipeline to start up the pipeline or shut it down. However,
+      when adding elements dynamically to an already-running pipeline, e.g.
+      from within a "pad-added" signal callback, you
+      need to set it to the desired target state yourself using
+      <function>gst_element_set_state ()</function> or
+      <function>gst_element_sync_state_with_parent ()</function>.
     </para>
   </sect1>
 </chapter>

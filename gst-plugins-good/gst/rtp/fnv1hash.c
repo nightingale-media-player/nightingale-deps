@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -22,6 +22,8 @@
 #endif
 
 #include <glib.h>
+
+#include "fnv1hash.h"
 
 /* This file implements FNV-1 hashing used in the Ogg payload encoders
  * to generate the 24-bit ident value based on the header pages.

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -25,13 +25,15 @@
 
 #include "gstalsasink.h"
 #include "gstalsasrc.h"
-#include "gstalsamixerelement.h"
 
 #include <gst/gst-i18n-plugin.h>
 
 GST_DEBUG_CATEGORY (alsa_debug);
 
 /* ALSA debugging wrapper */
+/* *INDENT-OFF* */
+G_GNUC_PRINTF (5, 6)
+/* *INDENT-ON* */
 static void
 gst_alsa_error_wrapper (const char *file, int line, const char *function,
     int err, const char *fmt, ...)
@@ -58,9 +60,6 @@ plugin_init (GstPlugin * plugin)
 {
   int err;
 
-  if (!gst_element_register (plugin, "alsamixer", GST_RANK_NONE,
-          GST_TYPE_ALSA_MIXER_ELEMENT))
-    return FALSE;
   if (!gst_element_register (plugin, "alsasrc", GST_RANK_PRIMARY,
           GST_TYPE_ALSA_SRC))
     return FALSE;
@@ -70,7 +69,7 @@ plugin_init (GstPlugin * plugin)
 
   GST_DEBUG_CATEGORY_INIT (alsa_debug, "alsa", 0, "alsa plugins");
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
   GST_DEBUG ("binding text domain %s to locale dir %s", GETTEXT_PACKAGE,
       LOCALEDIR);
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -86,6 +85,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "alsa",
+    alsa,
     "ALSA plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

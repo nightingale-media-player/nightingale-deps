@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -65,6 +65,7 @@ struct _GstAsfPad
   guint32 bitrate;
 
   GstClockTime play_duration;
+  GstClockTime first_ts;
 
   GstBuffer *codec_data;
 
@@ -119,6 +120,7 @@ struct _GstAsfMux
 
   /* payloads still to be sent in a packet */
   guint32 payload_data_size;
+  guint32 payload_parsing_info_size;
   GSList *payloads;
 
   Guid file_id;
@@ -128,7 +130,7 @@ struct _GstAsfMux
   guint64 prop_preroll;
   gboolean prop_merge_stream_tags;
   guint64 prop_padding;
-  gboolean prop_is_live;
+  gboolean prop_streamable;
 
   /* same as properties, but those are stored here to be
    * used without modification while muxing a single file */
@@ -136,11 +138,12 @@ struct _GstAsfMux
   guint64 preroll;              /* milisecs */
   gboolean merge_stream_tags;
 
+  GstClockTime first_ts;
+
   /* pads */
   GstPad *srcpad;
 
   GstCollectPads *collect;
-  GstPadEventFunction collect_event;
 };
 
 struct _GstAsfMuxClass

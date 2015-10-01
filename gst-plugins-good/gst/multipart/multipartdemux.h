@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_MULTIPART_DEMUX__
@@ -51,7 +51,11 @@ typedef struct
 
   gchar *mime;
 
+  GstClockTime  last_ts;        /* last timestamp to make sure we don't send
+                                 * two buffers with the same timestamp */
   GstFlowReturn last_ret;
+
+  gboolean      discont;
 }
 GstMultipartPad;
 
@@ -68,7 +72,7 @@ struct _GstMultipartDemux
   GstPad *sinkpad;
 
   GSList *srcpads;
-  gint numpads;
+  guint numpads;
 
   GstAdapter *adapter;
 
@@ -79,11 +83,14 @@ struct _GstMultipartDemux
   gchar *mime_type;
   gint content_length;
 
-  /* deprecated, unused */
-  gboolean autoscan;
-
   /* Index inside the current data when manually looking for the boundary */
   gint scanpos;
+
+  gboolean singleStream;
+
+  /* to handle stream-start */
+  gboolean have_group_id;
+  guint group_id;
 };
 
 struct _GstMultipartDemuxClass
@@ -92,6 +99,10 @@ struct _GstMultipartDemuxClass
 
   GHashTable *gstnames;
 };
+
+GType gst_multipart_demux_get_type (void);
+
+gboolean gst_multipart_demux_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
 

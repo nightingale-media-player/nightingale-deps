@@ -36,10 +36,10 @@ win32-check-crlf:
 # (don't care about other unixes for now, it's enough if it works on one of
 # the linux build bots; we assume .so )
 check-exports:
-	fail=0 ; \
+	@fail=0 ; \
 	for l in $(win32defs); do \
 	  libbase=`basename "$$l" ".def"`; \
-	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_MAJORMINOR@.so" | grep -v /_build/ | head -n1`; \
+	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_API_VERSION@.so" | grep -v /_build/ | head -n1`; \
 	  libdef="$(top_srcdir)/win32/common/$$libbase.def"; \
 	  if test "x$$libso" != "x"; then \
 	    echo Checking symbols in $$libso; \
@@ -51,18 +51,24 @@ check-exports:
 	if test $$fail != 0; then \
 	  echo '-----------------------------------------------------------'; \
 	  echo 'Run this to update the .def files:'; \
-	  echo 'make check-exports 2>&1 | patch -p1'; \
+	  echo 'make update-exports'; \
 	  echo '-----------------------------------------------------------'; \
 	fi; \
 	exit $$fail
 
-# complain about nonportable 64-bit printf format strings (%lld, %llu etc.)
-check-nonportable-int64-print-format:
-	fail=0 ; \
-	loc=`find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]'`; \
+update-exports:
+	make check-exports 2>&1 | patch -p1
+	git add win32/common/libgst*.def
+	git diff --cached -- win32/common/
+	echo '^^^--- updated and staged changes above'
+
+# complain about nonportable printf format strings (%lld, %llu, %zu etc.)
+check-nonportable-print-format:
+	@fail=0 ; \
+	loc=`find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'`; \
 	if test "x$$loc" != "x"; then \
 	  echo "Please fix the following print format strings:" ; \
-	  find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]'; \
+	  find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'; \
 	  fail=1; \
 	fi; \
 	exit $$fail

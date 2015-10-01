@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /* This small sample application creates a lowpass IIR filter
@@ -22,6 +22,10 @@
  * See http://www.dspguide.com/ch19/2.htm for a description
  * of the IIR filter that is used.
  */
+
+/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
+ * with newer GLib versions (>= 2.31.0) */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
 
 #include <string.h>
 #include <math.h>
@@ -63,7 +67,7 @@ on_rate_changed (GstElement * element, gint rate, gpointer user_data)
   gdouble x;
 
   if (rate / 2.0 > CUTOFF)
-    x = exp (-2.0 * M_PI * (CUTOFF / rate));
+    x = exp (-2.0 * G_PI * (CUTOFF / rate));
   else
     x = 0.0;
 

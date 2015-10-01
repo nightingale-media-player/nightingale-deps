@@ -1,5 +1,6 @@
 /* GStreamer DirectFB plugin
  * Copyright (C) 2005 Julien MOUTTE <julien@moutte.net>
+ * Copyright (C) 2013 Kazunori Kobayashi <kkobayas@igel.co.jp>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
  
 #ifndef __GST_DFBVIDEOSINK_H__
@@ -23,6 +24,14 @@
 #include <gst/video/gstvideosink.h>
 
 #include <directfb.h>
+#include <directfb_version.h>
+
+#define GST_DFBVIDEOSINK_VER(a,b,c) (((a) << 16) | ((b) << 8) | (c))
+#define DIRECTFB_VER GST_DFBVIDEOSINK_VER(DIRECTFB_MAJOR_VERSION,DIRECTFB_MINOR_VERSION,DIRECTFB_MICRO_VERSION)
+
+#define LAYER_MODE_INVALID          -1
+#define LAYER_MODE_EXCLUSIVE        DLSCL_EXCLUSIVE
+#define LAYER_MODE_ADMINISTRATIVE   DLSCL_ADMINISTRATIVE
 
 G_BEGIN_DECLS
 
@@ -35,26 +44,47 @@ G_BEGIN_DECLS
 typedef struct _GstDfbVideoSink GstDfbVideoSink;
 typedef struct _GstDfbVideoSinkClass GstDfbVideoSinkClass;
 
-#define GST_TYPE_DFBSURFACE (gst_dfbsurface_get_type())
+typedef struct _GstMetaDfbSurface GstMetaDfbSurface;
 
-#define GST_IS_DFBSURFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_DFBSURFACE))
-#define GST_DFBSURFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_DFBSURFACE, GstDfbSurface))
+GType gst_meta_dfbsurface_api_get_type (void);
+const GstMetaInfo * gst_meta_dfbsurface_get_info (void);
 
-typedef struct _GstDfbSurface GstDfbSurface;
-  
-struct _GstDfbSurface {
-  GstBuffer buffer; /* We extend GstBuffer */
-  
+#define GST_TYPE_DFB_BUFFER_POOL     (gst_dfb_buffer_pool_get_type())
+#define GST_META_DFBSURFACE_GET(buf) ((GstMetaDfbSurface *)gst_buffer_get_meta(buf,gst_meta_dfbsurface_api_get_type()))
+#define GST_META_DFBSURFACE_ADD(buf) ((GstMetaDfbSurface *)gst_buffer_add_meta(buf,gst_meta_dfbsurface_get_info(),NULL))
+#define GST_DFB_BUFFER_POOL_CAST(obj) ((GstDfbBufferPool*)(obj))
+
+struct _GstMetaDfbSurface {
+  GstMeta meta;
+
   IDirectFBSurface *surface;
-  
+
   gint width;
   gint height;
-  
+
   gboolean locked;
-  
+
   DFBSurfacePixelFormat pixel_format;
-  
+
   GstDfbVideoSink *dfbvideosink;
+};
+
+typedef struct _GstDfbBufferPool GstDfbBufferPool;
+
+struct _GstDfbBufferPool
+{
+  GstBufferPool bufferpool;
+
+  GstDfbVideoSink *dfbvideosink;
+
+  GstCaps *caps;
+};
+
+typedef struct _GstDfbBufferPoolClass GstDfbBufferPoolClass;
+
+struct _GstDfbBufferPoolClass
+{
+  GstBufferPoolClass parent_class;
 };
 
 typedef struct _GstDfbVMode GstDfbVMode;
@@ -72,11 +102,10 @@ struct _GstDfbVMode {
  */
 struct _GstDfbVideoSink {
   GstVideoSink videosink;
-  
-  /* < private > */
-  GMutex *pool_lock;
-  GSList *buffer_pool;
-  
+
+  /* for buffer pool */
+  GstBufferPool *pool;
+
   /* Framerate numerator and denominator */
   gint fps_n;
   gint fps_d;
@@ -116,6 +145,8 @@ struct _GstDfbVideoSink {
   
   /* object-set pixel aspect ratio */
   GValue *par;
+
+  gint layer_mode;
 };
 
 struct _GstDfbVideoSinkClass {
@@ -123,7 +154,7 @@ struct _GstDfbVideoSinkClass {
 };
 
 GType gst_dfbvideosink_get_type (void);
-GType gst_dfbsurface_get_type (void);
+GType gst_dfb_buffer_pool_get_type (void);
 
 G_END_DECLS
 

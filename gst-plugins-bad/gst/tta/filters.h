@@ -22,7 +22,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * aint with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Please see the file COPYING in this directory for full copyright
  * information.
@@ -32,7 +32,7 @@
 #define FILTERS_H
 
 ///////// Filter Settings //////////
-static long flt_set[3] = {10, 9, 10};
+static const long flt_set[3] = {10, 9, 10};
 
 static void
 memshl (register long *pA, register long *pB) {

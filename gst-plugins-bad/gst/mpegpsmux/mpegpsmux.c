@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -54,11 +54,13 @@ GST_DEBUG_CATEGORY (mpegpsmux_debug);
 
 enum
 {
-  ARG_0
+  PROP_AGGREGATE_GOPS = 1
 };
 
+#define DEFAULT_AGGREGATE_GOPS FALSE
+
 static GstStaticPadTemplate mpegpsmux_sink_factory =
-    GST_STATIC_PAD_TEMPLATE ("sink_%d",
+    GST_STATIC_PAD_TEMPLATE ("sink_%u",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("video/mpeg, "
@@ -67,7 +69,9 @@ static GstStaticPadTemplate mpegpsmux_sink_factory =
         "video/x-dirac;"
         "video/x-h264;"
         "audio/mpeg, "
-        "mpegversion = (int) { 1, 2, 4 };"
+        "mpegversion = (int) { 1, 2 };"
+        "audio/mpeg, "
+        "mpegversion = (int) 4, stream-format = (string) { raw, adts }; "
         "audio/x-lpcm, "
         "width = (int) { 16, 20, 24 }, "
         "rate = (int) { 48000, 96000 }, "
@@ -89,39 +93,20 @@ static void gst_mpegpsmux_set_property (GObject * object, guint prop_id,
 static void gst_mpegpsmux_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static void mpegpsmux_dispose (GObject * object);
+static void mpegpsmux_finalize (GObject * object);
 static gboolean new_packet_cb (guint8 * data, guint len, void *user_data);
-static void release_buffer_cb (guint8 * data, void *user_data);
 
 static gboolean mpegpsdemux_prepare_srcpad (MpegPsMux * mux);
 static GstFlowReturn mpegpsmux_collected (GstCollectPads * pads,
     MpegPsMux * mux);
 static GstPad *mpegpsmux_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name);
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps);
 static void mpegpsmux_release_pad (GstElement * element, GstPad * pad);
 static GstStateChangeReturn mpegpsmux_change_state (GstElement * element,
     GstStateChange transition);
 
-GST_BOILERPLATE (MpegPsMux, mpegpsmux, GstElement, GST_TYPE_ELEMENT);
-
-static void
-mpegpsmux_base_init (gpointer g_class)
-{
-  const GstElementDetails mpegpsmux_details = {
-    "MPEG Program Stream Muxer",
-    "Codec/Muxer",
-    "Multiplexes media streams into an MPEG Program Stream",
-    "Lin YANG <oxcsnicho@gmail.com>"
-  };
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&mpegpsmux_sink_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&mpegpsmux_src_factory));
-
-  gst_element_class_set_details (element_class, &mpegpsmux_details);
-}
+#define parent_class mpegpsmux_parent_class
+G_DEFINE_TYPE (MpegPsMux, mpegpsmux, GST_TYPE_ELEMENT);
 
 static void
 mpegpsmux_class_init (MpegPsMuxClass * klass)
@@ -129,22 +114,35 @@ mpegpsmux_class_init (MpegPsMuxClass * klass)
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_mpegpsmux_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_mpegpsmux_get_property);
-  gobject_class->dispose = mpegpsmux_dispose;
+  gobject_class->set_property = gst_mpegpsmux_set_property;
+  gobject_class->get_property = gst_mpegpsmux_get_property;
+  gobject_class->finalize = mpegpsmux_finalize;
 
   gstelement_class->request_new_pad = mpegpsmux_request_new_pad;
   gstelement_class->release_pad = mpegpsmux_release_pad;
   gstelement_class->change_state = mpegpsmux_change_state;
 
+  g_object_class_install_property (gobject_class, PROP_AGGREGATE_GOPS,
+      g_param_spec_boolean ("aggregate-gops", "Aggregate GOPs",
+          "Whether to aggregate GOPs and push them out as buffer lists",
+          DEFAULT_AGGREGATE_GOPS, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&mpegpsmux_sink_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&mpegpsmux_src_factory));
+
+  gst_element_class_set_static_metadata (gstelement_class,
+      "MPEG Program Stream Muxer", "Codec/Muxer",
+      "Multiplexes media streams into an MPEG Program Stream",
+      "Lin YANG <oxcsnicho@gmail.com>");
 }
 
 static void
-mpegpsmux_init (MpegPsMux * mux, MpegPsMuxClass * g_class)
+mpegpsmux_init (MpegPsMux * mux)
 {
-  mux->srcpad =
-      gst_pad_new_from_template (gst_static_pad_template_get
-      (&mpegpsmux_src_factory), "src");
+  mux->srcpad = gst_pad_new_from_static_template (&mpegpsmux_src_factory,
+      "src");
   gst_pad_use_fixed_caps (mux->srcpad);
   gst_element_add_pad (GST_ELEMENT (mux), mux->srcpad);
 
@@ -161,7 +159,7 @@ mpegpsmux_init (MpegPsMux * mux, MpegPsMuxClass * g_class)
 }
 
 static void
-mpegpsmux_dispose (GObject * object)
+mpegpsmux_finalize (GObject * object)
 {
   MpegPsMux *mux = GST_MPEG_PSMUX (object);
 
@@ -174,16 +172,24 @@ mpegpsmux_dispose (GObject * object)
     mux->psmux = NULL;
   }
 
-  GST_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+  if (mux->gop_list != NULL) {
+    gst_buffer_list_unref (mux->gop_list);
+    mux->gop_list = NULL;
+  }
+
+  G_OBJECT_CLASS (mpegpsmux_parent_class)->finalize (object);
 }
 
 static void
 gst_mpegpsmux_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-/*  MpegPsMux *mux = GST_MPEG_PSMUX (object); */
+  MpegPsMux *mux = GST_MPEG_PSMUX (object);
 
   switch (prop_id) {
+    case PROP_AGGREGATE_GOPS:
+      mux->aggregate_gops = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -194,22 +200,16 @@ static void
 gst_mpegpsmux_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
 {
-/*  MpegPsMux *mux = GST_MPEG_PSMUX (object); */
+  MpegPsMux *mux = GST_MPEG_PSMUX (object);
 
   switch (prop_id) {
+    case PROP_AGGREGATE_GOPS:
+      g_value_set_boolean (value, mux->aggregate_gops);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
-}
-
-static void
-release_buffer_cb (guint8 * data, void *user_data)
-{
-  /* release a given buffer. callback func */
-
-  GstBuffer *buf = (GstBuffer *) user_data;
-  gst_buffer_unref (buf);
 }
 
 static GstFlowReturn
@@ -218,9 +218,11 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
   /* Create a steam. Fill in codec specific information */
 
   GstFlowReturn ret = GST_FLOW_ERROR;
-  GstCaps *caps = gst_pad_get_negotiated_caps (pad);
+  GstCaps *caps;
   GstStructure *s;
+  gboolean is_video = FALSE;
 
+  caps = gst_pad_get_current_caps (pad);
   if (caps == NULL) {
     GST_DEBUG_OBJECT (pad, "Sink pad caps were not set before pushing");
     return GST_FLOW_NOT_NEGOTIATED;
@@ -232,6 +234,7 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
   if (gst_structure_has_name (s, "video/x-dirac")) {
     GST_DEBUG_OBJECT (pad, "Creating Dirac stream");
     ps_data->stream = psmux_create_stream (mux->psmux, PSMUX_ST_VIDEO_DIRAC);
+    is_video = TRUE;
   } else if (gst_structure_has_name (s, "audio/x-ac3")) {
     GST_DEBUG_OBJECT (pad, "Creating AC3 stream");
     ps_data->stream = psmux_create_stream (mux->psmux, PSMUX_ST_PS_AUDIO_AC3);
@@ -248,13 +251,14 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
     value = gst_structure_get_value (s, "codec_data");
     if (value) {
       ps_data->codec_data = gst_buffer_ref (gst_value_get_buffer (value));
-      GST_DEBUG_OBJECT (pad, "we have additional codec data (%d bytes)",
-          GST_BUFFER_SIZE (ps_data->codec_data));
+      GST_DEBUG_OBJECT (pad, "%" G_GSIZE_FORMAT " bytes of codec data",
+          gst_buffer_get_size (ps_data->codec_data));
       ps_data->prepare_func = mpegpsmux_prepare_h264;
     } else {
       ps_data->codec_data = NULL;
     }
     ps_data->stream = psmux_create_stream (mux->psmux, PSMUX_ST_VIDEO_H264);
+    is_video = TRUE;
   } else if (gst_structure_has_name (s, "audio/mpeg")) {
     gint mpegversion;
     if (!gst_structure_get_int (s, "mpegversion", &mpegversion)) {
@@ -283,8 +287,8 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
         value = gst_structure_get_value (s, "codec_data");
         if (value) {
           ps_data->codec_data = gst_buffer_ref (gst_value_get_buffer (value));
-          GST_DEBUG_OBJECT (pad, "we have additional codec data (%d bytes)",
-              GST_BUFFER_SIZE (ps_data->codec_data));
+          GST_DEBUG_OBJECT (pad, "%" G_GSIZE_FORMAT " bytes of codec data",
+              gst_buffer_get_size (ps_data->codec_data));
           ps_data->prepare_func = mpegpsmux_prepare_aac;
         } else {
           ps_data->codec_data = NULL;
@@ -315,6 +319,7 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
       GST_DEBUG_OBJECT (pad, "Creating MPEG Video, version 4 stream");
       ps_data->stream = psmux_create_stream (mux->psmux, PSMUX_ST_VIDEO_MPEG4);
     }
+    is_video = TRUE;
   }
 
   if (ps_data->stream != NULL) {
@@ -327,9 +332,12 @@ mpegpsmux_create_stream (MpegPsMux * mux, MpegPsPadData * ps_data, GstPad * pad)
     gst_structure_get_int (s, "channels", &ps_data->stream->audio_channels);
     gst_structure_get_int (s, "bitrate", &ps_data->stream->audio_bitrate);
 
-    psmux_stream_set_buffer_release_func (ps_data->stream, release_buffer_cb);
-
     ret = GST_FLOW_OK;
+
+    if (is_video && mux->video_stream_id == 0) {
+      mux->video_stream_id = ps_data->stream_id;
+      GST_INFO_OBJECT (mux, "video pad stream_id 0x%02x", mux->video_stream_id);
+    }
   }
 
 beach:
@@ -365,6 +373,69 @@ no_stream:
   return ret;
 }
 
+static GstBuffer *
+mpegpsmux_queue_buffer_for_stream (MpegPsMux * mux, MpegPsPadData * ps_data)
+{
+  GstCollectData *c_data = (GstCollectData *) ps_data;
+  GstBuffer *buf;
+
+  g_assert (ps_data->queued.buf == NULL);
+
+  buf = gst_collect_pads_peek (mux->collect, c_data);
+  if (buf == NULL)
+    return NULL;
+
+  ps_data->queued.buf = buf;
+
+  /* do any raw -> byte-stream format conversions (e.g. for H.264, AAC) */
+  if (ps_data->prepare_func) {
+    buf = ps_data->prepare_func (buf, ps_data, mux);
+    if (buf) {                  /* Take the prepared buffer instead */
+      gst_buffer_unref (ps_data->queued.buf);
+      ps_data->queued.buf = buf;
+    } else {                    /* If data preparation returned NULL, use unprepared one */
+      buf = ps_data->queued.buf;
+    }
+  }
+
+  ps_data->queued.pts = GST_BUFFER_PTS (buf);
+  if (GST_CLOCK_TIME_IS_VALID (ps_data->queued.pts)) {
+    ps_data->queued.pts = gst_segment_to_running_time (&c_data->segment,
+        GST_FORMAT_TIME, ps_data->queued.pts);
+  }
+
+  ps_data->queued.dts = GST_BUFFER_DTS (buf);
+  if (GST_CLOCK_TIME_IS_VALID (ps_data->queued.dts)) {
+    ps_data->queued.dts = gst_segment_to_running_time (&c_data->segment,
+        GST_FORMAT_TIME, ps_data->queued.dts);
+  }
+
+  if (GST_BUFFER_PTS_IS_VALID (buf) && GST_BUFFER_DTS_IS_VALID (buf)) {
+    ps_data->queued.ts = MIN (ps_data->queued.dts, ps_data->queued.pts);
+  } else if (GST_BUFFER_PTS_IS_VALID (buf) && !GST_BUFFER_DTS_IS_VALID (buf)) {
+    ps_data->queued.ts = ps_data->queued.pts;
+  } else if (GST_BUFFER_DTS_IS_VALID (buf) && !GST_BUFFER_PTS_IS_VALID (buf)) {
+    GST_WARNING_OBJECT (c_data->pad, "got DTS without PTS");
+    ps_data->queued.ts = ps_data->queued.dts;
+  } else {
+    ps_data->queued.ts = GST_CLOCK_TIME_NONE;
+  }
+
+  if (ps_data->queued.ts != GST_CLOCK_TIME_NONE)
+    ps_data->last_ts = ps_data->queued.ts;
+
+  GST_DEBUG_OBJECT (mux, "Queued buffer with ts %" GST_TIME_FORMAT ": "
+      "uncorrected pts %" GST_TIME_FORMAT " dts %" GST_TIME_FORMAT ", "
+      "buffer pts %" GST_TIME_FORMAT " dts %" GST_TIME_FORMAT " for PID 0x%04x",
+      GST_TIME_ARGS (ps_data->queued.ts),
+      GST_TIME_ARGS (GST_BUFFER_PTS (buf)),
+      GST_TIME_ARGS (GST_BUFFER_DTS (buf)),
+      GST_TIME_ARGS (ps_data->queued.pts),
+      GST_TIME_ARGS (ps_data->queued.dts), ps_data->stream_id);
+
+  return buf;
+}
+
 static MpegPsPadData *
 mpegpsmux_choose_best_stream (MpegPsMux * mux)
 {
@@ -379,50 +450,12 @@ mpegpsmux_choose_best_stream (MpegPsMux * mux)
     MpegPsPadData *ps_data = (MpegPsPadData *) walk->data;
 
     if (ps_data->eos == FALSE) {
-      if (ps_data->queued_buf == NULL) {
+      if (ps_data->queued.buf == NULL) {
         GstBuffer *buf;
 
-        ps_data->queued_buf = buf =
-            gst_collect_pads_peek (mux->collect, c_data);
-
-        if (buf != NULL) {
-          if (ps_data->prepare_func) {
-            buf = ps_data->prepare_func (buf, ps_data, mux);
-            if (buf) {          /* Take the prepared buffer instead */
-              gst_buffer_unref (ps_data->queued_buf);
-              ps_data->queued_buf = buf;
-            } else {            /* If data preparation returned NULL, use unprepared one */
-              buf = ps_data->queued_buf;
-            }
-          }
-          if (GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE) {
-            /* Ignore timestamps that go backward for now. FIXME: Handle all
-             * incoming PTS */
-            if (ps_data->last_ts == GST_CLOCK_TIME_NONE ||
-                ps_data->last_ts < GST_BUFFER_TIMESTAMP (buf)) {
-              ps_data->cur_ts = ps_data->last_ts =
-                  gst_segment_to_running_time (&c_data->segment,
-                  GST_FORMAT_TIME, GST_BUFFER_TIMESTAMP (buf));
-            } else {
-              GST_DEBUG_OBJECT (mux, "Ignoring PTS that has gone backward");
-            }
-          } else
-            ps_data->cur_ts = GST_CLOCK_TIME_NONE;
-
-          GST_DEBUG_OBJECT (mux, "Pulled buffer with ts %" GST_TIME_FORMAT
-              " (uncorrected ts %" GST_TIME_FORMAT " %" G_GUINT64_FORMAT
-              ") for PID 0x%04x",
-              GST_TIME_ARGS (ps_data->cur_ts),
-              GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)),
-              GST_BUFFER_TIMESTAMP (buf), ps_data->stream_id);
-
-          /* Choose a stream we've never seen a timestamp for to ensure
-           * we push enough buffers from it to reach a timestamp */
-          if (ps_data->last_ts == GST_CLOCK_TIME_NONE) {
-            best = ps_data;
-            c_best = c_data;
-          }
-        } else {
+        buf = mpegpsmux_queue_buffer_for_stream (mux, ps_data);
+        if (buf == NULL) {
+          GST_DEBUG_OBJECT (mux, "we have EOS");
           ps_data->eos = TRUE;
           continue;
         }
@@ -431,9 +464,9 @@ mpegpsmux_choose_best_stream (MpegPsMux * mux)
       /* If we don't yet have a best pad, take this one, otherwise take
        * whichever has the oldest timestamp */
       if (best != NULL) {
-        if (ps_data->last_ts != GST_CLOCK_TIME_NONE &&
-            best->last_ts != GST_CLOCK_TIME_NONE &&
-            ps_data->last_ts < best->last_ts) {
+        if (ps_data->last_ts == GST_CLOCK_TIME_NONE ||
+            (best->last_ts != GST_CLOCK_TIME_NONE &&
+                ps_data->last_ts < best->last_ts)) {
           best = ps_data;
           c_best = c_data;
         }
@@ -451,12 +484,27 @@ mpegpsmux_choose_best_stream (MpegPsMux * mux)
 }
 
 static GstFlowReturn
+mpegpsmux_push_gop_list (MpegPsMux * mux)
+{
+  GstFlowReturn flow;
+
+  g_assert (mux->gop_list != NULL);
+
+  GST_DEBUG_OBJECT (mux, "Sending pending GOP of %u buffers",
+      gst_buffer_list_length (mux->gop_list));
+  flow = gst_pad_push_list (mux->srcpad, mux->gop_list);
+  mux->gop_list = NULL;
+  return flow;
+}
+
+static GstFlowReturn
 mpegpsmux_collected (GstCollectPads * pads, MpegPsMux * mux)
 {
   /* main muxing function */
 
   GstFlowReturn ret = GST_FLOW_OK;
   MpegPsPadData *best = NULL;
+  gboolean keyunit;
 
   GST_DEBUG_OBJECT (mux, "Pads collected");
 
@@ -482,27 +530,35 @@ mpegpsmux_collected (GstCollectPads * pads, MpegPsMux * mux)
   }
 
   if (best != NULL) {
-    /* @*buf : the buffer to be processed */
-    GstBuffer *buf = best->queued_buf;
-    gint64 pts = -1;
+    GstBuffer *buf = best->queued.buf;
+    gint64 pts, dts;
 
-    g_return_val_if_fail (buf != NULL, GST_FLOW_ERROR);
+    g_assert (buf != NULL);
 
-    GST_DEBUG_OBJECT (mux,
-        "Chose stream from pad %" GST_PTR_FORMAT " for output (PID: 0x%04x)",
-        best->collect.pad, best->stream_id);
+    GST_LOG_OBJECT (mux,
+        "Chose stream from pad %" GST_PTR_FORMAT " for output (PID: 0x%04x): "
+        "adjusted pts: %" GST_TIME_FORMAT ", dts: %" GST_TIME_FORMAT,
+        best->collect.pad, best->stream_id,
+        GST_TIME_ARGS (best->queued.pts), GST_TIME_ARGS (best->queued.dts));
 
-    /* set timestamp */
-    if (GST_CLOCK_TIME_IS_VALID (best->cur_ts)) {
-      pts = GSTTIME_TO_MPEGTIME (best->cur_ts); /* @pts: current timestamp */
-      GST_DEBUG_OBJECT (mux, "Buffer has TS %" GST_TIME_FORMAT " pts %"
-          G_GINT64_FORMAT, GST_TIME_ARGS (best->cur_ts), pts);
+    /* and convert to mpeg time stamps */
+    pts = GSTTIME_TO_MPEGTIME (best->queued.pts);
+    dts = GSTTIME_TO_MPEGTIME (best->queued.dts);
+
+    /* start of new GOP? */
+    keyunit = !GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    if (keyunit && best->stream_id == mux->video_stream_id
+        && mux->gop_list != NULL) {
+      ret = mpegpsmux_push_gop_list (mux);
+      if (ret != GST_FLOW_OK)
+        goto done;
     }
 
     /* give the buffer to libpsmux for processing */
-    psmux_stream_add_data (best->stream, GST_BUFFER_DATA (buf),
-        GST_BUFFER_SIZE (buf), buf, pts, -1);
-    best->queued_buf = NULL;
+    psmux_stream_add_data (best->stream, buf, pts, dts, keyunit);
+
+    best->queued.buf = NULL;
 
     /* write the data from libpsmux to stream */
     while (psmux_stream_bytes_in_buffer (best->stream) > 0) {
@@ -516,11 +572,18 @@ mpegpsmux_collected (GstCollectPads * pads, MpegPsMux * mux)
   } else {
     /* FIXME: Drain all remaining streams */
     /* At EOS */
-    if (psmux_write_end_code (mux->psmux)) {
+    if (mux->gop_list != NULL)
+      mpegpsmux_push_gop_list (mux);
+
+    if (!psmux_write_end_code (mux->psmux)) {
       GST_WARNING_OBJECT (mux, "Writing MPEG PS Program end code failed.");
     }
     gst_pad_push_event (mux->srcpad, gst_event_new_eos ());
+
+    ret = GST_FLOW_EOS;
   }
+
+done:
 
   return ret;
 new_seg_fail:
@@ -532,9 +595,8 @@ write_fail:
 
 static GstPad *
 mpegpsmux_request_new_pad (GstElement * element,
-    GstPadTemplate * templ, const gchar * name)
+    GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
 {
-
   MpegPsMux *mux = GST_MPEG_PSMUX (element);
   GstPad *pad = NULL;
   MpegPsPadData *pad_data = NULL;
@@ -542,7 +604,7 @@ mpegpsmux_request_new_pad (GstElement * element,
   pad = gst_pad_new_from_template (templ, name);
 
   pad_data = (MpegPsPadData *) gst_collect_pads_add_pad (mux->collect, pad,
-      sizeof (MpegPsPadData));
+      sizeof (MpegPsPadData), NULL, TRUE);
   if (pad_data == NULL)
     goto pad_failure;
 
@@ -589,6 +651,8 @@ mpegpsmux_release_pad (GstElement * element, GstPad * pad)
       pad_data->codec_data = NULL;
     }
   }
+  if (pad_data->stream_id == mux->video_stream_id)
+    mux->video_stream_id = 0;
   GST_OBJECT_UNLOCK (pad);
 
   gst_collect_pads_remove_pad (mux->collect, pad);
@@ -605,16 +669,22 @@ new_packet_cb (guint8 * data, guint len, void *user_data)
   GstFlowReturn ret;
 
   GST_LOG_OBJECT (mux, "Outputting a packet of length %d", len);
-  buf = gst_buffer_new_and_alloc (len);
-  if (G_UNLIKELY (buf == NULL)) {
-    mux->last_flow_ret = GST_FLOW_ERROR;
-    return FALSE;
-  }
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (mux->srcpad));
 
-  memcpy (GST_BUFFER_DATA (buf), data, len);
+  data = g_memdup (data, len);
+  buf = gst_buffer_new_wrapped (data, len);
+
   GST_BUFFER_TIMESTAMP (buf) = mux->last_ts;
+
+  if (mux->aggregate_gops) {
+    if (mux->gop_list == NULL)
+      mux->gop_list = gst_buffer_list_new ();
+
+    gst_buffer_list_add (mux->gop_list, buf);
+    return TRUE;
+  }
+
   ret = gst_pad_push (mux->srcpad, buf);
+
   if (G_UNLIKELY (ret != GST_FLOW_OK)) {
     mux->last_flow_ret = ret;
     return FALSE;
@@ -623,27 +693,44 @@ new_packet_cb (guint8 * data, guint len, void *user_data)
   return TRUE;
 }
 
+/* prepare the source pad for output */
 static gboolean
 mpegpsdemux_prepare_srcpad (MpegPsMux * mux)
 {
-  /* prepare the source pad for output */
+  GstSegment segment;
+  GValue val = { 0, };
+  GList *headers, *l;
+  GstCaps *caps;
+  gchar s_id[32];
 
-  GstEvent *new_seg =
-      gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_BYTES, 0, -1, 0);
-  GstCaps *caps = gst_caps_new_simple ("video/mpeg",
-      "mpegversion", G_TYPE_INT, 2,
-      "systemstream", G_TYPE_BOOLEAN, TRUE,
-      NULL);
+  /* stream-start (FIXME: create id based on input ids) */
+  g_snprintf (s_id, sizeof (s_id), "mpegpsmux-%08x", g_random_int ());
+  gst_pad_push_event (mux->srcpad, gst_event_new_stream_start (s_id));
 
-/*      gst_static_pad_template_get_caps (&mpegpsmux_src_factory); */
+  caps = gst_caps_new_simple ("video/mpeg",
+      "mpegversion", G_TYPE_INT, 2, "systemstream", G_TYPE_BOOLEAN, TRUE, NULL);
 
-  /* Set caps on src pad from our template and push new segment */
-  gst_pad_set_caps (mux->srcpad, caps);
+  headers = psmux_get_stream_headers (mux->psmux);
+  g_value_init (&val, GST_TYPE_ARRAY);
+  for (l = headers; l != NULL; l = l->next) {
+    GValue buf_val = { 0, };
 
-  if (!gst_pad_push_event (mux->srcpad, new_seg)) {
-    GST_WARNING_OBJECT (mux, "New segment event was not handled");
-    return FALSE;
+    g_value_init (&buf_val, GST_TYPE_BUFFER);
+    gst_value_take_buffer (&buf_val, GST_BUFFER (l->data));
+    l->data = NULL;
+    gst_value_array_append_value (&val, &buf_val);
+    g_value_unset (&buf_val);
   }
+  gst_caps_set_value (caps, "streamheader", &val);
+  g_value_unset (&val);
+  g_list_free (headers);
+
+  /* Set caps on src pad and push new segment */
+  gst_pad_push_event (mux->srcpad, gst_event_new_caps (caps));
+  gst_caps_unref (caps);
+
+  gst_segment_init (&segment, GST_FORMAT_BYTES);
+  gst_pad_push_event (mux->srcpad, gst_event_new_segment (&segment));
 
   return TRUE;
 }
@@ -697,5 +784,5 @@ plugin_init (GstPlugin * plugin)
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR,
-    "mpegpsmux", "MPEG-PS muxer",
+    mpegpsmux, "MPEG-PS muxer",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

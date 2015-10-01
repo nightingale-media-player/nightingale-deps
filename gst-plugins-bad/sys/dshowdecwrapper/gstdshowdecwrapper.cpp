@@ -39,8 +39,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -49,6 +49,9 @@
 
 #include "gstdshowaudiodec.h"
 #include "gstdshowvideodec.h"
+
+GST_DEBUG_CATEGORY (dshowdec_debug);
+#define GST_CAT_DEFAULT dshowdec_debug
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -59,6 +62,9 @@ plugin_init (GstPlugin * plugin)
   if (!dshow_vdec_register (plugin))
     return FALSE;
 
+  GST_DEBUG_CATEGORY_INIT (dshowdec_debug, "dshowdec", 0, \
+      "DirectShow decoder");
+
   return TRUE;
 }
 
@@ -66,7 +72,7 @@ extern "C" {
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "dshowdecwrapper",
+    dshowdecwrapper,
     "DirectShow decoder wrapper plugin",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
 

@@ -1,4 +1,5 @@
-/* GStreamer
+/* GStreamer PNM encoder
+ * Copyright (C) 2009 Lutz Mueller <lutz@users.sourceforge.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -12,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -23,10 +24,10 @@
  * To enable ASCII encoding, set the parameter ascii to TRUE. If you omit
  * the parameter or set it to FALSE, the output will be raw encoded.
  *
- * <refsect">
+ * <refsect>
  * <title>Example launch line</title>
  * |[
- * gst-launch videotestsrc num_buffers=1 ! ffmpegcolorspace ! "video/x-raw-gray" ! pnmenc ascii=true ! filesink location=test.pnm
+ * gst-launch videotestsrc num_buffers=1 ! videoconvert ! "video/x-raw,format=GRAY8" ! pnmenc ascii=true ! filesink location=test.pnm
  * ]| The above pipeline writes a test pnm file (ASCII encoding).
  * </refsect2>
  */
@@ -40,6 +41,8 @@
 
 #include <gst/gstutils.h>
 #include <gst/video/video.h>
+#include <gst/video/gstvideometa.h>
+#include <stdio.h>
 
 #include <string.h>
 
@@ -50,21 +53,23 @@ enum
       /* Add here. */
 };
 
-static GstElementDetails pnmenc_details =
-GST_ELEMENT_DETAILS ("PNM converter", "Codec/Encoder/Image",
-    "Encodes in PNM format",
-    "Lutz Mueller <lutz@users.sourceforge.net>");
-
 static GstStaticPadTemplate sink_pad_template =
     GST_STATIC_PAD_TEMPLATE ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_RGB "; "
-        "video/x-raw-gray, width =" GST_VIDEO_SIZE_RANGE ", "
-        "height =" GST_VIDEO_SIZE_RANGE ", framerate =" GST_VIDEO_FPS_RANGE ", "
-        "bpp= (int) 8, depth= (int) 8"));
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("RGB") "; "
+        GST_VIDEO_CAPS_MAKE ("GRAY8")));
+
 
 static GstStaticPadTemplate src_pad_template =
 GST_STATIC_PAD_TEMPLATE ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
     GST_STATIC_CAPS (MIME_ALL));
+
+G_DEFINE_TYPE (GstPnmenc, gst_pnmenc, GST_TYPE_VIDEO_ENCODER);
+#define parent_class gst_pnmenc_parent_class
+
+static GstFlowReturn
+gst_pnmenc_handle_frame (GstVideoEncoder * encoder, GstVideoCodecFrame * frame);
+
+static void gst_pnmenc_finalize (GObject * object);
 
 static void
 gst_pnmenc_set_property (GObject * object, guint prop_id, const GValue * value,
@@ -74,10 +79,11 @@ gst_pnmenc_set_property (GObject * object, guint prop_id, const GValue * value,
 
   switch (prop_id) {
     case GST_PNMENC_PROP_ASCII:
-      if (g_value_get_boolean (value))
+      if (g_value_get_boolean (value)) {
         s->info.encoding = GST_PNM_ENCODING_ASCII;
-      else
+      } else {
         s->info.encoding = GST_PNM_ENCODING_RAW;
+      }
       s->info.fields |= GST_PNM_INFO_FIELDS_ENCODING;
       break;
     default:
@@ -102,159 +108,212 @@ gst_pnmenc_get_property (GObject * object, guint prop_id, GValue * value,
   }
 }
 
-static GstFlowReturn
-gst_pnmenc_chain (GstPad * pad, GstBuffer * buf)
+static void
+gst_pnmenc_init (GstPnmenc * s)
 {
-  GstPnmenc *s = GST_PNMENC (gst_pad_get_parent (pad));
-  GstFlowReturn r;
-  gchar *header;
-  GstBuffer *out;
+  GST_PAD_SET_ACCEPT_TEMPLATE (GST_VIDEO_ENCODER_SINK_PAD (s));
 
-  /* Assumption: One buffer, one image. That is, always first write header. */
-  header = g_strdup_printf ("P%i\n%i %i\n%i\n",
-      s->info.type + 3 * (1 - s->info.encoding), s->info.width, s->info.height,
-      s->info.max);
-  out = gst_buffer_new ();
-  gst_buffer_set_data (out, (guchar *) header, strlen (header));
-  gst_buffer_set_caps (out, GST_PAD_CAPS (s->src));
-  if ((r = gst_pad_push (s->src, out)) != GST_FLOW_OK)
-    goto out;
+  /* Set default encoding as RAW as ASCII takes up 4 time more bytes */
+  s->info.encoding = GST_PNM_ENCODING_RAW;
+}
 
-  /* Need to convert from GStreamer rowstride to PNM rowstride */
-  if (s->info.width % 4 != 0) {
-    guint i_rowstride;
-    guint o_rowstride;
-    GstBuffer *obuf;
-    guint i;
+static void
+gst_pnmenc_finalize (GObject * object)
+{
+  GstPnmenc *pnmenc = GST_PNMENC (object);
+  if (pnmenc->input_state)
+    gst_video_codec_state_unref (pnmenc->input_state);
 
-    if (s->info.type == GST_PNM_TYPE_PIXMAP) {
-      o_rowstride = 3 * s->info.width;
-      i_rowstride = GST_ROUND_UP_4 (o_rowstride);
-    } else {
-      o_rowstride = s->info.width;
-      i_rowstride = GST_ROUND_UP_4 (o_rowstride);
-    }
-
-    obuf = gst_buffer_new_and_alloc (o_rowstride * s->info.height);
-    for (i = 0; i < s->info.height; i++)
-      memcpy (GST_BUFFER_DATA (obuf) + o_rowstride * i,
-          GST_BUFFER_DATA (buf) + i_rowstride * i, o_rowstride);
-    gst_buffer_unref (buf);
-    buf = obuf;
-  } else {
-    /* Pass through the data. */
-    buf = gst_buffer_make_metadata_writable (buf);
-  }
-
-  /* We might need to convert to ASCII... */
-  if (s->info.encoding == GST_PNM_ENCODING_ASCII) {
-    GstBuffer *obuf;
-    guint i, o;
-
-    obuf = gst_buffer_new_and_alloc (GST_BUFFER_SIZE (buf) * (4 + 1 / 20.));
-    for (i = o = 0; i < GST_BUFFER_SIZE (buf); i++) {
-      g_snprintf ((char *) GST_BUFFER_DATA (obuf) + o, 4, "%3i",
-          GST_BUFFER_DATA (buf)[i]);
-      o += 3;
-      GST_BUFFER_DATA (obuf)[o++] = ' ';
-      if (!((i + 1) % 20))
-        GST_BUFFER_DATA (obuf)[o++] = '\n';
-    }
-    gst_buffer_unref (buf);
-    buf = obuf;
-  }
-
-  gst_buffer_set_caps (buf, GST_PAD_CAPS (s->src));
-  r = gst_pad_push (s->src, buf);
-
-out:
-  gst_object_unref (s);
-
-  return r;
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static gboolean
-gst_pnmenc_setcaps_func_sink (GstPad * pad, GstCaps * caps)
+gst_pnmenc_set_format (GstVideoEncoder * encoder, GstVideoCodecState * state)
 {
-  GstPnmenc *s = GST_PNMENC (gst_pad_get_parent (pad));
-  GstStructure *structure = gst_caps_get_structure (caps, 0);
-  const gchar *mime = gst_structure_get_name (structure);
-  gboolean r = TRUE;
-  GstCaps *srccaps;
+  GstPnmenc *pnmenc;
+  gboolean ret = TRUE;
+  GstVideoInfo *info;
+  GstVideoCodecState *output_state;
 
-  s->info.max = 255;
-  s->info.fields = GST_PNM_INFO_FIELDS_MAX;
+  pnmenc = GST_PNMENC (encoder);
+  info = &state->info;
 
-  /* Set caps on the source. */
-  if (!strcmp (mime, "video/x-raw-rgb")) {
-    s->info.type = GST_PNM_TYPE_PIXMAP;
-    srccaps = gst_caps_from_string (MIME_PM);
-  } else if (!strcmp (mime, "video/x-raw-gray")) {
-    s->info.type = GST_PNM_TYPE_GRAYMAP;
-    srccaps = gst_caps_from_string (MIME_GM);
+  switch (GST_VIDEO_INFO_FORMAT (info)) {
+    case GST_VIDEO_FORMAT_RGB:
+      pnmenc->info.type = GST_PNM_TYPE_PIXMAP;
+      break;
+    case GST_VIDEO_FORMAT_GRAY8:
+      pnmenc->info.type = GST_PNM_TYPE_GRAYMAP;
+      break;
+    default:
+      ret = FALSE;
+      goto done;
+  }
+
+  pnmenc->info.width = GST_VIDEO_INFO_WIDTH (info);
+  pnmenc->info.height = GST_VIDEO_INFO_HEIGHT (info);
+  /* Supported max value is only one, that is 255 */
+  pnmenc->info.max = 255;
+
+  if (pnmenc->input_state)
+    gst_video_codec_state_unref (pnmenc->input_state);
+  pnmenc->input_state = gst_video_codec_state_ref (state);
+
+  output_state =
+      gst_video_encoder_set_output_state (encoder,
+      gst_caps_new_empty_simple ("image/pnm"), state);
+  gst_video_codec_state_unref (output_state);
+
+done:
+  return ret;
+}
+
+static GstFlowReturn
+gst_pnmenc_handle_frame (GstVideoEncoder * encoder, GstVideoCodecFrame * frame)
+{
+  GstPnmenc *pnmenc;
+  guint size, pixels;
+  GstMapInfo omap, imap;
+  gchar *header;
+  GstVideoInfo *info;
+  GstFlowReturn ret = GST_FLOW_OK;
+  guint i_rowstride, o_rowstride;
+  guint bytes = 0, index, head_size;
+  guint i, j;
+
+  pnmenc = GST_PNMENC (encoder);
+  info = &pnmenc->input_state->info;
+
+  switch (GST_VIDEO_INFO_FORMAT (info)) {
+    case GST_VIDEO_FORMAT_RGB:
+      pixels = size = pnmenc->info.width * pnmenc->info.height * 3;
+      break;
+    case GST_VIDEO_FORMAT_GRAY8:
+      pixels = size = pnmenc->info.width * pnmenc->info.height * 1;
+      break;
+    default:
+      ret = FALSE;
+      goto done;
+  }
+
+  header = g_strdup_printf ("P%i\n%i %i\n%i\n",
+      pnmenc->info.type + 3 * (1 - pnmenc->info.encoding), pnmenc->info.width,
+      pnmenc->info.height, pnmenc->info.max);
+
+  if (pnmenc->info.encoding == GST_PNM_ENCODING_ASCII) {
+    /* Per component 4 bytes are used in case of ASCII encoding */
+    size = size * 4;
+    size += strlen (header);
+    frame->output_buffer =
+        gst_video_encoder_allocate_output_buffer (encoder, (size + size / 20));
   } else {
-    r = FALSE;
-    goto out;
+    size += strlen (header);
+    frame->output_buffer =
+        gst_video_encoder_allocate_output_buffer (encoder, size);
   }
-  gst_pad_set_caps (s->src, srccaps);
-  gst_caps_unref (srccaps);
-  s->info.fields |= GST_PNM_INFO_FIELDS_TYPE;
 
-  /* Remember width and height of the input data. */
-  if (!gst_structure_get_int (structure, "width", (int *) &s->info.width) ||
-      !gst_structure_get_int (structure, "height", (int *) &s->info.height)) {
-    r = FALSE;
-    goto out;
+  if (gst_buffer_map (frame->output_buffer, &omap, GST_MAP_WRITE) == FALSE) {
+    ret = GST_FLOW_ERROR;
+    goto done;
   }
-  s->info.fields |= GST_PNM_INFO_FIELDS_WIDTH | GST_PNM_INFO_FIELDS_HEIGHT;
+  if (gst_buffer_map (frame->input_buffer, &imap, GST_MAP_READ) == FALSE) {
+    /* Unmap already mapped buffer */
+    gst_buffer_unmap (frame->output_buffer, &omap);
+    ret = GST_FLOW_ERROR;
+    goto done;
+  }
+  memcpy (omap.data, header, strlen (header));
 
-out:
-  gst_object_unref (s);
-  return r;
-}
+  head_size = strlen (header);
+  if (pnmenc->info.encoding == GST_PNM_ENCODING_ASCII) {
+    /* We need to convert to ASCII */
+    if (pnmenc->info.width % 4 != 0) {
+      /* Convert from gstreamer rowstride to PNM rowstride */
+      if (pnmenc->info.type == GST_PNM_TYPE_PIXMAP) {
+        o_rowstride = 3 * pnmenc->info.width;
+      } else {
+        o_rowstride = pnmenc->info.width;
+      }
+      i_rowstride = GST_VIDEO_FRAME_COMP_STRIDE (pnmenc->input_state, 0);
 
-static void
-gst_pnmenc_init (GstPnmenc * s, GstPnmencClass * klass)
-{
-  GstPad *pad;
+      for (i = 0; i < pnmenc->info.height; i++) {
+        index = i * i_rowstride;
+        for (j = 0; j < o_rowstride; j++, bytes++, index++) {
+          g_snprintf ((char *) omap.data + head_size, 4, "%3i",
+              imap.data[index]);
+          head_size += 3;
+          omap.data[head_size++] = ' ';
+          /* Add new line so that file will not end up with sinle big line */
+          if (!((bytes + 1) % 20))
+            omap.data[head_size++] = '\n';
+        }
+      }
+    } else {
+      for (i = 0; i < pixels; i++) {
+        g_snprintf ((char *) omap.data + head_size, 4, "%3i", imap.data[i]);
+        head_size += 3;
+        omap.data[head_size++] = ' ';
+        if (!((i + 1) % 20))
+          omap.data[head_size++] = '\n';
+      }
+    }
+  } else {
+    /* Need to convert from GStreamer rowstride to PNM rowstride */
+    if (pnmenc->info.width % 4 != 0) {
+      if (pnmenc->info.type == GST_PNM_TYPE_PIXMAP) {
+        o_rowstride = 3 * pnmenc->info.width;
+      } else {
+        o_rowstride = pnmenc->info.width;
+      }
+      i_rowstride = GST_VIDEO_FRAME_COMP_STRIDE (pnmenc->input_state, 0);
 
-  pad =
-      gst_pad_new_from_template (gst_static_pad_template_get
-      (&sink_pad_template), "sink");
-  gst_pad_set_setcaps_function (pad, gst_pnmenc_setcaps_func_sink);
-  gst_pad_set_chain_function (pad, gst_pnmenc_chain);
-  gst_pad_use_fixed_caps (pad);
-  gst_element_add_pad (GST_ELEMENT (s), pad);
+      for (i = 0; i < pnmenc->info.height; i++)
+        memcpy (omap.data + head_size + o_rowstride * i,
+            imap.data + i_rowstride * i, o_rowstride);
+    } else {
+      /* size contains complete image size inlcuding header size,
+         Exclude header size while copying data */
+      memcpy (omap.data + strlen (header), imap.data, (size - head_size));
+    }
+  }
 
-  s->src =
-      gst_pad_new_from_template (gst_static_pad_template_get
-      (&src_pad_template), "src");
-  gst_element_add_pad (GST_ELEMENT (s), s->src);
-}
+  gst_buffer_unmap (frame->output_buffer, &omap);
+  gst_buffer_unmap (frame->input_buffer, &imap);
 
-static void
-gst_pnmenc_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  if ((ret = gst_video_encoder_finish_frame (encoder, frame)) != GST_FLOW_OK)
+    goto done;
 
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_pad_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_pad_template));
-  gst_element_class_set_details (element_class, &pnmenc_details);
+done:
+  return ret;
 }
 
 static void
 gst_pnmenc_class_init (GstPnmencClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstVideoEncoderClass *venc_class = (GstVideoEncoderClass *) klass;
 
+  parent_class = g_type_class_peek_parent (klass);
   gobject_class->set_property = gst_pnmenc_set_property;
   gobject_class->get_property = gst_pnmenc_get_property;
 
   g_object_class_install_property (gobject_class, GST_PNMENC_PROP_ASCII,
       g_param_spec_boolean ("ascii", "ASCII Encoding", "The output will be "
-          "ASCII encoded", FALSE, G_PARAM_READWRITE));
-}
+          "ASCII encoded", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-GST_BOILERPLATE (GstPnmenc, gst_pnmenc, GstElement, GST_TYPE_ELEMENT)
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_pad_template));
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_pad_template));
+
+  gst_element_class_set_static_metadata (element_class, "PNM image encoder",
+      "Codec/Encoder/Image",
+      "Encodes images into portable pixmap or graymap (PNM) format",
+      "Lutz Mueller <lutz@users.sourceforge.net>");
+
+  venc_class->set_format = gst_pnmenc_set_format;
+  venc_class->handle_frame = gst_pnmenc_handle_frame;
+  gobject_class->finalize = gst_pnmenc_finalize;
+}

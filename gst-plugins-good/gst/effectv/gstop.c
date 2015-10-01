@@ -20,8 +20,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -34,7 +34,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v videotestsrc ! optv ! ffmpegcolorspace ! autovideosink
+ * gst-launch-1.0 -v videotestsrc ! optv ! videoconvert ! autovideosink
  * ]| This pipeline shows the effect of optv on a test stream.
  * </refsect2>
  */
@@ -50,7 +50,6 @@
 #include "gsteffectv.h"
 
 #include <gst/video/video.h>
-#include <gst/controller/gstcontroller.h>
 
 enum
 {
@@ -95,12 +94,13 @@ enum
 
 static guint32 palette[256];
 
-GST_BOILERPLATE (GstOpTV, gst_optv, GstVideoFilter, GST_TYPE_VIDEO_FILTER);
+#define gst_optv_parent_class parent_class
+G_DEFINE_TYPE (GstOpTV, gst_optv, GST_TYPE_VIDEO_FILTER);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define CAPS_STR GST_VIDEO_CAPS_BGRx ";" GST_VIDEO_CAPS_RGBx
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ BGRx, RGBx }")
 #else
-#define CAPS_STR GST_VIDEO_CAPS_xBGR ";" GST_VIDEO_CAPS_xRGB
+#define CAPS_STR GST_VIDEO_CAPS_MAKE ("{ xBGR, xRGB }")
 #endif
 
 static GstStaticPadTemplate gst_optv_src_template =
@@ -161,14 +161,14 @@ setOpmap (gint8 * opmap[4], gint width, gint height)
 #endif
 
       opmap[OP_SPIRAL1][i] = ((guint)
-          ((at / M_PI * 256) + (r * 4000))) & 255;
+          ((at / G_PI * 256) + (r * 4000))) & 255;
 
       j = r * 300 / 32;
       rr = r * 300 - j * 32;
       j *= 64;
       j += (rr > 28) ? (rr - 28) * 16 : 0;
       opmap[OP_SPIRAL2][i] = ((guint)
-          ((at / M_PI * 4096) + (r * 1600) - j)) & 255;
+          ((at / G_PI * 4096) + (r * 1600) - j)) & 255;
 
       opmap[OP_PARABOLA][i] =
           ((guint) (yy / (xx * xx * 0.3 + 0.1) * 400)) & 255;
@@ -199,32 +199,38 @@ image_y_over (guint32 * src, guint8 * diff, gint y_threshold, gint video_area)
 }
 
 static GstFlowReturn
-gst_optv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
+gst_optv_transform_frame (GstVideoFilter * vfilter, GstVideoFrame * in_frame,
+    GstVideoFrame * out_frame)
 {
-  GstOpTV *filter = GST_OPTV (trans);
+  GstOpTV *filter = GST_OPTV (vfilter);
   guint32 *src, *dest;
-  GstFlowReturn ret = GST_FLOW_OK;
   gint8 *p;
   guint8 *diff;
-  gint x, y;
+  gint x, y, width, height;
   GstClockTime timestamp, stream_time;
+  guint8 phase;
 
-  timestamp = GST_BUFFER_TIMESTAMP (in);
+  timestamp = GST_BUFFER_TIMESTAMP (in_frame->buffer);
   stream_time =
-      gst_segment_to_stream_time (&trans->segment, GST_FORMAT_TIME, timestamp);
+      gst_segment_to_stream_time (&GST_BASE_TRANSFORM (vfilter)->segment,
+      GST_FORMAT_TIME, timestamp);
 
   GST_DEBUG_OBJECT (filter, "sync to %" GST_TIME_FORMAT,
       GST_TIME_ARGS (timestamp));
 
   if (GST_CLOCK_TIME_IS_VALID (stream_time))
-    gst_object_sync_values (G_OBJECT (filter), stream_time);
-
-  src = (guint32 *) GST_BUFFER_DATA (in);
-  dest = (guint32 *) GST_BUFFER_DATA (out);
+    gst_object_sync_values (GST_OBJECT (filter), stream_time);
 
   if (G_UNLIKELY (filter->opmap[0] == NULL))
     return GST_FLOW_NOT_NEGOTIATED;
 
+  src = GST_VIDEO_FRAME_PLANE_DATA (in_frame, 0);
+  dest = GST_VIDEO_FRAME_PLANE_DATA (out_frame, 0);
+
+  width = GST_VIDEO_FRAME_WIDTH (in_frame);
+  height = GST_VIDEO_FRAME_HEIGHT (in_frame);
+
+  GST_OBJECT_LOCK (filter);
   switch (filter->mode) {
     default:
     case 0:
@@ -244,47 +250,42 @@ gst_optv_transform (GstBaseTransform * trans, GstBuffer * in, GstBuffer * out)
   filter->phase -= filter->speed;
 
   diff = filter->diff;
-  image_y_over (src, diff, filter->threshold, filter->width * filter->height);
+  image_y_over (src, diff, filter->threshold, width * height);
+  phase = filter->phase;
 
-  for (y = 0; y < filter->height; y++) {
-    for (x = 0; x < filter->width; x++) {
-      *dest++ = palette[(((guint8) (*p + filter->phase)) ^ *diff++) & 255];
+  for (y = 0; y < height; y++) {
+    for (x = 0; x < width; x++) {
+      *dest++ = palette[(((guint8) (*p + phase)) ^ *diff++) & 255];
       p++;
     }
   }
+  GST_OBJECT_UNLOCK (filter);
 
-  return ret;
+  return GST_FLOW_OK;
 }
 
 static gboolean
-gst_optv_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
-    GstCaps * outcaps)
+gst_optv_set_info (GstVideoFilter * vfilter, GstCaps * incaps,
+    GstVideoInfo * in_info, GstCaps * outcaps, GstVideoInfo * out_info)
 {
-  GstOpTV *filter = GST_OPTV (btrans);
-  GstStructure *structure;
-  gboolean ret = FALSE;
+  GstOpTV *filter = GST_OPTV (vfilter);
+  gint i, width, height;
 
-  structure = gst_caps_get_structure (incaps, 0);
+  width = GST_VIDEO_INFO_WIDTH (in_info);
+  height = GST_VIDEO_INFO_HEIGHT (in_info);
 
-  if (gst_structure_get_int (structure, "width", &filter->width) &&
-      gst_structure_get_int (structure, "height", &filter->height)) {
-    gint i;
-
-    for (i = 0; i < 4; i++) {
-      if (filter->opmap[i])
-        g_free (filter->opmap[i]);
-      filter->opmap[i] = g_new (gint8, filter->width * filter->height);
-    }
-    setOpmap (filter->opmap, filter->width, filter->height);
-
-    if (filter->diff)
-      g_free (filter->diff);
-    filter->diff = g_new (guint8, filter->width * filter->height);
-
-    ret = TRUE;
+  for (i = 0; i < 4; i++) {
+    if (filter->opmap[i])
+      g_free (filter->opmap[i]);
+    filter->opmap[i] = g_new (gint8, width * height);
   }
+  setOpmap (filter->opmap, width, height);
 
-  return ret;
+  if (filter->diff)
+    g_free (filter->diff);
+  filter->diff = g_new (guint8, width * height);
+
+  return TRUE;
 }
 
 static gboolean
@@ -325,6 +326,7 @@ gst_optv_set_property (GObject * object, guint prop_id, const GValue * value,
 {
   GstOpTV *filter = GST_OPTV (object);
 
+  GST_OBJECT_LOCK (filter);
   switch (prop_id) {
     case PROP_MODE:
       filter->mode = g_value_get_enum (value);
@@ -339,6 +341,7 @@ gst_optv_set_property (GObject * object, guint prop_id, const GValue * value,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+  GST_OBJECT_UNLOCK (filter);
 }
 
 static void
@@ -364,27 +367,12 @@ gst_optv_get_property (GObject * object, guint prop_id, GValue * value,
 }
 
 static void
-gst_optv_base_init (gpointer g_class)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
-
-  gst_element_class_set_details_simple (element_class, "OpTV effect",
-      "Filter/Effect/Video",
-      "Optical art meets real-time video effect",
-      "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>, "
-      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_optv_sink_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&gst_optv_src_template));
-}
-
-static void
 gst_optv_class_init (GstOpTVClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
+  GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseTransformClass *trans_class = (GstBaseTransformClass *) klass;
+  GstVideoFilterClass *vfilter_class = (GstVideoFilterClass *) klass;
 
   gobject_class->set_property = gst_optv_set_property;
   gobject_class->get_property = gst_optv_get_property;
@@ -406,15 +394,27 @@ gst_optv_class_init (GstOpTVClass * klass)
           "Luma threshold", 0, G_MAXINT, DEFAULT_THRESHOLD,
           GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  trans_class->set_caps = GST_DEBUG_FUNCPTR (gst_optv_set_caps);
-  trans_class->transform = GST_DEBUG_FUNCPTR (gst_optv_transform);
+  gst_element_class_set_static_metadata (gstelement_class, "OpTV effect",
+      "Filter/Effect/Video",
+      "Optical art meets real-time video effect",
+      "FUKUCHI, Kentarou <fukuchi@users.sourceforge.net>, "
+      "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_optv_sink_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_optv_src_template));
+
   trans_class->start = GST_DEBUG_FUNCPTR (gst_optv_start);
+
+  vfilter_class->set_info = GST_DEBUG_FUNCPTR (gst_optv_set_info);
+  vfilter_class->transform_frame = GST_DEBUG_FUNCPTR (gst_optv_transform_frame);
 
   initPalette ();
 }
 
 static void
-gst_optv_init (GstOpTV * filter, GstOpTVClass * klass)
+gst_optv_init (GstOpTV * filter)
 {
   filter->speed = DEFAULT_SPEED;
   filter->mode = DEFAULT_MODE;

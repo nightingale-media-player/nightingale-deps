@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 /*
  * Unless otherwise indicated, Source Code is licensed under MIT license.
@@ -44,6 +44,7 @@
 #define __GST_RTSP_RANGE_H__
 
 #include <glib.h>
+#include <gst/gst.h>
 
 #include <gst/rtsp/gstrtspdefs.h>
 
@@ -54,7 +55,7 @@ G_BEGIN_DECLS
  * @GST_RTSP_RANGE_SMPTE: SMPTE timecode
  * @GST_RTSP_RANGE_SMPTE_30_DROP: 29.97 frames per second
  * @GST_RTSP_RANGE_SMPTE_25: 25 frames per second
- * @GST_RTSP_RANGE_NPT: Normal play time 
+ * @GST_RTSP_RANGE_NPT: Normal play time
  * @GST_RTSP_RANGE_CLOCK: Absolute time expressed as ISO 8601 timestamps
  *
  * Different possible time range units.
@@ -70,25 +71,31 @@ typedef enum
 
 typedef struct _GstRTSPTimeRange GstRTSPTimeRange;
 typedef struct _GstRTSPTime GstRTSPTime;
+typedef struct _GstRTSPTime2 GstRTSPTime2;
 
 /**
  * GstRTSPTimeType:
  * @GST_RTSP_TIME_SECONDS: seconds
  * @GST_RTSP_TIME_NOW: now
  * @GST_RTSP_TIME_END: end
+ * @GST_RTSP_TIME_FRAMES: frames and subframes
+ * @GST_RTSP_TIME_UTC: UTC time
  *
  * Possible time types.
  */
 typedef enum {
   GST_RTSP_TIME_SECONDS,
   GST_RTSP_TIME_NOW,
-  GST_RTSP_TIME_END
+  GST_RTSP_TIME_END,
+  GST_RTSP_TIME_FRAMES,
+  GST_RTSP_TIME_UTC
 } GstRTSPTimeType;
 
 /**
  * GstRTSPTime:
  * @type: the time of the time
- * @seconds: seconds when @type is GST_RTSP_TIME_SECONDS 
+ * @seconds: seconds when @type is GST_RTSP_TIME_SECONDS,
+ *           GST_RTSP_TIME_UTC and GST_RTSP_TIME_FRAMES
  *
  * A time indication.
  */
@@ -98,23 +105,52 @@ struct _GstRTSPTime {
 };
 
 /**
+ * GstRTSPTime2:
+ * @frames: frames and subframes when type in GstRTSPTime is
+ *          GST_RTSP_TIME_FRAMES
+ * @year: year when type is GST_RTSP_TIME_UTC
+ * @month: month when type is GST_RTSP_TIME_UTC
+ * @day: day when type is GST_RTSP_TIME_UTC
+ *
+ * Extra fields for a time indication.
+ *
+ * Since: 1.2
+ */
+struct _GstRTSPTime2 {
+  gdouble         frames;
+  guint           year;
+  guint           month;
+  guint           day;
+};
+
+/**
  * GstRTSPTimeRange:
  * @unit: the time units used
  * @min: the minimum interval
  * @max: the maximum interval
+ * @min2: extra fields in the minimum interval (Since: 1.2)
+ * @max2: extra fields in the maximum interval (Since: 1.2)
  *
  * A time range.
  */
 struct _GstRTSPTimeRange {
   GstRTSPRangeUnit unit;
 
-  GstRTSPTime min;
-  GstRTSPTime max;
+  GstRTSPTime  min;
+  GstRTSPTime  max;
+  GstRTSPTime2 min2;
+  GstRTSPTime2 max2;
 };
 
 GstRTSPResult   gst_rtsp_range_parse        (const gchar *rangestr, GstRTSPTimeRange **range);
 gchar *         gst_rtsp_range_to_string    (const GstRTSPTimeRange *range);
 void            gst_rtsp_range_free         (GstRTSPTimeRange *range);
+
+gboolean        gst_rtsp_range_get_times     (const GstRTSPTimeRange *range,
+                                              GstClockTime *min, GstClockTime *max);
+
+gboolean        gst_rtsp_range_convert_units (GstRTSPTimeRange * range,
+                                              GstRTSPRangeUnit unit);
 
 G_END_DECLS
 

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  */
 
@@ -24,12 +24,12 @@
 #define __GST_SIREN_DEC_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudiodecoder.h>
 
 #include "siren7.h"
 
 G_BEGIN_DECLS
-/* #define's don't like whitespacey bits */
+
 #define GST_TYPE_SIREN_DEC \
   (gst_siren_dec_get_type())
 #define GST_SIREN_DEC(obj) \
@@ -42,27 +42,21 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_SIREN_DEC))
 #define GST_IS_SIREN_DEC_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SIREN_DEC))
+
 typedef struct _GstSirenDec GstSirenDec;
 typedef struct _GstSirenDecClass GstSirenDecClass;
-typedef struct _GstSirenDecPrivate GstSirenDecPrivate;
 
 struct _GstSirenDec
 {
-  GstElement parent;
+  GstAudioDecoder parent;
 
   /* Protected by stream lock */
   SirenDecoder decoder;
-
-  GstAdapter *adapter;
-  gboolean discont;
-
-  GstPad *sinkpad;
-  GstPad *srcpad;
 };
 
 struct _GstSirenDecClass
 {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_siren_dec_get_type (void);
@@ -70,4 +64,5 @@ GType gst_siren_dec_get_type (void);
 gboolean gst_siren_dec_plugin_init (GstPlugin * plugin);
 
 G_END_DECLS
+
 #endif /* __GST_SIREN_DEC_H__ */

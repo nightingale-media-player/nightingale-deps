@@ -1,3 +1,5 @@
+/*-*- Mode: C; c-basic-offset: 2 -*-*/
+
 /*
  *  GStreamer pulseaudio plugin
  *
@@ -15,20 +17,25 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with gst-pulse; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
  *  USA.
  */
 
 #ifndef __GST_PULSESINK_H__
 #define __GST_PULSESINK_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <gst/gst.h>
+#include <gst/audio/audio.h>
 #include <gst/audio/gstaudiosink.h>
 
 #include <pulse/pulseaudio.h>
 #include <pulse/thread-mainloop.h>
 
-#include "pulseprobe.h"
+#include "pulseutil.h"
 
 G_BEGIN_DECLS
 
@@ -48,32 +55,52 @@ G_BEGIN_DECLS
 typedef struct _GstPulseSink GstPulseSink;
 typedef struct _GstPulseSinkClass GstPulseSinkClass;
 
+typedef struct _GstPulseDeviceInfo {
+  gchar *description;
+  GList *formats;
+} GstPulseDeviceInfo;
+
 struct _GstPulseSink
 {
-  GstBaseAudioSink sink;
+  GstAudioBaseSink sink;
 
-  gchar *server, *device, *stream_name;
-  gchar *device_description;
-
-  pa_threaded_mainloop *mainloop;
-
-  GstPulseProbe *probe;
+  gchar *server, *device, *stream_name, *client_name;
+  GstPulseDeviceInfo device_info;
 
   gdouble volume;
-  gboolean volume_set;
-  gint notify;
-  
+  gboolean volume_set:1;
+  gboolean mute:1;
+  gboolean mute_set:1;
+  guint32 current_sink_idx;
+  gchar *current_sink_name;
+
+  guint defer_pending;
+
+  gint notify; /* atomic */
+
   const gchar *pa_version;
 
-  gboolean pa_defer_ran;
+  GstStructure *properties;
+  pa_proplist *proplist;
+
+  volatile gint format_lost;
+  GstClockTime format_lost_time;
 };
 
 struct _GstPulseSinkClass
 {
-  GstBaseAudioSinkClass parent_class;
+  GstAudioBaseSinkClass parent_class;
 };
 
 GType gst_pulsesink_get_type (void);
+
+#define PULSE_SINK_TEMPLATE_CAPS \
+  _PULSE_CAPS_PCM \
+  _PULSE_CAPS_AC3 \
+  _PULSE_CAPS_EAC3 \
+  _PULSE_CAPS_DTS \
+  _PULSE_CAPS_MP3 \
+  _PULSE_CAPS_AAC
 
 G_END_DECLS
 

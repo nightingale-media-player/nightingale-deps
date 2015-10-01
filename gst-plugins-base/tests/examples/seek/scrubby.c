@@ -1,3 +1,28 @@
+/* GStreamer
+ *
+ * scrubby.c: sample application to change the playback speed dynamically
+ *
+ * Copyright (C) 2005 Wim Taymans <wim.taymans@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdlib.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -21,11 +46,12 @@ static guint update_id = 0;
 static guint changed_id = 0;
 static guint schanged_id = 0;
 
-//#define SOURCE "filesrc"
-#define SOURCE "gnomevfssrc"
-#define ASINK "alsasink"
+#define SOURCE "filesrc"
+#define ASINK   "autoaudiosink"
+//#define ASINK "alsasink"
 //#define ASINK "osssink"
-#define VSINK "xvimagesink"
+#define VSINK   "autovideosink"
+//#define VSINK "xvimagesink"
 //#define VSINK "ximagesink"
 //#define VSINK "aasink"
 //#define VSINK "cacasink"
@@ -50,7 +76,7 @@ typedef struct
 dyn_link;
 
 static GstElement *
-gst_element_factory_make_or_warn (gchar * type, gchar * name)
+gst_element_factory_make_or_warn (const gchar * type, const gchar * name)
 {
   GstElement *element = gst_element_factory_make (type, name);
 
@@ -59,34 +85,6 @@ gst_element_factory_make_or_warn (gchar * type, gchar * name)
   }
 
   return element;
-}
-
-static void
-dynamic_link (GstPadTemplate * templ, GstPad * newpad, gpointer data)
-{
-  dyn_link *connect = (dyn_link *) data;
-
-  if (connect->padname == NULL ||
-      !strcmp (gst_pad_get_name (newpad), connect->padname)) {
-    if (connect->bin)
-      gst_bin_add (GST_BIN (pipeline), connect->bin);
-    gst_pad_link (newpad, connect->target);
-  }
-}
-
-static void
-setup_dynamic_link (GstElement * element, const gchar * padname,
-    GstPad * target, GstElement * bin)
-{
-  dyn_link *connect;
-
-  connect = g_new0 (dyn_link, 1);
-  connect->padname = g_strdup (padname);
-  connect->target = target;
-  connect->bin = bin;
-
-  g_signal_connect (G_OBJECT (element), "pad-added", G_CALLBACK (dynamic_link),
-      connect);
 }
 
 static GstElement *
@@ -103,14 +101,8 @@ make_wav_pipeline (const gchar * location)
 
   g_object_set (G_OBJECT (src), "location", location, NULL);
 
-  gst_bin_add (GST_BIN (pipeline), src);
-  gst_bin_add (GST_BIN (pipeline), decoder);
-  gst_bin_add (GST_BIN (pipeline), audiosink);
-
-  gst_element_link (src, decoder);
-
-  setup_dynamic_link (decoder, "src", gst_element_get_static_pad (audiosink,
-          "sink"), NULL);
+  gst_bin_add_many (GST_BIN (pipeline), src, decoder, audiosink, NULL);
+  gst_element_link_many (src, decoder, audiosink, NULL);
 
   return pipeline;
 }
@@ -119,11 +111,12 @@ static GstElement *
 make_playerbin_pipeline (const gchar * location)
 {
   GstElement *player;
+  const gchar *uri = g_filename_to_uri (location, NULL, NULL);
 
   player = gst_element_factory_make ("playbin", "player");
   g_assert (player);
 
-  g_object_set (G_OBJECT (player), "uri", location, NULL);
+  g_object_set (G_OBJECT (player), "uri", uri, NULL);
 
   return player;
 }
@@ -146,15 +139,11 @@ format_value (GtkScale * scale, gdouble value)
 static gboolean
 update_scale (gpointer data)
 {
-  GstFormat format;
-
   position = 0;
   duration = 0;
 
-  format = GST_FORMAT_TIME;
-
-  gst_element_query_position (pipeline, &format, &position);
-  gst_element_query_duration (pipeline, &format, &duration);
+  gst_element_query_position (pipeline, GST_FORMAT_TIME, &position);
+  gst_element_query_duration (pipeline, GST_FORMAT_TIME, &duration);
 
   if (position >= duration)
     duration = position;
@@ -197,7 +186,7 @@ seek_cb (GtkWidget * widget)
     GST_DEBUG ("seek because of slider move");
 
     if (do_seek (widget, TRUE, TRUE)) {
-      g_source_remove (changed_id);
+      g_signal_handler_disconnect (hscale, changed_id);
       changed_id = 0;
     }
   }
@@ -300,8 +289,9 @@ start_seek (GtkWidget * widget, GdkEventButton * event, gpointer user_data)
   }
 
   if (changed_id == 0) {
-    changed_id = g_signal_connect (GTK_OBJECT (hscale),
-        "value_changed", G_CALLBACK (seek_cb), pipeline);
+    changed_id =
+        g_signal_connect (hscale, "value_changed", G_CALLBACK (seek_cb),
+        pipeline);
   }
 
   GST_DEBUG ("start seek");
@@ -313,12 +303,12 @@ static gboolean
 stop_seek (GtkWidget * widget, gpointer user_data)
 {
   update_id =
-      g_timeout_add (UPDATE_INTERVAL, (GtkFunction) update_scale, pipeline);
+      g_timeout_add (UPDATE_INTERVAL, (GSourceFunc) update_scale, pipeline);
 
   GST_DEBUG ("stop seek");
 
   if (changed_id) {
-    g_source_remove (changed_id);
+    g_signal_handler_disconnect (hscale, changed_id);
     changed_id = 0;
   }
 
@@ -335,11 +325,9 @@ play_cb (GtkButton * button, gpointer data)
   gst_element_get_state (pipeline, &state, NULL, GST_CLOCK_TIME_NONE);
   if (state != GST_STATE_PLAYING) {
     g_print ("PLAY pipeline\n");
-    gst_element_set_state (pipeline, GST_STATE_PAUSED);
-    gst_element_get_state (pipeline, NULL, NULL, GST_CLOCK_TIME_NONE);
     gst_element_set_state (pipeline, GST_STATE_PLAYING);
     update_id =
-        g_timeout_add (UPDATE_INTERVAL, (GtkFunction) update_scale, pipeline);
+        g_timeout_add (UPDATE_INTERVAL, (GSourceFunc) update_scale, pipeline);
   }
 }
 
@@ -407,8 +395,9 @@ bus_message (GstBus * bus, GstMessage * message, gpointer data)
       GST_DEBUG ("segment_done, doing next seek");
       if (!do_seek (hscale, FALSE, update_id == 0)) {
         if (changed_id == 0) {
-          changed_id = g_signal_connect (GTK_OBJECT (hscale),
-              "value_changed", G_CALLBACK (seek_cb), pipeline);
+          changed_id =
+              g_signal_connect (hscale, "value_changed", G_CALLBACK (seek_cb),
+              pipeline);
         }
       }
       break;
@@ -421,7 +410,7 @@ bus_message (GstBus * bus, GstMessage * message, gpointer data)
 
 typedef struct
 {
-  gchar *name;
+  const gchar *name;
   GstElement *(*func) (const gchar * location);
 }
 Pipeline;
@@ -461,9 +450,6 @@ main (int argc, char **argv)
   GOptionContext *ctx;
   GError *err = NULL;
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
-
   ctx = g_option_context_new ("seek");
   g_option_context_add_main_entries (ctx, options, NULL);
   g_option_context_add_group (ctx, gst_init_get_option_group ());
@@ -494,8 +480,8 @@ main (int argc, char **argv)
 
   /* initialize gui elements ... */
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  hbox = gtk_hbox_new (FALSE, 0);
-  vbox = gtk_vbox_new (FALSE, 0);
+  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
   play_button = gtk_button_new_with_label ("play");
   pause_button = gtk_button_new_with_label ("pause");
   stop_button = gtk_button_new_with_label ("stop");
@@ -503,25 +489,24 @@ main (int argc, char **argv)
   adjustment =
       GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, (gdouble) RANGE_PREC, 0.1,
           1.0, 1.0));
-  hscale = gtk_hscale_new (adjustment);
+  hscale = gtk_scale_new (GTK_ORIENTATION_HORIZONTAL, adjustment);
   gtk_scale_set_digits (GTK_SCALE (hscale), 2);
-  gtk_range_set_update_policy (GTK_RANGE (hscale), GTK_UPDATE_CONTINUOUS);
 
   sadjustment =
       GTK_ADJUSTMENT (gtk_adjustment_new (1.0, 0.0, 5.0, 0.1, 1.0, 0.0));
-  shscale = gtk_hscale_new (sadjustment);
+  shscale = gtk_scale_new (GTK_ORIENTATION_HORIZONTAL, sadjustment);
   gtk_scale_set_digits (GTK_SCALE (shscale), 2);
-  gtk_range_set_update_policy (GTK_RANGE (shscale), GTK_UPDATE_CONTINUOUS);
 
-  schanged_id = g_signal_connect (GTK_OBJECT (shscale),
-      "value_changed", G_CALLBACK (speed_cb), pipeline);
+  schanged_id =
+      g_signal_connect (shscale, "value_changed", G_CALLBACK (speed_cb),
+      pipeline);
 
-  g_signal_connect (GTK_OBJECT (hscale),
-      "button_press_event", G_CALLBACK (start_seek), pipeline);
-  g_signal_connect (GTK_OBJECT (hscale),
-      "button_release_event", G_CALLBACK (stop_seek), pipeline);
-  g_signal_connect (GTK_OBJECT (hscale),
-      "format_value", G_CALLBACK (format_value), pipeline);
+  g_signal_connect (hscale, "button_press_event", G_CALLBACK (start_seek),
+      pipeline);
+  g_signal_connect (hscale, "button_release_event", G_CALLBACK (stop_seek),
+      pipeline);
+  g_signal_connect (hscale, "format_value", G_CALLBACK (format_value),
+      pipeline);
 
   /* do the packing stuff ... */
   gtk_window_set_default_size (GTK_WINDOW (window), 96, 96);
@@ -559,6 +544,8 @@ main (int argc, char **argv)
 
   g_print ("NULL pipeline\n");
   gst_element_set_state (pipeline, GST_STATE_NULL);
+
+  gst_object_unref (bus);
 
   g_print ("free pipeline\n");
   gst_object_unref (pipeline);

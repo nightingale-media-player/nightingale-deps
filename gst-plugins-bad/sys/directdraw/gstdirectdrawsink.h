@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * The development of this code was made possible due to the involvement
  * of Pioneers of the Inevitable, the creators of the Songbird Music player
@@ -101,6 +101,8 @@ struct _GstDirectDrawSink
   HWND video_window;
   gboolean our_video_window;
   HANDLE window_created_signal;
+  WNDPROC previous_wndproc;
+  LONG_PTR previous_user_data;
   
   /* video properties */
   gint video_width, video_height;

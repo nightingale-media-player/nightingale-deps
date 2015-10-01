@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CAM_APPLICATION_INFO_H
@@ -35,7 +35,7 @@ struct _CamApplicationInfo
   CamALApplication application;
 };
 
-CamApplicationInfo *cam_application_info_new ();
+CamApplicationInfo *cam_application_info_new (void);
 void cam_application_info_destroy (CamApplicationInfo *info);
 
 #endif /* CAM_APPLICATION_INFO_H */

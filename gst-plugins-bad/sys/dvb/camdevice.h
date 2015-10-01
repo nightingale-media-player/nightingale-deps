@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef CAM_DEVICE_H
@@ -55,7 +55,7 @@ typedef struct
   CamConditionalAccess *cas;
 } CamDevice;
 
-CamDevice *cam_device_new ();
+CamDevice *cam_device_new (void);
 void cam_device_free (CamDevice *device);
 
 gboolean cam_device_open (CamDevice *device, const char *filename);
@@ -64,6 +64,6 @@ void cam_device_close (CamDevice *device);
 gboolean cam_device_ready (CamDevice *device);
 void cam_device_poll (CamDevice *device);
 void cam_device_set_pmt (CamDevice *device,
-  GstStructure *pmt, CamConditionalAccessPmtFlag flag);
+  GstMpegtsPMT *pmt, CamConditionalAccessPmtFlag flag);
 
 #endif /* CAM_DEVICE_H */

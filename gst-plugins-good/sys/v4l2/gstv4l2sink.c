@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -31,8 +31,20 @@
  * <refsect2>
  * <title>Example launch lines</title>
  * |[
- * gst-launch videotestsrc ! v4l2sink device=/dev/video1
+ * gst-launch-1.0 videotestsrc ! v4l2sink device=/dev/video1
  * ]| This pipeline displays a test pattern on /dev/video1
+ * |[
+ * gst-launch-1.0 -v videotestsrc ! navigationtest ! v4l2sink
+ * ]| A pipeline to test navigation events.
+ * While moving the mouse pointer over the test signal you will see a black box
+ * following the mouse pointer. If you press the mouse button somewhere on the
+ * video and release it somewhere else a green box will appear where you pressed
+ * the button and a red one where you released it. (The navigationtest element
+ * is part of gst-plugins-good.) You can observe here that even if the images
+ * are scaled through hardware the pointer coordinates are converted back to the
+ * original video frame geometry so that the box can be drawn to the correct
+ * position. This also handles borders correctly, limiting coordinates to the
+ * image area
  * </refsect2>
  */
 
@@ -41,11 +53,10 @@
 #include <config.h>
 #endif
 
+#include "gst/video/gstvideometa.h"
 
 #include "gstv4l2colorbalance.h"
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-#include "gstv4l2xoverlay.h"
-#endif
+#include "gstv4l2tuner.h"
 #include "gstv4l2vidorient.h"
 
 #include "gstv4l2sink.h"
@@ -53,122 +64,39 @@
 
 #include <string.h>
 
-
-static const GstElementDetails gst_v4l2sink_details =
-GST_ELEMENT_DETAILS ("Video (video4linux2) Sink",
-    "Sink/Video",
-    "Displays frames on a video4linux2 device",
-    "Rob Clark <rob@ti.com>,");
-
 GST_DEBUG_CATEGORY (v4l2sink_debug);
 #define GST_CAT_DEFAULT v4l2sink_debug
 
-#define PROP_DEF_QUEUE_SIZE         8
 #define DEFAULT_PROP_DEVICE   "/dev/video1"
 
 enum
 {
   PROP_0,
   V4L2_STD_OBJECT_PROPS,
-  PROP_QUEUE_SIZE,
   PROP_OVERLAY_TOP,
   PROP_OVERLAY_LEFT,
   PROP_OVERLAY_WIDTH,
   PROP_OVERLAY_HEIGHT,
+  PROP_CROP_TOP,
+  PROP_CROP_LEFT,
+  PROP_CROP_WIDTH,
+  PROP_CROP_HEIGHT,
 };
 
 
-GST_IMPLEMENT_V4L2_PROBE_METHODS (GstV4l2SinkClass, gst_v4l2sink);
 GST_IMPLEMENT_V4L2_COLOR_BALANCE_METHODS (GstV4l2Sink, gst_v4l2sink);
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-GST_IMPLEMENT_V4L2_XOVERLAY_METHODS (GstV4l2Sink, gst_v4l2sink);
-#endif
+GST_IMPLEMENT_V4L2_TUNER_METHODS (GstV4l2Sink, gst_v4l2sink);
 GST_IMPLEMENT_V4L2_VIDORIENT_METHODS (GstV4l2Sink, gst_v4l2sink);
 
-static gboolean
-gst_v4l2sink_iface_supported (GstImplementsInterface * iface, GType iface_type)
-{
-  GstV4l2Object *v4l2object = GST_V4L2SINK (iface)->v4l2object;
-
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  g_assert (iface_type == GST_TYPE_X_OVERLAY ||
-      iface_type == GST_TYPE_COLOR_BALANCE ||
-      iface_type == GST_TYPE_VIDEO_ORIENTATION);
-#else
-  g_assert (iface_type == GST_TYPE_COLOR_BALANCE ||
-      iface_type == GST_TYPE_VIDEO_ORIENTATION);
-#endif
-
-  if (v4l2object->video_fd == -1)
-    return FALSE;
-
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  if (iface_type == GST_TYPE_X_OVERLAY && !GST_V4L2_IS_OVERLAY (v4l2object))
-    return FALSE;
-#endif
-
-  return TRUE;
-}
-
-static void
-gst_v4l2sink_interface_init (GstImplementsInterfaceClass * klass)
-{
-  /*
-   * default virtual functions
-   */
-  klass->supported = gst_v4l2sink_iface_supported;
-}
-
-void
-gst_v4l2sink_init_interfaces (GType type)
-{
-  static const GInterfaceInfo v4l2iface_info = {
-    (GInterfaceInitFunc) gst_v4l2sink_interface_init,
-    NULL,
-    NULL,
-  };
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  static const GInterfaceInfo v4l2_xoverlay_info = {
-    (GInterfaceInitFunc) gst_v4l2sink_xoverlay_interface_init,
-    NULL,
-    NULL,
-  };
-#endif
-  static const GInterfaceInfo v4l2_colorbalance_info = {
-    (GInterfaceInitFunc) gst_v4l2sink_color_balance_interface_init,
-    NULL,
-    NULL,
-  };
-  static const GInterfaceInfo v4l2_videoorientation_info = {
-    (GInterfaceInitFunc) gst_v4l2sink_video_orientation_interface_init,
-    NULL,
-    NULL,
-  };
-  static const GInterfaceInfo v4l2_propertyprobe_info = {
-    (GInterfaceInitFunc) gst_v4l2sink_property_probe_interface_init,
-    NULL,
-    NULL,
-  };
-
-  g_type_add_interface_static (type,
-      GST_TYPE_IMPLEMENTS_INTERFACE, &v4l2iface_info);
-#if 0                           /* overlay is still not implemented #ifdef HAVE_XVIDEO */
-  g_type_add_interface_static (type, GST_TYPE_X_OVERLAY, &v4l2_xoverlay_info);
-#endif
-  g_type_add_interface_static (type,
-      GST_TYPE_COLOR_BALANCE, &v4l2_colorbalance_info);
-  g_type_add_interface_static (type,
-      GST_TYPE_VIDEO_ORIENTATION, &v4l2_videoorientation_info);
-  g_type_add_interface_static (type, GST_TYPE_PROPERTY_PROBE,
-      &v4l2_propertyprobe_info);
-}
+#define gst_v4l2sink_parent_class parent_class
+G_DEFINE_TYPE_WITH_CODE (GstV4l2Sink, gst_v4l2sink, GST_TYPE_VIDEO_SINK,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_TUNER, gst_v4l2sink_tuner_interface_init);
+    G_IMPLEMENT_INTERFACE (GST_TYPE_COLOR_BALANCE,
+        gst_v4l2sink_color_balance_interface_init);
+    G_IMPLEMENT_INTERFACE (GST_TYPE_VIDEO_ORIENTATION,
+        gst_v4l2sink_video_orientation_interface_init));
 
 
-GST_BOILERPLATE_FULL (GstV4l2Sink, gst_v4l2sink, GstVideoSink,
-    GST_TYPE_VIDEO_SINK, gst_v4l2sink_init_interfaces);
-
-
-static void gst_v4l2sink_dispose (GObject * object);
 static void gst_v4l2sink_finalize (GstV4l2Sink * v4l2sink);
 
 /* GObject methods: */
@@ -177,37 +105,19 @@ static void gst_v4l2sink_set_property (GObject * object, guint prop_id,
 static void gst_v4l2sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-
 /* GstElement methods: */
 static GstStateChangeReturn gst_v4l2sink_change_state (GstElement * element,
     GstStateChange transition);
 
 /* GstBaseSink methods: */
-static GstCaps *gst_v4l2sink_get_caps (GstBaseSink * bsink);
+static gboolean gst_v4l2sink_propose_allocation (GstBaseSink * bsink,
+    GstQuery * query);
+static GstCaps *gst_v4l2sink_get_caps (GstBaseSink * bsink, GstCaps * filter);
 static gboolean gst_v4l2sink_set_caps (GstBaseSink * bsink, GstCaps * caps);
-static GstFlowReturn gst_v4l2sink_buffer_alloc (GstBaseSink * bsink,
-    guint64 offset, guint size, GstCaps * caps, GstBuffer ** buf);
-static GstFlowReturn gst_v4l2sink_show_frame (GstBaseSink * bsink,
+static GstFlowReturn gst_v4l2sink_show_frame (GstVideoSink * bsink,
     GstBuffer * buf);
-
-
-static void
-gst_v4l2sink_base_init (gpointer g_class)
-{
-  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
-  GstV4l2SinkClass *gstv4l2sink_class = GST_V4L2SINK_CLASS (g_class);
-
-  gstv4l2sink_class->v4l2_class_devices = NULL;
-
-  GST_DEBUG_CATEGORY_INIT (v4l2sink_debug, "v4l2sink", 0, "V4L2 sink element");
-
-  gst_element_class_set_details (gstelement_class, &gst_v4l2sink_details);
-
-  gst_element_class_add_pad_template
-      (gstelement_class,
-      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
-          gst_v4l2_object_get_all_caps ()));
-}
+static gboolean gst_v4l2sink_unlock (GstBaseSink * sink);
+static gboolean gst_v4l2sink_unlock_stop (GstBaseSink * sink);
 
 static void
 gst_v4l2sink_class_init (GstV4l2SinkClass * klass)
@@ -215,12 +125,13 @@ gst_v4l2sink_class_init (GstV4l2SinkClass * klass)
   GObjectClass *gobject_class;
   GstElementClass *element_class;
   GstBaseSinkClass *basesink_class;
+  GstVideoSinkClass *videosink_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
   element_class = GST_ELEMENT_CLASS (klass);
   basesink_class = GST_BASE_SINK_CLASS (klass);
+  videosink_class = GST_VIDEO_SINK_CLASS (klass);
 
-  gobject_class->dispose = gst_v4l2sink_dispose;
   gobject_class->finalize = (GObjectFinalizeFunc) gst_v4l2sink_finalize;
   gobject_class->set_property = gst_v4l2sink_set_property;
   gobject_class->get_property = gst_v4l2sink_get_property;
@@ -229,41 +140,70 @@ gst_v4l2sink_class_init (GstV4l2SinkClass * klass)
 
   gst_v4l2_object_install_properties_helper (gobject_class,
       DEFAULT_PROP_DEVICE);
-  g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
-      g_param_spec_uint ("queue-size", "Queue size",
-          "Number of buffers to be enqueud in the driver in streaming mode",
-          GST_V4L2_MIN_BUFFERS, GST_V4L2_MAX_BUFFERS, PROP_DEF_QUEUE_SIZE,
-          G_PARAM_READWRITE));
+
   g_object_class_install_property (gobject_class, PROP_OVERLAY_TOP,
       g_param_spec_int ("overlay-top", "Overlay top",
           "The topmost (y) coordinate of the video overlay; top left corner of screen is 0,0",
-          0x80000000, 0x7fffffff, 0, G_PARAM_READWRITE));
+          G_MININT, G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_OVERLAY_LEFT,
       g_param_spec_int ("overlay-left", "Overlay left",
           "The leftmost (x) coordinate of the video overlay; top left corner of screen is 0,0",
-          0x80000000, 0x7fffffff, 0, G_PARAM_READWRITE));
+          G_MININT, G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_OVERLAY_WIDTH,
       g_param_spec_uint ("overlay-width", "Overlay width",
           "The width of the video overlay; default is equal to negotiated image width",
-          0, 0xffffffff, 0, G_PARAM_READWRITE));
+          0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_OVERLAY_HEIGHT,
       g_param_spec_uint ("overlay-height", "Overlay height",
           "The height of the video overlay; default is equal to negotiated image height",
+          0, G_MAXUINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_CROP_TOP,
+      g_param_spec_int ("crop-top", "Crop top",
+          "The topmost (y) coordinate of the video crop; top left corner of image is 0,0",
+          0x80000000, 0x7fffffff, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_CROP_LEFT,
+      g_param_spec_int ("crop-left", "Crop left",
+          "The leftmost (x) coordinate of the video crop; top left corner of image is 0,0",
+          0x80000000, 0x7fffffff, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_CROP_WIDTH,
+      g_param_spec_uint ("crop-width", "Crop width",
+          "The width of the video crop; default is equal to negotiated image width",
           0, 0xffffffff, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_CROP_HEIGHT,
+      g_param_spec_uint ("crop-height", "Crop height",
+          "The height of the video crop; default is equal to negotiated image height",
+          0, 0xffffffff, 0, G_PARAM_READWRITE));
+
+  gst_element_class_set_static_metadata (element_class,
+      "Video (video4linux2) Sink", "Sink/Video",
+      "Displays frames on a video4linux2 device", "Rob Clark <rob@ti.com>,");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
+          gst_v4l2_object_get_all_caps ()));
 
   basesink_class->get_caps = GST_DEBUG_FUNCPTR (gst_v4l2sink_get_caps);
   basesink_class->set_caps = GST_DEBUG_FUNCPTR (gst_v4l2sink_set_caps);
-  basesink_class->buffer_alloc = GST_DEBUG_FUNCPTR (gst_v4l2sink_buffer_alloc);
-  basesink_class->preroll = GST_DEBUG_FUNCPTR (gst_v4l2sink_show_frame);
-  basesink_class->render = GST_DEBUG_FUNCPTR (gst_v4l2sink_show_frame);
+  basesink_class->propose_allocation =
+      GST_DEBUG_FUNCPTR (gst_v4l2sink_propose_allocation);
+  basesink_class->unlock = GST_DEBUG_FUNCPTR (gst_v4l2sink_unlock);
+  basesink_class->unlock_stop = GST_DEBUG_FUNCPTR (gst_v4l2sink_unlock_stop);
+
+  videosink_class->show_frame = GST_DEBUG_FUNCPTR (gst_v4l2sink_show_frame);
+
+  klass->v4l2_class_devices = NULL;
+
+  GST_DEBUG_CATEGORY_INIT (v4l2sink_debug, "v4l2sink", 0, "V4L2 sink element");
+
 }
 
 static void
-gst_v4l2sink_init (GstV4l2Sink * v4l2sink, GstV4l2SinkClass * klass)
+gst_v4l2sink_init (GstV4l2Sink * v4l2sink)
 {
   v4l2sink->v4l2object = gst_v4l2_object_new (GST_ELEMENT (v4l2sink),
       V4L2_BUF_TYPE_VIDEO_OUTPUT, DEFAULT_PROP_DEVICE,
-      gst_v4l2_get_input, gst_v4l2_set_input, NULL);
+      gst_v4l2_get_output, gst_v4l2_set_output, NULL);
 
   /* same default value for video output device as is used for
    * v4l2src/capture is no good..  so lets set a saner default
@@ -272,31 +212,8 @@ gst_v4l2sink_init (GstV4l2Sink * v4l2sink, GstV4l2SinkClass * klass)
    */
   g_object_set (v4l2sink, "device", "/dev/video1", NULL);
 
-  /* number of buffers requested */
-  v4l2sink->num_buffers = PROP_DEF_QUEUE_SIZE;
-
-  v4l2sink->probed_caps = NULL;
-  v4l2sink->current_caps = NULL;
-
   v4l2sink->overlay_fields_set = 0;
-  v4l2sink->state = 0;
-}
-
-
-static void
-gst_v4l2sink_dispose (GObject * object)
-{
-  GstV4l2Sink *v4l2sink = GST_V4L2SINK (object);
-
-  if (v4l2sink->probed_caps) {
-    gst_caps_unref (v4l2sink->probed_caps);
-  }
-
-  if (v4l2sink->current_caps) {
-    gst_caps_unref (v4l2sink->current_caps);
-  }
-
-  G_OBJECT_CLASS (parent_class)->dispose (object);
+  v4l2sink->crop_fields_set = 0;
 }
 
 
@@ -309,31 +226,24 @@ gst_v4l2sink_finalize (GstV4l2Sink * v4l2sink)
 }
 
 
-/**
- * State values
+/*
+ * flags to indicate which overlay/crop properties the user has set (and
+ * therefore which ones should override the defaults from the driver)
  */
 enum
 {
-  STATE_OFF = 0,
-  STATE_PENDING_STREAMON,
-  STATE_STREAMING
-};
-
-/**
- * flags to indicate which overlay properties the user has set (and therefore
- * which ones should override the defaults from the driver)
- */
-enum
-{
-  OVERLAY_TOP_SET = 0x01,
-  OVERLAY_LEFT_SET = 0x02,
-  OVERLAY_WIDTH_SET = 0x04,
-  OVERLAY_HEIGHT_SET = 0x08
+  RECT_TOP_SET = 0x01,
+  RECT_LEFT_SET = 0x02,
+  RECT_WIDTH_SET = 0x04,
+  RECT_HEIGHT_SET = 0x08
 };
 
 static void
 gst_v4l2sink_sync_overlay_fields (GstV4l2Sink * v4l2sink)
 {
+  if (!v4l2sink->overlay_fields_set)
+    return;
+
   if (GST_V4L2_IS_OPEN (v4l2sink->v4l2object)) {
 
     gint fd = v4l2sink->v4l2object->video_fd;
@@ -342,23 +252,82 @@ gst_v4l2sink_sync_overlay_fields (GstV4l2Sink * v4l2sink)
     memset (&format, 0x00, sizeof (struct v4l2_format));
     format.type = V4L2_BUF_TYPE_VIDEO_OVERLAY;
 
-    g_return_if_fail (v4l2_ioctl (fd, VIDIOC_G_FMT, &format) >= 0);
-
-    if (v4l2sink->overlay_fields_set) {
-      if (v4l2sink->overlay_fields_set & OVERLAY_TOP_SET)
-        format.fmt.win.w.top = v4l2sink->overlay.top;
-      if (v4l2sink->overlay_fields_set & OVERLAY_LEFT_SET)
-        format.fmt.win.w.left = v4l2sink->overlay.left;
-      if (v4l2sink->overlay_fields_set & OVERLAY_WIDTH_SET)
-        format.fmt.win.w.width = v4l2sink->overlay.width;
-      if (v4l2sink->overlay_fields_set & OVERLAY_HEIGHT_SET)
-        format.fmt.win.w.height = v4l2sink->overlay.height;
-
-      g_return_if_fail (v4l2_ioctl (fd, VIDIOC_S_FMT, &format) >= 0);
-      v4l2sink->overlay_fields_set = 0;
+    if (v4l2_ioctl (fd, VIDIOC_G_FMT, &format) < 0) {
+      GST_WARNING_OBJECT (v4l2sink, "VIDIOC_G_FMT failed");
+      return;
     }
 
+    GST_DEBUG_OBJECT (v4l2sink,
+        "setting overlay: overlay_fields_set=0x%02x, top=%d, left=%d, width=%d, height=%d",
+        v4l2sink->overlay_fields_set,
+        v4l2sink->overlay.top, v4l2sink->overlay.left,
+        v4l2sink->overlay.width, v4l2sink->overlay.height);
+
+    if (v4l2sink->overlay_fields_set & RECT_TOP_SET)
+      format.fmt.win.w.top = v4l2sink->overlay.top;
+    if (v4l2sink->overlay_fields_set & RECT_LEFT_SET)
+      format.fmt.win.w.left = v4l2sink->overlay.left;
+    if (v4l2sink->overlay_fields_set & RECT_WIDTH_SET)
+      format.fmt.win.w.width = v4l2sink->overlay.width;
+    if (v4l2sink->overlay_fields_set & RECT_HEIGHT_SET)
+      format.fmt.win.w.height = v4l2sink->overlay.height;
+
+    if (v4l2_ioctl (fd, VIDIOC_S_FMT, &format) < 0) {
+      GST_WARNING_OBJECT (v4l2sink, "VIDIOC_S_FMT failed");
+      return;
+    }
+
+    v4l2sink->overlay_fields_set = 0;
     v4l2sink->overlay = format.fmt.win.w;
+  }
+}
+
+static void
+gst_v4l2sink_sync_crop_fields (GstV4l2Sink * v4l2sink)
+{
+  if (!v4l2sink->crop_fields_set)
+    return;
+
+  if (GST_V4L2_IS_OPEN (v4l2sink->v4l2object)) {
+
+    gint fd = v4l2sink->v4l2object->video_fd;
+    struct v4l2_crop crop;
+
+    memset (&crop, 0x00, sizeof (struct v4l2_crop));
+    crop.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+
+    if (v4l2_ioctl (fd, VIDIOC_G_CROP, &crop) < 0) {
+      GST_WARNING_OBJECT (v4l2sink, "VIDIOC_G_CROP failed");
+      return;
+    }
+
+    GST_DEBUG_OBJECT (v4l2sink,
+        "setting crop: crop_fields_set=0x%02x, top=%d, left=%d, width=%d, height=%d",
+        v4l2sink->crop_fields_set,
+        v4l2sink->crop.top, v4l2sink->crop.left,
+        v4l2sink->crop.width, v4l2sink->crop.height);
+
+    if (v4l2sink->crop_fields_set & RECT_TOP_SET)
+      crop.c.top = v4l2sink->crop.top;
+    if (v4l2sink->crop_fields_set & RECT_LEFT_SET)
+      crop.c.left = v4l2sink->crop.left;
+    if (v4l2sink->crop_fields_set & RECT_WIDTH_SET)
+      crop.c.width = v4l2sink->crop.width;
+    if (v4l2sink->crop_fields_set & RECT_HEIGHT_SET)
+      crop.c.height = v4l2sink->crop.height;
+
+    if (v4l2_ioctl (fd, VIDIOC_S_CROP, &crop) < 0) {
+      GST_WARNING_OBJECT (v4l2sink, "VIDIOC_S_CROP failed");
+      return;
+    }
+
+    if (v4l2_ioctl (fd, VIDIOC_G_CROP, &crop) < 0) {
+      GST_WARNING_OBJECT (v4l2sink, "VIDIOC_G_CROP failed");
+      return;
+    }
+
+    v4l2sink->crop_fields_set = 0;
+    v4l2sink->crop = crop.c;
   }
 }
 
@@ -372,28 +341,45 @@ gst_v4l2sink_set_property (GObject * object,
   if (!gst_v4l2_object_set_property_helper (v4l2sink->v4l2object,
           prop_id, value, pspec)) {
     switch (prop_id) {
-      case PROP_QUEUE_SIZE:
-        v4l2sink->num_buffers = g_value_get_uint (value);
-        break;
       case PROP_OVERLAY_TOP:
         v4l2sink->overlay.top = g_value_get_int (value);
-        v4l2sink->overlay_fields_set |= OVERLAY_TOP_SET;
+        v4l2sink->overlay_fields_set |= RECT_TOP_SET;
         gst_v4l2sink_sync_overlay_fields (v4l2sink);
         break;
       case PROP_OVERLAY_LEFT:
         v4l2sink->overlay.left = g_value_get_int (value);
-        v4l2sink->overlay_fields_set |= OVERLAY_LEFT_SET;
+        v4l2sink->overlay_fields_set |= RECT_LEFT_SET;
         gst_v4l2sink_sync_overlay_fields (v4l2sink);
         break;
       case PROP_OVERLAY_WIDTH:
         v4l2sink->overlay.width = g_value_get_uint (value);
-        v4l2sink->overlay_fields_set |= OVERLAY_WIDTH_SET;
+        v4l2sink->overlay_fields_set |= RECT_WIDTH_SET;
         gst_v4l2sink_sync_overlay_fields (v4l2sink);
         break;
       case PROP_OVERLAY_HEIGHT:
         v4l2sink->overlay.height = g_value_get_uint (value);
-        v4l2sink->overlay_fields_set |= OVERLAY_HEIGHT_SET;
+        v4l2sink->overlay_fields_set |= RECT_HEIGHT_SET;
         gst_v4l2sink_sync_overlay_fields (v4l2sink);
+        break;
+      case PROP_CROP_TOP:
+        v4l2sink->crop.top = g_value_get_int (value);
+        v4l2sink->crop_fields_set |= RECT_TOP_SET;
+        gst_v4l2sink_sync_crop_fields (v4l2sink);
+        break;
+      case PROP_CROP_LEFT:
+        v4l2sink->crop.left = g_value_get_int (value);
+        v4l2sink->crop_fields_set |= RECT_LEFT_SET;
+        gst_v4l2sink_sync_crop_fields (v4l2sink);
+        break;
+      case PROP_CROP_WIDTH:
+        v4l2sink->crop.width = g_value_get_uint (value);
+        v4l2sink->crop_fields_set |= RECT_WIDTH_SET;
+        gst_v4l2sink_sync_crop_fields (v4l2sink);
+        break;
+      case PROP_CROP_HEIGHT:
+        v4l2sink->crop.height = g_value_get_uint (value);
+        v4l2sink->crop_fields_set |= RECT_HEIGHT_SET;
+        gst_v4l2sink_sync_crop_fields (v4l2sink);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -412,9 +398,6 @@ gst_v4l2sink_get_property (GObject * object,
   if (!gst_v4l2_object_get_property_helper (v4l2sink->v4l2object,
           prop_id, value, pspec)) {
     switch (prop_id) {
-      case PROP_QUEUE_SIZE:
-        g_value_set_uint (value, v4l2sink->num_buffers);
-        break;
       case PROP_OVERLAY_TOP:
         g_value_set_int (value, v4l2sink->overlay.top);
         break;
@@ -426,6 +409,18 @@ gst_v4l2sink_get_property (GObject * object,
         break;
       case PROP_OVERLAY_HEIGHT:
         g_value_set_uint (value, v4l2sink->overlay.height);
+        break;
+      case PROP_CROP_TOP:
+        g_value_set_int (value, v4l2sink->crop.top);
+        break;
+      case PROP_CROP_LEFT:
+        g_value_set_int (value, v4l2sink->crop.left);
+        break;
+      case PROP_CROP_WIDTH:
+        g_value_set_uint (value, v4l2sink->crop.width);
+        break;
+      case PROP_CROP_HEIGHT:
+        g_value_set_uint (value, v4l2sink->crop.height);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -447,7 +442,7 @@ gst_v4l2sink_change_state (GstElement * element, GstStateChange transition)
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       /* open the device */
-      if (!gst_v4l2_object_start (v4l2sink->v4l2object))
+      if (!gst_v4l2_object_open (v4l2sink->v4l2object))
         return GST_STATE_CHANGE_FAILURE;
       break;
     default:
@@ -458,16 +453,15 @@ gst_v4l2sink_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_PAUSED_TO_READY:
-      if (v4l2sink->state == STATE_STREAMING) {
-        if (!gst_v4l2_object_stop_streaming (v4l2sink->v4l2object)) {
-          return GST_STATE_CHANGE_FAILURE;
-        }
-        v4l2sink->state = STATE_OFF;
-      }
+      if (!gst_v4l2_object_stop (v4l2sink->v4l2object))
+        return GST_STATE_CHANGE_FAILURE;
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
-      /* close the device */
+      /* we need to call stop here too */
       if (!gst_v4l2_object_stop (v4l2sink->v4l2object))
+        return GST_STATE_CHANGE_FAILURE;
+      /* close the device */
+      if (!gst_v4l2_object_close (v4l2sink->v4l2object))
         return GST_STATE_CHANGE_FAILURE;
       break;
     default:
@@ -479,240 +473,161 @@ gst_v4l2sink_change_state (GstElement * element, GstStateChange transition)
 
 
 static GstCaps *
-gst_v4l2sink_get_caps (GstBaseSink * bsink)
+gst_v4l2sink_get_caps (GstBaseSink * bsink, GstCaps * filter)
 {
   GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
-  GstCaps *ret;
-  GSList *walk;
-  GSList *formats;
 
   if (!GST_V4L2_IS_OPEN (v4l2sink->v4l2object)) {
     /* FIXME: copy? */
     GST_DEBUG_OBJECT (v4l2sink, "device is not open");
-    return
-        gst_caps_copy (gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD
-            (v4l2sink)));
+    return gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD (v4l2sink));
   }
 
-  if (v4l2sink->probed_caps) {
-    LOG_CAPS (v4l2sink, v4l2sink->probed_caps);
-    return gst_caps_ref (v4l2sink->probed_caps);
-  }
 
-  formats = gst_v4l2_object_get_format_list (v4l2sink->v4l2object);
-
-  ret = gst_caps_new_empty ();
-
-  for (walk = v4l2sink->v4l2object->formats; walk; walk = walk->next) {
-    struct v4l2_fmtdesc *format;
-
-    GstStructure *template;
-
-    format = (struct v4l2_fmtdesc *) walk->data;
-
-    template = gst_v4l2_object_v4l2fourcc_to_structure (format->pixelformat);
-
-    if (template) {
-      GstCaps *tmp;
-
-      tmp =
-          gst_v4l2_object_probe_caps_for_format (v4l2sink->v4l2object,
-          format->pixelformat, template);
-      if (tmp)
-        gst_caps_append (ret, tmp);
-
-      gst_structure_free (template);
-    } else {
-      GST_DEBUG_OBJECT (v4l2sink, "unknown format %u", format->pixelformat);
-    }
-  }
-
-  v4l2sink->probed_caps = gst_caps_ref (ret);
-
-  GST_INFO_OBJECT (v4l2sink, "probed caps: %p", ret);
-  LOG_CAPS (v4l2sink, ret);
-
-  return ret;
+  return gst_v4l2_object_get_caps (v4l2sink->v4l2object, filter);
 }
 
 static gboolean
 gst_v4l2sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
 {
   GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
-  gint w = 0, h = 0;
-  struct v4l2_fmtdesc *format;
-  guint fps_n, fps_d;
-  guint size;
+  GstV4l2Object *obj = v4l2sink->v4l2object;
 
   LOG_CAPS (v4l2sink, caps);
 
-  if (!GST_V4L2_IS_OPEN (v4l2sink->v4l2object)) {
+  if (!GST_V4L2_IS_OPEN (obj)) {
     GST_DEBUG_OBJECT (v4l2sink, "device is not open");
     return FALSE;
   }
 
-  if (v4l2sink->current_caps) {
-    GST_DEBUG_OBJECT (v4l2sink, "already have caps set.. are they equal?");
-    LOG_CAPS (v4l2sink, v4l2sink->current_caps);
-    if (gst_caps_is_equal (v4l2sink->current_caps, caps)) {
-      GST_DEBUG_OBJECT (v4l2sink, "yes they are!");
-      return TRUE;
-    }
-    GST_DEBUG_OBJECT (v4l2sink, "no they aren't!");
-  }
+  /* make sure the caps changed before doing anything */
+  if (gst_v4l2_object_caps_equal (obj, caps))
+    return TRUE;
 
-  if (v4l2sink->pool) {
-    /* TODO: if we've already allocated buffers, we probably need to
-     * do something here to free and reallocate....
-     *
-     *   gst_v4l2_object_stop_streaming()
-     *   gst_v4l2_buffer_pool_destroy()
-     *
-     */
-    GST_DEBUG_OBJECT (v4l2sink, "warning, changing caps not supported yet");
-    return FALSE;
-  }
+  if (!gst_v4l2_object_stop (obj))
+    goto stop_failed;
 
-  /* we want our own v4l2 type of fourcc codes */
-  if (!gst_v4l2_object_get_caps_info (v4l2sink->v4l2object, caps,
-          &format, &w, &h, &fps_n, &fps_d, &size)) {
-    GST_DEBUG_OBJECT (v4l2sink, "can't get capture format from caps %p", caps);
-    return FALSE;
-  }
-
-  if (!format) {
-    GST_DEBUG_OBJECT (v4l2sink, "unrecognized caps!!");
-    return FALSE;
-  }
-
-  if (!gst_v4l2_object_set_format (v4l2sink->v4l2object, format->pixelformat, w,
-          h)) {
-    /* error already posted */
-    return FALSE;
-  }
+  if (!gst_v4l2_object_set_format (obj, caps))
+    goto invalid_format;
 
   gst_v4l2sink_sync_overlay_fields (v4l2sink);
+  gst_v4l2sink_sync_crop_fields (v4l2sink);
 
-  v4l2sink->current_caps = gst_caps_ref (caps);
+  GST_INFO_OBJECT (v4l2sink, "outputting buffers via mode %u", obj->mode);
+
+  v4l2sink->video_width = GST_V4L2_WIDTH (obj);
+  v4l2sink->video_height = GST_V4L2_HEIGHT (obj);
+
+  /* TODO: videosink width/height should be scaled according to
+   * pixel-aspect-ratio
+   */
+  GST_VIDEO_SINK_WIDTH (v4l2sink) = v4l2sink->video_width;
+  GST_VIDEO_SINK_HEIGHT (v4l2sink) = v4l2sink->video_height;
+
+  return TRUE;
+
+  /* ERRORS */
+stop_failed:
+  {
+    GST_DEBUG_OBJECT (v4l2sink, "failed to stop streaming");
+    return FALSE;
+  }
+invalid_format:
+  {
+    /* error already posted */
+    GST_DEBUG_OBJECT (v4l2sink, "can't set format");
+    return FALSE;
+  }
+}
+
+static gboolean
+gst_v4l2sink_propose_allocation (GstBaseSink * bsink, GstQuery * query)
+{
+  GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
+  gboolean last_sample_enabled;
+
+  if (!gst_v4l2_object_propose_allocation (v4l2sink->v4l2object, query))
+    return FALSE;
+
+  g_object_get (bsink, "enable-last-sample", &last_sample_enabled, NULL);
+
+  if (last_sample_enabled) {
+    GstBufferPool *pool;
+    guint size, min, max;
+
+    gst_query_parse_nth_allocation_pool (query, 0, &pool, &size, &min, &max);
+
+    /* we need 1 more, otherwise we'll run out of buffers at preroll */
+    min++;
+    if (max < min)
+      max = min;
+
+    gst_query_set_nth_allocation_pool (query, 0, pool, size, min, max);
+    gst_object_unref (pool);
+  }
 
   return TRUE;
 }
 
-/** buffer alloc function to implement pad_alloc for upstream element */
+/* called after A/V sync to render frame */
 static GstFlowReturn
-gst_v4l2sink_buffer_alloc (GstBaseSink * bsink, guint64 offset, guint size,
-    GstCaps * caps, GstBuffer ** buf)
+gst_v4l2sink_show_frame (GstVideoSink * vsink, GstBuffer * buf)
 {
-  GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
-  GstV4l2Buffer *v4l2buf;
+  GstFlowReturn ret;
+  GstV4l2Sink *v4l2sink = GST_V4L2SINK (vsink);
+  GstV4l2Object *obj = v4l2sink->v4l2object;
+  GstBufferPool *bpool = GST_BUFFER_POOL (obj->pool);
 
-  if (v4l2sink->v4l2object->vcap.capabilities & V4L2_CAP_STREAMING) {
+  GST_DEBUG_OBJECT (v4l2sink, "render buffer: %p", buf);
 
-    /* initialize the buffer pool if not initialized yet (first buffer): */
-    if (G_UNLIKELY (!v4l2sink->pool)) {
+  if (G_UNLIKELY (obj->pool == NULL))
+    goto not_negotiated;
 
-      /* set_caps() might not be called yet.. so just to make sure: */
-      if (!gst_v4l2sink_set_caps (bsink, caps)) {
-        return GST_FLOW_ERROR;
-      }
+  if (G_UNLIKELY (!gst_buffer_pool_is_active (bpool))) {
+    GstStructure *config;
 
-      GST_V4L2_CHECK_OPEN (v4l2sink->v4l2object);
+    /* this pool was not activated, configure and activate */
+    GST_DEBUG_OBJECT (v4l2sink, "activating pool");
 
-      if (!(v4l2sink->pool = gst_v4l2_buffer_pool_new (GST_ELEMENT (v4l2sink),
-                  v4l2sink->v4l2object->video_fd,
-                  v4l2sink->num_buffers, caps, FALSE,
-                  V4L2_BUF_TYPE_VIDEO_OUTPUT))) {
-        return GST_FLOW_ERROR;
-      }
-      v4l2sink->state = STATE_PENDING_STREAMON;
+    config = gst_buffer_pool_get_config (bpool);
+    gst_buffer_pool_config_add_option (config,
+        GST_BUFFER_POOL_OPTION_VIDEO_META);
+    gst_buffer_pool_set_config (bpool, config);
 
-      GST_INFO_OBJECT (v4l2sink, "outputting buffers via mmap()");
+    if (!gst_buffer_pool_set_active (bpool, TRUE))
+      goto activate_failed;
+  }
 
-      if (v4l2sink->num_buffers != v4l2sink->pool->buffer_count) {
-        v4l2sink->num_buffers = v4l2sink->pool->buffer_count;
-        g_object_notify (G_OBJECT (v4l2sink), "queue-size");
-      }
-    }
+  ret = gst_v4l2_buffer_pool_process (GST_V4L2_BUFFER_POOL_CAST (obj->pool),
+      &buf);
 
-    v4l2buf = gst_v4l2_buffer_pool_get (v4l2sink->pool);
+  return ret;
 
-    if (G_LIKELY (v4l2buf)) {
-      GST_DEBUG_OBJECT (v4l2sink, "allocated buffer: %p", v4l2buf);
-      *buf = GST_BUFFER (v4l2buf);
-      return GST_FLOW_OK;
-    } else {
-      GST_DEBUG_OBJECT (v4l2sink, "failed to allocate buffer");
-      return GST_FLOW_ERROR;
-    }
-
-  } else {
-    GST_ERROR_OBJECT (v4l2sink, "only supporting streaming mode for now...");
+  /* ERRORS */
+not_negotiated:
+  {
+    GST_ERROR_OBJECT (v4l2sink, "not negotiated");
+    return GST_FLOW_NOT_NEGOTIATED;
+  }
+activate_failed:
+  {
+    GST_ELEMENT_ERROR (v4l2sink, RESOURCE, SETTINGS,
+        (_("Failed to allocated required memory.")),
+        ("Buffer pool activation failed"));
     return GST_FLOW_ERROR;
   }
 }
 
-/** called after A/V sync to render frame */
-static GstFlowReturn
-gst_v4l2sink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
+static gboolean
+gst_v4l2sink_unlock (GstBaseSink * sink)
 {
-  GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
-  GstBuffer *newbuf = NULL;
+  GstV4l2Sink *v4l2sink = GST_V4L2SINK (sink);
+  return gst_v4l2_object_unlock (v4l2sink->v4l2object);
+}
 
-  GST_DEBUG_OBJECT (v4l2sink, "render buffer: %p", buf);
-
-  if (!GST_IS_V4L2_BUFFER (buf)) {
-    GstFlowReturn ret;
-
-    GST_DEBUG_OBJECT (v4l2sink, "slow-path.. I got a %s so I need to memcpy",
-        g_type_name (G_OBJECT_TYPE (buf)));
-
-    ret = gst_v4l2sink_buffer_alloc (bsink,
-        GST_BUFFER_OFFSET (buf), GST_BUFFER_SIZE (buf), GST_BUFFER_CAPS (buf),
-        &newbuf);
-
-    if (GST_FLOW_OK != ret) {
-      return ret;
-    }
-
-    memcpy (GST_BUFFER_DATA (newbuf),
-        GST_BUFFER_DATA (buf),
-        MIN (GST_BUFFER_SIZE (newbuf), GST_BUFFER_SIZE (buf)));
-
-    GST_DEBUG_OBJECT (v4l2sink, "render copied buffer: %p", newbuf);
-
-    buf = newbuf;
-  }
-
-  if (!gst_v4l2_buffer_pool_qbuf (v4l2sink->pool, GST_V4L2_BUFFER (buf))) {
-    return GST_FLOW_ERROR;
-  }
-  if (v4l2sink->state == STATE_PENDING_STREAMON) {
-    if (!gst_v4l2_object_start_streaming (v4l2sink->v4l2object)) {
-      return GST_FLOW_ERROR;
-    }
-    v4l2sink->state = STATE_STREAMING;
-  }
-
-  if (!newbuf) {
-    gst_buffer_ref (buf);
-  }
-
-  /* if the driver has more than one buffer, ie. more than just the one we
-   * just queued, then dequeue one immediately to make it available via
-   * _buffer_alloc():
-   */
-  if (gst_v4l2_buffer_pool_available_buffers (v4l2sink->pool) > 1) {
-    GstV4l2Buffer *v4l2buf = gst_v4l2_buffer_pool_dqbuf (v4l2sink->pool);
-
-    /* note: if we get a buf, we don't want to use it directly (because
-     * someone else could still hold a ref).. but instead we release our
-     * reference to it, and if no one else holds a ref it will be returned
-     * to the pool of available buffers..  and if not, we keep looping.
-     */
-    if (v4l2buf) {
-      gst_buffer_unref (GST_BUFFER (v4l2buf));
-    }
-  }
-
-  return GST_FLOW_OK;
+static gboolean
+gst_v4l2sink_unlock_stop (GstBaseSink * sink)
+{
+  GstV4l2Sink *v4l2sink = GST_V4L2SINK (sink);
+  return gst_v4l2_object_unlock_stop (v4l2sink->v4l2object);
 }

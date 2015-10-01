@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 /**
@@ -43,18 +43,13 @@
 GST_DEBUG_CATEGORY (dc1394_debug);
 #define GST_CAT_DEFAULT dc1394_debug
 
-static GstElementDetails dc1394_details =
-GST_ELEMENT_DETAILS ("1394 IIDC Video Source",
-    "Source/Video",
-    "libdc1394 based source, supports 1394 IIDC cameras",
-    "Antoine Tremblay <hexa00@gmail.com>");
-
 enum
 {
   PROP_0,
   PROP_TIMESTAMP_OFFSET,
   PROP_CAMNUM,
-  PROP_BUFSIZE
+  PROP_BUFSIZE,
+  PROP_ISO_SPEED
       /* FILL ME */
 };
 
@@ -94,10 +89,8 @@ static void gst_dc1394_set_caps_framesize_range (GstStructure * gs,
 
 static gint gst_dc1394_caps_set_framerate_list (GstStructure * gs,
     dc1394framerates_t * framerates);
-static void gst_dc1394_framerate_const_to_frac (int framerateconst,
-    GValue * framefrac);
 
-static GstCaps *gst_dc1394_get_all_dc1394_caps ();
+static GstCaps *gst_dc1394_get_all_dc1394_caps (void);
 static GstCaps *gst_dc1394_get_cam_caps (GstDc1394 * src);
 static gboolean gst_dc1394_open_cam_with_best_caps (GstDc1394 * src);
 static gint gst_dc1394_framerate_frac_to_const (gint num, gint denom);
@@ -105,13 +98,17 @@ static void gst_dc1394_framerate_const_to_frac (gint framerateconst,
     GValue * framefrac);
 static gboolean
 gst_dc1394_change_camera_transmission (GstDc1394 * src, gboolean on);
+static gboolean gst_dc1394_query (GstBaseSrc * bsrc, GstQuery * query);
 
 static void
 gst_dc1394_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_details (element_class, &dc1394_details);
+  gst_element_class_set_static_metadata (element_class,
+      "1394 IIDC Video Source", "Source/Video",
+      "libdc1394 based source, supports 1394 IIDC cameras",
+      "Antoine Tremblay <hexa00@gmail.com>");
 
   gst_element_class_add_pad_template (element_class,
       gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
@@ -139,28 +136,34 @@ gst_dc1394_class_init (GstDc1394Class * klass)
       PROP_TIMESTAMP_OFFSET, g_param_spec_int64 ("timestamp-offset",
           "Timestamp offset",
           "An offset added to timestamps set on buffers (in ns)", G_MININT64,
-          G_MAXINT64, 0, G_PARAM_READWRITE));
+          G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_CAMNUM, g_param_spec_int ("camera-number",
           "The number of the camera on the firewire bus",
           "The number of the camera on the firewire bus", 0,
-          G_MAXINT, 0, G_PARAM_READWRITE));
+          G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass),
       PROP_BUFSIZE, g_param_spec_int ("buffer-size",
           "The number of frames in the dma ringbuffer",
           "The number of frames in the dma ringbuffer", 1,
-          G_MAXINT, 10, G_PARAM_READWRITE));
+          G_MAXINT, 10, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (G_OBJECT_CLASS (klass),
+      PROP_ISO_SPEED, g_param_spec_int ("iso-speed",
+          "The iso bandwidth in Mbps (100, 200, 400, 800, 1600, 3200)",
+          "The iso bandwidth in Mbps (100, 200, 400, 800, 1600, 3200)", 100,
+          3200, 400, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   gstbasesrc_class->get_caps = gst_dc1394_getcaps;
   gstbasesrc_class->set_caps = gst_dc1394_setcaps;
+  gstbasesrc_class->query = gst_dc1394_query;
 
   gstbasesrc_class->get_times = gst_dc1394_get_times;
   gstpushsrc_class->create = gst_dc1394_create;
 
   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_dc1394_change_state);
-
 }
 
 static void
@@ -172,6 +175,7 @@ gst_dc1394_init (GstDc1394 * src, GstDc1394Class * g_class)
   src->timestamp_offset = 0;
   src->caps = gst_dc1394_get_all_dc1394_caps ();
   src->bufsize = 10;
+  src->iso_speed = 400;
   src->camnum = 0;
   src->n_frames = 0;
 
@@ -179,7 +183,6 @@ gst_dc1394_init (GstDc1394 * src, GstDc1394Class * g_class)
       gst_dc1394_src_fixate);
 
   gst_base_src_set_live (GST_BASE_SRC (src), TRUE);
-
 }
 
 static void
@@ -202,6 +205,59 @@ gst_dc1394_src_fixate (GstPad * pad, GstCaps * caps)
   gst_object_unref (GST_OBJECT (src));
 }
 
+static gboolean
+gst_dc1394_query (GstBaseSrc * bsrc, GstQuery * query)
+{
+  gboolean res = TRUE;
+  GstDc1394 *src = GST_DC1394 (bsrc);
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_LATENCY:
+    {
+      GstClockTime min_latency, max_latency;
+
+      if (!src->camera) {
+        GST_WARNING_OBJECT (src,
+            "Can't give latency since device isn't open !");
+        res = FALSE;
+        goto done;
+      }
+
+      if (src->rate_denominator <= 0 || src->rate_numerator <= 0) {
+        GST_WARNING_OBJECT (bsrc,
+            "Can't give latency since framerate isn't fixated !");
+        res = FALSE;
+        goto done;
+      }
+
+      /* min latency is the time to capture one frame */
+      min_latency = gst_util_uint64_scale (GST_SECOND,
+          src->rate_denominator, src->rate_numerator);
+
+      /* max latency is total duration of the frame buffer */
+      max_latency = gst_util_uint64_scale (src->bufsize,
+          GST_SECOND * src->rate_denominator, src->rate_numerator);
+
+      GST_DEBUG_OBJECT (bsrc,
+          "report latency min %" GST_TIME_FORMAT " max %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (min_latency), GST_TIME_ARGS (max_latency));
+
+      /* we are always live, the min latency is 1 frame and the max latency is
+       * the complete buffer of frames. */
+      gst_query_set_latency (query, TRUE, min_latency, max_latency);
+
+      res = TRUE;
+      break;
+    }
+    default:
+      res = GST_BASE_SRC_CLASS (parent_class)->query (bsrc, query);
+      break;
+  }
+
+done:
+  return res;
+}
+
 static void
 gst_dc1394_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
@@ -217,6 +273,24 @@ gst_dc1394_set_property (GObject * object, guint prop_id,
       break;
     case PROP_BUFSIZE:
       src->bufsize = g_value_get_int (value);
+      break;
+    case PROP_ISO_SPEED:
+      switch (g_value_get_int (value)) {
+        case 100:
+        case 200:
+        case 300:
+        case 400:
+        case 800:
+        case 1600:
+        case 3200:
+          // fallthrough
+          src->iso_speed = g_value_get_int (value);
+          break;
+        default:
+          g_warning ("%s: Invalid iso speed %d, ignoring",
+              GST_ELEMENT_NAME (src), g_value_get_int (value));
+          break;
+      }
     default:
       break;
   }
@@ -238,6 +312,9 @@ gst_dc1394_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_BUFSIZE:
       g_value_set_int (value, src->bufsize);
       break;
+    case PROP_ISO_SPEED:
+      g_value_set_int (value, src->iso_speed);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -256,11 +333,9 @@ gst_dc1394_getcaps (GstBaseSrc * bsrc)
   return gst_caps_copy (gsrc->caps);
 }
 
-
 static gboolean
 gst_dc1394_setcaps (GstBaseSrc * bsrc, GstCaps * caps)
 {
-
   gboolean res = TRUE;
   GstDc1394 *dc1394;
   gint width, height, rate_denominator, rate_numerator;
@@ -785,10 +860,8 @@ gst_dc1394_framerate_const_to_frac (gint framerateconst, GValue * framefrac)
   }
 }
 
-
-
-GstCaps *
-gst_dc1394_get_all_dc1394_caps ()
+static GstCaps *
+gst_dc1394_get_all_dc1394_caps (void)
 {
   /* 
      generate all possible caps
@@ -1021,7 +1094,7 @@ static gboolean
 gst_dc1394_open_cam_with_best_caps (GstDc1394 * src)
 {
   dc1394camera_list_t *cameras = NULL;
-  gint err;
+  gint err = 0;
   int framerateconst;
 
   GST_LOG_OBJECT (src, "Opening the camera!!!");
@@ -1057,16 +1130,49 @@ gst_dc1394_open_cam_with_best_caps (GstDc1394 * src)
   GST_LOG_OBJECT (src, "The dma buffer queue size is %d  buffers",
       src->bufsize);
 
-  //FIXME HAVE THIS AUTOMATIC OR AS A PARAMETER ?
-  err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_400);
+  switch (src->iso_speed) {
+    case 100:
+      err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_100);
+      break;
+    case 200:
+      err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_200);
+      break;
+    case 400:
+      err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_400);
+      break;
+    case 800:
+      if (src->camera->bmode_capable > 0) {
+        dc1394_video_set_operation_mode (src->camera,
+            DC1394_OPERATION_MODE_1394B);
+        err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_800);
+      }
+      break;
+    case 1600:
+      if (src->camera->bmode_capable > 0) {
+        dc1394_video_set_operation_mode (src->camera,
+            DC1394_OPERATION_MODE_1394B);
+        err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_1600);
+      }
+      break;
+    case 3200:
+      if (src->camera->bmode_capable > 0) {
+        dc1394_video_set_operation_mode (src->camera,
+            DC1394_OPERATION_MODE_1394B);
+        err = dc1394_video_set_iso_speed (src->camera, DC1394_ISO_SPEED_3200);
+      }
+      break;
+    default:
+      GST_ELEMENT_ERROR (src, RESOURCE, FAILED, ("Invalid ISO speed"),
+          ("Invalid ISO speed"));
+      goto error;
+      break;
+  }
 
   if (err != DC1394_SUCCESS) {
     GST_ELEMENT_ERROR (src, RESOURCE, FAILED, ("Could not set ISO speed"),
         ("Could not set ISO speed"));
     goto error;
   }
-
-
 
   GST_LOG_OBJECT (src, "Setting mode :  %d", src->vmode);
   err = dc1394_video_set_mode (src->camera, src->vmode);
@@ -1148,7 +1254,7 @@ error:
     src->camera = NULL;
   }
 
-  return FALSE;;
+  return FALSE;
 
 }
 
@@ -1224,6 +1330,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "dc1394",
+    dc1394,
     "1394 IIDC Video Source",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

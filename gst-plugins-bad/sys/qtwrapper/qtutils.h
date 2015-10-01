@@ -38,16 +38,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef G_OS_WIN32
 #include <ImageCodec.h>
 #else
-#include <Quicktime/ImageCodec.h>
+#include <QuickTime/ImageCodec.h>
 #endif
 #include <gst/gst.h>
+#include "qtwrapper.h"
 
 #ifndef __QTUTILS_H__
 #define __QTUTILS_H__
@@ -99,8 +100,6 @@
 #define QT_READ_UINT32(data)		GST_READ_UINT32_BE(data)
 #endif
 
-/* Do any OS-specific initialization for QuickTime */
-gboolean quicktime_os_specific_init ();
 
 /*
  * get_name_info_from_component:
@@ -127,6 +126,8 @@ addSInt32ToDictionary (CFMutableDictionaryRef dictionary, CFStringRef key,
     SInt32 numberSInt32);
 
 void dump_cvpixel_buffer (CVPixelBufferRef pixbuf);
+
+void dump_avcc_atom (guint8 * atom);
 
 AudioBufferList *AllocateAudioBufferList(UInt32 numChannels, UInt32 size);
 

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,19 +24,38 @@
 #endif
 
 #include "matroska-demux.h"
+#include "matroska-parse.h"
+#include "matroska-read-common.h"
 #include "matroska-mux.h"
 #include "matroska-ids.h"
+#include "webm-mux.h"
+
+#include <gst/pbutils/pbutils.h>
 
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  gboolean ret;
+
+  gst_pb_utils_init ();
+
   gst_matroska_register_tags ();
-  return gst_matroska_demux_plugin_init (plugin) &&
-      gst_matroska_mux_plugin_init (plugin);
+
+  GST_DEBUG_CATEGORY_INIT (matroskareadcommon_debug, "matroskareadcommon", 0,
+      "Matroska demuxer/parser shared debug");
+
+  ret = gst_matroska_demux_plugin_init (plugin);
+  ret &= gst_matroska_parse_plugin_init (plugin);
+  ret &= gst_element_register (plugin, "matroskamux", GST_RANK_PRIMARY,
+      GST_TYPE_MATROSKA_MUX);
+  ret &= gst_element_register (plugin, "webmmux", GST_RANK_PRIMARY,
+      GST_TYPE_WEBM_MUX);
+
+  return ret;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "matroska",
-    "Matroska stream handling",
+    matroska,
+    "Matroska and WebM stream handling",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

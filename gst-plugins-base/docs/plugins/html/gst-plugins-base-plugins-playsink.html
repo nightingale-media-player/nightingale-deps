@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>playsink: GStreamer Base Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-base Elements">
+<link rel="prev" href="gst-plugins-base-plugins-playbin.html" title="playbin">
+<link rel="next" href="gst-plugins-base-plugins-socketsrc.html" title="socketsrc">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playsink.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playsink.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playsink.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playsink.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-playsink.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-playbin.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-socketsrc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-plugins-playsink"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-playsink.top_of_page"></a>playsink</span></h2>
+<p>playsink</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--audio-sink" title="The “audio-sink” property">audio-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--av-offset" title="The “av-offset” property">av-offset</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayFlags" title="enum GstPlayFlags"><span class="type">GstPlayFlags</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--flags" title="The “flags” property">flags</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--force-aspect-ratio" title="The “force-aspect-ratio” property">force-aspect-ratio</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--mute" title="The “mute” property">mute</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--sample" title="The “sample” property">sample</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstPlaySinkSendEventMode</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--send-event-mode" title="The “send-event-mode” property">send-event-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--subtitle-encoding" title="The “subtitle-encoding” property">subtitle-encoding</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--subtitle-font-desc" title="The “subtitle-font-desc” property">subtitle-font-desc</a></td>
+<td class="property_flags">Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--text-sink" title="The “text-sink” property">text-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--video-sink" title="The “video-sink” property">video-sink</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--vis-plugin" title="The “vis-plugin” property">vis-plugin</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--volume" title="The “volume” property">volume</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--audio-filter" title="The “audio-filter” property">audio-filter</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink--video-filter" title="The “video-filter” property">video-filter</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink-convert-sample" title="The “convert-sample” signal">convert-sample</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+<tr>
+<td class="signal_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
+<td class="signal_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink-reconfigure" title="The “reconfigure” signal">reconfigure</a></td>
+<td class="signal_flags"><a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstPlaySink"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink-struct" title="GstPlaySink">GstPlaySink</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                    <span class="lineart">╰──</span> GstPlaySink
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstPlaySink implements
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gststreamvolume.html#GstStreamVolume">GstStreamVolume</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay">GstVideoOverlay</a>,  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstnavigation.html#GstNavigation">GstNavigation</a> and  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstcolorbalance.html#GstColorBalance">GstColorBalance</a>.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.description"></a><h2>Description</h2>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.29.9.2.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-base-plugins-plugin-playback.html#plugin-playback">playback</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic/Bin/Sink</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.29.9.2.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio_raw_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>text_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_raw_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstPlaySink-struct"></a><h3>GstPlaySink</h3>
+<pre class="programlisting">typedef struct _GstPlaySink GstPlaySink;</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstPlaySink--audio-sink"></a><h3>The <code class="literal">“audio-sink”</code> property</h3>
+<pre class="programlisting">  “audio-sink”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Set the used audio sink element. NULL will use the default sink. playsink
+must be in <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GST-STATE-NULL:CAPS"><code class="literal">GST_STATE_NULL</code></a></p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--av-offset"></a><h3>The <code class="literal">“av-offset”</code> property</h3>
+<pre class="programlisting">  “av-offset”                <span class="type">gint64</span></pre>
+<p>Control the synchronisation offset between the audio and video streams.
+Positive values make the audio ahead of the video and negative values make
+the audio go behind the video.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--flags"></a><h3>The <code class="literal">“flags”</code> property</h3>
+<pre class="programlisting">  “flags”                    <a class="link" href="gst-plugins-base-plugins-playbin.html#GstPlayFlags" title="enum GstPlayFlags"><span class="type">GstPlayFlags</span></a></pre>
+<p>Control the behaviour of playsink.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Render the video stream|Render the audio stream|Render subtitles|Use software volume|Use software color balance</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--force-aspect-ratio"></a><h3>The <code class="literal">“force-aspect-ratio”</code> property</h3>
+<pre class="programlisting">  “force-aspect-ratio”       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>When enabled, scaling will respect original aspect ratio.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--mute"></a><h3>The <code class="literal">“mute”</code> property</h3>
+<pre class="programlisting">  “mute”                     <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Mute the audio channel without changing the volume.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--sample"></a><h3>The <code class="literal">“sample”</code> property</h3>
+<pre class="programlisting">  “sample”                   <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> *</pre>
+<p>Get the currently rendered or prerolled sample in the video sink.
+The <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a> in the sample will describe the format of the buffer.</p>
+<p>Flags: Read</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--send-event-mode"></a><h3>The <code class="literal">“send-event-mode”</code> property</h3>
+<pre class="programlisting">  “send-event-mode”          <span class="type">GstPlaySinkSendEventMode</span></pre>
+<p>How to send events received in send_event function.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Default GstBin's send_event handling (default)</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--subtitle-encoding"></a><h3>The <code class="literal">“subtitle-encoding”</code> property</h3>
+<pre class="programlisting">  “subtitle-encoding”        <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Encoding to assume if input subtitles are not in UTF-8 encoding. If not set, the GST_SUBTITLE_ENCODING environment variable will be checked for an encoding to use. If that is not set either, ISO-8859-15 will be assumed.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--subtitle-font-desc"></a><h3>The <code class="literal">“subtitle-font-desc”</code> property</h3>
+<pre class="programlisting">  “subtitle-font-desc”       <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Pango font description of font to be used for subtitle rendering.</p>
+<p>Flags: Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--text-sink"></a><h3>The <code class="literal">“text-sink”</code> property</h3>
+<pre class="programlisting">  “text-sink”                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Set the used text sink element. NULL will use the default sink. playsink
+must be in <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GST-STATE-NULL:CAPS"><code class="literal">GST_STATE_NULL</code></a></p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--video-sink"></a><h3>The <code class="literal">“video-sink”</code> property</h3>
+<pre class="programlisting">  “video-sink”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Set the used video sink element. NULL will use the default sink. playsink
+must be in <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GST-STATE-NULL:CAPS"><code class="literal">GST_STATE_NULL</code></a></p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--vis-plugin"></a><h3>The <code class="literal">“vis-plugin”</code> property</h3>
+<pre class="programlisting">  “vis-plugin”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>the visualization element to use (NULL = default).</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--volume"></a><h3>The <code class="literal">“volume”</code> property</h3>
+<pre class="programlisting">  “volume”                   <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></pre>
+<p>Get or set the current audio stream volume. 1.0 means 100%,
+0.0 means mute. This uses a linear volume scale.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: [0,10]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--audio-filter"></a><h3>The <code class="literal">“audio-filter”</code> property</h3>
+<pre class="programlisting">  “audio-filter”             <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Set the audio filter element/bin to use. Will apply on a best-effort basis
+unless GST_PLAY_FLAG_FORCE_FILTERS is set. playsink must be in
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GST-STATE-NULL:CAPS"><code class="literal">GST_STATE_NULL</code></a></p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink--video-filter"></a><h3>The <code class="literal">“video-filter”</code> property</h3>
+<pre class="programlisting">  “video-filter”             <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *</pre>
+<p>Set the video filter element/bin to use. Will apply on a best-effort basis
+unless GST_PLAY_FLAG_FORCE_FILTERS is set. playsink must be in
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html#GST-STATE-NULL:CAPS"><code class="literal">GST_STATE_NULL</code></a></p>
+<p>Flags: Read / Write</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-playsink.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstPlaySink-convert-sample"></a><h3>The <code class="literal">“convert-sample”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="returnvalue">GstSample</span></a>*
+user_function (<a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink"><span class="type">GstPlaySink</span></a> *playsink,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstCaps.html"><span class="type">GstCaps</span></a>     *caps,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)</pre>
+<p>Action signal to retrieve the currently playing video sample in the format
+specified by <em class="parameter"><code>caps</code></em>
+.
+If <em class="parameter"><code>caps</code></em>
+ is <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, no conversion will be performed and this function is
+equivalent to the <span class="type">“sample”</span> property.</p>
+<div class="refsect3">
+<a name="id-1.2.29.13.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>playsink</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink"><span class="type">GstPlaySink</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p>the target format of the sample</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.29.13.2.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstSample.html"><span class="type">GstSample</span></a> of the current video sample converted to <span class="type">caps</span>.
+The caps in the sample will describe the final layout of the buffer data.
+<a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> is returned when no current sample can be retrieved or when the
+conversion failed.</p>
+</div>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPlaySink-reconfigure"></a><h3>The <code class="literal">“reconfigure”</code> signal</h3>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+user_function (<a class="link" href="gst-plugins-base-plugins-playsink.html#GstPlaySink"><span class="type">GstPlaySink</span></a> *gstplaysink,
+               <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)</pre>
+<p>Flags: <a href="https://developer.gnome.org/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS">Action</a></p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

@@ -13,15 +13,17 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __RTP_STATS_H__
 #define __RTP_STATS_H__
 
 #include <gst/gst.h>
-#include <gst/netbuffer/gstnetbuffer.h>
+#include <gst/net/gstnetaddressmeta.h>
+#include <gst/rtp/rtp.h>
+#include <gio/gio.h>
 
 /**
  * RTPSenderReport:
@@ -55,26 +57,44 @@ typedef struct {
 } RTPReceiverReport;
 
 /**
- * RTPArrivalStats:
- * @time: arrival time of a packet according to the system clock
- * @running_time: arrival time of a packet as buffer running_time
- * @ntpnstime: arrival time of a packet as NTP time in nanoseconds
- * @have_address: if the @address field contains a valid address
+ * RTPPacketInfo:
+ * @send: if this is a packet for sending
+ * @rtp: if this info is about an RTP packet
+ * @is_list: if this is a bufferlist
+ * @data: a #GstBuffer or #GstBufferList
  * @address: address of the sender of the packet
+ * @current_time: current time according to the system clock
+ * @running_time: time of a packet as buffer running_time
+ * @ntpnstime: time of a packet NTP time in nanoseconds
+ * @header_len: number of overhead bytes per packet
  * @bytes: bytes of the packet including lowlevel overhead
  * @payload_len: bytes of the RTP payload
+ * @seqnum: the seqnum of the packet
+ * @pt: the payload type of the packet
+ * @rtptime: the RTP time of the packet
  *
- * Structure holding information about the arrival stats of a packet.
+ * Structure holding information about the packet.
  */
 typedef struct {
-  GstClockTime  time;
+  gboolean      send;
+  gboolean      rtp;
+  gboolean      is_list;
+  gpointer      data;
+  GSocketAddress *address;
+  GstClockTime  current_time;
   GstClockTime  running_time;
   guint64       ntpnstime;
-  gboolean      have_address;
-  GstNetAddress address;
+  guint         header_len;
   guint         bytes;
+  guint         packets;
   guint         payload_len;
-} RTPArrivalStats;
+  guint32       ssrc;
+  guint16       seqnum;
+  guint8        pt;
+  guint32       rtptime;
+  guint32       csrc_count;
+  guint32       csrcs[16];
+} RTPPacketInfo;
 
 /**
  * RTPSourceStats:
@@ -86,7 +106,7 @@ typedef struct {
  *                 protocol level overhead
  * @max_seqnr: highest sequence number received
  * @transit: previous transit time used for calculating @jitter
- * @jitter: current jitter
+ * @jitter: current jitter (in clock rate units scaled by 16 for precision)
  * @prev_rtptime: previous time when an RTP packet was received
  * @prev_rtcptime: previous time when an RTCP packet was received
  * @last_rtptime: time when last RTP packet received
@@ -116,6 +136,11 @@ typedef struct {
   guint64      packets_sent;
   guint64      octets_sent;
 
+  guint        sent_pli_count;
+  guint        recv_pli_count;
+  guint        sent_fir_count;
+  guint        recv_fir_count;
+
   /* when we received stuff */
   GstClockTime prev_rtptime;
   GstClockTime prev_rtcptime;
@@ -129,8 +154,8 @@ typedef struct {
   RTPSenderReport   sr[2];
 } RTPSourceStats;
 
-#define RTP_STATS_BANDWIDTH           64000.0
-#define RTP_STATS_RTCP_BANDWIDTH      3000.0
+#define RTP_STATS_BANDWIDTH           64000
+#define RTP_STATS_RTCP_FRACTION       0.05
 /*
  * Minimum average time between RTCP packets from this site (in
  * seconds).  This time prevents the reports from `clumping' when
@@ -158,12 +183,12 @@ typedef struct {
 #define RTP_STATS_BYE_TIMEOUT           (2 * GST_SECOND)
 
 /*
- * The maximum number of missing packets we tollerate. These are packets with a
+ * The maximum number of missing packets we tolerate. These are packets with a
  * sequence number bigger than the last seen packet.
  */
 #define RTP_MAX_DROPOUT      3000
 /*
- * The maximum number of misordered packets we tollerate. These are packets with
+ * The maximum number of misordered packets we tolerate. These are packets with
  * a sequence number smaller than the last seen packet.
  */
 #define RTP_MAX_MISORDER     100
@@ -174,22 +199,40 @@ typedef struct {
  * Stats kept for a session and used to produce RTCP packet timeouts.
  */
 typedef struct {
-  gdouble       bandwidth;
+  guint         bandwidth;
+  guint         rtcp_bandwidth;
   gdouble       sender_fraction;
   gdouble       receiver_fraction;
-  gdouble       rtcp_bandwidth;
   gdouble       min_interval;
   GstClockTime  bye_timeout;
+  guint         internal_sources;
   guint         sender_sources;
+  guint         internal_sender_sources;
   guint         active_sources;
   guint         avg_rtcp_packet_size;
   guint         bye_members;
+  guint         nacks_dropped;
+  guint         nacks_sent;
+  guint         nacks_received;
 } RTPSessionStats;
 
-void           rtp_stats_init_defaults               (RTPSessionStats *stats);
+void           rtp_stats_init_defaults              (RTPSessionStats *stats);
 
-GstClockTime   rtp_stats_calculate_rtcp_interval    (RTPSessionStats *stats, gboolean sender, gboolean first);
+void           rtp_stats_set_bandwidths             (RTPSessionStats *stats,
+                                                     guint rtp_bw,
+                                                     gdouble rtcp_bw,
+                                                     guint rs, guint rr);
+
+GstClockTime   rtp_stats_calculate_rtcp_interval    (RTPSessionStats *stats, gboolean sender, GstRTPProfile profile, gboolean ptp, gboolean first);
 GstClockTime   rtp_stats_add_rtcp_jitter            (RTPSessionStats *stats, GstClockTime interval);
 GstClockTime   rtp_stats_calculate_bye_interval     (RTPSessionStats *stats);
+gint64         rtp_stats_get_packets_lost           (const RTPSourceStats *stats);
+
+void           rtp_stats_set_min_interval           (RTPSessionStats *stats,
+                                                     gdouble min_interval);
+
+
+gboolean __g_socket_address_equal (GSocketAddress *a, GSocketAddress *b);
+gchar * __g_socket_address_to_string (GSocketAddress * addr);
 
 #endif /* __RTP_STATS_H__ */

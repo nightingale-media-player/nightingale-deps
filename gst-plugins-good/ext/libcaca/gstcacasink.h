@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 
@@ -30,9 +30,7 @@
 #   include <caca0.h>
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define GST_TYPE_CACASINK \
   (gst_cacasink_get_type())
@@ -51,15 +49,11 @@ typedef struct _GstCACASinkClass GstCACASinkClass;
 struct _GstCACASink {
   GstBaseSink parent;
 
-  GstPad *sinkpad;
-
-  gulong format;
-  gint width, height;
+  GstVideoInfo info;
   gint screen_width, screen_height;
-  guint bpp;
+
   guint dither;
   gboolean antialiasing;
-  guint red_mask, green_mask, blue_mask;
 
   struct caca_bitmap *bitmap;
 };
@@ -72,9 +66,6 @@ struct _GstCACASinkClass {
 
 GType gst_cacasink_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
-
-#endif /* __GST_CACASINKE_H__ */
+#endif /* __GST_CACASINK_H__ */

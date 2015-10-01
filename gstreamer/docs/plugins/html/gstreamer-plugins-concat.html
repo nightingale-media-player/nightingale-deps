@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>concat: GStreamer Core Plugins 1.0 Plugins Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Core Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gstreamer Elements">
+<link rel="prev" href="gstreamer-plugins-capsfilter.html" title="capsfilter">
+<link rel="next" href="gstreamer-plugins-downloadbuffer.html" title="downloadbuffer">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-concat.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-concat.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#gstreamer-plugins-concat.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-plugins-capsfilter.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-plugins-downloadbuffer.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gstreamer-plugins-concat"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gstreamer-plugins-concat.top_of_page"></a>concat</span></h2>
+<p>concat</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *</td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-concat.html#GstConcat--active-pad" title="The “active-pad” property">active-pad</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-concat.html#GstConcat--adjust-base" title="The “adjust-base” property">adjust-base</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstConcat"></a><div class="refsect1">
+<a name="gstreamer-plugins-concat.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gstreamer-plugins-concat.html#GstConcat-struct" title="struct GstConcat">GstConcat</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstConcat
+</pre>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.description"></a><h2>Description</h2>
+<p>Concatenates streams together to one continous stream.</p>
+<p>All streams but the current one are blocked until the current one
+finished with <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstEvent.html#GST-EVENT-EOS:CAPS"><code class="literal">GST_EVENT_EOS</code></a>. Then the next stream is enabled, while
+keeping the running time continous for <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstFormat.html#GST-FORMAT-TIME:CAPS"><code class="literal">GST_FORMAT_TIME</code></a> segments or
+keeping the segment continous for <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstFormat.html#GST-FORMAT-BYTES:CAPS"><code class="literal">GST_FORMAT_BYTES</code></a> segments.</p>
+<p>Streams are switched in the order in which the sinkpads were requested.</p>
+<p>By default, the stream segment's base values are adjusted to ensure
+the segment transitions between streams are continuous. In some cases,
+it may be desirable to turn off these adjustments (for example, because
+another downstream element like a streamsynchronizer adjusts the base
+values on its own). The adjust-value property can be used for this purpose.</p>
+<div class="refsect2">
+<a name="id-1.2.3.7.6"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> concat name<span class="gtkdoc opt">=</span>c <span class="gtkdoc opt">!</span> xvimagesink  videotestsrc num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">100</span> <span class="gtkdoc opt">!</span> c<span class="gtkdoc opt">.</span>   videotestsrc num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">100</span> pattern<span class="gtkdoc opt">=</span>ball <span class="gtkdoc opt">!</span> c<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ Plays two video streams one after another.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.3.7.7.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gstreamer-plugins-plugin-coreelements.html#plugin-coreelements">coreelements</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;sebastian@centricular.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Generic</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.3.7.7.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink_%u</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstConcat-struct"></a><h3>struct GstConcat</h3>
+<pre class="programlisting">struct GstConcat;</pre>
+<p>The private concat structure</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstConcat--active-pad"></a><h3>The <code class="literal">“active-pad”</code> property</h3>
+<pre class="programlisting">  “active-pad”               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> *</pre>
+<p>Currently active src pad.</p>
+<p>Flags: Read</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstConcat--adjust-base"></a><h3>The <code class="literal">“adjust-base”</code> property</h3>
+<pre class="programlisting">  “adjust-base”              <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Adjust the base value of segments to ensure they are adjacent.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gstreamer-plugins-concat.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gstreamer-plugins-funnel.html#GstFunnel"><span class="type">GstFunnel</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.24</div>
+</body>
+</html>

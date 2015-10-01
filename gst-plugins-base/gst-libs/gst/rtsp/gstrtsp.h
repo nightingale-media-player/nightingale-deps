@@ -15,13 +15,19 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
-#ifndef __RTSP_H__
-#define __RTSP_H__
+#ifndef __GST_RTSP_H__
+#define __GST_RTSP_H__
 
+#include <gst/rtsp/gstrtspconnection.h>
 #include <gst/rtsp/gstrtspdefs.h>
 #include <gst/rtsp/gstrtsp-enumtypes.h>
+#include <gst/rtsp/gstrtspextension.h>
+#include <gst/rtsp/gstrtspmessage.h>
+#include <gst/rtsp/gstrtsprange.h>
+#include <gst/rtsp/gstrtsptransport.h>
+#include <gst/rtsp/gstrtspurl.h>
 
-#endif
+#endif /* __GST_RTSP_H__ */

@@ -17,8 +17,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #include <string.h>
@@ -40,7 +40,7 @@ static CamReturn data_impl (CamALApplication * application,
     CamSLSession * session, guint tag, guint8 * buffer, guint length);
 
 CamApplicationInfo *
-cam_application_info_new ()
+cam_application_info_new (void)
 {
   CamApplicationInfo *info;
   CamALApplication *application;
@@ -119,9 +119,10 @@ static CamReturn
 handle_application_info_reply (CamApplicationInfo * info,
     CamSLSession * session, guint8 * buffer, guint length)
 {
+#ifndef GST_DISABLE_GST_DEBUG
   guint8 type;
   guint8 menu_length;
-  gchar menu[255];
+  gchar menu[256];
 
   type = buffer[0];
   menu_length = buffer[5];
@@ -130,7 +131,7 @@ handle_application_info_reply (CamApplicationInfo * info,
   menu[menu_length] = 0;
 
   GST_INFO ("application info reply, type: %d, menu: %s", type, menu);
-
+#endif
   return CAM_RETURN_OK;
 }
 

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef __GST_FLV_MUX_H__
@@ -52,8 +52,11 @@ typedef struct
   guint video_codec;
   GstBuffer *video_codec_data;
 
-  gboolean sent_codec_data;
+  guint bitrate;
+
   GstClockTime last_timestamp;
+  gint64 pts;
+  gint64 dts;
 } GstFlvPad;
 
 typedef enum
@@ -69,15 +72,17 @@ typedef struct _GstFlvMux {
   GstCollectPads *collect;
 
   /* <private> */
-  GstPadEventFunction collect_event;
-
   GstFlvMuxState state;
   gboolean have_audio;
   gboolean have_video;
+  gboolean streamable;
 
   GstTagList *tags;
+  gboolean new_tags;
   GList *index;
   guint64 byte_count;
+  guint64 duration;
+  gint64 first_timestamp;
 } GstFlvMux;
 
 typedef struct _GstFlvMuxClass {
