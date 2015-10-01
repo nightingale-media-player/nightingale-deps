@@ -33,6 +33,9 @@
 /* Define to the number of bits in type 'wint_t'. */
 #undef BITSIZEOF_WINT_T
 
+/* Define to 1 if the `closedir' function returns void instead of `int'. */
+#undef CLOSEDIR_VOID
+
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.
    */
@@ -647,10 +650,6 @@
    */
 #undef HAVE_DECL_MBRLEN
 
-/* Define to 1 if you have the declaration of `mbrtowc', and to 0 if you
-   don't. */
-#undef HAVE_DECL_MBRTOWC
-
 /* Define to 1 if you have the declaration of `mbsinit', and to 0 if you
    don't. */
 #undef HAVE_DECL_MBSINIT
@@ -690,10 +689,6 @@
 /* Define to 1 if you have the declaration of `snprintf', and to 0 if you
    don't. */
 #undef HAVE_DECL_SNPRINTF
-
-/* Define to 1 if you have the declaration of `stpncpy', and to 0 if you
-   don't. */
-#undef HAVE_DECL_STPNCPY
 
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
@@ -756,6 +751,9 @@
 
 /* Define if you have the declaration of environ. */
 #undef HAVE_ENVIRON_DECL
+
+/* Define if you have the declaration of errno. */
+#undef HAVE_ERRNO_DECL
 
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
@@ -892,6 +890,9 @@
 /* Define to 1 if you have the `iswctype' function. */
 #undef HAVE_ISWCTYPE
 
+/* Define to 1 if you have the `iswprint' function. */
+#undef HAVE_ISWPRINT
+
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
 
@@ -907,9 +908,6 @@
 
 /* Define if you have the libexpat library. */
 #undef HAVE_LIBEXPAT
-
-/* Define to 1 if you have the <libintl.h> header file. */
-#undef HAVE_LIBINTL_H
 
 /* Define if you have the libunistring library. */
 #undef HAVE_LIBUNISTRING
@@ -954,7 +952,7 @@
 /* Define to 1 if you have the `mbrlen' function. */
 #undef HAVE_MBRLEN
 
-/* Define to 1 if you have the `mbrtowc' function. */
+/* Define to 1 if mbrtowc and mbstate_t are properly declared. */
 #undef HAVE_MBRTOWC
 
 /* Define to 1 if you have the `mbsinit' function. */
@@ -968,6 +966,9 @@
 
 /* Define to 1 if <wchar.h> declares mbstate_t. */
 #undef HAVE_MBSTATE_T
+
+/* Define to 1 if you have the `memchr' function. */
+#undef HAVE_MEMCHR
 
 /* Define to 1 if you have the `memmove' function. */
 #undef HAVE_MEMMOVE
@@ -1002,6 +1003,9 @@
 
 /* Define to 1 if you have the `munmap' function. */
 #undef HAVE_MUNMAP
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#undef HAVE_NDIR_H
 
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
@@ -1854,6 +1858,9 @@
 /* Define to 1 if you have the `statacl' function. */
 #undef HAVE_STATACL
 
+/* Define to 1 if stdbool.h conforms to C99. */
+#undef HAVE_STDBOOL_H
+
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
 
@@ -1884,6 +1891,9 @@
 
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
+
+/* Define to 1 if you have the `strerror' function. */
+#undef HAVE_STRERROR
 
 /* Define to 1 if you have the `strerror_r' function. */
 #undef HAVE_STRERROR_R
@@ -1927,11 +1937,19 @@
 /* Define to 1 if you have the <sys/bitypes.h> header file. */
 #undef HAVE_SYS_BITYPES_H
 
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_DIR_H
+
 /* Define to 1 if you have the <sys/inttypes.h> header file. */
 #undef HAVE_SYS_INTTYPES_H
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #undef HAVE_SYS_MMAN_H
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_NDIR_H
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #undef HAVE_SYS_PARAM_H
@@ -2143,22 +2161,6 @@
 /* Define to a substitute value for mmap()'s MAP_ANONYMOUS flag. */
 #undef MAP_ANONYMOUS
 
-/* Define if the mbrtowc function does not return (size_t) -2 for empty input.
-   */
-#undef MBRTOWC_EMPTY_INPUT_BUG
-
-/* Define if the mbrtowc function has the NULL pwc argument bug. */
-#undef MBRTOWC_NULL_ARG1_BUG
-
-/* Define if the mbrtowc function has the NULL string argument bug. */
-#undef MBRTOWC_NULL_ARG2_BUG
-
-/* Define if the mbrtowc function does not return 0 for a NUL character. */
-#undef MBRTOWC_NUL_RETVAL_BUG
-
-/* Define if the mbrtowc function returns a wrong return value. */
-#undef MBRTOWC_RETVAL_BUG
-
 /* Define to 1 if open() fails to recognize a trailing slash. */
 #undef OPEN_TRAILING_SLASH_BUG
 
@@ -2196,9 +2198,6 @@
 /* Define to l, ll, u, ul, ull, etc., as suitable for constants of type
    'ptrdiff_t'. */
 #undef PTRDIFF_T_SUFFIX
-
-/* Define to 1 if readlink fails to recognize a trailing slash. */
-#undef READLINK_TRAILING_SLASH_BUG
 
 /* Define to 1 if stat needs help when passed a directory name with a trailing
    slash */
@@ -2407,16 +2406,17 @@
 /* Define to 1 if you need to in order for 'stat' and other things to work. */
 #undef _POSIX_SOURCE
 
-/* Define if you want <regex.h> to include <limits.h>, so that it consistently
-   overrides <limits.h>'s RE_DUP_MAX. */
-#undef _REGEX_INCLUDE_LIMITS_H
-
-/* Define if you want regoff_t to be at least as wide POSIX requires. */
-#undef _REGEX_LARGE_OFFSETS
+/* Enable extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
 
 /* Define to rpl_ if the getopt replacement functions and variables should be
    used. */
 #undef __GETOPT_PREFIX
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
 
 /* Define as 'access' if you don't have the eaccess() function. */
 #undef eaccess
@@ -2577,67 +2577,12 @@
    doesn't define it. */
 #undef ptrdiff_t
 
-/* Define to rpl_re_comp if the replacement should be used. */
-#undef re_comp
-
-/* Define to rpl_re_compile_fastmap if the replacement should be used. */
-#undef re_compile_fastmap
-
-/* Define to rpl_re_compile_pattern if the replacement should be used. */
-#undef re_compile_pattern
-
-/* Define to rpl_re_exec if the replacement should be used. */
-#undef re_exec
-
-/* Define to rpl_re_match if the replacement should be used. */
-#undef re_match
-
-/* Define to rpl_re_match_2 if the replacement should be used. */
-#undef re_match_2
-
-/* Define to rpl_re_search if the replacement should be used. */
-#undef re_search
-
-/* Define to rpl_re_search_2 if the replacement should be used. */
-#undef re_search_2
-
-/* Define to rpl_re_set_registers if the replacement should be used. */
-#undef re_set_registers
-
-/* Define to rpl_re_set_syntax if the replacement should be used. */
-#undef re_set_syntax
-
-/* Define to rpl_re_syntax_options if the replacement should be used. */
-#undef re_syntax_options
-
-/* Define to rpl_regcomp if the replacement should be used. */
-#undef regcomp
-
-/* Define to rpl_regerror if the replacement should be used. */
-#undef regerror
-
-/* Define to rpl_regexec if the replacement should be used. */
-#undef regexec
-
-/* Define to rpl_regfree if the replacement should be used. */
-#undef regfree
-
-/* Define to the equivalent of the C99 'restrict' keyword, or to
-   nothing if this is not supported.  Do not define if restrict is
-   supported directly.  */
+/* Define to equivalent of C99 restrict keyword, or to nothing if this is not
+   supported. Do not define if restrict is supported directly. */
 #undef restrict
-/* Work around a bug in Sun C++: it does not support _Restrict or
-   __restrict__, even though the corresponding Sun C compiler ends up with
-   "#define restrict _Restrict" or "#define restrict __restrict__" in the
-   previous line.  Perhaps some future version of Sun C++ will work with
-   restrict; if so, hopefully it defines __RESTRICT like Sun C does.  */
-#if defined __SUNPRO_CC && !defined __RESTRICT
-# define _Restrict
-# define __restrict__
-#endif
 
 /* Define as an integer type suitable for memory locations that can be
-   accessed atomically even in the presence of asynchronous signals. */
+   accessed atomically even in the presence of asynchnonous signals. */
 #undef sig_atomic_t
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */

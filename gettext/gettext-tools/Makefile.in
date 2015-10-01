@@ -96,15 +96,12 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/libgrep/gnulib-m4/localeconv.m4 \
 	$(top_srcdir)/libgrep/gnulib-m4/mbrlen.m4 \
 	$(top_srcdir)/libgrep/gnulib-m4/nl_langinfo.m4 \
-	$(top_srcdir)/libgrep/gnulib-m4/regex.m4 \
 	$(top_srcdir)/gnulib-m4/00gnulib.m4 \
 	$(top_srcdir)/gnulib-m4/absolute-header.m4 \
 	$(top_srcdir)/gnulib-m4/acl.m4 \
-	$(top_srcdir)/gnulib-m4/alloca.m4 \
 	$(top_srcdir)/gnulib-m4/ansi-c++.m4 \
 	$(top_srcdir)/gnulib-m4/asm-underscore.m4 \
 	$(top_srcdir)/gnulib-m4/atexit.m4 \
-	$(top_srcdir)/gnulib-m4/backupfile.m4 \
 	$(top_srcdir)/gnulib-m4/bison-i18n.m4 \
 	$(top_srcdir)/gnulib-m4/btowc.m4 \
 	$(top_srcdir)/gnulib-m4/byteswap.m4 \
@@ -113,18 +110,12 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/closedir.m4 \
 	$(top_srcdir)/gnulib-m4/configmake.m4 \
 	$(top_srcdir)/gnulib-m4/copy-file.m4 \
-	$(top_srcdir)/gnulib-m4/csharp.m4 \
-	$(top_srcdir)/gnulib-m4/csharpcomp.m4 \
-	$(top_srcdir)/gnulib-m4/csharpexec.m4 \
 	$(top_srcdir)/gnulib-m4/curses.m4 \
 	$(top_srcdir)/gnulib-m4/dirent_h.m4 \
 	$(top_srcdir)/gnulib-m4/double-slash-root.m4 \
 	$(top_srcdir)/gnulib-m4/dup.m4 $(top_srcdir)/gnulib-m4/dup2.m4 \
-	$(top_srcdir)/gnulib-m4/eaccess.m4 \
-	$(top_srcdir)/gnulib-m4/eealloc.m4 \
 	$(top_srcdir)/gnulib-m4/environ.m4 \
 	$(top_srcdir)/gnulib-m4/errno_h.m4 \
-	$(top_srcdir)/gnulib-m4/error.m4 \
 	$(top_srcdir)/gnulib-m4/execute.m4 \
 	$(top_srcdir)/gnulib-m4/exponentd.m4 \
 	$(top_srcdir)/gnulib-m4/extensions.m4 \
@@ -141,7 +132,6 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/fstat.m4 \
 	$(top_srcdir)/gnulib-m4/ftell.m4 \
 	$(top_srcdir)/gnulib-m4/ftello.m4 \
-	$(top_srcdir)/gnulib-m4/gcj.m4 \
 	$(top_srcdir)/gnulib-m4/getcwd.m4 \
 	$(top_srcdir)/gnulib-m4/getdelim.m4 \
 	$(top_srcdir)/gnulib-m4/getdtablesize.m4 \
@@ -159,8 +149,6 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/inttypes.m4 \
 	$(top_srcdir)/gnulib-m4/iswblank.m4 \
 	$(top_srcdir)/gnulib-m4/java.m4 \
-	$(top_srcdir)/gnulib-m4/javacomp.m4 \
-	$(top_srcdir)/gnulib-m4/javaexec.m4 \
 	$(top_srcdir)/gnulib-m4/langinfo_h.m4 \
 	$(top_srcdir)/gnulib-m4/largefile.m4 \
 	$(top_srcdir)/gnulib-m4/lib-ld.m4 \
@@ -173,7 +161,6 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/libunistring.m4 \
 	$(top_srcdir)/gnulib-m4/libxml.m4 \
 	$(top_srcdir)/gnulib-m4/localcharset.m4 \
-	$(top_srcdir)/gnulib-m4/locale-fr.m4 \
 	$(top_srcdir)/gnulib-m4/locale-ja.m4 \
 	$(top_srcdir)/gnulib-m4/locale-tr.m4 \
 	$(top_srcdir)/gnulib-m4/locale-zh.m4 \
@@ -189,10 +176,7 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/mbsinit.m4 \
 	$(top_srcdir)/gnulib-m4/mbslen.m4 \
 	$(top_srcdir)/gnulib-m4/mbsrtowcs.m4 \
-	$(top_srcdir)/gnulib-m4/mbstate_t.m4 \
-	$(top_srcdir)/gnulib-m4/mbswidth.m4 \
 	$(top_srcdir)/gnulib-m4/mbtowc.m4 \
-	$(top_srcdir)/gnulib-m4/memchr.m4 \
 	$(top_srcdir)/gnulib-m4/memmove.m4 \
 	$(top_srcdir)/gnulib-m4/memset.m4 \
 	$(top_srcdir)/gnulib-m4/minmax.m4 \
@@ -209,13 +193,10 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/off_t.m4 \
 	$(top_srcdir)/gnulib-m4/open.m4 \
 	$(top_srcdir)/gnulib-m4/opendir.m4 \
-	$(top_srcdir)/gnulib-m4/pathmax.m4 \
 	$(top_srcdir)/gnulib-m4/pipe2.m4 \
 	$(top_srcdir)/gnulib-m4/posix_spawn.m4 \
 	$(top_srcdir)/gnulib-m4/printf.m4 \
 	$(top_srcdir)/gnulib-m4/putenv.m4 \
-	$(top_srcdir)/gnulib-m4/quote.m4 \
-	$(top_srcdir)/gnulib-m4/quotearg.m4 \
 	$(top_srcdir)/gnulib-m4/raise.m4 \
 	$(top_srcdir)/gnulib-m4/rawmemchr.m4 \
 	$(top_srcdir)/gnulib-m4/read-file.m4 \
@@ -232,7 +213,6 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/secure_getenv.m4 \
 	$(top_srcdir)/gnulib-m4/setenv.m4 \
 	$(top_srcdir)/gnulib-m4/setlocale.m4 \
-	$(top_srcdir)/gnulib-m4/sig_atomic_t.m4 \
 	$(top_srcdir)/gnulib-m4/sigaction.m4 \
 	$(top_srcdir)/gnulib-m4/signal_h.m4 \
 	$(top_srcdir)/gnulib-m4/signalblocking.m4 \
@@ -241,17 +221,14 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/snprintf.m4 \
 	$(top_srcdir)/gnulib-m4/spawn-pipe.m4 \
 	$(top_srcdir)/gnulib-m4/spawn_h.m4 \
-	$(top_srcdir)/gnulib-m4/ssize_t.m4 \
 	$(top_srcdir)/gnulib-m4/stat.m4 \
 	$(top_srcdir)/gnulib-m4/stdalign.m4 \
 	$(top_srcdir)/gnulib-m4/stdarg.m4 \
-	$(top_srcdir)/gnulib-m4/stdbool.m4 \
 	$(top_srcdir)/gnulib-m4/stddef_h.m4 \
 	$(top_srcdir)/gnulib-m4/stdint.m4 \
 	$(top_srcdir)/gnulib-m4/stdio_h.m4 \
 	$(top_srcdir)/gnulib-m4/stdlib_h.m4 \
 	$(top_srcdir)/gnulib-m4/stpcpy.m4 \
-	$(top_srcdir)/gnulib-m4/stpncpy.m4 \
 	$(top_srcdir)/gnulib-m4/strchrnul.m4 \
 	$(top_srcdir)/gnulib-m4/strcspn.m4 \
 	$(top_srcdir)/gnulib-m4/strerror.m4 \
@@ -259,8 +236,6 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/strnlen.m4 \
 	$(top_srcdir)/gnulib-m4/strpbrk.m4 \
 	$(top_srcdir)/gnulib-m4/strstr.m4 \
-	$(top_srcdir)/gnulib-m4/strtol.m4 \
-	$(top_srcdir)/gnulib-m4/strtoul.m4 \
 	$(top_srcdir)/gnulib-m4/symlink.m4 \
 	$(top_srcdir)/gnulib-m4/sys_select_h.m4 \
 	$(top_srcdir)/gnulib-m4/sys_socket_h.m4 \
@@ -274,12 +249,9 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/gnulib-m4/thread.m4 \
 	$(top_srcdir)/gnulib-m4/time_h.m4 \
 	$(top_srcdir)/gnulib-m4/tls.m4 \
-	$(top_srcdir)/gnulib-m4/tmpdir.m4 \
 	$(top_srcdir)/gnulib-m4/ungetc.m4 \
-	$(top_srcdir)/gnulib-m4/unionwait.m4 \
 	$(top_srcdir)/gnulib-m4/unistd-safer.m4 \
 	$(top_srcdir)/gnulib-m4/unistd_h.m4 \
-	$(top_srcdir)/gnulib-m4/unlocked-io.m4 \
 	$(top_srcdir)/gnulib-m4/vasnprintf.m4 \
 	$(top_srcdir)/gnulib-m4/vasprintf.m4 \
 	$(top_srcdir)/gnulib-m4/vsnprintf.m4 \
@@ -330,9 +302,29 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/../gettext-runtime/m4/wchar_t.m4 \
 	$(top_srcdir)/../gettext-runtime/m4/wint_t.m4 \
 	$(top_srcdir)/../gettext-runtime/m4/xsize.m4 \
-	$(top_srcdir)/m4/exported.m4 $(top_srcdir)/m4/hostname.m4 \
-	$(top_srcdir)/m4/setlocale.m4 $(top_srcdir)/m4/siginfo.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/backupfile.m4 \
+	$(top_srcdir)/m4/csharp.m4 $(top_srcdir)/m4/csharpcomp.m4 \
+	$(top_srcdir)/m4/csharpexec.m4 $(top_srcdir)/m4/eaccess.m4 \
+	$(top_srcdir)/m4/eealloc.m4 $(top_srcdir)/m4/error.m4 \
+	$(top_srcdir)/m4/exported.m4 $(top_srcdir)/m4/extensions.m4 \
+	$(top_srcdir)/m4/fnmatch.m4 $(top_srcdir)/m4/gcj.m4 \
+	$(top_srcdir)/m4/getline.m4 $(top_srcdir)/m4/getopt.m4 \
+	$(top_srcdir)/m4/hostname.m4 $(top_srcdir)/m4/javacomp.m4 \
+	$(top_srcdir)/m4/javaexec.m4 $(top_srcdir)/m4/locale-fr.m4 \
+	$(top_srcdir)/m4/mbrtowc.m4 $(top_srcdir)/m4/mbstate_t.m4 \
+	$(top_srcdir)/m4/mbswidth.m4 $(top_srcdir)/m4/memchr.m4 \
+	$(top_srcdir)/m4/mkdtemp.m4 $(top_srcdir)/m4/onceonly.m4 \
+	$(top_srcdir)/m4/pathmax.m4 $(top_srcdir)/m4/quote.m4 \
+	$(top_srcdir)/m4/quotearg.m4 $(top_srcdir)/m4/readlink.m4 \
+	$(top_srcdir)/m4/regex.m4 $(top_srcdir)/m4/relocatable.m4 \
+	$(top_srcdir)/m4/restrict.m4 $(top_srcdir)/m4/setenv.m4 \
+	$(top_srcdir)/m4/setlocale.m4 $(top_srcdir)/m4/sig_atomic_t.m4 \
+	$(top_srcdir)/m4/siginfo.m4 $(top_srcdir)/m4/ssize_t.m4 \
+	$(top_srcdir)/m4/stdbool.m4 $(top_srcdir)/m4/stpncpy.m4 \
+	$(top_srcdir)/m4/strerror.m4 $(top_srcdir)/m4/strerror_r.m4 \
+	$(top_srcdir)/m4/strtol.m4 $(top_srcdir)/m4/strtoul.m4 \
+	$(top_srcdir)/m4/tmpdir.m4 $(top_srcdir)/m4/unionwait.m4 \
+	$(top_srcdir)/m4/unlocked-io.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
@@ -450,10 +442,11 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/../gettext-runtime/intl/Makefile.in \
 	../build-aux/compile ../build-aux/config.guess \
 	../build-aux/config.rpath ../build-aux/config.sub \
-	../build-aux/install-sh ../build-aux/ltmain.sh \
+	../build-aux/depcomp ../build-aux/install-sh \
+	../build-aux/ltmain.sh ../build-aux/mdate-sh \
 	../build-aux/missing ../build-aux/mkinstalldirs \
-	../build-aux/texinfo.tex ABOUT-NLS AUTHORS COPYING ChangeLog \
-	INSTALL NEWS README
+	../build-aux/texinfo.tex ../build-aux/ylwrap ABOUT-NLS AUTHORS \
+	COPYING ChangeLog INSTALL NEWS README
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -531,14 +524,9 @@ CFLAGS = @CFLAGS@
 CFLAG_VISIBILITY = @CFLAG_VISIBILITY@
 CLASSPATH = @CLASSPATH@
 CLASSPATH_SEPARATOR = @CLASSPATH_SEPARATOR@
-CLIX_PATH = @CLIX_PATH@
-CLIX_PATH_VAR = @CLIX_PATH_VAR@
-CONF_JAVA = @CONF_JAVA@
-CONF_JAVAC = @CONF_JAVAC@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CROSS_COMPILING = @CROSS_COMPILING@
-CSHARPCOMPFLAGS = @CSHARPCOMPFLAGS@
 CSHARP_CHOICE = @CSHARP_CHOICE@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
@@ -874,8 +862,6 @@ HAVE_ATOLL = @HAVE_ATOLL@
 HAVE_BTOWC = @HAVE_BTOWC@
 HAVE_CANONICALIZE_FILE_NAME = @HAVE_CANONICALIZE_FILE_NAME@
 HAVE_CHOWN = @HAVE_CHOWN@
-HAVE_CLIX = @HAVE_CLIX@
-HAVE_CLIX_IN_PATH = @HAVE_CLIX_IN_PATH@
 HAVE_CLOSEDIR = @HAVE_CLOSEDIR@
 HAVE_CSC = @HAVE_CSC@
 HAVE_CSCC = @HAVE_CSCC@
@@ -963,9 +949,7 @@ HAVE_ISWBLANK = @HAVE_ISWBLANK@
 HAVE_ISWCNTRL = @HAVE_ISWCNTRL@
 HAVE_JAVA = @HAVE_JAVA@
 HAVE_JAVAC = @HAVE_JAVAC@
-HAVE_JAVAC_ENVVAR = @HAVE_JAVAC_ENVVAR@
 HAVE_JAVAC_IN_PATH = @HAVE_JAVAC_IN_PATH@
-HAVE_JAVA_ENVVAR = @HAVE_JAVA_ENVVAR@
 HAVE_JAVA_IN_PATH = @HAVE_JAVA_IN_PATH@
 HAVE_JIKES = @HAVE_JIKES@
 HAVE_JIKES_IN_PATH = @HAVE_JIKES_IN_PATH@
@@ -1162,6 +1146,8 @@ INTL_DEFAULT_VERBOSITY = @INTL_DEFAULT_VERBOSITY@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 JAR = @JAR@
+JAVA = @JAVA@
+JAVAC = @JAVAC@
 JAVA_CHOICE = @JAVA_CHOICE@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
