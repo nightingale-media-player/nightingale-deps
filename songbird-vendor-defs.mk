@@ -386,7 +386,7 @@ AUTOCONF_GENERATED_TRASH = autoregen.sh \
 # other vendor packages don't need this step, so it's a no-op
 SB_REGEN_MAKEFILE_PKGS = flac\
                          gst% \
-                         libjpeg \
+                         libjpeg-turbo \
                          libogg \
                          libvorbis \
                          libtheora \
@@ -630,11 +630,11 @@ ifneq (,$(call enable-sb-lib, flac))
 endif
 
 #
-# libjpeg
+# libjpeg-turbo
 #
 ifneq (,$(call enable-sb-lib, jpeg))
    $(info Enabling Songbird vendor lib: jpeg)
-   SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg)
+   SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg-turbo)
    SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
 
    SB_CFLAGS = -I$(SB_LIBJPEG_DIR)/include

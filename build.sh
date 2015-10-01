@@ -63,8 +63,8 @@ case $OSTYPE in
         make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
         echo -e "Building flac..."
         make CC=gcc CXX=g++ -C flac -f Makefile.songbird
-        echo -e "Building libjpeg..."
-        make CC=gcc CXX=g++ -C libjpeg -f Makefile.songbird
+        echo -e "Building libjpeg-turbo..."
+        make CC=gcc CXX=g++ -C libjpeg-turbo -f Makefile.songbird
         echo -e "Building libogg..."
         make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
         echo -e "Building libtheora..."
