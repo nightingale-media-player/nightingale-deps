@@ -47,8 +47,8 @@ if (MSVC AND ENABLE_STATIC_RUNTIME)
 endif()
 
 set(TAGLIB_LIB_MAJOR_VERSION "1")
-set(TAGLIB_LIB_MINOR_VERSION "8")
-set(TAGLIB_LIB_PATCH_VERSION "0")
+set(TAGLIB_LIB_MINOR_VERSION "9")
+set(TAGLIB_LIB_PATCH_VERSION "1")
 
 set(TAGLIB_LIB_VERSION_STRING "${TAGLIB_LIB_MAJOR_VERSION}.${TAGLIB_LIB_MINOR_VERSION}.${TAGLIB_LIB_PATCH_VERSION}")
 
@@ -56,9 +56,9 @@ set(TAGLIB_LIB_VERSION_STRING "${TAGLIB_LIB_MAJOR_VERSION}.${TAGLIB_LIB_MINOR_VE
 # 2. If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
 # 3. If any interfaces have been added since the last public release, then increment age.
 # 4. If any interfaces have been removed since the last public release, then set age to 0. 
-set(TAGLIB_SOVERSION_CURRENT  13)
+set(TAGLIB_SOVERSION_CURRENT  15)
 set(TAGLIB_SOVERSION_REVISION 0)
-set(TAGLIB_SOVERSION_AGE      12)
+set(TAGLIB_SOVERSION_AGE      14)
 
 math(EXPR TAGLIB_SOVERSION_MAJOR "${TAGLIB_SOVERSION_CURRENT} - ${TAGLIB_SOVERSION_AGE}")
 math(EXPR TAGLIB_SOVERSION_MINOR "${TAGLIB_SOVERSION_AGE}")
@@ -66,8 +66,15 @@ math(EXPR TAGLIB_SOVERSION_PATCH "${TAGLIB_SOVERSION_REVISION}")
 
 include(ConfigureChecks.cmake)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib-config )
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/taglib-config DESTINATION ${BIN_INSTALL_DIR})
+if(NOT WIN32)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib-config )
+  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/taglib-config DESTINATION ${BIN_INSTALL_DIR})
+endif()
+
+if(WIN32)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib-config.cmd.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib-config.cmd )
+  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/taglib-config.cmd DESTINATION ${BIN_INSTALL_DIR})
+endif()
 
 if(NOT WIN32 AND NOT BUILD_FRAMEWORK)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/taglib.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib.pc )
@@ -75,13 +82,18 @@ if(NOT WIN32 AND NOT BUILD_FRAMEWORK)
 endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-configure_file(config-taglib.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 if(WITH_ASF)
-    set(TAGLIB_WITH_ASF TRUE)
+  set(TAGLIB_WITH_ASF TRUE)
 endif()
 if(WITH_MP4)
-    set(TAGLIB_WITH_MP4 TRUE)
+  set(TAGLIB_WITH_MP4 TRUE)
+endif()
+
+option(TRACE_IN_RELEASE "Output debug messages even in release mode"  OFF)
+if(TRACE_IN_RELEASE)
+  set(TRACE_IN_RELEASE TRUE)
 endif()
 
 configure_file(taglib/taglib_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/taglib_config.h)
