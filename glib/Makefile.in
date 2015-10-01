@@ -438,8 +438,8 @@ am__DIST_COMMON = $(srcdir)/INSTALL.in $(srcdir)/Makefile.in \
 	$(srcdir)/gmodule-no-export-2.0.pc.in \
 	$(srcdir)/gobject-2.0.pc.in $(srcdir)/gthread-2.0.pc.in \
 	$(top_srcdir)/glib.mk AUTHORS COPYING ChangeLog INSTALL NEWS \
-	README compile config.guess config.sub depcomp install-sh \
-	ltmain.sh missing py-compile test-driver
+	README compile config.guess config.sub install-sh ltmain.sh \
+	missing py-compile test-driver
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
