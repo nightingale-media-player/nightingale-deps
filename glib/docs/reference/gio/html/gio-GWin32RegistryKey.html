@@ -1452,12 +1452,6 @@ and its length - in <em class="parameter"><code>value_data_len</code></em>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
 </tr>
 <tr>
-<td class="parameter_name"><p>auto_expand</p></td>
-<td class="parameter_description"><p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to automatically expand G_WIN32_REGISTRY_VALUE_EXPAND_STR to
-G_WIN32_REGISTRY_VALUE_STR. </p></td>
-<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
-</tr>
-<tr>
 <td class="parameter_name"><p>value_data</p></td>
 <td class="parameter_description"><p> Pointer to a
 location to store the data of the value (in UTF-8, if it's a string). </p></td>
@@ -1467,7 +1461,8 @@ location to store the data of the value (in UTF-8, if it's a string). </p></td>
 <td class="parameter_name"><p>value_data_size</p></td>
 <td class="parameter_description"><p> Pointer to a location to store the length
 of <em class="parameter"><code>value_data</code></em>
-, in bytes (including any NUL-terminators, if it's a string).
+, in bytes (including any NUL-terminators, if it's a
+string).
 <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed instead of a pointer to a location."><span class="acronym">optional</span></acronym>]</span></td>
 </tr>
@@ -1526,10 +1521,11 @@ location to store the data of the value (in UTF-16, if it's a string). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Out parameter, where caller must allocate storage."><span class="acronym">out callee-allocates</span></acronym>][<acronym title="NULL may be passed instead of a pointer to a location."><span class="acronym">optional</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
 </tr>
 <tr>
-<td class="parameter_name"><p>value_data_size</p></td>
+<td class="parameter_name"><p>value_data_len</p></td>
 <td class="parameter_description"><p> Pointer to a location to store the size
 of <em class="parameter"><code>value_data</code></em>
-, in bytes (including any NUL-terminators, if it's a string).
+, in bytes (including any NUL-terminators, if it's a
+string).
 <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed instead of a pointer to a location."><span class="acronym">optional</span></acronym>]</span></td>
 </tr>
@@ -1835,7 +1831,7 @@ to watch the key only.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td class="parameter_name"><p>watch_flags</p></td>
+<td class="parameter_name"><p>change_flags</p></td>
 <td class="parameter_description"><p> specifies the types of changes to watch for. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>

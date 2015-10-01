@@ -521,9 +521,9 @@ to push into the <em class="parameter"><code>queue</code></em>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_async_queue_push_front (<em class="parameter"><code><a class="link" href="glib-Asynchronous-Queues.html#GAsyncQueue" title="GAsyncQueue"><span class="type">GAsyncQueue</span></a> *queue</code></em>,
                           <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> item</code></em>);</pre>
-<p>Pushes the <em class="parameter"><code>item</code></em>
+<p>Pushes the <em class="parameter"><code>data</code></em>
  into the <em class="parameter"><code>queue</code></em>
-. <em class="parameter"><code>item</code></em>
+. <em class="parameter"><code>data</code></em>
  must not be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.
 In contrast to <a class="link" href="glib-Asynchronous-Queues.html#g-async-queue-push" title="g_async_queue_push ()"><code class="function">g_async_queue_push()</code></a>, this function
 pushes the new item ahead of the items already in the queue,
@@ -543,8 +543,9 @@ so that it will be the next one to be popped off the queue.</p>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>data to push into the <em class="parameter"><code>queue</code></em>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><em class="parameter"><code>data</code></em>
+to push into the <em class="parameter"><code>queue</code></em>
 </p></td>
 <td class="parameter_annotations"> </td>
 </tr>
@@ -575,8 +576,9 @@ g_async_queue_remove (<em class="parameter"><code><a class="link" href="glib-Asy
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>the data to remove from the <em class="parameter"><code>queue</code></em>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the <em class="parameter"><code>data</code></em>
+to remove from the <em class="parameter"><code>queue</code></em>
 </p></td>
 <td class="parameter_annotations"> </td>
 </tr>
@@ -1029,9 +1031,9 @@ to push into the <em class="parameter"><code>queue</code></em>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_async_queue_push_front_unlocked (<em class="parameter"><code><a class="link" href="glib-Asynchronous-Queues.html#GAsyncQueue" title="GAsyncQueue"><span class="type">GAsyncQueue</span></a> *queue</code></em>,
                                    <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> item</code></em>);</pre>
-<p>Pushes the <em class="parameter"><code>item</code></em>
+<p>Pushes the <em class="parameter"><code>data</code></em>
  into the <em class="parameter"><code>queue</code></em>
-. <em class="parameter"><code>item</code></em>
+. <em class="parameter"><code>data</code></em>
  must not be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.
 In contrast to <a class="link" href="glib-Asynchronous-Queues.html#g-async-queue-push-unlocked" title="g_async_queue_push_unlocked ()"><code class="function">g_async_queue_push_unlocked()</code></a>, this function
 pushes the new item ahead of the items already in the queue,
@@ -1053,8 +1055,9 @@ so that it will be the next one to be popped off the queue.</p>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>data to push into the <em class="parameter"><code>queue</code></em>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><em class="parameter"><code>data</code></em>
+to push into the <em class="parameter"><code>queue</code></em>
 </p></td>
 <td class="parameter_annotations"> </td>
 </tr>
@@ -1087,8 +1090,9 @@ g_async_queue_remove_unlocked (<em class="parameter"><code><a class="link" href=
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>the data to remove from the <em class="parameter"><code>queue</code></em>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the <em class="parameter"><code>data</code></em>
+to remove from the <em class="parameter"><code>queue</code></em>
 </p></td>
 <td class="parameter_annotations"> </td>
 </tr>

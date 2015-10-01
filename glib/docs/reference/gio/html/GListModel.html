@@ -167,7 +167,7 @@ interested in.</p>
 <a class="link" href="GListModel.html#g-list-model-get-item-type" title="g_list_model_get_item_type ()"><code class="function">g_list_model_get_item_type()</code></a> returns that type.  The type may be an
 interface, in which case all objects in the list must implement it.</p>
 <p>The semantics are close to that of an array:
-<a class="link" href="GListModel.html#g-list-model-get-n-items" title="g_list_model_get_n_items ()"><code class="function">g_list_model_get_n_items()</code></a> returns the number of items in the list and
+<code class="function">g_list_model_get_length()</code> returns the number of items in the list and
 <a class="link" href="GListModel.html#g-list-model-get-item" title="g_list_model_get_item ()"><code class="function">g_list_model_get_item()</code></a> returns an item at a (0-based) position. In
 order to allow implementations to calculate the list length lazily,
 you can also iterate over items: starting from 0, repeatedly call
