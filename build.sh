@@ -56,37 +56,55 @@ case $OSTYPE in
 		fi
 
         echo -e "Building gettext..."
+        cd gettext
+        bash autogen.sh
+        cd ..
         make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
+        
         echo -e "Building glib..."
+        cd glib
+        bash autogen.sh
+        cd ..
         make CC=gcc CXX=g++ -C glib -f Makefile.songbird
+
         echo -e "Building libidl..."
         make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
+        
         echo -e "Building flac..."
         make CC=gcc CXX=g++ -C flac -f Makefile.songbird
+        
         echo -e "Building libjpeg-turbo..."
         make CC=gcc CXX=g++ -C libjpeg-turbo -f Makefile.songbird
+        
         echo -e "Building libogg..."
         make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
+        
         echo -e "Building libtheora..."
         make CC=gcc CXX=g++ -C libtheora -f Makefile.songbird
+        
         echo -e "Building libtool..."
         make CC=gcc CXX=g++ -C libtool -f Makefile.songbird
+        
         echo -e "Building libvorbis..."        
         make CC=gcc CXX=g++ -C libvorbis -f Makefile.songbird
+        
         echo -e "Building sqlite..."
         make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
+        
         echo -e "Building taglib..."        
         make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
 
         echo -e "Building xulrunner and crossing our fingers..."
-        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        make CC=gcc CXX=g++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        
         echo -e "Building gstreamer bits..."
-        make CC=gcc-4.2 CXX=g++-4.2 -C gstreamer -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gstreamer -f Makefile.songbird
+        
         echo -e "Building gst plugins...here's hoping these all build!"
-        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-base -f Makefile.songbird
-        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-good -f Makefile.songbird
-        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-bad -f Makefile.songbird
-        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-ugly -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gst-plugins-base -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gst-plugins-good -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gst-plugins-bad -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gst-plugins-ugly -f Makefile.songbird
         echo "Done!"
 
     ;;
