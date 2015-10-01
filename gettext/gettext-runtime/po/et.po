@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext 0.10.37\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2015-09-11 12:23+0900\n"
+"POT-Creation-Date: 2015-07-10 15:47+0900\n"
 "PO-Revision-Date: 2001-04-30 16:25+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -31,7 +31,7 @@ msgstr "%s: võti `%s' on mitmetähenduslik\n"
 #: gnulib-lib/getopt.c:619
 #, fuzzy, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: võti `-W %s' on mitmetähenduslik\n"
+msgstr "%s: võti `%s' on mitmetähenduslik\n"
 
 #: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, fuzzy, c-format

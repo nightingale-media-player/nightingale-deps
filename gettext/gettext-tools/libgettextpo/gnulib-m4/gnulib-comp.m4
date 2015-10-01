@@ -130,7 +130,6 @@ AC_DEFUN([gtpo_EARLY],
   # Code from module stdio:
   # Code from module stdlib:
   # Code from module stpcpy:
-  # Code from module stpncpy:
   # Code from module strchrnul:
   # Code from module streq:
   # Code from module strerror:
@@ -388,12 +387,6 @@ AC_DEFUN([gtpo_INIT],
     gl_PREREQ_STPCPY
   fi
   gl_STRING_MODULE_INDICATOR([stpcpy])
-  gl_FUNC_STPNCPY
-  if test $HAVE_STPNCPY = 0 || test $REPLACE_STPNCPY = 1; then
-    AC_LIBOBJ([stpncpy])
-    gl_PREREQ_STPNCPY
-  fi
-  gl_STRING_MODULE_INDICATOR([stpncpy])
   gl_FUNC_STRCHRNUL
   if test $HAVE_STRCHRNUL = 0 || test $REPLACE_STRCHRNUL = 1; then
     AC_LIBOBJ([strchrnul])
@@ -747,7 +740,6 @@ AC_DEFUN([gtpo_FILE_LIST], [
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/stpcpy.c
-  lib/stpncpy.c
   lib/str-two-way.h
   lib/strchrnul.c
   lib/strchrnul.valgrind
@@ -907,7 +899,6 @@ AC_DEFUN([gtpo_FILE_LIST], [
   m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/stpcpy.m4
-  m4/stpncpy.m4
   m4/strchrnul.m4
   m4/strerror.m4
   m4/string_h.m4

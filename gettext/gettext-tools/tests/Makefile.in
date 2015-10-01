@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -130,35 +131,35 @@ TESTS = gettext-1 gettext-2 gettext-3 gettext-4 gettext-5 gettext-6 \
 	recode-sr-latin-1 recode-sr-latin-2 xgettext-2 xgettext-3 \
 	xgettext-4 xgettext-5 xgettext-6 xgettext-7 xgettext-8 \
 	xgettext-9 xgettext-10 xgettext-11 xgettext-12 xgettext-13 \
-	xgettext-14 xgettext-appdata-1 xgettext-awk-1 xgettext-awk-2 \
-	xgettext-c-2 xgettext-c-3 xgettext-c-4 xgettext-c-5 \
-	xgettext-c-6 xgettext-c-7 xgettext-c-8 xgettext-c-9 \
-	xgettext-c-10 xgettext-c-11 xgettext-c-12 xgettext-c-13 \
-	xgettext-c-14 xgettext-c-15 xgettext-c-16 xgettext-c-17 \
-	xgettext-c-18 xgettext-c-19 xgettext-c-20 xgettext-c-21 \
-	xgettext-csharp-1 xgettext-csharp-2 xgettext-csharp-3 \
-	xgettext-csharp-4 xgettext-csharp-5 xgettext-csharp-6 \
-	xgettext-csharp-7 xgettext-csharp-8 xgettext-elisp-1 \
-	xgettext-elisp-2 xgettext-glade-1 xgettext-glade-2 \
-	xgettext-glade-3 xgettext-glade-4 xgettext-glade-5 \
-	xgettext-glade-6 xgettext-glade-7 xgettext-java-1 \
-	xgettext-java-2 xgettext-java-3 xgettext-java-4 \
-	xgettext-java-5 xgettext-java-6 xgettext-java-7 \
-	xgettext-librep-1 xgettext-librep-2 xgettext-lisp-1 \
-	xgettext-lisp-2 xgettext-objc-1 xgettext-objc-2 \
-	xgettext-perl-1 xgettext-perl-2 xgettext-perl-3 \
-	xgettext-perl-4 xgettext-perl-5 xgettext-perl-6 \
-	xgettext-perl-7 xgettext-perl-8 xgettext-php-1 xgettext-php-2 \
-	xgettext-php-3 xgettext-php-4 xgettext-po-1 \
-	xgettext-properties-1 xgettext-python-1 xgettext-python-2 \
-	xgettext-python-3 xgettext-python-4 xgettext-scheme-1 \
-	xgettext-scheme-2 xgettext-scheme-3 xgettext-scheme-4 \
-	xgettext-sh-1 xgettext-sh-2 xgettext-sh-3 xgettext-sh-4 \
-	xgettext-sh-5 xgettext-sh-6 xgettext-smalltalk-1 \
-	xgettext-smalltalk-2 xgettext-stringtable-1 xgettext-tcl-1 \
-	xgettext-tcl-2 xgettext-tcl-3 xgettext-tcl-4 xgettext-ycp-1 \
-	xgettext-ycp-2 xgettext-ycp-3 xgettext-ycp-4 xgettext-lua-1 \
-	xgettext-lua-2 xgettext-javascript-1 xgettext-javascript-2 \
+	xgettext-14 xgettext-awk-1 xgettext-awk-2 xgettext-c-2 \
+	xgettext-c-3 xgettext-c-4 xgettext-c-5 xgettext-c-6 \
+	xgettext-c-7 xgettext-c-8 xgettext-c-9 xgettext-c-10 \
+	xgettext-c-11 xgettext-c-12 xgettext-c-13 xgettext-c-14 \
+	xgettext-c-15 xgettext-c-16 xgettext-c-17 xgettext-c-18 \
+	xgettext-c-19 xgettext-c-20 xgettext-c-21 xgettext-csharp-1 \
+	xgettext-csharp-2 xgettext-csharp-3 xgettext-csharp-4 \
+	xgettext-csharp-5 xgettext-csharp-6 xgettext-csharp-7 \
+	xgettext-csharp-8 xgettext-elisp-1 xgettext-elisp-2 \
+	xgettext-glade-1 xgettext-glade-2 xgettext-glade-3 \
+	xgettext-glade-4 xgettext-glade-5 xgettext-glade-6 \
+	xgettext-glade-7 xgettext-java-1 xgettext-java-2 \
+	xgettext-java-3 xgettext-java-4 xgettext-java-5 \
+	xgettext-java-6 xgettext-java-7 xgettext-librep-1 \
+	xgettext-librep-2 xgettext-lisp-1 xgettext-lisp-2 \
+	xgettext-objc-1 xgettext-objc-2 xgettext-perl-1 \
+	xgettext-perl-2 xgettext-perl-3 xgettext-perl-4 \
+	xgettext-perl-5 xgettext-perl-6 xgettext-perl-7 \
+	xgettext-perl-8 xgettext-php-1 xgettext-php-2 xgettext-php-3 \
+	xgettext-php-4 xgettext-po-1 xgettext-properties-1 \
+	xgettext-python-1 xgettext-python-2 xgettext-python-3 \
+	xgettext-python-4 xgettext-scheme-1 xgettext-scheme-2 \
+	xgettext-scheme-3 xgettext-scheme-4 xgettext-sh-1 \
+	xgettext-sh-2 xgettext-sh-3 xgettext-sh-4 xgettext-sh-5 \
+	xgettext-sh-6 xgettext-smalltalk-1 xgettext-smalltalk-2 \
+	xgettext-stringtable-1 xgettext-tcl-1 xgettext-tcl-2 \
+	xgettext-tcl-3 xgettext-tcl-4 xgettext-ycp-1 xgettext-ycp-2 \
+	xgettext-ycp-3 xgettext-ycp-4 xgettext-lua-1 xgettext-lua-2 \
+	xgettext-javascript-1 xgettext-javascript-2 \
 	xgettext-javascript-3 xgettext-javascript-4 \
 	xgettext-javascript-5 xgettext-javascript-6 xgettext-vala-1 \
 	xgettext-gsettings-1 xgettext-desktop-1 format-awk-1 \
@@ -185,7 +186,7 @@ TESTS = gettext-1 gettext-2 gettext-3 gettext-4 gettext-5 gettext-6 \
 	lang-pascal lang-ycp lang-tcl lang-perl-1 lang-perl-2 lang-php \
 	lang-po lang-rst lang-lua lang-javascript lang-vala \
 	autopoint-1 autopoint-2 autopoint-3 cldr-plurals-1
-check_PROGRAMS = tstgettext$(EXEEXT) tstngettext$(EXEEXT) \
+noinst_PROGRAMS = tstgettext$(EXEEXT) tstngettext$(EXEEXT) \
 	testlocale$(EXEEXT) gettext-3-prg$(EXEEXT) \
 	gettext-4-prg$(EXEEXT) gettext-5-prg$(EXEEXT) \
 	gettext-6-prg$(EXEEXT) gettext-7-prg$(EXEEXT) \
@@ -443,6 +444,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/../build-aux/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = init-env
 CONFIG_CLEAN_VPATH_FILES =
+PROGRAMS = $(noinst_PROGRAMS)
 am_cake_OBJECTS = plural-1-prg.$(OBJEXT) setlocale.$(OBJEXT)
 cake_OBJECTS = $(am_cake_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -810,7 +812,6 @@ AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 APPLE_UNIVERSAL_BUILD = @APPLE_UNIVERSAL_BUILD@
 AR = @AR@
 ARCHIVE_FORMAT = @ARCHIVE_FORMAT@
-ARCHIVE_VERSION = @ARCHIVE_VERSION@
 ARFLAGS = @ARFLAGS@
 AS = @AS@
 ASM_SYMBOL_PREFIX = @ASM_SYMBOL_PREFIX@
@@ -1111,7 +1112,6 @@ GNULIB_SYMLINKAT = @GNULIB_SYMLINKAT@
 GNULIB_SYSTEM_POSIX = @GNULIB_SYSTEM_POSIX@
 GNULIB_TIMEGM = @GNULIB_TIMEGM@
 GNULIB_TIME_R = @GNULIB_TIME_R@
-GNULIB_TIME_RZ = @GNULIB_TIME_RZ@
 GNULIB_TMPFILE = @GNULIB_TMPFILE@
 GNULIB_TOWCTRANS = @GNULIB_TOWCTRANS@
 GNULIB_TTYNAME_R = @GNULIB_TTYNAME_R@
@@ -1390,7 +1390,6 @@ HAVE_SYS_SELECT_H = @HAVE_SYS_SELECT_H@
 HAVE_SYS_TIME_H = @HAVE_SYS_TIME_H@
 HAVE_SYS_TYPES_H = @HAVE_SYS_TYPES_H@
 HAVE_TIMEGM = @HAVE_TIMEGM@
-HAVE_TIMEZONE_T = @HAVE_TIMEZONE_T@
 HAVE_TYPE_VOLATILE_SIG_ATOMIC_T = @HAVE_TYPE_VOLATILE_SIG_ATOMIC_T@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_UNLINKAT = @HAVE_UNLINKAT@
@@ -2023,8 +2022,8 @@ $(am__aclocal_m4_deps):
 init-env: $(top_builddir)/config.status $(srcdir)/init-env.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
-clean-checkPROGRAMS:
-	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -2343,7 +2342,7 @@ check-TESTS:
 	log_list=`echo $$log_list`; trs_list=`echo $$trs_list`; \
 	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) TEST_LOGS="$$log_list"; \
 	exit $$?;
-recheck: all $(check_PROGRAMS)
+recheck: all 
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 	@set +e; $(am__set_TESTS_bases); \
 	bases=`for i in $$bases; do echo $$i; done \
@@ -3852,13 +3851,6 @@ xgettext-14.log: xgettext-14
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-xgettext-appdata-1.log: xgettext-appdata-1
-	@p='xgettext-appdata-1'; \
-	b='xgettext-appdata-1'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
 xgettext-awk-1.log: xgettext-awk-1
 	@p='xgettext-awk-1'; \
 	b='xgettext-awk-1'; \
@@ -5256,10 +5248,9 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile
+all-am: Makefile $(PROGRAMS)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -5297,7 +5288,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
+clean-am: clean-generic clean-libtool clean-local clean-noinstPROGRAMS \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -5367,7 +5358,7 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libtool clean-local \
+	clean-generic clean-libtool clean-local clean-noinstPROGRAMS \
 	cscopelist-am ctags ctags-am distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \

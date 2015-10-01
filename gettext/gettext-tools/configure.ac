@@ -458,9 +458,6 @@ changequote([,])dnl
 fi
 AC_SUBST([ARCHIVE_FORMAT])
 
-ARCHIVE_VERSION=0.19.6
-AC_SUBST([ARCHIVE_VERSION])
-
 dnl Check for tools needed for formatting the documentation.
 ac_aux_dir_abs=`cd $ac_aux_dir && pwd`
 AC_PATH_PROG([DVIPS], [dvips], [$ac_aux_dir_abs/missing dvips])

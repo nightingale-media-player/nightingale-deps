@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-runtime 0.15-pre5\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2015-09-11 12:23+0900\n"
+"POT-Creation-Date: 2015-07-10 15:47+0900\n"
 "PO-Revision-Date: 2006-07-05 17:16+0800\n"
 "Last-Translator: Abel Cheung <abelcheung@gmail.com>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
@@ -36,7 +36,7 @@ msgstr "%s：選項「%s」不明確\n"
 #: gnulib-lib/getopt.c:619
 #, fuzzy, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s：選項「-W %s」不明確\n"
+msgstr "%s：選項「%s」不明確\n"
 
 #: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, fuzzy, c-format

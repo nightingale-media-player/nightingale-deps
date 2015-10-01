@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext-runtime 0.18\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2015-09-11 12:23+0900\n"
+"POT-Creation-Date: 2015-07-10 15:47+0900\n"
 "PO-Revision-Date: 2012-11-02 14:40+0100\n"
 "Last-Translator: Tomislav Krznar <tomislav.krznar@gmail.com>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -34,9 +34,9 @@ msgid "%s: option '%s' is ambiguous; possibilities:"
 msgstr "%s: opcija „%s” je višeznačna\n"
 
 #: gnulib-lib/getopt.c:619
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: opcija „-W %s” je višeznačna\n"
+msgstr "%s: opcija „%s” je višeznačna\n"
 
 #: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, c-format

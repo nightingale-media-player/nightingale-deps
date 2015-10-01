@@ -1,25 +1,3 @@
-Version 0.19.6 - September 2015
-
-* Programming languages support:
-  - AppData:
-    xgettext now supports AppData file format, used by software center
-    applications (e.g., GNOME Software) to describe installable
-    applications.
-
-* A new macro AM_GNU_GETTEXT_REQUIRE_VERSION can be used to indicate
-  autopoint to pull the latest available infrastructure, instead of
-  the exact version specified with AM_GNU_GETTEXT_VERSION.  When
-  AM_GNU_GETTEXT_REQUIRE_VERSION is used, AM_GNU_GETTEXT_VERSION is
-  ignored.
-
-* po/Makefile.in.in can now insert the file $(DOMAIN).pot-header to
-  $(DOMAIN).pot, instead of the standard header comments.
-
-* Bug fixes:
-  - Fix mishandling of gettext version numbers for minor releases, in
-    po-mode.el and gettextize.
-  - Fix build with --enable-relocatable.
-
 Version 0.19.5 - July 2015
 
 * xgettext now has a feature to perform syntax checks on msgid, which
@@ -39,7 +17,7 @@ Version 0.19.5 - July 2015
 
 * msginit is now capable of generating "Plural-Forms:" from Unicode
   CLDR.  This feature is still experimental, but you can try it by
-  setting the GETTEXTCLDRDIR environment variable pointing to the
+  setting the GETTEXTCLDRDIR environment variable pointing to the the
   directory where the CLDR archive is extracted.  The actual
   conversion is done by a helper program 'cldr-plural', which can be
   used as a generic converter and evaluator of CLDR plural forms.
