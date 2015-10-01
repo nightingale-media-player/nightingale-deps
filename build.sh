@@ -56,15 +56,9 @@ case $OSTYPE in
 		fi
 
         echo -e "Building gettext..."
-        cd gettext
-        bash autogen.sh --skip-gnulib
-        cd ..
         make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
         
         echo -e "Building glib..."
-        cd glib
-        bash autogen.sh
-        cd ..
         make CC=gcc CXX=g++ -C glib -f Makefile.songbird
 
         echo -e "Building libidl..."
