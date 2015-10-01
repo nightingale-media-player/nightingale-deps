@@ -380,6 +380,39 @@ if ! $skip_gnulib; then
   fi
 fi
 
+# Fetch config.guess, config.sub.
+if test -n "$GNULIB_TOOL"; then
+  for file in config.guess config.sub; do
+    $GNULIB_TOOL --copy-file build-aux/$file; chmod a+x build-aux/$file || exit $?
+  done
+else
+  for file in config.guess config.sub; do
+    echo "$0: getting $file..."
+    wget -q --timeout=5 -O build-aux/$file.tmp "http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;f=build-aux/${file};hb=HEAD" \
+      && mv build-aux/$file.tmp build-aux/$file \
+      && chmod a+x build-aux/$file
+    retval=$?
+    rm -f build-aux/$file.tmp
+    test $retval -eq 0 || exit $retval
+  done
+fi
+
+# Fetch gettext-tools/misc/archive.dir.tar.
+if ! test -f gettext-tools/misc/archive.dir.tar; then
+  if ! test -f gettext-tools/misc/archive.dir.tar.xz; then
+    echo "$0: getting gettext-tools/misc/archive.dir.tar..."
+    wget -q --timeout=5 -O gettext-tools/misc/archive.dir.tar.xz-t "ftp://alpha.gnu.org/gnu/gettext/archive.dir-latest.tar.xz" \
+      && mv gettext-tools/misc/archive.dir.tar.xz-t gettext-tools/misc/archive.dir.tar.xz
+    retval=$?
+    rm -f gettext-tools/misc/archive.dir.tar.xz-t
+    test $retval -eq 0 || exit $retval
+  fi
+  xz -d -c < gettext-tools/misc/archive.dir.tar.xz > gettext-tools/misc/archive.dir.tar-t \
+    && mv gettext-tools/misc/archive.dir.tar-t gettext-tools/misc/archive.dir.tar
+  retval=$?
+  rm -f gettext-tools/misc/archive.dir.tar-t
+  test $retval -eq 0 || exit $retval
+fi
 
 # Generate configure script in each subdirectories.
 (cd gettext-runtime/libasprintf
