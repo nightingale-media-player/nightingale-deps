@@ -1,11 +1,12 @@
 #! /bin/sh
 #
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2006, 2009-2010, 2015 Free Software Foundation,
+# Inc.
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 # Usage: add-to-archive /somewhere/gettext-0.xx.yy.tar.gz
-# Adds the infrastructure files for gettext version 0.xx.yy to the compressed
-# CVS repository in the archive.tar.gz file.
+# Adds the infrastructure files for gettext version 0.xx.yy to the reposutory
+# in the archive.dir.tar file.
 
 if test $# != 1; then
   echo "Usage: add-to-archive /somewhere/gettext-0.xx.yy.tar.gz"
@@ -38,11 +38,6 @@ if test -d "$pack_ver"; then
 fi
 pack=`echo "$pack_ver" | sed -e 's/^\([^-]*\)-.*/\1/'`
 ver=`echo "$pack_ver" | sed -e 's/^[^-]*-\(.*\)/\1/'`
-
-# Set a nonstandard variable, for a good-looking cvs history.
-cvsuser=bruno
-gcc -shared -O cvsuser.c -o cvsuser.so
-cvsuser_hack=`pwd`/cvsuser.so
 
 # Unpack, build and install the source distribution.
 myprefix=`pwd`/${pack_ver}-inst
@@ -64,7 +59,7 @@ work_archive=`pwd`/"$work_dir/archive"
    case $file in
      ABOUT-NLS)
        cp -p $file "$work_archive/$file" ;;
-     config.rpath | mkinstalldirs)
+     config.rpath)
        cp -p $file "$work_archive/$file" ;;
    esac
  done
@@ -92,21 +87,16 @@ work_archive=`pwd`/"$work_dir/archive"
 )
 
 # Add the contents of this directory to the repository.
-cvsroot=`pwd`/autopoint-files
-mkdir "$cvsroot"
-cvs -d "$cvsroot" init
-(cd autopoint-files && tar xvfz ../archive.tar.gz)
-cvsver=$pack-`echo "$ver" | sed -e 's/\./_/g'`
-(cd "$work_archive"
- CVSUSER=$cvsuser LD_PRELOAD=$cvsuser_hack \
- cvs -d "$cvsroot" import -m "Import $pack_ver" archive release "$cvsver"
-)
-(cd autopoint-files && tar cvfz ../archive.tar.gz --owner=root --group=root archive)
-(cd autopoint-files && du archive)
+mkdir autopoint-files
+(cd autopoint-files && tar xf ../archive.dir.tar)
+mkdir autopoint-files/$pack_ver
+(cd "$work_archive" && tar cf - .) | (cd autopoint-files/$pack_ver && tar xf -)
+(cd autopoint-files && tar cf ../archive.dir.tar --owner=root --group=root *)
 
 # Clean up.
-rm -rf "$cvsroot"
+rm -rf autopoint-files
 rm -rf "$work_dir"
+rm -f cvsuser.so
 rm -rf "$myprefix"
 
 exit 0

@@ -1,13 +1,10 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test of gettext facilities in the C language.
 # Assumes an fr_FR locale is installed.
 # Assumes the following packages are installed: gcc.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles prog.c"
 cat <<\EOF > prog.c
 #include "config.h"
 #include <libintl.h>
@@ -23,10 +20,8 @@ int main (int argc, char *argv[])
 
   xsetenv ("LC_ALL", argv[1], 1);
   if (setlocale (LC_ALL, "") == NULL)
-    {
-      fprintf (stderr, "Couldn't set locale.\n");
-      exit (77);
-    }
+    /* Couldn't set locale.  */
+    exit (77);
 
   textdomain ("prog");
   bindtextdomain ("prog", ".");
@@ -44,18 +39,22 @@ int main (int argc, char *argv[])
 }
 EOF
 
-# Variable needed by LTLIBINTL.
-top_builddir=..
+# Put the -I flags before ${CFLAGS} ${CPPFLAGS}, to make sure that libintl.h
+# is found in the build directory, regardless of -I options present in
+# ${CFLAGS} or ${CPPFLAGS}.
+${CC} -I../.. -I"$abs_top_srcdir"/gnulib-lib -I../../intl ${CFLAGS} \
+      ${CPPFLAGS} -c prog.c || exit 1
 
-tmpfiles="$tmpfiles prog.${OBJEXT} prog${EXEEXT}"
-${LIBTOOL} --quiet --mode=link ${CC} ${CFLAGS} ${CPPFLAGS} ${LDFLAGS} -o prog prog.c -I.. -I$top_srcdir/lib ../lib/libgettextlib.la -I../intl ${LTLIBINTL} \
-  || exit 1
+: ${CONFIG_SHELL=${SHELL-/bin/sh}}
+${CONFIG_SHELL} "$top_builddir"/libtool --quiet --tag=CC --mode=link \
+                ${CC} ${CFLAGS} -o prog prog.${OBJEXT} \
+                ../../gnulib-lib/libgettextlib.la ${LDFLAGS} ${LTLIBINTL} \
+		|| exit 1
 
-tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.pot --omit-header --no-location -k_ prog.c
+${XGETTEXT} -o prog.tmp --omit-header --no-location -k_ prog.c || exit 1
+LC_ALL=C tr -d '\r' < prog.tmp > prog.pot || exit 1
 
-tmpfiles="$tmpfiles prog.ok"
 cat <<EOF > prog.ok
 #, c-format
 msgid "'Your command, please?', asked the waiter."
@@ -75,7 +74,6 @@ EOF
 : ${DIFF=diff}
 ${DIFF} prog.ok prog.pot || exit 1
 
-tmpfiles="$tmpfiles fr.po"
 cat <<\EOF > fr.po
 msgid ""
 msgstr ""
@@ -99,21 +97,19 @@ msgid "%s is replaced by %s."
 msgstr "%2$s remplace %1$s."
 EOF
 
-tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.new fr.po prog.pot
+${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot || exit 1
+LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new || exit 1
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
 
-tmpfiles="$tmpfiles fr"
 test -d fr || mkdir fr
 test -d fr/LC_MESSAGES || mkdir fr/LC_MESSAGES
 
 : ${MSGFMT=msgfmt}
 ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 
-tmpfiles="$tmpfiles prog.ok prog.oku prog.out"
 : ${DIFF=diff}
 cat <<\EOF > prog.ok
 «Votre commande, s'il vous plait», dit le garçon.
@@ -129,6 +125,7 @@ EOF
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
 if test $LOCALE_FR != none; then
+  prepare_locale_ fr $LOCALE_FR
   LANGUAGE= ./prog $LOCALE_FR 2 > prog.out
   case $? in
     0) ${DIFF} prog.ok prog.out || exit 1;;
@@ -137,6 +134,7 @@ if test $LOCALE_FR != none; then
   esac
 fi
 if test $LOCALE_FR_UTF8 != none; then
+  prepare_locale_ fr $LOCALE_FR_UTF8
   LANGUAGE= ./prog $LOCALE_FR_UTF8 2 > prog.out
   case $? in
     0) ${DIFF} prog.oku prog.out || exit 1;;
@@ -145,9 +143,12 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  rm -fr $tmpfiles; exit 77
+  if test -f /usr/bin/localedef; then
+    echo "Skipping test: no french locale is installed"
+  else
+    echo "Skipping test: no french locale is supported"
+  fi
+  exit 77
 fi
-
-rm -fr $tmpfiles
 
 exit 0

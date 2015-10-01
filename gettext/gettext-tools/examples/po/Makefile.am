@@ -1,10 +1,10 @@
 ## Makefile for the gettext-tools/examples/po subdirectory of GNU gettext
-## Copyright (C) 1995-1998, 2000-2005 Free Software Foundation, Inc.
+## Copyright (C) 1995-1998, 2000-2007, 2009 Free Software Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
@@ -21,49 +20,57 @@ AUTOMAKE_OPTIONS = 1.5 gnits
 
 # List of files which contain translatable strings.
 POTFILES = \
-  examples/hello-c/hello.c \
-  examples/hello-c-gnome/hello.c \
-  examples/hello-c++/hello.cc \
-  examples/hello-c++-qt/hello.cc \
-  examples/hello-c++-kde/hello.cc \
-  examples/hello-c++-kde/hellowindow.h \
-  examples/hello-c++-kde/hellowindow.cc \
-  examples/hello-c++-gnome/hello.cc \
-  examples/hello-objc/hello.m \
-  examples/hello-objc-gnustep/main.m \
-  examples/hello-objc-gnustep/AppController.h \
-  examples/hello-objc-gnustep/AppController.m \
-  examples/hello-objc-gnustep/Hello.h \
-  examples/hello-objc-gnustep/Hello.m \
-  examples/hello-objc-gnome/hello.m \
-  examples/hello-sh/hello.sh \
-  examples/hello-python/hello.py.in \
-  examples/hello-clisp/hello.lisp.in \
-  examples/hello-librep/hello.jl.in \
-  examples/hello-guile/hello.scm \
-  examples/hello-smalltalk/hello.st.in \
-  examples/hello-java/Hello.java \
-  examples/hello-java-awt/Hello.java \
-  examples/hello-java-swing/Hello.java \
-  examples/hello-csharp/hello.cs \
-  examples/hello-csharp-forms/hello.cs \
-  examples/hello-gawk/hello.awk \
-  examples/hello-pascal/hello.pas \
-  examples/hello-ycp/hello.ycp \
-  examples/hello-tcl/hello.tcl \
-  examples/hello-tcl-tk/hello.tcl \
-  examples/hello-perl/hello-1.pl.in \
-  examples/hello-perl/hello-2.pl.in \
-  examples/hello-php/hello.php
+  hello-c/hello.c \
+  hello-c-gnome/hello.c \
+  hello-c-gnome3/hello.c \
+  hello-c-gnome3/hello.desktop.in.in \
+  hello-c-gnome3/hello.gschema.xml \
+  hello-c-gnome3/hello.ui \
+  hello-c++/hello.cc \
+  hello-c++-qt/hello.cc \
+  hello-c++-kde/hello.cc \
+  hello-c++-kde/hellowindow.h \
+  hello-c++-kde/hellowindow.cc \
+  hello-c++-gnome/hello.cc \
+  hello-c++-wxwidgets/hello.cc \
+  hello-objc/hello.m \
+  hello-objc-gnustep/main.m \
+  hello-objc-gnustep/AppController.h \
+  hello-objc-gnustep/AppController.m \
+  hello-objc-gnustep/Hello.h \
+  hello-objc-gnustep/Hello.m \
+  hello-objc-gnome/hello.m \
+  hello-sh/hello.sh \
+  hello-python/hello.py.in \
+  hello-clisp/hello.lisp.in \
+  hello-librep/hello.jl.in \
+  hello-guile/hello.scm \
+  hello-smalltalk/hello.st.in \
+  hello-java/Hello.java \
+  hello-java-awt/Hello.java \
+  hello-java-swing/Hello.java \
+  hello-java-qtjambi/Hello.java \
+  hello-csharp/hello.cs \
+  hello-csharp-forms/hello.cs \
+  hello-gawk/hello.awk \
+  hello-pascal/hello.pas \
+  hello-ycp/hello.ycp \
+  hello-tcl/hello.tcl \
+  hello-tcl-tk/hello.tcl \
+  hello-perl/hello-1.pl.in \
+  hello-perl/hello-2.pl.in \
+  hello-php/hello.php
 
 # List of small POT files.
 SMALLPOTS = \
   hello-c.pot \
   hello-c-gnome.pot \
+  hello-c-gnome3.pot \
   hello-c++.pot \
   hello-c++-qt.pot \
   hello-c++-kde.pot \
   hello-c++-gnome.pot \
+  hello-c++-wxwidgets.pot \
   hello-objc.pot \
   hello-objc-gnustep.pot \
   hello-objc-gnome.pot \
@@ -76,6 +83,7 @@ SMALLPOTS = \
   hello-java.pot \
   hello-java-awt.pot \
   hello-java-swing.pot \
+  hello-java-qtjambi.pot \
   hello-csharp.pot \
   hello-csharp-forms.pot \
   hello-gawk.pot \
@@ -119,7 +127,11 @@ MSGID_BUGS_ADDRESS = bug-gnu-gettext@gnu.org
 # message catalogs shall be used.  It is usually empty.
 EXTRA_LOCALE_CATEGORIES =
 
-localedir = $(datadir)/locale
+# These options get passed to msgmerge.
+# Useful options are in particular:
+#   --previous            to keep previous msgids of translated messages,
+#   --quiet               to reduce the verbosity.
+MSGMERGE_OPTIONS = --quiet
 
 MSGMERGE = msgmerge
 MSGMERGE_UPDATE = @MSGMERGE@ --update
@@ -186,6 +198,7 @@ $(DOMAIN).pot-update: $(POTFILES_DEPS) $(SMALLPOTS) remove-potcdate.sed
 	  --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) \
 	  --copyright-holder='$(COPYRIGHT_HOLDER)' \
 	  --msgid-bugs-address="$$msgid_bugs_address" \
+	  --directory='$(srcdir)' \
 	  $(SMALLPOTS)
 	test ! -f $(DOMAIN).po || { \
 	  if test -f $(srcdir)/$(DOMAIN).pot; then \
@@ -209,6 +222,9 @@ hello-c.pot : $(POTFILES_DEPS)
 hello-c-gnome.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-c-gnome
 
+hello-c-gnome3.pot : $(POTFILES_DEPS)
+	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-c-gnome3
+
 hello-c++.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-c++
 
@@ -220,6 +236,9 @@ hello-c++-kde.pot : $(POTFILES_DEPS)
 
 hello-c++-gnome.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-c++-gnome
+
+hello-c++-wxwidgets.pot : $(POTFILES_DEPS)
+	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-c++-wxwidgets
 
 hello-objc.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-objc
@@ -256,6 +275,9 @@ hello-java-awt.pot : $(POTFILES_DEPS)
 
 hello-java-swing.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-java-swing
+
+hello-java-qtjambi.pot : $(POTFILES_DEPS)
+	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-java-qtjambi
 
 hello-csharp.pot : $(POTFILES_DEPS)
 	$(SHELL) '$(srcdir)/xsmallpot.sh' '$(srcdir)' hello-csharp
@@ -296,8 +318,8 @@ $(srcdir)/$(DOMAIN).pot:
 $(POFILES): $(srcdir)/$(DOMAIN).pot
 	@lang=`echo $@ | sed -e 's,.*/,,' -e 's/\.po$$//'`; \
 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-	echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot"; \
-	cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot
+	echo "$${cdcmd}$(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) $${lang}.po $(DOMAIN).pot"; \
+	cd $(srcdir) && $(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) $${lang}.po $(DOMAIN).pot
 
 
 html ID:
@@ -305,12 +327,10 @@ html ID:
 MOSTLYCLEANFILES =
 MOSTLYCLEANFILES += remove-potcdate.sed
 MOSTLYCLEANFILES += stamp-poT
-MOSTLYCLEANFILES += core core.* $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po
+MOSTLYCLEANFILES += core core.* *.stackdump $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po
 MOSTLYCLEANFILES += *.o
 
-DISTCLEANFILES = $(SMALLPOTS)
-
-MAINTAINERCLEANFILES = stamp-po
+MAINTAINERCLEANFILES = stamp-po $(SMALLPOTS)
 
 EXTRA_DIST = remove-potcdate.sin xsmallpot.sh mmsmallpo.sh LINGUAS \
   $(POFILES)
@@ -318,9 +338,8 @@ EXTRA_DIST = remove-potcdate.sin xsmallpot.sh mmsmallpo.sh LINGUAS \
 # Hidden from automake, but really activated. Works around an automake-1.5 bug.
 #distdir: distdir1
 distdir1:
-	$(MAKE) update-po
 	if test -f $(srcdir)/$(DOMAIN).pot; then \
-	  for file in $(DOMAIN).pot stamp-po; do \
+	  for file in $(DOMAIN).pot stamp-po $(SMALLPOTS); do \
 	    if test -f $$file; then d=.; else d=$(srcdir); fi; \
 	    cp -p $$d/$$file $(distdir)/$$file || exit 1; \
 	  done; \
@@ -337,9 +356,9 @@ update-po: Makefile
 	tmpdir=`pwd`; \
 	echo "$$lang:"; \
 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-	echo "$${cdcmd}$(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
+	echo "$${cdcmd}$(MSGMERGE) $(MSGMERGE_OPTIONS) $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
 	cd $(srcdir); \
-	if $(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$tmpdir/$$lang.new.po; then \
+	if $(MSGMERGE) $(MSGMERGE_OPTIONS) $$lang.po $(DOMAIN).pot -o $$tmpdir/$$lang.new.po; then \
 	  if cmp $$lang.po $$tmpdir/$$lang.new.po >/dev/null 2>&1; then \
 	    rm -f $$tmpdir/$$lang.new.po; \
 	  else \
@@ -365,10 +384,12 @@ $(DUMMYPOFILES):
 SMALLPOFILES_FOR_lang = \
   ../hello-c/po/$$lang.po \
   ../hello-c-gnome/po/$$lang.po \
+  ../hello-c-gnome3/po/$$lang.po \
   ../hello-c++/po/$$lang.po \
   ../hello-c++-qt/po/$$lang.po \
   ../hello-c++-kde/po/$$lang.po \
   ../hello-c++-gnome/po/$$lang.po \
+  ../hello-c++-wxwidgets/po/$$lang.po \
   ../hello-objc/po/$$lang.po \
   ../hello-objc-gnustep/po/$$lang.po \
   ../hello-objc-gnome/po/$$lang.po \
@@ -381,6 +402,7 @@ SMALLPOFILES_FOR_lang = \
   ../hello-java/po/$$lang.po \
   ../hello-java-awt/po/$$lang.po \
   ../hello-java-swing/po/$$lang.po \
+  ../hello-java-qtjambi/po/$$lang.po \
   ../hello-csharp/po/$$lang.po \
   ../hello-csharp-forms/po/$$lang.po \
   ../hello-gawk/po/$$lang.po \
@@ -397,6 +419,9 @@ SMALLPOFILES_FOR_lang = \
 ../hello-c-gnome/po/$(LL).po: hello-c-gnome.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-c-gnome $(LL)
 
+../hello-c-gnome3/po/$(LL).po: hello-c-gnome3.pot $(LL).po
+	$(SHELL) mmsmallpo.sh hello-c-gnome3 $(LL)
+
 ../hello-c++/po/$(LL).po: hello-c++.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-c++ $(LL)
 
@@ -408,6 +433,9 @@ SMALLPOFILES_FOR_lang = \
 
 ../hello-c++-gnome/po/$(LL).po: hello-c++-gnome.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-c++-gnome $(LL)
+
+../hello-c++-wxwidgets/po/$(LL).po: hello-c++-wxwidgets.pot $(LL).po
+	$(SHELL) mmsmallpo.sh hello-c++-wxwidgets $(LL)
 
 ../hello-objc/po/$(LL).po: hello-objc.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-objc $(LL)
@@ -444,6 +472,9 @@ SMALLPOFILES_FOR_lang = \
 
 ../hello-java-swing/po/$(LL).po: hello-java-swing.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-java-swing $(LL)
+
+../hello-java-qtjambi/po/$(LL).po: hello-java-qtjambi.pot $(LL).po
+	$(SHELL) mmsmallpo.sh hello-java-qtjambi $(LL)
 
 ../hello-csharp/po/$(LL).po: hello-csharp.pot $(LL).po
 	$(SHELL) mmsmallpo.sh hello-csharp $(LL)

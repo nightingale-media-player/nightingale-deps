@@ -1,13 +1,10 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test of gettext facilities in the PO/POT format.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
 # Test with POT format.
 
-tmpfiles="$tmpfiles prog-in.pot"
 cat <<\EOF > prog-in.pot
 msgid "'Your command, please?', asked the waiter."
 msgstr ""
@@ -23,16 +20,15 @@ msgid "%s is replaced by %s."
 msgstr ""
 EOF
 
-tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.pot --omit-header --add-location prog-in.pot
+${XGETTEXT} -o prog.tmp --omit-header --add-location prog-in.pot || exit 1
+LC_ALL=C tr -d '\r' < prog.tmp > prog.pot || exit 1
 
 : ${DIFF=diff}
 ${DIFF} prog-in.pot prog.pot || exit 1
 
 # Test with PO format.
 
-tmpfiles="$tmpfiles prog-in.po"
 cat <<\EOF > prog-in.po
 msgid ""
 msgstr ""
@@ -55,13 +51,11 @@ msgid "%s is replaced by %s."
 msgstr "%2$s remplace %1$s."
 EOF
 
-tmpfiles="$tmpfiles prog.po"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.po --omit-header --add-location prog-in.po
+${XGETTEXT} -o prog.tmp.po --omit-header --add-location prog-in.po || exit 1
+LC_ALL=C tr -d '\r' < prog.tmp.po > prog.po || exit 1
 
 : ${DIFF=diff}
 ${DIFF} prog-in.po prog.po || exit 1
-
-rm -fr $tmpfiles
 
 exit 0

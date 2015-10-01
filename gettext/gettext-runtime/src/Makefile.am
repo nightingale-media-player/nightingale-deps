@@ -1,10 +1,11 @@
 ## Makefile for the gettext-runtime/src subdirectory of GNU gettext
-## Copyright (C) 1995-1998, 2000-2005 Free Software Foundation, Inc.
+## Copyright (C) 1995-1998, 2000-2007, 2009, 2015 Free Software
+## Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,27 +13,25 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
 AUTOMAKE_OPTIONS = 1.5 gnits no-dependencies
 EXTRA_DIST =
+MOSTLYCLEANFILES = core *.stackdump
+CLEANFILES =
 DISTCLEANFILES =
 
 RM = rm -f
 
 bin_PROGRAMS = gettext ngettext envsubst
 
-localedir = $(datadir)/locale
-
 AM_CPPFLAGS = \
   -I. -I$(srcdir) \
   -I.. \
   -I../intl -I$(srcdir)/../intl \
-  -I../lib -I$(srcdir)/../lib \
-  -I../../gettext-tools/lib -I$(srcdir)/../../gettext-tools/lib
+  -I../gnulib-lib -I$(srcdir)/../gnulib-lib
 DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 # Source dependencies.
@@ -41,7 +40,8 @@ ngettext_SOURCES = ngettext.c
 envsubst_SOURCES = envsubst.c
 
 # Link dependencies.
-LDADD = ../lib/libgrt.a @LTLIBINTL@
+# Need @LTLIBICONV@ because striconv.c uses iconv().
+LDADD = ../gnulib-lib/libgrt.a @LTLIBINTL@ @LTLIBICONV@ $(WOE32_LDADD)
 
 # Specify installation directory, for --enable-relocatable.
 gettext_CFLAGS = -DINSTALLDIR=\"$(bindir)\"
@@ -59,17 +59,17 @@ DISTCLEANFILES += gettext.sh
 
 # Support for relocatability.
 RELOCATABLE_LIBRARY_PATH = $(libdir)
-RELOCATABLE_SRC_DIR = $(top_srcdir)/../gettext-tools/lib
-RELOCATABLE_BUILD_DIR = ../lib
+RELOCATABLE_SRC_DIR = $(top_srcdir)/gnulib-lib
+RELOCATABLE_BUILD_DIR = ../gnulib-lib
 RELOCATABLE_CONFIG_H_DIR = ..
-@SET_RELOCATABLE@
+RELOCATABLE_STRIP = :
 
-
-# VMS support.
-
-EXTRA_DIST += Makefile.vms
-
-
-# Woe32 support.
-
-EXTRA_DIST += Makefile.msvc
+# Version information according to Woe32 conventions.
+if WOE32
+WOE32_LDADD = gettext.res
+gettext.res : $(top_srcdir)/../windows/gettext.rc
+	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
+MOSTLYCLEANFILES += gettext.res
+else
+WOE32_LDADD =
+endif

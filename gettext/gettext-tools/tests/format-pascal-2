@@ -1,11 +1,8 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test checking of Object Pascal format strings.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles f-op-2.data"
 cat <<\EOF > f-op-2.data
 # Valid: %% doesn't count
 msgid  "abc%%def"
@@ -37,6 +34,12 @@ msgstr "xyz%xvw%p"
 # Valid: same numbered arguments, with different widths
 msgid  "abc%1:5s%0:4s"
 msgstr "xyz%1:4s%0:5s"
+# Valid: same numbered arguments
+msgid  "abc%:s"
+msgstr "xyz%0:s"
+# Valid: same numbered arguments
+msgid  "abc%0:s"
+msgstr "xyz%:s"
 # Invalid: missing argument
 msgid  "abc%1:sdef%0:x"
 msgstr "xyz%0:x"
@@ -46,6 +49,15 @@ msgstr "xyz%1:x"
 # Invalid: added argument
 msgid  "abc%0:xdef"
 msgstr "xyz%0:xvw%1:p"
+# Valid: type compatibility
+msgid  "abc%d"
+msgstr "xyz%u"
+# Valid: type compatibility
+msgid  "abc%d"
+msgstr "xyz%x"
+# Valid: type compatibility
+msgid  "abc%u"
+msgstr "xyz%x"
 # Valid: type compatibility
 msgid  "abc%e"
 msgstr "xyz%f"
@@ -68,26 +80,14 @@ msgstr "xyz%s"
 msgid  "abc%d"
 msgstr "xyz%p"
 # Invalid: type incompatibility
-msgid  "abc%d"
-msgstr "xyz%x"
-# Invalid: type incompatibility
 msgid  "abc%e"
 msgstr "xyz%s"
 # Invalid: type incompatibility
 msgid  "abc%e"
 msgstr "xyz%p"
 # Invalid: type incompatibility
-msgid  "abc%e"
-msgstr "xyz%x"
-# Invalid: type incompatibility
 msgid  "abc%s"
 msgstr "xyz%p"
-# Invalid: type incompatibility
-msgid  "abc%s"
-msgstr "xyz%x"
-# Invalid: type incompatibility
-msgid  "abc%p"
-msgstr "xyz%x"
 # Invalid: type incompatibility for width
 msgid  "abc%g%*g"
 msgstr "xyz%*g%g"
@@ -99,7 +99,6 @@ while read comment; do
   read msgid_line
   read msgstr_line
   n=`expr $n + 1`
-  tmpfiles="$tmpfiles f-op-2-$n.po f-op-2-$n.mo"
   cat <<EOF > f-op-2-$n.po
 #, object-pascal-format
 ${msgid_line}
@@ -127,7 +126,5 @@ EOF
   fi
   rm -f f-op-2-$n.po f-op-2-$n.mo
 done < f-op-2.data
-
-rm -fr $tmpfiles
 
 exit 0

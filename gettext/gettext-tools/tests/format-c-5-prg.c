@@ -1,10 +1,10 @@
 /* Test program, used by the format-c-5 test.
-   Copyright (C) 2004 Free Software Foundation, Inc.
+   Copyright (C) 2004, 2006, 2010, 2015 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -26,7 +25,7 @@
 #include "xsetenv.h"
 
 /* For %Id to work, we need the real setlocale(), not the fake one. */
-#if !(__GLIBC__ >= 2)
+#if !(__GLIBC__ >= 2 && !defined __UCLIBC__)
 # include "setlocale.c"
 #endif
 
@@ -48,17 +47,15 @@ main (int argc, char *argv[])
 
   xsetenv ("LC_ALL", argv[1], 1);
   if (setlocale (LC_ALL, "") == NULL)
-    {
-      fprintf (stderr, "Couldn't set locale.\n");
-      exit (77);
-    }
+    /* Couldn't set locale.  */
+    exit (77);
 
   textdomain ("fc5");
   bindtextdomain ("fc5", ".");
 
   s = gettext ("father of %d children");
   en = "father of %d children";
-#if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)
+#if (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)) && !defined __UCLIBC__
   expected_translation = "Vater von %Id Kindern";
   expected_result = "Vater von \xdb\xb5 Kindern";
 #else

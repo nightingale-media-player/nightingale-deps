@@ -126,6 +126,11 @@ Apply @var{ref}.pot to each of the domains in @var{def}.po.
 @opindex --no-fuzzy-matching@r{, @code{msgmerge} option}
 Do not use fuzzy matching when an exact match is not found.  This may speed
 up the operation considerably.
+
+@item --previous
+@opindex --previous@r{, @code{msgmerge} option}
+Keep the previous msgids of translated messages, marked with @samp{#|}, when
+adding the fuzzy marker to such messages.
 @end table
 
 @subsection Input file syntax
@@ -150,6 +155,25 @@ Assume the input files are NeXTstep/GNUstep localized resource files in
 @c --no-escape and --escape omitted on purpose.  They are not useful.
 
 @table @samp
+@item --lang=@var{catalogname}
+@opindex --lang@r{, @code{msgmerge} option}
+Specify the @samp{Language} field to be used in the header entry.  See
+@ref{Header Entry} for the meaning of this field.  Note: The
+@samp{Language-Team} and @samp{Plural-Forms} fields are left unchanged.
+If this option is not specified, the @samp{Language} field is inferred, as
+best as possible, from the @samp{Language-Team} field.
+
+@item --color
+@itemx --color=@var{when}
+@opindex --color@r{, @code{msgmerge} option}
+Specify whether or when to use colors and other text attributes.
+See @ref{The --color option} for details.
+
+@item --style=@var{style_file}
+@opindex --style@r{, @code{msgmerge} option}
+Specify the CSS style rule file to use for @code{--color}.
+See @ref{The --style option} for details.
+
 @item --force-po
 @opindex --force-po@r{, @code{msgmerge} option}
 Always write an output file even if it contains no message.
@@ -164,9 +188,16 @@ Write the .po file using indented style.
 @opindex --no-location@r{, @code{msgmerge} option}
 Do not write @samp{#: @var{filename}:@var{line}} lines.
 
-@item --add-location
+@item -n
+@itemx --add-location=@var{type}
 @opindex --add-location@r{, @code{msgmerge} option}
 Generate @samp{#: @var{filename}:@var{line}} lines (default).
+
+The optional @var{type} can be either @samp{full}, @samp{file}, or
+@samp{never}.  If it is not given or @samp{full}, it generates the
+lines with both file name and line number.  If it is @samp{file}, the
+line number part is omitted.  If it is @samp{never}, it completely
+suppresses the lines (same as @code{--no-location}).
 
 @item --strict
 @opindex --strict@r{, @code{msgmerge} option}

@@ -1,11 +1,11 @@
 /* Initializes a new PO file.
-   Copyright (C) 2001-2005 Free Software Foundation, Inc.
+   Copyright (C) 2001-2015 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 
 #ifdef HAVE_CONFIG_H
@@ -27,6 +26,7 @@
 #include <getopt.h>
 #include <limits.h>
 #include <locale.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,33 +37,13 @@
 # include <pwd.h>
 #endif
 
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 #if HAVE_DIRENT_H
 # include <dirent.h>
-#else
-# define dirent direct
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
 #endif
 
-#if CLOSEDIR_VOID
-/* Fake a return value. */
-# define CLOSEDIR(d) (closedir (d), 0)
-#else
-# define CLOSEDIR(d) closedir (d)
-#endif
-
-#if HAVE_DIRENT_H || HAVE_NDIR_H || HAVE_SYS_DIR_H || HAVE_SYS_NDIR_H
+#if HAVE_DIRENT_H
 # define HAVE_DIR 1
 #else
 # define HAVE_DIR 0
@@ -75,28 +55,36 @@
 #include "progname.h"
 #include "relocatable.h"
 #include "basename.h"
-#include "strpbrk.h"
-#include "strstr.h"
+#include "c-strstr.h"
 #include "c-strcase.h"
 #include "message.h"
+#include "read-catalog.h"
 #include "read-po.h"
+#include "read-properties.h"
+#include "read-stringtable.h"
+#include "write-catalog.h"
 #include "write-po.h"
+#include "write-properties.h"
+#include "write-stringtable.h"
+#include "color.h"
 #include "po-charset.h"
 #include "localcharset.h"
+#include "localename.h"
 #include "po-time.h"
 #include "plural-table.h"
+#include "lang-table.h"
 #include "xalloc.h"
-#include "xallocsa.h"
-#include "exit.h"
-#include "pathname.h"
+#include "xmalloca.h"
+#include "concat-filename.h"
 #include "xerror.h"
+#include "xvasprintf.h"
 #include "msgl-english.h"
 #include "plural-count.h"
-#include "pipe.h"
+#include "spawn-pipe.h"
 #include "wait-process.h"
-#include "getline.h"
 #include "xsetenv.h"
 #include "str-list.h"
+#include "propername.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
@@ -109,7 +97,6 @@
 
 #define SIZEOF(a) (sizeof(a) / sizeof(a[0]))
 
-extern const char * _nl_locale_name (int category, const char *categoryname);
 extern const char * _nl_expand_alias (const char *name);
 
 /* Locale name.  */
@@ -127,6 +114,7 @@ static bool no_translator;
 /* Long options.  */
 static const struct option long_options[] =
 {
+  { "color", optional_argument, NULL, CHAR_MAX + 5 },
   { "help", no_argument, NULL, 'h' },
   { "input", required_argument, NULL, 'i' },
   { "locale", required_argument, NULL, 'l' },
@@ -137,6 +125,7 @@ static const struct option long_options[] =
   { "properties-output", no_argument, NULL, 'p' },
   { "stringtable-input", no_argument, NULL, CHAR_MAX + 3 },
   { "stringtable-output", no_argument, NULL, CHAR_MAX + 4 },
+  { "style", required_argument, NULL, CHAR_MAX + 6 },
   { "version", no_argument, NULL, 'V' },
   { "width", required_argument, NULL, 'w' },
   { NULL, 0, NULL, 0 }
@@ -165,6 +154,8 @@ main (int argc, char **argv)
   char *output_file;
   const char *input_file;
   msgdomain_list_ty *result;
+  catalog_input_format_ty input_syntax = &input_format_po;
+  catalog_output_format_ty output_syntax = &output_format_po;
 
   /* Set program name for messages.  */
   set_program_name (argv[0]);
@@ -177,6 +168,7 @@ main (int argc, char **argv)
 
   /* Set the text message domain.  */
   bindtextdomain (PACKAGE, relocate (LOCALEDIR));
+  bindtextdomain ("bison-runtime", relocate (BISON_LOCALEDIR));
   textdomain (PACKAGE);
 
   /* Ensure that write errors on stdout are detected.  */
@@ -190,74 +182,83 @@ main (int argc, char **argv)
   locale = NULL;
 
   while ((opt = getopt_long (argc, argv, "hi:l:o:pPVw:", long_options, NULL))
-	 != EOF)
+         != EOF)
     switch (opt)
       {
-      case '\0':		/* Long option.  */
-	break;
+      case '\0':                /* Long option.  */
+        break;
 
       case 'h':
-	do_help = true;
-	break;
+        do_help = true;
+        break;
 
       case 'i':
-	if (input_file != NULL)
-	  {
-	    error (EXIT_SUCCESS, 0, _("at most one input file allowed"));
-	    usage (EXIT_FAILURE);
-	  }
-	input_file = optarg;
-	break;
+        if (input_file != NULL)
+          {
+            error (EXIT_SUCCESS, 0, _("at most one input file allowed"));
+            usage (EXIT_FAILURE);
+          }
+        input_file = optarg;
+        break;
 
       case 'l':
-	locale = optarg;
-	break;
+        locale = optarg;
+        break;
 
       case 'o':
-	output_file = optarg;
-	break;
+        output_file = optarg;
+        break;
 
       case 'p':
-	message_print_syntax_properties ();
-	break;
+        output_syntax = &output_format_properties;
+        break;
 
       case 'P':
-	input_syntax = syntax_properties;
-	break;
+        input_syntax = &input_format_properties;
+        break;
 
       case 'V':
-	do_version = true;
-	break;
+        do_version = true;
+        break;
 
       case 'w':
-	{
-	  int value;
-	  char *endp;
-	  value = strtol (optarg, &endp, 10);
-	  if (endp != optarg)
-	    message_page_width_set (value);
-	}
-	break;
+        {
+          int value;
+          char *endp;
+          value = strtol (optarg, &endp, 10);
+          if (endp != optarg)
+            message_page_width_set (value);
+        }
+        break;
 
       case CHAR_MAX + 1:
-	no_translator = true;
-	break;
+        no_translator = true;
+        break;
 
       case CHAR_MAX + 2: /* --no-wrap */
-	message_page_width_ignore ();
-	break;
+        message_page_width_ignore ();
+        break;
 
       case CHAR_MAX + 3: /* --stringtable-input */
-	input_syntax = syntax_stringtable;
-	break;
+        input_syntax = &input_format_stringtable;
+        break;
 
       case CHAR_MAX + 4: /* --stringtable-output */
-	message_print_syntax_stringtable ();
-	break;
+        output_syntax = &output_format_stringtable;
+        break;
+
+      case CHAR_MAX + 5: /* --color */
+        if (handle_color_option (optarg) || color_test_mode)
+          usage (EXIT_FAILURE);
+        break;
+
+      case CHAR_MAX + 6: /* --style */
+        handle_style_option (optarg);
+        break;
 
       default:
-	usage (EXIT_FAILURE);
-	break;
+        usage (EXIT_FAILURE);
+        break;
       }
 
   /* Version information is requested.  */
@@ -266,11 +267,12 @@ main (int argc, char **argv)
       printf ("%s (GNU %s) %s\n", basename (program_name), PACKAGE, VERSION);
       /* xgettext: no-wrap */
       printf (_("Copyright (C) %s Free Software Foundation, Inc.\n\
-This is free software; see the source for copying conditions.  There is NO\n\
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\n\
 "),
-	      "2001-2005");
-      printf (_("Written by %s.\n"), "Bruno Haible");
+              "2001-2010");
+      printf (_("Written by %s.\n"), proper_name ("Bruno Haible"));
       exit (EXIT_SUCCESS);
     }
 
@@ -289,16 +291,16 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   /* Determine target locale.  */
   if (locale == NULL)
     {
-      locale = _nl_locale_name (LC_MESSAGES, "LC_MESSAGES");
+      locale = gl_locale_name (LC_MESSAGES, "LC_MESSAGES");
       if (strcmp (locale, "C") == 0)
-	{
-	  multiline_error (xstrdup (""),
-			   xstrdup (_("\
+        {
+          multiline_error (xstrdup (""),
+                           xstrdup (_("\
 You are in a language indifferent environment.  Please set\n\
 your LANG environment variable, as described in the ABOUT-NLS\n\
 file.  This is necessary so you can test your translations.\n")));
-	  exit (EXIT_FAILURE);
-	}
+          exit (EXIT_FAILURE);
+        }
     }
   {
     const char *alias = _nl_expand_alias (locale);
@@ -311,27 +313,23 @@ file.  This is necessary so you can test your translations.\n")));
   /* Default output file name is CATALOGNAME.po.  */
   if (output_file == NULL)
     {
-      size_t cnlen = strlen (catalogname);
-
-      output_file = (char *) xmalloc (cnlen + 3 + 1);
-      memcpy (output_file, catalogname, cnlen);
-      memcpy (output_file + cnlen, ".po", 3 + 1);
+      output_file = xasprintf ("%s.po", catalogname);
 
       /* But don't overwrite existing PO files.  */
       if (access (output_file, F_OK) == 0)
-	{
-	  multiline_error (xstrdup (""),
-			   xasprintf (_("\
+        {
+          multiline_error (xstrdup (""),
+                           xasprintf (_("\
 Output file %s already exists.\n\
 Please specify the locale through the --locale option or\n\
 the output .po file through the --output-file option.\n"),
-				      output_file));
-	  exit (EXIT_FAILURE);
-	}
+                                      output_file));
+          exit (EXIT_FAILURE);
+        }
     }
 
   /* Read input file.  */
-  result = read_po_file (input_file);
+  result = read_catalog_file (input_file, input_syntax);
 
   /* Fill the header entry.  */
   result = fill_header (result);
@@ -343,7 +341,7 @@ the output .po file through the --output-file option.\n"),
     result = update_msgstr_plurals (result);
 
   /* Write the modified message list out.  */
-  msgdomain_list_print (result, output_file, true, false);
+  msgdomain_list_print (result, output_file, output_syntax, true, false);
 
   if (!no_translator)
     fprintf (stderr, "\n");
@@ -358,8 +356,8 @@ static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, _("Try `%s --help' for more information.\n"),
-	     program_name);
+    fprintf (stderr, _("Try '%s --help' for more information.\n"),
+             program_name);
   else
     {
       printf (_("\
@@ -405,6 +403,12 @@ Output details:\n"));
       printf (_("\
       --no-translator         assume the PO file is automatically generated\n"));
       printf (_("\
+      --color                 use colors and other text attributes always\n\
+      --color=WHEN            use colors and other text attributes if WHEN.\n\
+                              WHEN may be 'always', 'never', 'auto', or 'html'.\n"));
+      printf (_("\
+      --style=STYLEFILE       specify CSS style rule file for --color\n"));
+      printf (_("\
   -p, --properties-output     write out a Java .properties file\n"));
       printf (_("\
       --stringtable-output    write out a NeXTstep/GNUstep .strings file\n"));
@@ -421,8 +425,12 @@ Informative output:\n"));
       printf (_("\
   -V, --version               output version information and exit\n"));
       printf ("\n");
+      /* TRANSLATORS: The placeholder indicates the bug-reporting address
+         for this package.  Please add _another line_ saying
+         "Report translation bugs to <...>\n" with the address for translation
+         bugs (typically your translation team's web or email address).  */
       fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
-	     stdout);
+             stdout);
     }
 
   exit (status);
@@ -441,45 +449,45 @@ find_pot ()
   if (dirp != NULL)
     {
       for (;;)
-	{
-	  struct dirent *dp;
+        {
+          struct dirent *dp;
 
-	  errno = 0;
-	  dp = readdir (dirp);
-	  if (dp != NULL)
-	    {
-	      const char *name = dp->d_name;
-	      size_t namlen = strlen (name);
+          errno = 0;
+          dp = readdir (dirp);
+          if (dp != NULL)
+            {
+              const char *name = dp->d_name;
+              size_t namlen = strlen (name);
 
-	      if (namlen > 4 && memcmp (name + namlen - 4, ".pot", 4) == 0)
-		{
-		  if (found == NULL)
-		    found = xstrdup (name);
-		  else
-		    {
-		      multiline_error (xstrdup (""),
-				       xstrdup (_("\
+              if (namlen > 4 && memcmp (name + namlen - 4, ".pot", 4) == 0)
+                {
+                  if (found == NULL)
+                    found = xstrdup (name);
+                  else
+                    {
+                      multiline_error (xstrdup (""),
+                                       xstrdup (_("\
 Found more than one .pot file.\n\
 Please specify the input .pot file through the --input option.\n")));
-		      usage (EXIT_FAILURE);
-		    }
-		}
-	    }
-	  else if (errno != 0)
-	    error (EXIT_FAILURE, errno, _("error reading current directory"));
-	  else
-	    break;
-	}
-      if (CLOSEDIR (dirp))
-	error (EXIT_FAILURE, errno, _("error reading current directory"));
+                      usage (EXIT_FAILURE);
+                    }
+                }
+            }
+          else if (errno != 0)
+            error (EXIT_FAILURE, errno, _("error reading current directory"));
+          else
+            break;
+        }
+      if (closedir (dirp))
+        error (EXIT_FAILURE, errno, _("error reading current directory"));
 
       if (found != NULL)
-	return found;
+        return found;
     }
 #endif
 
   multiline_error (xstrdup (""),
-		   xstrdup (_("\
+                   xstrdup (_("\
 Found no .pot file in the current directory.\n\
 Please specify the input .pot file through the --input option.\n")));
   usage (EXIT_FAILURE);
@@ -498,124 +506,204 @@ static const char *
 catalogname_for_locale (const char *locale)
 {
   static const char *locales_with_principal_territory[] = {
-		/* Language	Main territory */
-    "af_ZA",	/* Afrikaans	South Africa */
-    "ak_GH",	/* Akan		Ghana */
-    "am_ET",	/* Amharic	Ethiopia */
-    "an_ES",	/* Aragonese	Spain */
-    "as_IN",	/* Assamese	India */
-    "av_RU",	/* Avaric	Russia */
-    "az_AZ",	/* Azerbaijani	Azerbaijan */
-    "be_BY",	/* Belarusian	Belarus */
-    "bg_BG",	/* Bulgarian	Bulgaria */
-    "bm_ML",	/* Bambara	Mali */
-    "bn_IN",	/* Bengali	India */
-    "bo_CN",	/* Tibetan	China */
-    "br_FR",	/* Breton	France */
-    "bs_BA",	/* Bosnian	Bosnia */
-    "ca_ES",	/* Catalan	Spain */
-    "ce_RU",	/* Chechen	Russia */
-    "co_FR",	/* Corsican	France */
-    "cr_CA",	/* Cree		Canada */
-    "cs_CZ",	/* Czech	Czech Republic */
-    "cy_GB",	/* Welsh	Britain */
-    "da_DK",	/* Danish	Denmark */
-    "de_DE",	/* German	Germany */
-    "dv_MV",	/* Divehi	Maldives */
-    "dz_BT",	/* Dzongkha	Bhutan */
-    "ee_GH",	/* Éwé		Ghana */
-    "el_GR",	/* Greek	Greece */
+                /* Language     Main territory */
+    "ace_ID",   /* Achinese     Indonesia */
+    "af_ZA",    /* Afrikaans    South Africa */
+    "ak_GH",    /* Akan         Ghana */
+    "am_ET",    /* Amharic      Ethiopia */
+    "an_ES",    /* Aragonese    Spain */
+    "ang_GB",   /* Old English  Britain */
+    "arn_CL",   /* Mapudungun   Chile */
+    "as_IN",    /* Assamese     India */
+    "ast_ES",   /* Asturian     Spain */
+    "av_RU",    /* Avaric       Russia */
+    "awa_IN",   /* Awadhi       India */
+    "az_AZ",    /* Azerbaijani  Azerbaijan */
+    "ban_ID",   /* Balinese     Indonesia */
+    "be_BY",    /* Belarusian   Belarus */
+    "bej_SD",   /* Beja         Sudan */
+    "bem_ZM",   /* Bemba        Zambia */
+    "bg_BG",    /* Bulgarian    Bulgaria */
+    "bho_IN",   /* Bhojpuri     India */
+    "bik_PH",   /* Bikol        Philippines */
+    "bin_NG",   /* Bini         Nigeria */
+    "bm_ML",    /* Bambara      Mali */
+    "bn_IN",    /* Bengali      India */
+    "bo_CN",    /* Tibetan      China */
+    "br_FR",    /* Breton       France */
+    "bs_BA",    /* Bosnian      Bosnia */
+    "bug_ID",   /* Buginese     Indonesia */
+    "ca_ES",    /* Catalan      Spain */
+    "ce_RU",    /* Chechen      Russia */
+    "ceb_PH",   /* Cebuano      Philippines */
+    "co_FR",    /* Corsican     France */
+    "cr_CA",    /* Cree         Canada */
+    /* Don't put "crh_UZ" or "crh_UA" here.  That would be asking for fruitless
+       political discussion.  */
+    "cs_CZ",    /* Czech        Czech Republic */
+    "csb_PL",   /* Kashubian    Poland */
+    "cy_GB",    /* Welsh        Britain */
+    "da_DK",    /* Danish       Denmark */
+    "de_DE",    /* German       Germany */
+    "din_SD",   /* Dinka        Sudan */
+    "doi_IN",   /* Dogri        India */
+    "dsb_DE",   /* Lower Sorbian        Germany */
+    "dv_MV",    /* Divehi       Maldives */
+    "dz_BT",    /* Dzongkha     Bhutan */
+    "ee_GH",    /* Éwé          Ghana */
+    "el_GR",    /* Greek        Greece */
     /* Don't put "en_GB" or "en_US" here.  That would be asking for fruitless
        political discussion.  */
-    "es_ES",	/* Spanish	Spain */
-    "et_EE",	/* Estonian	Estonia */
-    "fa_IR",	/* Persian	Iran */
-    "fi_FI",	/* Finnish	Finland */
-    "fj_FJ",	/* Fijian	Fiji */
-    "fo_FO",	/* Faroese	Faeroe Islands */
-    "fr_FR",	/* French	France */
-    "ga_IE",	/* Irish	Ireland */
-    "gd_GB",	/* Scots	Britain */
-    "gu_IN",	/* Gujarati	India */
-    "he_IL",	/* Hebrew	Israel */
-    "hi_IN",	/* Hindi	India */
-    "hr_HR",	/* Croatian	Croatia */
-    "ht_HT",	/* Haitian	Haiti */
-    "hu_HU",	/* Hungarian	Hungary */
-    "hy_AM",	/* Armenian	Armenia */
-    "id_ID",	/* Indonesian	Indonesia */
-    "ig_NG",	/* Igbo		Nigeria */
-    "ii_CN",	/* Sichuan Yi	China */
-    "is_IS",	/* Icelandic	Iceland */
-    "it_IT",	/* Italian	Italy */
-    "ja_JP",	/* Japanese	Japan */
-    "jv_ID",	/* Javanese	Indonesia */
-    "ka_GE",	/* Georgian	Georgia */
-    "kg_CD",	/* Kongo	Democratic Republic of Congo */
-    "kk_KZ",	/* Kazakh	Kazakhstan */
-    "kl_GL",	/* Kalaallisut	Greenland */
-    "km_KH",	/* Khmer	Cambodia */
-    "kn_IN",	/* Kannada	India */
-    "ko_KR",	/* Korean	Korea (South) */
-    "kok_IN",	/* Konkani	India */
-    "kr_NG",	/* Kanuri	Nigeria */
-    "lg_UG",	/* Ganda	Uganda */
-    "li_BE",	/* Limburgish	Belgium */
-    "lo_LA",	/* Laotian	Laos */
-    "lt_LT",	/* Lithuanian	Lithuania */
-    "lu_CD",	/* Luba-Katanga	Democratic Republic of Congo */
-    "lv_LV",	/* Latvian	Latvia */
-    "mg_MG",	/* Malagasy	Madagascar */
-    "mk_MK",	/* Macedonian	Macedonia */
-    "ml_IN",	/* Malayalam	India */
-    "mn_MN",	/* Mongolian	Mongolia */
-    "mr_IN",	/* Marathi	India */
-    "ms_MY",	/* Malay	Malaysia */
-    "mt_MT",	/* Maltese	Malta */
-    "my_MM",	/* Burmese	Myanmar */
-    "mni_IN",	/* Manipuri	India */
-    "na_NR",	/* Nauru	Nauru */
-    "nb_NO",	/* Norwegian Bokmål	Norway */
-    "ne_NP",	/* Nepali	Nepal */
-    "nl_NL",	/* Dutch	Netherlands */
-    "nn_NO",	/* Norwegian Nynorsk	Norway */
-    "no_NO",	/* Norwegian	Norway */
-    "oc_FR",	/* Occitan	France */
-    "oj_CA",	/* Ojibwa	Canada */
-    "or_IN",	/* Oriya	India */
-    "pa_IN",	/* Punjabi	India */
-    "pl_PL",	/* Polish	Poland */
-    "ps_AF",	/* Pashto	Afghanistan */
-    "pt_PT",	/* Portuguese	Portugal */
-    "rm_CH",	/* Rhaeto-Roman	Switzerland */
-    "rn_BI",	/* Kirundi	Burundi */
-    "ro_RO",	/* Romanian	Romania */
-    "ru_RU",	/* Russian	Russia */
-    "sa_IN",	/* Sanskrit	India */
-    "sc_IT",	/* Sardinian	Italy */
-    "sg_CF",	/* Sango	Central African Rep. */
-    "si_LK",	/* Sinhalese	Sri Lanka */
-    "sk_SK",	/* Slovak	Slovakia */
-    "sl_SI",	/* Slovenian	Slovenia */
-    "so_SO",	/* Somali	Somalia */
-    "sq_AL",	/* Albanian	Albania */
-    "sr_CS",	/* Serbian	Serbia & Montenegro */
-    "sr_YU",	/* Serbian	Yugoslavia */
-    "sv_SE",	/* Swedish	Sweden */
-    "te_IN",	/* Telugu	India */
-    "tg_TJ",	/* Tajik	Tajikistan */
-    "th_TH",	/* Thai		Thailand */
-    "tk_TM",	/* Turkmen	Turkmenistan */
-    "tl_PH",	/* Tagalog	Philippines */
-    "to_TO",	/* Tonga	Tonga */
-    "tr_TR",	/* Turkish	Turkey */
-    "uk_UA",	/* Ukrainian	Ukraine */
-    "ur_PK",	/* Urdu		Pakistan */
-    "uz_UZ",	/* Uzbek	Uzbekistan */
-    "ve_ZA",	/* Venda	South Africa */
-    "vi_VN",	/* Vietnamese	Vietnam */
-    "wa_BE",	/* Walloon	Belgium */
-    "wen_DE"	/* Sorbian	Germany */
+    "es_ES",    /* Spanish      Spain */
+    "et_EE",    /* Estonian     Estonia */
+    "fa_IR",    /* Persian      Iran */
+    "fi_FI",    /* Finnish      Finland */
+    "fil_PH",   /* Filipino     Philippines */
+    "fj_FJ",    /* Fijian       Fiji */
+    "fo_FO",    /* Faroese      Faeroe Islands */
+    "fon_BJ",   /* Fon          Benin */
+    "fr_FR",    /* French       France */
+    "fur_IT",   /* Friulian     Italy */
+    "fy_NL",    /* Western Frisian      Netherlands */
+    "ga_IE",    /* Irish        Ireland */
+    "gd_GB",    /* Scottish Gaelic      Britain */
+    "gon_IN",   /* Gondi        India */
+    "gsw_CH",   /* Swiss German Switzerland */
+    "gu_IN",    /* Gujarati     India */
+    "he_IL",    /* Hebrew       Israel */
+    "hi_IN",    /* Hindi        India */
+    "hil_PH",   /* Hiligaynon   Philippines */
+    "hr_HR",    /* Croatian     Croatia */
+    "hsb_DE",   /* Upper Sorbian        Germany */
+    "ht_HT",    /* Haitian      Haiti */
+    "hu_HU",    /* Hungarian    Hungary */
+    "hy_AM",    /* Armenian     Armenia */
+    "id_ID",    /* Indonesian   Indonesia */
+    "ig_NG",    /* Igbo         Nigeria */
+    "ii_CN",    /* Sichuan Yi   China */
+    "ilo_PH",   /* Iloko        Philippines */
+    "is_IS",    /* Icelandic    Iceland */
+    "it_IT",    /* Italian      Italy */
+    "ja_JP",    /* Japanese     Japan */
+    "jab_NG",   /* Hyam         Nigeria */
+    "jv_ID",    /* Javanese     Indonesia */
+    "ka_GE",    /* Georgian     Georgia */
+    "kab_DZ",   /* Kabyle       Algeria */
+    "kaj_NG",   /* Jju          Nigeria */
+    "kam_KE",   /* Kamba        Kenya */
+    "kmb_AO",   /* Kimbundu     Angola */
+    "kcg_NG",   /* Tyap         Nigeria */
+    "kdm_NG",   /* Kagoma       Nigeria */
+    "kg_CD",    /* Kongo        Democratic Republic of Congo */
+    "kk_KZ",    /* Kazakh       Kazakhstan */
+    "kl_GL",    /* Kalaallisut  Greenland */
+    "km_KH",    /* Central Khmer        Cambodia */
+    "kn_IN",    /* Kannada      India */
+    "ko_KR",    /* Korean       Korea (South) */
+    "kok_IN",   /* Konkani      India */
+    "kr_NG",    /* Kanuri       Nigeria */
+    "kru_IN",   /* Kurukh       India */
+    "lg_UG",    /* Ganda        Uganda */
+    "li_BE",    /* Limburgish   Belgium */
+    "lo_LA",    /* Laotian      Laos */
+    "lt_LT",    /* Lithuanian   Lithuania */
+    "lu_CD",    /* Luba-Katanga Democratic Republic of Congo */
+    "lua_CD",   /* Luba-Lulua   Democratic Republic of Congo */
+    "luo_KE",   /* Luo          Kenya */
+    "lv_LV",    /* Latvian      Latvia */
+    "mad_ID",   /* Madurese     Indonesia */
+    "mag_IN",   /* Magahi       India */
+    "mai_IN",   /* Maithili     India */
+    "mak_ID",   /* Makasar      Indonesia */
+    "man_ML",   /* Mandingo     Mali */
+    "men_SL",   /* Mende        Sierra Leone */
+    "mg_MG",    /* Malagasy     Madagascar */
+    "mi_NZ",    /* Maori        New Zealand */
+    "min_ID",   /* Minangkabau  Indonesia */
+    "mk_MK",    /* Macedonian   Macedonia */
+    "ml_IN",    /* Malayalam    India */
+    "mn_MN",    /* Mongolian    Mongolia */
+    "mni_IN",   /* Manipuri     India */
+    "mos_BF",   /* Mossi        Burkina Faso */
+    "mr_IN",    /* Marathi      India */
+    "ms_MY",    /* Malay        Malaysia */
+    "mt_MT",    /* Maltese      Malta */
+    "mwr_IN",   /* Marwari      India */
+    "my_MM",    /* Burmese      Myanmar */
+    "na_NR",    /* Nauru        Nauru */
+    "nah_MX",   /* Nahuatl      Mexico */
+    "nap_IT",   /* Neapolitan   Italy */
+    "nb_NO",    /* Norwegian Bokmål    Norway */
+    "nds_DE",   /* Low Saxon    Germany */
+    "ne_NP",    /* Nepali       Nepal */
+    "nl_NL",    /* Dutch        Netherlands */
+    "nn_NO",    /* Norwegian Nynorsk    Norway */
+    "no_NO",    /* Norwegian    Norway */
+    "nr_ZA",    /* South Ndebele        South Africa */
+    "nso_ZA",   /* Northern Sotho       South Africa */
+    "nym_TZ",   /* Nyamwezi     Tanzania */
+    "nyn_UG",   /* Nyankole     Uganda */
+    "oc_FR",    /* Occitan      France */
+    "oj_CA",    /* Ojibwa       Canada */
+    "or_IN",    /* Oriya        India */
+    "pa_IN",    /* Punjabi      India */
+    "pag_PH",   /* Pangasinan   Philippines */
+    "pam_PH",   /* Pampanga     Philippines */
+    "pap_AN",   /* Papiamento   Netherlands Antilles - this line can be removed in 2018 */
+    "pbb_CO",   /* Páez                Colombia */
+    "pl_PL",    /* Polish       Poland */
+    "ps_AF",    /* Pashto       Afghanistan */
+    "pt_PT",    /* Portuguese   Portugal */
+    "raj_IN",   /* Rajasthani   India */
+    "rm_CH",    /* Romansh      Switzerland */
+    "rn_BI",    /* Kirundi      Burundi */
+    "ro_RO",    /* Romanian     Romania */
+    "ru_RU",    /* Russian      Russia */
+    "sa_IN",    /* Sanskrit     India */
+    "sah_RU",   /* Yakut        Russia */
+    "sas_ID",   /* Sasak        Indonesia */
+    "sat_IN",   /* Santali      India */
+    "sc_IT",    /* Sardinian    Italy */
+    "scn_IT",   /* Sicilian     Italy */
+    "sg_CF",    /* Sango        Central African Republic */
+    "shn_MM",   /* Shan         Myanmar */
+    "si_LK",    /* Sinhala      Sri Lanka */
+    "sid_ET",   /* Sidamo       Ethiopia */
+    "sk_SK",    /* Slovak       Slovakia */
+    "sl_SI",    /* Slovenian    Slovenia */
+    "smn_FI",   /* Inari Sami   Finland */
+    "sms_FI",   /* Skolt Sami   Finland */
+    "so_SO",    /* Somali       Somalia */
+    "sq_AL",    /* Albanian     Albania */
+    "sr_RS",    /* Serbian      Serbia */
+    "srr_SN",   /* Serer        Senegal */
+    "suk_TZ",   /* Sukuma       Tanzania */
+    "sus_GN",   /* Susu         Guinea */
+    "sv_SE",    /* Swedish      Sweden */
+    "te_IN",    /* Telugu       India */
+    "tem_SL",   /* Timne        Sierra Leone */
+    "tet_ID",   /* Tetum        Indonesia */
+    "tg_TJ",    /* Tajik        Tajikistan */
+    "th_TH",    /* Thai         Thailand */
+    "tiv_NG",   /* Tiv          Nigeria */
+    "tk_TM",    /* Turkmen      Turkmenistan */
+    "tl_PH",    /* Tagalog      Philippines */
+    "to_TO",    /* Tonga        Tonga */
+    "tr_TR",    /* Turkish      Turkey */
+    "tum_MW",   /* Tumbuka      Malawi */
+    "ug_CN",    /* Uighur       China */
+    "uk_UA",    /* Ukrainian    Ukraine */
+    "umb_AO",   /* Umbundu      Angola */
+    "ur_PK",    /* Urdu         Pakistan */
+    "uz_UZ",    /* Uzbek        Uzbekistan */
+    "ve_ZA",    /* Venda        South Africa */
+    "vi_VN",    /* Vietnamese   Vietnam */
+    "wa_BE",    /* Walloon      Belgium */
+    "wal_ET",   /* Walamo       Ethiopia */
+    "war_PH",   /* Waray        Philippines */
+    "wen_DE",   /* Sorbian      Germany */
+    "yao_MW",   /* Yao          Malawi */
+    "zap_MX"    /* Zapotec      Mexico */
   };
   const char *dot;
   size_t i;
@@ -627,11 +715,11 @@ catalogname_for_locale (const char *locale)
       const char *codeset_end;
       char *shorter_locale;
 
-      codeset_end = strpbrk (dot + 1, "_@+,");
+      codeset_end = strpbrk (dot + 1, "_@");
       if (codeset_end == NULL)
-	codeset_end = dot + strlen (dot);
+        codeset_end = dot + strlen (dot);
 
-      shorter_locale = (char *) xmalloc (strlen (locale));
+      shorter_locale = XNMALLOC (strlen (locale), char);
       memcpy (shorter_locale, locale, dot - locale);
       strcpy (shorter_locale + (dot - locale), codeset_end);
       locale = shorter_locale;
@@ -641,20 +729,20 @@ catalogname_for_locale (const char *locale)
   for (i = 0; i < SIZEOF (locales_with_principal_territory); i++)
     if (strcmp (locale, locales_with_principal_territory[i]) == 0)
       {
-	const char *language_end;
-	size_t len;
-	char *shorter_locale;
+        const char *language_end;
+        size_t len;
+        char *shorter_locale;
 
-	language_end = strchr (locale, '_');
-	if (language_end == NULL)
-	  abort ();
+        language_end = strchr (locale, '_');
+        if (language_end == NULL)
+          abort ();
 
-	len = language_end - locale;
-	shorter_locale = (char *) xmalloc (len + 1);
-	memcpy (shorter_locale, locale, len);
-	shorter_locale[len] = '\0';
-	locale = shorter_locale;
-	break;
+        len = language_end - locale;
+        shorter_locale = XNMALLOC (len + 1, char);
+        memcpy (shorter_locale, locale, len);
+        shorter_locale[len] = '\0';
+        locale = shorter_locale;
+        break;
       }
 
   return locale;
@@ -667,14 +755,14 @@ language_of_locale (const char *locale)
 {
   const char *language_end;
 
-  language_end = strpbrk (locale, "_.@+,");
+  language_end = strpbrk (locale, "_.@");
   if (language_end != NULL)
     {
       size_t len;
       char *result;
 
       len = language_end - locale;
-      result = (char *) xmalloc (len + 1);
+      result = XNMALLOC (len + 1, char);
       memcpy (result, locale, len);
       result[len] = '\0';
 
@@ -734,200 +822,11 @@ canonical_locale_charset ()
 static const char *
 englishname_of_language ()
 {
-  /* Derived from ISO 639.  */
-  static struct { const char *code; const char *english; } table[] = {
-    { "aa", "Afar" },
-    { "ab", "Abkhazian" },
-    { "ae", "Avestan" },
-    { "af", "Afrikaans" },
-    { "ak", "Akan" },
-    { "am", "Amharic" },
-    { "an", "Aragonese" },
-    { "ar", "Arabic" },
-    { "as", "Assamese" },
-    { "av", "Avaric" },
-    { "ay", "Aymara" },
-    { "az", "Azerbaijani" },
-    { "ba", "Bashkir" },
-    { "be", "Belarusian" },
-    { "bg", "Bulgarian" },
-    { "bh", "Bihari" },
-    { "bi", "Bislama" },
-    { "bm", "Bambara" },
-    { "bn", "Bengali" },
-    { "bo", "Tibetan" },
-    { "br", "Breton" },
-    { "bs", "Bosnian" },
-    { "ca", "Catalan" },
-    { "ce", "Chechen" },
-    { "ch", "Chamorro" },
-    { "co", "Corsican" },
-    { "cr", "Cree" },
-    { "cs", "Czech" },
-    { "cu", "Church Slavic" },
-    { "cv", "Chuvash" },
-    { "cy", "Welsh" },
-    { "da", "Danish" },
-    { "de", "German" },
-    { "dv", "Divehi" },
-    { "dz", "Dzongkha" },
-    { "ee", "Ewe" },
-    { "el", "Greek" },
-    { "en", "English" },
-    { "eo", "Esperanto" },
-    { "es", "Spanish" },
-    { "et", "Estonian" },
-    { "eu", "Basque" },
-    { "fa", "Persian" },
-    { "ff", "Fulah" },
-    { "fi", "Finnish" },
-    { "fj", "Fijian" },
-    { "fo", "Faroese" },
-    { "fr", "French" },
-    { "fy", "Frisian" },
-    { "ga", "Irish" },
-    { "gd", "Scots" },
-    { "gl", "Galician" },
-    { "gn", "Guarani" },
-    { "gu", "Gujarati" },
-    { "gv", "Manx" },
-    { "ha", "Hausa" },
-    { "he", "Hebrew" },
-    { "hi", "Hindi" },
-    { "ho", "Hiri Motu" },
-    { "hr", "Croatian" },
-    { "ht", "Haitian" },
-    { "hu", "Hungarian" },
-    { "hy", "Armenian" },
-    { "hz", "Herero" },
-    { "ia", "Interlingua" },
-    { "id", "Indonesian" },
-    { "ie", "Interlingue" },
-    { "ig", "Igbo" },
-    { "ii", "Sichuan Yi" },
-    { "ik", "Inupiak" },
-    { "is", "Icelandic" },
-    { "it", "Italian" },
-    { "iu", "Inuktitut" },
-    { "ja", "Japanese" },
-    { "jw", "Javanese" },
-    { "ka", "Georgian" },
-    { "kg", "Kongo" },
-    { "ki", "Kikuyu" },
-    { "kj", "Kuanyama" },
-    { "kk", "Kazakh" },
-    { "kl", "Kalaallisut" },
-    { "km", "Khmer" },
-    { "kn", "Kannada" },
-    { "ko", "Korean" },
-    { "kr", "Kanuri" },
-    { "ks", "Kashmiri" },
-    { "ku", "Kurdish" },
-    { "kv", "Komi" },
-    { "kw", "Cornish" },
-    { "ky", "Kirghiz" },
-    { "kok", "Konkani" },
-    { "la", "Latin" },
-    { "lb", "Letzeburgesch" },
-    { "lg", "Ganda" },
-    { "li", "Limburgish" },
-    { "ln", "Lingala" },
-    { "lo", "Laotian" },
-    { "lt", "Lithuanian" },
-    { "lu", "Luba-Katanga" },
-    { "lv", "Latvian" },
-    { "mg", "Malagasy" },
-    { "mh", "Marshall" },
-    { "mi", "Maori" },
-    { "mk", "Macedonian" },
-    { "ml", "Malayalam" },
-    { "mn", "Mongolian" },
-    { "mo", "Moldavian" },
-    { "mr", "Marathi" },
-    { "ms", "Malay" },
-    { "mt", "Maltese" },
-    { "my", "Burmese" },
-    { "mni", "Manipuri" },
-    { "na", "Nauru" },
-    { "nb", "Norwegian Bokmal" },
-    { "nd", "North Ndebele" },
-    { "ne", "Nepali" },
-    { "ng", "Ndonga" },
-    { "nl", "Dutch" },
-    { "nn", "Norwegian Nynorsk" },
-    { "no", "Norwegian" },
-    { "nr", "South Ndebele" },
-    { "nv", "Navajo" },
-    { "ny", "Nyanja" },
-    { "oc", "Occitan" },
-    { "oj", "Ojibwa" },
-    { "om", "(Afan) Oromo" },
-    { "or", "Oriya" },
-    { "os", "Ossetian" },
-    { "pa", "Punjabi" },
-    { "pi", "Pali" },
-    { "pl", "Polish" },
-    { "ps", "Pashto" },
-    { "pt", "Portuguese" },
-    { "qu", "Quechua" },
-    { "rm", "Rhaeto-Roman" },
-    { "rn", "Kirundi" },
-    { "ro", "Romanian" },
-    { "ru", "Russian" },
-    { "rw", "Kinyarwanda" },
-    { "sa", "Sanskrit" },
-    { "sc", "Sardinian" },
-    { "sd", "Sindhi" },
-    { "se", "Northern Sami" },
-    { "sg", "Sango" },
-    { "si", "Sinhalese" },
-    { "sk", "Slovak" },
-    { "sl", "Slovenian" },
-    { "sm", "Samoan" },
-    { "sn", "Shona" },
-    { "so", "Somali" },
-    { "sq", "Albanian" },
-    { "sr", "Serbian" },
-    { "ss", "Siswati" },
-    { "st", "Sesotho" },
-    { "su", "Sundanese" },
-    { "sv", "Swedish" },
-    { "sw", "Swahili" },
-    { "ta", "Tamil" },
-    { "te", "Telugu" },
-    { "tg", "Tajik" },
-    { "th", "Thai" },
-    { "ti", "Tigrinya" },
-    { "tk", "Turkmen" },
-    { "tl", "Tagalog" },
-    { "tn", "Setswana" },
-    { "to", "Tonga" },
-    { "tr", "Turkish" },
-    { "ts", "Tsonga" },
-    { "tt", "Tatar" },
-    { "tw", "Twi" },
-    { "ty", "Tahitian" },
-    { "ug", "Uighur" },
-    { "uk", "Ukrainian" },
-    { "ur", "Urdu" },
-    { "uz", "Uzbek" },
-    { "ve", "Venda" },
-    { "vi", "Vietnamese" },
-    { "vo", "Volapuk" },
-    { "wo", "Wolof" },
-    { "wen", "Sorbian" },
-    { "xh", "Xhosa" },
-    { "yi", "Yiddish" },
-    { "yo", "Yoruba" },
-    { "za", "Zhuang" },
-    { "zh", "Chinese" },
-    { "zu", "Zulu" }
-  };
   size_t i;
 
-  for (i = 0; i < SIZEOF (table); i ++)
-    if (strcmp (table[i].code, language) == 0)
-      return table[i].english;
+  for (i = 0; i < language_table_size; i++)
+    if (strcmp (language_table[i].code, language) == 0)
+      return language_table[i].english;
 
   return xasprintf ("Language %s", language);
 }
@@ -935,8 +834,9 @@ englishname_of_language ()
 
 /* Construct the value for the PACKAGE name.  */
 static const char *
-project_id ()
+project_id (const char *header)
 {
+  const char *old_field;
   const char *gettextlibdir;
   char *prog;
   char *argv[3];
@@ -948,18 +848,45 @@ project_id ()
   size_t linelen;
   int exitstatus;
 
+  /* Return the first part of the Project-Id-Version field if present, assuming
+     it was already filled in by xgettext.  */
+  old_field = get_field (header, "Project-Id-Version");
+  if (old_field != NULL && strcmp (old_field, "PACKAGE VERSION") != 0)
+    {
+      /* Remove the last word from old_field.  */
+      const char *last_space;
+
+      last_space = strrchr (old_field, ' ');
+      if (last_space != NULL)
+        {
+          while (last_space > old_field && last_space[-1] == ' ')
+            last_space--;
+          if (last_space > old_field)
+            {
+              size_t package_len = last_space - old_field;
+              char *package = XNMALLOC (package_len + 1, char);
+              memcpy (package, old_field, package_len);
+              package[package_len] = '\0';
+
+              return package;
+            }
+        }
+      /* It contains no version, just a package name.  */
+      return old_field;
+    }
+
   gettextlibdir = getenv ("GETTEXTLIBDIR");
   if (gettextlibdir == NULL || gettextlibdir[0] == '\0')
     gettextlibdir = relocate (LIBDIR "/gettext");
 
-  prog = concatenated_pathname (gettextlibdir, "project-id", NULL);
+  prog = xconcatenated_filename (gettextlibdir, "project-id", NULL);
 
   /* Call the project-id shell script.  */
   argv[0] = "/bin/sh";
   argv[1] = prog;
   argv[2] = NULL;
   child = create_pipe_in (prog, "/bin/sh", argv, DEV_NULL, false, true, false,
-			  fd);
+                          fd);
   if (child == -1)
     goto failed;
 
@@ -976,6 +903,7 @@ project_id ()
   if (linelen == (size_t)(-1))
     {
       error (0, 0, _("%s subprocess I/O error"), prog);
+      fclose (fp);
       goto failed;
     }
   if (linelen > 0 && line[linelen - 1] == '\n')
@@ -984,11 +912,11 @@ project_id ()
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus = wait_subprocess (child, prog, false, false, true, false);
+  exitstatus = wait_subprocess (child, prog, false, false, true, false, NULL);
   if (exitstatus != 0)
     {
       error (0, 0, _("%s subprocess failed with exit code %d"),
-	     prog, exitstatus);
+             prog, exitstatus);
       goto failed;
     }
 
@@ -1001,8 +929,9 @@ failed:
 
 /* Construct the value for the Project-Id-Version field.  */
 static const char *
-project_id_version ()
+project_id_version (const char *header)
 {
+  const char *old_field;
   const char *gettextlibdir;
   char *prog;
   char *argv[4];
@@ -1014,11 +943,17 @@ project_id_version ()
   size_t linelen;
   int exitstatus;
 
+  /* Return the old value if present, assuming it was already filled in by
+     xgettext.  */
+  old_field = get_field (header, "Project-Id-Version");
+  if (old_field != NULL && strcmp (old_field, "PACKAGE VERSION") != 0)
+    return old_field;
+
   gettextlibdir = getenv ("GETTEXTLIBDIR");
   if (gettextlibdir == NULL || gettextlibdir[0] == '\0')
     gettextlibdir = relocate (LIBDIR "/gettext");
 
-  prog = concatenated_pathname (gettextlibdir, "project-id", NULL);
+  prog = xconcatenated_filename (gettextlibdir, "project-id", NULL);
 
   /* Call the project-id shell script.  */
   argv[0] = "/bin/sh";
@@ -1026,7 +961,7 @@ project_id_version ()
   argv[2] = "yes";
   argv[3] = NULL;
   child = create_pipe_in (prog, "/bin/sh", argv, DEV_NULL, false, true, false,
-			  fd);
+                          fd);
   if (child == -1)
     goto failed;
 
@@ -1043,6 +978,7 @@ project_id_version ()
   if (linelen == (size_t)(-1))
     {
       error (0, 0, _("%s subprocess I/O error"), prog);
+      fclose (fp);
       goto failed;
     }
   if (linelen > 0 && line[linelen - 1] == '\n')
@@ -1051,11 +987,11 @@ project_id_version ()
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus = wait_subprocess (child, prog, false, false, true, false);
+  exitstatus = wait_subprocess (child, prog, false, false, true, false, NULL);
   if (exitstatus != 0)
     {
       error (0, 0, _("%s subprocess failed with exit code %d"),
-	     prog, exitstatus);
+             prog, exitstatus);
       goto failed;
     }
 
@@ -1100,9 +1036,9 @@ get_user_pwd ()
       errno = 0;
       userpasswd = getpwnam (username);
       if (userpasswd != NULL)
-	return userpasswd;
+        return userpasswd;
       if (errno != 0)
-	error (EXIT_FAILURE, errno, "getpwnam(\"%s\")", username);
+        error (EXIT_FAILURE, errno, "getpwnam(\"%s\")", username);
     }
 
   /* 2. attempt: getpwnam(getlogin())  */
@@ -1112,9 +1048,9 @@ get_user_pwd ()
       errno = 0;
       userpasswd = getpwnam (username);
       if (userpasswd != NULL)
-	return userpasswd;
+        return userpasswd;
       if (errno != 0)
-	error (EXIT_FAILURE, errno, "getpwnam(\"%s\")", username);
+        error (EXIT_FAILURE, errno, "getpwnam(\"%s\")", username);
     }
 
   /* 3. attempt: getpwuid(getuid())  */
@@ -1123,7 +1059,7 @@ get_user_pwd ()
   if (userpasswd != NULL)
     return userpasswd;
   if (errno != 0)
-    error (EXIT_FAILURE, errno, "getpwuid(\"%d\")", getuid ());
+    error (EXIT_FAILURE, errno, "getpwuid(%ju)", (uintmax_t) getuid ());
 #endif
 
   return NULL;
@@ -1135,21 +1071,22 @@ static const char *
 get_user_fullname ()
 {
   struct passwd *pwd;
-  const char *fullname;
-  const char *fullname_end;
-  char *result;
 
   pwd = get_user_pwd ();
 #if HAVE_PWD_H
   if (pwd != NULL)
     {
-      /* Return the pw_gecos field, upto the first comma (if any).  */
+      const char *fullname;
+      const char *fullname_end;
+      char *result;
+
+      /* Return the pw_gecos field, up to the first comma (if any).  */
       fullname = pwd->pw_gecos;
       fullname_end = strchr (fullname, ',');
       if (fullname_end == NULL)
-	fullname_end = fullname + strlen (fullname);
+        fullname_end = fullname + strlen (fullname);
 
-      result = (char *) xmalloc (fullname_end - fullname + 1);
+      result = XNMALLOC (fullname_end - fullname + 1, char);
       memcpy (result, fullname, fullname_end - fullname);
       result[fullname_end - fullname] = '\0';
 
@@ -1184,7 +1121,7 @@ give you feedback about the translations, and so that maintainers can contact\n\
 you in case of unexpected technical problems.\n");
   argv[3] = NULL;
   child = create_pipe_in (prog, "/bin/sh", argv, DEV_NULL, false, true, false,
-			  fd);
+                          fd);
   if (child == -1)
     goto failed;
 
@@ -1201,6 +1138,7 @@ you in case of unexpected technical problems.\n");
   if (linelen == (size_t)(-1))
     {
       error (0, 0, _("%s subprocess I/O error"), prog);
+      fclose (fp);
       goto failed;
     }
   if (linelen > 0 && line[linelen - 1] == '\n')
@@ -1209,11 +1147,11 @@ you in case of unexpected technical problems.\n");
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus = wait_subprocess (child, prog, false, false, true, false);
+  exitstatus = wait_subprocess (child, prog, false, false, true, false, NULL);
   if (exitstatus != 0)
     {
       error (0, 0, _("%s subprocess failed with exit code %d"),
-	     prog, exitstatus);
+             prog, exitstatus);
       goto failed;
     }
 
@@ -1236,10 +1174,26 @@ last_translator ()
       const char *email = get_user_email ();
 
       if (fullname != NULL)
-	return xasprintf ("%s <%s>", fullname, email);
+        return xasprintf ("%s <%s>", fullname, email);
       else
-	return xasprintf ("<%s>", email);
+        return xasprintf ("<%s>", email);
     }
+}
+
+
+/* Return the name of the language used by the language team, in English.  */
+static const char *
+language_team_englishname ()
+{
+  size_t i;
+
+  /* Search for a name depending on the catalogname.  */
+  for (i = 0; i < language_variant_table_size; i++)
+    if (strcmp (language_variant_table[i].code, catalogname) == 0)
+      return language_variant_table[i].english;
+
+  /* Search for a name depending on the language only.  */
+  return englishname_of_language ();
 }
 
 
@@ -1266,7 +1220,7 @@ language_team_address ()
   argv[5] = (char *) language;
   argv[6] = NULL;
   child = create_pipe_in (prog, "/bin/sh", argv, DEV_NULL, false, true, false,
-			  fd);
+                          fd);
   if (child == -1)
     goto failed;
 
@@ -1288,11 +1242,11 @@ language_team_address ()
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus = wait_subprocess (child, prog, false, false, true, false);
+  exitstatus = wait_subprocess (child, prog, false, false, true, false, NULL);
   if (exitstatus != 0)
     {
       error (0, 0, _("%s subprocess failed with exit code %d"),
-	     prog, exitstatus);
+             prog, exitstatus);
       goto failed;
     }
 
@@ -1311,14 +1265,22 @@ language_team ()
     return "none";
   else
     {
-      const char *englishname = englishname_of_language ();
+      const char *englishname = language_team_englishname ();
       const char *address = language_team_address ();
 
       if (address != NULL && address[0] != '\0')
-	return xasprintf ("%s %s", englishname, address);
+        return xasprintf ("%s %s", englishname, address);
       else
-	return englishname;
+        return englishname;
     }
+}
+
+
+/* Construct the value for the Language field.  */
+static const char *
+language_value ()
+{
+  return catalogname;
 }
 
 
@@ -1345,16 +1307,16 @@ content_type (const char *header)
   old_field = get_field (header, "Content-Type");
   if (old_field != NULL)
     {
-      const char *charsetstr = strstr (old_field, "charset=");
+      const char *charsetstr = c_strstr (old_field, "charset=");
 
       if (charsetstr != NULL)
-	{
-	  charsetstr += strlen ("charset=");
-	  was_utf8 = (c_strcasecmp (charsetstr, "UTF-8") == 0);
-	}
+        {
+          charsetstr += strlen ("charset=");
+          was_utf8 = (c_strcasecmp (charsetstr, "UTF-8") == 0);
+        }
     }
   return xasprintf ("text/plain; charset=%s",
-		    was_utf8 ? "UTF-8" : canonical_locale_charset ());
+                    was_utf8 ? "UTF-8" : canonical_locale_charset ());
 }
 
 
@@ -1370,6 +1332,8 @@ content_transfer_encoding ()
 static const char *
 plural_forms ()
 {
+  const char *gettextcldrdir;
+  char *prog = NULL;
   size_t i;
 
   /* Search for a formula depending on the catalogname.  */
@@ -1382,6 +1346,85 @@ plural_forms ()
     if (strcmp (plural_table[i].lang, language) == 0)
       return plural_table[i].value;
 
+  gettextcldrdir = getenv ("GETTEXTCLDRDIR");
+  if (gettextcldrdir != NULL && gettextcldrdir[0] != '\0')
+    {
+      const char *gettextlibdir;
+      char *dirs[3], *last_dir;
+      char *argv[4];
+      pid_t child;
+      int fd[1];
+      FILE *fp;
+      char *line;
+      size_t linesize;
+      size_t linelen;
+      int exitstatus;
+
+      gettextlibdir = getenv ("GETTEXTLIBDIR");
+      if (gettextlibdir == NULL || gettextlibdir[0] == '\0')
+        gettextlibdir = relocate (LIBDIR "/gettext");
+
+      prog = xconcatenated_filename (gettextlibdir, "cldr-plurals", NULL);
+
+      last_dir = xstrdup (gettextcldrdir);
+      dirs[0] = "common";
+      dirs[1] = "supplemental";
+      dirs[2] = "plurals.xml";
+      for (i = 0; i < SIZEOF (dirs); i++)
+        {
+          char *dir = xconcatenated_filename (last_dir, dirs[i], NULL);
+          free (last_dir);
+          last_dir = dir;
+        }
+
+      /* Call the cldr-plurals command.  */
+      argv[0] = "cldr-plurals";
+      argv[1] = (char *) language;
+      argv[2] = last_dir;
+      argv[3] = NULL;
+      child = create_pipe_in (prog, prog, argv, DEV_NULL,
+                              false, true, false,
+                              fd);
+      free (last_dir);
+      if (child == -1)
+        goto failed;
+
+      /* Retrieve its result.  */
+      fp = fdopen (fd[0], "r");
+      if (fp == NULL)
+        {
+          error (0, errno, _("fdopen() failed"));
+          goto failed;
+        }
+
+      line = NULL; linesize = 0;
+      linelen = getline (&line, &linesize, fp);
+      if (linelen == (size_t)(-1))
+        {
+          error (0, 0, _("%s subprocess I/O error"), prog);
+          fclose (fp);
+          goto failed;
+        }
+      if (linelen > 0 && line[linelen - 1] == '\n')
+        line[linelen - 1] = '\0';
+
+      fclose (fp);
+
+      /* Remove zombie process from process list, and retrieve exit status.  */
+      exitstatus = wait_subprocess (child, prog, false, false, true, false,
+                                    NULL);
+      if (exitstatus != 0)
+        {
+          error (0, 0, _("%s subprocess failed with exit code %d"),
+                 prog, exitstatus);
+          goto failed;
+        }
+
+      return line;
+    }
+
+ failed:
+  free (prog);
   return NULL;
 }
 
@@ -1394,10 +1437,11 @@ static struct
 }
 fields[] =
   {
-    { "Project-Id-Version", project_id_version, NULL },
+    { "Project-Id-Version", NULL, project_id_version },
     { "PO-Revision-Date", NULL, po_revision_date },
     { "Last-Translator", last_translator, NULL },
     { "Language-Team", language_team, NULL },
+    { "Language", language_value, NULL },
     { "MIME-Version", mime_version, NULL },
     { "Content-Type", NULL, content_type },
     { "Content-Transfer-Encoding", content_transfer_encoding, NULL },
@@ -1417,30 +1461,31 @@ get_field (const char *header, const char *field)
 
   for (line = header;;)
     {
-      if (strncmp (line, field, len) == 0
-	  && line[len] == ':' && line[len + 1] == ' ')
-	{
-	  const char *value_start;
-	  const char *value_end;
-	  char *value;
+      if (strncmp (line, field, len) == 0 && line[len] == ':')
+        {
+          const char *value_start;
+          const char *value_end;
+          char *value;
 
-	  value_start = line + len + 2;
-	  value_end = strchr (value_start, '\n');
-	  if (value_end == NULL)
-	    value_end = value_start + strlen (value_start);
+          value_start = line + len + 1;
+          if (*value_start == ' ')
+            value_start++;
+          value_end = strchr (value_start, '\n');
+          if (value_end == NULL)
+            value_end = value_start + strlen (value_start);
 
-	  value = (char *) xmalloc (value_end - value_start + 1);
-	  memcpy (value, value_start, value_end - value_start);
-	  value[value_end - value_start] = '\0';
+          value = XNMALLOC (value_end - value_start + 1, char);
+          memcpy (value, value_start, value_end - value_start);
+          value[value_end - value_start] = '\0';
 
-	  return value;
-	}
+          return value;
+        }
 
       line = strchr (line, '\n');
       if (line != NULL)
-	line++;
+        line++;
       else
-	break;
+        break;
     }
 
   return NULL;
@@ -1457,44 +1502,47 @@ put_field (const char *old_header, const char *field, const char *value)
 
   for (line = old_header;;)
     {
-      if (strncmp (line, field, len) == 0
-	  && line[len] == ':' && line[len + 1] == ' ')
-	{
-	  const char *value_start;
-	  const char *value_end;
+      if (strncmp (line, field, len) == 0 && line[len] == ':')
+        {
+          const char *value_start;
+          const char *value_end;
 
-	  value_start = line + len + 2;
-	  value_end = strchr (value_start, '\n');
-	  if (value_end == NULL)
-	    value_end = value_start + strlen (value_start);
+          value_start = line + len + 1;
+          if (*value_start == ' ')
+            value_start++;
+          value_end = strchr (value_start, '\n');
+          if (value_end == NULL)
+            value_end = value_start + strlen (value_start);
 
-	  new_header = (char *) xmalloc (strlen (old_header)
-					 - (value_end - value_start)
-					 + strlen (value)
-					 + (*value_end != '\n' ? 1 : 0)
-					 + 1);
-	  p = new_header;
-	  memcpy (p, old_header, value_start - old_header);
-	  p += value_start - old_header;
-	  memcpy (p, value, strlen (value));
-	  p += strlen (value);
-	  if (*value_end != '\n')
-	    *p++ = '\n';
-	  strcpy (p, value_end);
+          new_header = XNMALLOC (strlen (old_header)
+                                 - (value_end - value_start)
+                                 + strlen (value)
+                                 + (*value_end != '\n' ? 1 : 0)
+                                 + 1,
+                                 char);
+          p = new_header;
+          memcpy (p, old_header, value_start - old_header);
+          p += value_start - old_header;
+          memcpy (p, value, strlen (value));
+          p += strlen (value);
+          if (*value_end != '\n')
+            *p++ = '\n';
+          strcpy (p, value_end);
 
-	  return new_header;
-	}
+          return new_header;
+        }
 
       line = strchr (line, '\n');
       if (line != NULL)
-	line++;
+        line++;
       else
-	break;
+        break;
     }
 
-  new_header = (char *) xmalloc (strlen (old_header) + 1
-				 + len + 2 + strlen (value) + 1
-				 + 1);
+  new_header = XNMALLOC (strlen (old_header) + 1
+                         + len + 2 + strlen (value) + 1
+                         + 1,
+                         char);
   p = new_header;
   memcpy (p, old_header, strlen (old_header));
   p += strlen (old_header);
@@ -1536,7 +1584,7 @@ get_title ()
 
   /* First, the English title.  */
   english = xasprintf ("%s translations for %%s package",
-		       englishname_of_language ());
+                       englishname_of_language ());
 
   /* Save LC_ALL, LANGUAGE, OUTPUT_CHARSET environment variables.  */
 
@@ -1562,16 +1610,16 @@ get_title ()
     {
       /* Fetch the translation.  */
       /* TRANSLATORS: "English" needs to be replaced by your language.
-	 For example in it.po write "Traduzioni italiani ...",
-	 *not* "Traduzioni inglesi ...".  */
+         For example in it.po write "Traduzioni italiani ...",
+         *not* "Traduzioni inglesi ...".  */
       msgid = N_("English translations for %s package");
       result = gettext (msgid);
       if (result != msgid && strcmp (result, msgid) != 0)
-	/* Use the English and the foreign title.  */
-	result = xasprintf ("%s\n%s", english, result);
+        /* Use the English and the foreign title.  */
+        result = xasprintf ("%s\n%s", english, result);
       else
-	/* No translation found.  Use the English title.  */
-	result = english;
+        /* No translation found.  Use the English title.  */
+        result = english;
     }
 
   /* Restore LC_ALL, LANGUAGE, OUTPUT_CHARSET environment variables.  */
@@ -1604,7 +1652,7 @@ get_title ()
    subst[j][0] must not be the empty string.  */
 static const char *
 subst_string (const char *str,
-	      unsigned int nsubst, const char *(*subst)[2])
+              unsigned int nsubst, const char *(*subst)[2])
 {
   if (nsubst > 0)
     {
@@ -1613,40 +1661,40 @@ subst_string (const char *str,
       size_t i;
       unsigned int j;
 
-      substlen = (size_t *) xallocsa (nsubst * sizeof (size_t));
+      substlen = (size_t *) xmalloca (nsubst * sizeof (size_t));
       for (j = 0; j < nsubst; j++)
-	{
-	  substlen[j] = strlen (subst[j][0]);
-	  if (substlen[j] == 0)
-	    abort ();
-	}
+        {
+          substlen[j] = strlen (subst[j][0]);
+          if (substlen[j] == 0)
+            abort ();
+        }
 
       for (i = 0;;)
-	{
-	  if (str[i] == '\0')
-	    break;
-	  for (j = 0; j < nsubst; j++)
-	    if (*(str + i) == *subst[j][0]
-		&& strncmp (str + i, subst[j][0], substlen[j]) == 0)
-	      {
-		size_t replacement_len = strlen (subst[j][1]);
-		size_t new_len = strlen (str) - substlen[j] + replacement_len;
-		char *new_str = (char *) xmalloc (new_len + 1);
-		memcpy (new_str, str, i);
-		memcpy (new_str + i, subst[j][1], replacement_len);
-		strcpy (new_str + i + replacement_len, str + i + substlen[j]);
-		if (malloced != NULL)
-		  free (malloced);
-		str = new_str;
-		malloced = new_str;
-		i += replacement_len;
-		break;
-	      }
-	  if (j == nsubst)
-	    i++;
-	}
+        {
+          if (str[i] == '\0')
+            break;
+          for (j = 0; j < nsubst; j++)
+            if (*(str + i) == *subst[j][0]
+                && strncmp (str + i, subst[j][0], substlen[j]) == 0)
+              {
+                size_t replacement_len = strlen (subst[j][1]);
+                size_t new_len = strlen (str) - substlen[j] + replacement_len;
+                char *new_str = XNMALLOC (new_len + 1, char);
+                memcpy (new_str, str, i);
+                memcpy (new_str + i, subst[j][1], replacement_len);
+                strcpy (new_str + i + replacement_len, str + i + substlen[j]);
+                if (malloced != NULL)
+                  free (malloced);
+                str = new_str;
+                malloced = new_str;
+                i += replacement_len;
+                break;
+              }
+          if (j == nsubst)
+            i++;
+        }
 
-      freesa (substlen);
+      freea (substlen);
     }
 
   return str;
@@ -1657,7 +1705,7 @@ subst_string (const char *str,
    must not be the empty string.  */
 static void
 subst_string_list (string_list_ty *slp,
-		   unsigned int nsubst, const char *(*subst)[2])
+                   unsigned int nsubst, const char *(*subst)[2])
 {
   size_t j;
 
@@ -1683,74 +1731,74 @@ fill_header (msgdomain_list_ty *mdlp)
       message_list_ty *mlp = mdlp->item[k]->messages;
 
       if (mlp->nitems > 0)
-	{
-	  message_ty *header_mp = NULL;
-	  char *header;
+        {
+          message_ty *header_mp = NULL;
+          char *header;
 
-	  /* Search the header entry.  */
-	  for (j = 0; j < mlp->nitems; j++)
-	    if (mlp->item[j]->msgid[0] == '\0' && !mlp->item[j]->obsolete)
-	      {
-		header_mp = mlp->item[j];
-		break;
-	      }
+          /* Search the header entry.  */
+          for (j = 0; j < mlp->nitems; j++)
+            if (is_header (mlp->item[j]) && !mlp->item[j]->obsolete)
+              {
+                header_mp = mlp->item[j];
+                break;
+              }
 
-	  /* If it wasn't found, provide one.  */
-	  if (header_mp == NULL)
-	    {
-	      static lex_pos_ty pos = { __FILE__, __LINE__ };
+          /* If it wasn't found, provide one.  */
+          if (header_mp == NULL)
+            {
+              static lex_pos_ty pos = { __FILE__, __LINE__ };
 
-	      header_mp = message_alloc ("", NULL, "", 1, &pos);
-	      message_list_prepend (mlp, header_mp);
-	    }
+              header_mp = message_alloc (NULL, "", NULL, "", 1, &pos);
+              message_list_prepend (mlp, header_mp);
+            }
 
-	  header = xstrdup (header_mp->msgstr);
+          header = xstrdup (header_mp->msgstr);
 
-	  /* Fill in the fields.  */
-	  for (i = 0; i < NFIELDS; i++)
-	    {
-	      if (field_value[i] == NULL)
-		field_value[i] =
-		  (fields[i].getter1 != NULL
-		   ? fields[i].getter1 (header)
-		   : fields[i].getter0 ());
+          /* Fill in the fields.  */
+          for (i = 0; i < NFIELDS; i++)
+            {
+              if (field_value[i] == NULL)
+                field_value[i] =
+                  (fields[i].getter1 != NULL
+                   ? fields[i].getter1 (header)
+                   : fields[i].getter0 ());
 
-	      if (field_value[i] != NULL)
-		{
-		  char *old_header = header;
-		  header = put_field (header, fields[i].name, field_value[i]);
-		  free (old_header);
-		}
-	    }
+              if (field_value[i] != NULL)
+                {
+                  char *old_header = header;
+                  header = put_field (header, fields[i].name, field_value[i]);
+                  free (old_header);
+                }
+            }
 
-	  /* Replace the old translation in the header entry.  */
-	  header_mp->msgstr = header;
-	  header_mp->msgstr_len = strlen (header) + 1;
+          /* Replace the old translation in the header entry.  */
+          header_mp->msgstr = header;
+          header_mp->msgstr_len = strlen (header) + 1;
 
-	  /* Update the comments in the header entry.  */
-	  if (header_mp->comment != NULL)
-	    {
-	      const char *subst[4][2];
-	      const char *id;
-	      time_t now;
+          /* Update the comments in the header entry.  */
+          if (header_mp->comment != NULL)
+            {
+              const char *subst[4][2];
+              const char *id;
+              time_t now;
 
-	      id = project_id ();
-	      subst[0][0] = "SOME DESCRIPTIVE TITLE";
-	      subst[0][1] = xasprintf (get_title (), id, id);
-	      subst[1][0] = "PACKAGE";
-	      subst[1][1] = id;
-	      subst[2][0] = "FIRST AUTHOR <EMAIL@ADDRESS>";
-	      subst[2][1] = field_value[FIELD_LAST_TRANSLATOR];
-	      subst[3][0] = "YEAR";
-	      subst[3][1] =
-		xasprintf ("%d",
-			   (time (&now), (localtime (&now))->tm_year + 1900));
-	      subst_string_list (header_mp->comment, SIZEOF (subst), subst);
-	    }
+              id = project_id (header);
+              subst[0][0] = "SOME DESCRIPTIVE TITLE";
+              subst[0][1] = xasprintf (get_title (), id, id);
+              subst[1][0] = "PACKAGE";
+              subst[1][1] = id;
+              subst[2][0] = "FIRST AUTHOR <EMAIL@ADDRESS>";
+              subst[2][1] = field_value[FIELD_LAST_TRANSLATOR];
+              subst[3][0] = "YEAR";
+              subst[3][1] =
+                xasprintf ("%d",
+                           (time (&now), (localtime (&now))->tm_year + 1900));
+              subst_string_list (header_mp->comment, SIZEOF (subst), subst);
+            }
 
-	  /* Finally remove the fuzzy attribute.  */
-	  header_mp->is_fuzzy = false;
-	}
+          /* Finally remove the fuzzy attribute.  */
+          header_mp->is_fuzzy = false;
+        }
     }
 
   return mdlp;
@@ -1771,38 +1819,38 @@ update_msgstr_plurals (msgdomain_list_ty *mdlp)
       char *untranslated_plural_msgstr;
       size_t j;
 
-      header_entry = message_list_search (mlp, "");
+      header_entry = message_list_search (mlp, NULL, "");
       nplurals = get_plural_count (header_entry ? header_entry->msgstr : NULL);
-      untranslated_plural_msgstr = (char *) xmalloc (nplurals);
+      untranslated_plural_msgstr = XNMALLOC (nplurals, char);
       memset (untranslated_plural_msgstr, '\0', nplurals);
 
       for (j = 0; j < mlp->nitems; j++)
-	{
-	  message_ty *mp = mlp->item[j];
-	  bool is_untranslated;
-	  const char *p;
-	  const char *pend;
+        {
+          message_ty *mp = mlp->item[j];
+          bool is_untranslated;
+          const char *p;
+          const char *pend;
 
-	  if (mp->msgid_plural != NULL)
-	    {
-	      /* Test if mp is untranslated.  (It most likely is.)  */
-	      is_untranslated = true;
-	      for (p = mp->msgstr, pend = p + mp->msgstr_len; p < pend; p++)
-		if (*p != '\0')
-		  {
-		    is_untranslated = false;
-		    break;
-		  }
-	      if (is_untranslated)
-		{
-		  /* Change mp->msgstr_len consecutive empty strings into
-		     nplurals consecutive empty strings.  */
-		  if (nplurals > mp->msgstr_len)
-		    mp->msgstr = untranslated_plural_msgstr;
-		  mp->msgstr_len = nplurals;
-		}
-	    }
-	}
+          if (mp->msgid_plural != NULL)
+            {
+              /* Test if mp is untranslated.  (It most likely is.)  */
+              is_untranslated = true;
+              for (p = mp->msgstr, pend = p + mp->msgstr_len; p < pend; p++)
+                if (*p != '\0')
+                  {
+                    is_untranslated = false;
+                    break;
+                  }
+              if (is_untranslated)
+                {
+                  /* Change mp->msgstr_len consecutive empty strings into
+                     nplurals consecutive empty strings.  */
+                  if (nplurals > mp->msgstr_len)
+                    mp->msgstr = untranslated_plural_msgstr;
+                  mp->msgstr_len = nplurals;
+                }
+            }
+        }
     }
   return mdlp;
 }

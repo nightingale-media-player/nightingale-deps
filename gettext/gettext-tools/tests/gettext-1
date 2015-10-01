@@ -1,22 +1,18 @@
 #! /bin/sh
-# One argument is required which is the path to the toplevel directory
-# of the distribution.
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
+# Test the gettext program with -e option.
 
 # Create binary test file in correct position.
-tmpfiles="$tmpfiles LC_MESSAGES"
-test -d LC_MESSAGES || mkdir LC_MESSAGES
-cp $top_srcdir/tests/test.mo LC_MESSAGES
+test -d gt-1 || mkdir gt-1
+test -d gt-1/LC_MESSAGES || mkdir gt-1/LC_MESSAGES
+cp "$abs_srcdir"/test.mo gt-1/LC_MESSAGES
 
-tmpfiles="$tmpfiles gt-test1.out"
 : ${GETTEXT=gettext}
-TEXTDOMAINDIR=.. LANGUAGE=tests \
-${GETTEXT} --env LC_ALL=en -e test 'SYS_(C)\n' > gt-test1.out
+TEXTDOMAINDIR=. LANGUAGE=gt-1 \
+${GETTEXT} --env LC_ALL=en -e test 'SYS_(C)\n' | LC_ALL=C tr -d '\r' > gt-test1.out
 
 # Create correct file.
-tmpfile="$tmpfiles gtmf-test1.ok"
 cat <<EOF > gtmf-test1.ok
 MSGFMT(1) portable message object file compiler
 Copyright (C) 1995 Free Software Foundation
@@ -26,7 +22,5 @@ EOF
 : ${DIFF=diff}
 ${DIFF} gtmf-test1.ok gt-test1.out
 result=$?
-
-rm -fr $tmpfiles
 
 exit $result

@@ -1,12 +1,13 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1998, 2000-2004 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1998, 2000-2004, 2006, 2009, 2015 Free Software
+   Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,8 +15,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -47,7 +47,7 @@ string_list_alloc ()
 {
   string_list_ty *slp;
 
-  slp = (string_list_ty *) xmalloc (sizeof (*slp));
+  slp = XMALLOC (string_list_ty);
   slp->item = NULL;
   slp->nitems = 0;
   slp->nitems_max = 0;
@@ -92,8 +92,8 @@ string_list_append_unique (string_list_ty *slp, const char *s)
     {
       slp->nitems_max = slp->nitems_max * 2 + 4;
       slp->item = (const char **) xrealloc (slp->item,
-					    slp->nitems_max
-					    * sizeof (slp->item[0]));
+                                            slp->nitems_max
+                                            * sizeof (slp->item[0]));
     }
 
   /* Add a copy of the string to the end of the list.  */
@@ -141,7 +141,7 @@ string_list_concat (const string_list_ty *slp)
   len = 1;
   for (j = 0; j < slp->nitems; ++j)
     len += strlen (slp->item[j]);
-  result = (char *) xmalloc (len);
+  result = XNMALLOC (len, char);
   pos = 0;
   for (j = 0; j < slp->nitems; ++j)
     {
@@ -177,14 +177,15 @@ string_list_concat_destroy (string_list_ty *slp)
 
 
 /* Return a freshly allocated string obtained by concatenating all the
-   strings in the list, separated by the separator character, terminated
+   strings in the list, separated by the separator string, terminated
    by the terminator character.  The terminator character is not added if
    drop_redundant_terminator is true and the last string already ends with
    the terminator. */
 char *
-string_list_join (const string_list_ty *slp, char separator,
-		  char terminator, bool drop_redundant_terminator)
+string_list_join (const string_list_ty *slp, const char *separator,
+                  char terminator, bool drop_redundant_terminator)
 {
+  size_t separator_len = strlen (separator);
   size_t len;
   size_t j;
   char *result;
@@ -193,27 +194,30 @@ string_list_join (const string_list_ty *slp, char separator,
   len = 1;
   for (j = 0; j < slp->nitems; ++j)
     {
-      if (separator && j > 0)
-	++len;
+      if (j > 0)
+        len += separator_len;
       len += strlen (slp->item[j]);
     }
   if (terminator)
     ++len;
-  result = (char *) xmalloc (len);
+  result = XNMALLOC (len, char);
   pos = 0;
   for (j = 0; j < slp->nitems; ++j)
     {
-      if (separator && j > 0)
-	result[pos++] = separator;
+      if (j > 0)
+        {
+          memcpy (result + pos, separator, separator_len);
+          pos += separator_len;
+        }
       len = strlen (slp->item[j]);
       memcpy (result + pos, slp->item[j], len);
       pos += len;
     }
   if (terminator
       && !(drop_redundant_terminator
-	   && slp->nitems > 0
-	   && (len = strlen (slp->item[slp->nitems - 1])) > 0
-	   && slp->item[slp->nitems - 1][len - 1] == terminator))
+           && slp->nitems > 0
+           && (len = strlen (slp->item[slp->nitems - 1])) > 0
+           && slp->item[slp->nitems - 1][len - 1] == terminator))
     result[pos++] = terminator;
   result[pos] = '\0';
   return result;

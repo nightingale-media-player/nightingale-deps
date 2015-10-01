@@ -19,6 +19,10 @@ file-list.c
                 Reading a file list from a file. Used by those programs which
                 accept multiple file arguments and have a --files-from option.
 
+lang-table.h
+lang-table.c
+                Language names according to ISO 639.
+
 pos.h
                 Source file positions.
 
@@ -34,22 +38,35 @@ msgl-ascii.c
 
 po-error.h
 po-error.c
+po-xerror.h
+po-xerror.c
                 Error handling during writing and reading of PO files.
 
-write-po.h
-write-po.c
-                Output of a list-of-messages to a PO file.
-write-properties.h
-write-properties.c
-                Output of a list-of-messages to a Java .properties file.
-write-stringtable.h
-write-stringtable.c
-                Output of a list-of-messages to a NeXTstep/GNUstep .strings
-                file.
++-------------- Writing PO files
+| color.h
+| color.c
+|               Color and style handling.
+| write-catalog.h
+| write-catalog.c
+|               Output of a list-of-messages.
+| write-po.h
+| write-po.c
+|               Output of a list-of-messages to a PO file.
+| write-properties.h
+| write-properties.c
+|               Output of a list-of-messages to a Java .properties file.
+| write-stringtable.h
+| write-stringtable.c
+|               Output of a list-of-messages to a NeXTstep/GNUstep .strings
+|               file.
+| write-desktop.h
+| write-desktop.c
+|               Output of a list-of-messages to a .desktop file.
++-------------- Writing PO files
 
 +-------------- Reading PO files
-| open-po.h
-| open-po.c
+| open-catalog.h
+| open-catalog.c
 |               Opening PO files for reading.
 |
 | po-charset.h
@@ -60,34 +77,42 @@ write-stringtable.c
 | po-lex.c
 |               Lexical analysis of PO files.
 |
-| read-po-abstract.h
+| read-catalog-abstract.h
 | po-gram.h
 | po-gram-gen.y
+| read-po.h
+| read-po.c
 | read-properties.h
 | read-properties.c
 | read-stringtable.h
 | read-stringtable.c
-| read-po-abstract.c
+| read-catalog-abstract.c
 |               Parsing of PO files and Java .properties and NeXTstep/GNUstep
 |              .strings files.
-|         read-po-abstract.h
+|         read-catalog-abstract.h
 |                       General parser structure.
 |         po-gram.h
 |         po-gram-gen.y
 |                       Parsing of PO files, based on po-lex.{h,c}.
+|         read-po.h
+|         read-po.c
+|                       Parsing of PO files.
 |         read-properties.h
 |         read-properties.c
 |                       Parsing of Java .properties files.
 |         read-stringtable.h
 |         read-stringtable.c
 |                       Parsing of NeXTstep/GNUstep .strings files.
-|         read-po-abstract.c
+|         read-catalog-abstract.c
 |                       Top-level parser functions and callbacks.
 |
-| read-po.h
-| read-po.c
+| read-catalog.h
+| read-catalog.c
 |               Reading of a PO file, returning a list-of-messages.
 |
+| read-desktop.h
+| read-desktop.c
+|               Reading of a .desktop file, returning a list-of-messages.
 +-------------- Reading PO files
 
 msgl-iconv.h
@@ -112,6 +137,10 @@ msgcmp.c        Main source for the 'msgcmp' program.
 |               Main source for the 'msgmerge' program.
 |
 +-------------- The 'msgmerge' program
+
+msgl-header.h
+msgl-header.c
+                Message list header manipulation.
 
 msgcomm.c       Main source for the 'msgcomm' program.
 msgattrib.c     Main source for the 'msgattrib' program.
@@ -188,8 +217,10 @@ plural-table.c
 format.h        Declarations of the language dependent format string handlers.
 format-invalid.h  Declarations of some error messages for invalid strings.
 format-c.c             Format string handling for C.
+format-c-parse.h         Format string handling for C, parsing routine.
 format-sh.c            Format string handling for Shell.
 format-python.c        Format string handling for Python.
+format-python-brace.c  Format string handling for Python, braced syntax.
 format-lisp.c          Format string handling for Common Lisp.
 format-elisp.c         Format string handling for Emacs Lisp.
 format-librep.c        Format string handling for librep.
@@ -204,16 +235,29 @@ format-perl.c          Format string handling for Perl.
 format-perl-brace.c    Format string handling for Perl, braced syntax.
 format-php.c           Format string handling for PHP.
 format-gcc-internal.c  Format string handling GCC internal.
+format-gfc-internal.c  Format string handling GFC internal.
 format-qt.c            Format string handling for Qt.
+format-qt-plural.c     Format string handling for Qt plural forms.
+format-kde.c           Format string handling for KDE.
+format-boost.c         Format string handling for Boost.
+format-lua.c           Format string handling for Lua.
+format-javascript.c    Format string handling for JavaScript.
 format.c        Table of the language dependent format string handlers.
+
+plural-exp.c
+                Parsing plural expressions.
+plural-eval.h
+plural-eval.c
+                Evaluating plural expressions.
+plural-distrib.h
+                Value distribution of plural expressions.
+msgl-check.h
+msgl-check.c
+                Checking of messages.
 
 +-------------- The 'msgfmt' program
 | msgfmt.h
 |               Declarations.
-| plural.c
-|               Parsing plural expressions.
-| plural-eval.c
-|               Evaluating plursl expressions.
 | write-mo.h
 | write-mo.c
 |               Generating GNU .mo files.
@@ -298,15 +342,25 @@ format.c        Table of the language dependent format string handlers.
 | x-glade.h
 | x-glade.c
 |               String extractor from .glade files, GNOME GUI descriptions.
+| x-lua.h
+| x-lua.c
+|               String extractor for Lua.
+| x-javascript.h
+| x-javascript.c
+|               String extractor for JavaScript.
+| x-vala.h
+| x-vala.c
+|               String extractor for Vala.
+| x-gsettings.h
+| x-gsettings.c
+|               String extractor for GSettings schema file.
+| x-desktop.h
+| x-desktop.c
+|               String extractor from Desktop Entry file.
+| x-appdata.h
+| x-appdata.c
+|               String extractor for AppData files.
 | xgettext.c
 |               Main source for the 'xgettext' program.
 |
 +-------------- The 'xgettext' program
-
-+-------------- The 'gettextpo' library
-|
-| gettext-po.h
-| gettext-po.c
-|               Public API for reading PO files.
-|
-+-------------- The 'gettextpo' library

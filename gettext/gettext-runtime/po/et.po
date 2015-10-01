@@ -5,102 +5,108 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext 0.10.37\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2005-01-14 13:07+0100\n"
+"POT-Creation-Date: 2015-09-11 12:23+0900\n"
 "PO-Revision-Date: 2001-04-30 16:25+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gettext-tools/lib/closeout.c:64
+#: gnulib-lib/closeout.c:66
 msgid "write error"
 msgstr ""
 
-#: ../gettext-tools/lib/error.c:121
+#: gnulib-lib/error.c:191
 msgid "Unknown system error"
 msgstr "Tundmatu süsteemne viga"
 
-#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
-#, c-format
-msgid "%s: option `%s' is ambiguous\n"
+#: gnulib-lib/getopt.c:575 gnulib-lib/getopt.c:604
+#, fuzzy, c-format
+msgid "%s: option '%s' is ambiguous; possibilities:"
 msgstr "%s: võti `%s' on mitmetähenduslik\n"
 
-#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
-#, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: võtmel `--%s' ei tohi olla argumente\n"
-
-#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
-#, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: võtmel `%c%s' ei tohi olla argumente\n"
-
-#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
-#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
-#, c-format
-msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: võtme `%s' järel peab olema argument\n"
-
-#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
-#, c-format
-msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: tundmatu võti `--%s'\n"
-
-#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
-#, c-format
-msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: tundmatu võti `%c%s'\n"
-
-#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: lubamatu võti -- %c\n"
-
-#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
-#, c-format
-msgid "%s: invalid option -- %c\n"
-msgstr "%s: vigane võti -- %c\n"
-
-#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
-#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
-#, c-format
-msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: võtme järel peab olema argument -- %c\n"
-
-#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
+#: gnulib-lib/getopt.c:619
+#, fuzzy, c-format
+msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s: võti `-W %s' on mitmetähenduslik\n"
 
-#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
-#, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
+#, fuzzy, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
+msgstr "%s: võtmel `--%s' ei tohi olla argumente\n"
+
+#: gnulib-lib/getopt.c:667 gnulib-lib/getopt.c:672
+#, fuzzy, c-format
+msgid "%s: option '%c%s' doesn't allow an argument\n"
+msgstr "%s: võtmel `%c%s' ei tohi olla argumente\n"
+
+#: gnulib-lib/getopt.c:715 gnulib-lib/getopt.c:734
+#, fuzzy, c-format
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: võtme `%s' järel peab olema argument\n"
+
+#: gnulib-lib/getopt.c:772 gnulib-lib/getopt.c:775
+#, fuzzy, c-format
+msgid "%s: unrecognized option '--%s'\n"
+msgstr "%s: tundmatu võti `--%s'\n"
+
+#: gnulib-lib/getopt.c:783 gnulib-lib/getopt.c:786
+#, fuzzy, c-format
+msgid "%s: unrecognized option '%c%s'\n"
+msgstr "%s: tundmatu võti `%c%s'\n"
+
+#: gnulib-lib/getopt.c:835 gnulib-lib/getopt.c:838
+#, fuzzy, c-format
+msgid "%s: invalid option -- '%c'\n"
+msgstr "%s: vigane võti -- %c\n"
+
+#: gnulib-lib/getopt.c:891 gnulib-lib/getopt.c:908 gnulib-lib/getopt.c:1118
+#: gnulib-lib/getopt.c:1136
+#, fuzzy, c-format
+msgid "%s: option requires an argument -- '%c'\n"
+msgstr "%s: võtme järel peab olema argument -- %c\n"
+
+#: gnulib-lib/getopt.c:964 gnulib-lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' is ambiguous\n"
+msgstr "%s: võti `-W %s' on mitmetähenduslik\n"
+
+#: gnulib-lib/getopt.c:1004 gnulib-lib/getopt.c:1022
+#, fuzzy, c-format
+msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: võtmel `-W %s' ei tohi olla argumente\n"
 
-#: ../gettext-tools/lib/xmalloc.c:41
+#: gnulib-lib/getopt.c:1043 gnulib-lib/getopt.c:1061
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: võtme `%s' järel peab olema argument\n"
+
+#: gnulib-lib/xmalloc.c:38
 #, c-format
 msgid "memory exhausted"
 msgstr "mälu sai otsa"
 
-#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
+#: src/envsubst.c:112 src/gettext.c:134 src/ngettext.c:124
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
-"Copyright (C) %s Free Software Foundation, Inc.\n"
-"Seda programmi levitatakse lootuses, et see on kasulik, kuid ILMA IGASUGUSE\n"
-"GARANTIITA; isegi KESKMISE/TAVALISE KVALITEEDI GARANTIITA või SOBIVUSELE\n"
-"TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata GNU Üldist Avalikku\n"
-"Litsentsi.\n"
 
 #: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Selle programmi on kirjutanud %s.\n"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/envsubst.c:118
+msgid "Bruno Haible"
+msgstr ""
 
 #: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
 #, c-format
@@ -113,8 +119,8 @@ msgid "missing arguments"
 msgstr "argumendid on puudu"
 
 #: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
-#, c-format
-msgid "Try `%s --help' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' for more information.\n"
 msgstr "Täiendava info saamiseks proovi `%s --help'.\n"
 
 #: src/envsubst.c:176
@@ -170,19 +176,28 @@ msgid ""
 "of the environment variables that are referenced in SHELL-FORMAT, one per line.\n"
 msgstr ""
 
-#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/envsubst.c:219 src/gettext.c:280 src/ngettext.c:246
 #, fuzzy
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr "Vigadest teata aadressile <bug-gnu-utils@gnu.org>.\n"
 
-#: src/envsubst.c:438
+#: src/envsubst.c:442
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "viga \"%s\" lugemisel"
 
-#: src/envsubst.c:439
+#: src/envsubst.c:443
 msgid "standard input"
 msgstr "standardsisend"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/gettext.c:140 src/ngettext.c:130
+msgid "Ulrich Drepper"
+msgstr ""
 
 #: src/gettext.c:244
 #, c-format, no-wrap
@@ -228,7 +243,7 @@ msgid ""
 "environment variable TEXTDOMAIN.  If the message catalog is not found in the\n"
 "regular directory, another location can be specified with the environment\n"
 "variable TEXTDOMAINDIR.\n"
-"When used with the -s option the program behaves like the `echo' command.\n"
+"When used with the -s option the program behaves like the 'echo' command.\n"
 "But it does not simply copy its arguments to stdout.  Instead those messages\n"
 "found in the selected catalog are translated.\n"
 "Standard search directory: %s\n"
@@ -297,6 +312,23 @@ msgstr ""
 "tavakataloogist, proovitakse teist kataloogi, mille väärtust üritatakse\n"
 "lugeda keskkonnamuutujast TEXTDOMAINDIR.\n"
 "Standardne otsinukataloog: %s\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: lubamatu võti -- %c\n"
+
+#~ msgid ""
+#~ "Copyright (C) %s Free Software Foundation, Inc.\n"
+#~ "This is free software; see the source for copying conditions.  There is "
+#~ "NO\n"
+#~ "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR "
+#~ "PURPOSE.\n"
+#~ msgstr ""
+#~ "Copyright (C) %s Free Software Foundation, Inc.\n"
+#~ "Seda programmi levitatakse lootuses, et see on kasulik, kuid ILMA "
+#~ "IGASUGUSE\n"
+#~ "GARANTIITA; isegi KESKMISE/TAVALISE KVALITEEDI GARANTIITA või SOBIVUSELE\n"
+#~ "TEATUD KINDLAKS EESMÄRGIKS. Üksikasjade suhtes vaata GNU Üldist Avalikku\n"
+#~ "Litsentsi.\n"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "viga faili \"%s\" avamisel (lugemiseks)"
@@ -1062,8 +1094,8 @@ msgstr ""
 #~ "%sRead %ld old + %ld reference, merged %ld, fuzzied %ld, missing %ld, "
 #~ "obsolete %ld.\n"
 #~ msgstr ""
-#~ "%sLoetud %ld vana + %ld viidet, ühendatud %ld, kahtlaseid %ld, puuduvaid %"
-#~ "ld, vananenuid %ld.\n"
+#~ "%sLoetud %ld vana + %ld viidet, ühendatud %ld, kahtlaseid %ld, puuduvaid "
+#~ "%ld, vananenuid %ld.\n"
 
 #~ msgid " done.\n"
 #~ msgstr " valmis.\n"
@@ -1429,8 +1461,8 @@ msgstr ""
 #~ "Generate binary message catalog from textual translation description.\n"
 #~ "\n"
 #~ "Mandatory arguments to long options are mandatory for short options too.\n"
-#~ "  -a, --alignment=NUMBER      align strings to NUMBER bytes (default: %"
-#~ "d)\n"
+#~ "  -a, --alignment=NUMBER      align strings to NUMBER bytes (default: "
+#~ "%d)\n"
 #~ "  -c, --check                 perform language dependent checks on "
 #~ "strings\n"
 #~ "  -D, --directory=DIRECTORY   add DIRECTORY to list for input files "

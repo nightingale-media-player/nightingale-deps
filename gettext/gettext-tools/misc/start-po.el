@@ -1,6 +1,6 @@
 ;;; start-po.el -- autoload definitions for viewing and editing PO files
 
-;; Copyright (C) 1995-1999, 2000-2004 Free Software Foundation, Inc.
+;; Copyright (C) 1995-2004, 2015 Free Software Foundation, Inc.
 ;;
 ;; This file is part of GNU gettext.
 ;;
@@ -15,9 +15,8 @@
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
+;; along with GNU Emacs; see the file COPYING.  If not, see
+;; <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 

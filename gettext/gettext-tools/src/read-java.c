@@ -1,11 +1,12 @@
 /* Reading Java ResourceBundles.
-   Copyright (C) 2001-2003 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006-2008, 2011, 2015 Free Software
+   Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -31,11 +31,11 @@
 #include "msgunfmt.h"
 #include "relocatable.h"
 #include "javaexec.h"
-#include "pipe.h"
+#include "spawn-pipe.h"
 #include "wait-process.h"
+#include "read-catalog.h"
 #include "read-po.h"
 #include "error.h"
-#include "exit.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
@@ -53,8 +53,8 @@ struct locals
 
 static bool
 execute_and_read_po_output (const char *progname,
-			    const char *prog_path, char **prog_argv,
-			    void *private_data)
+                            const char *prog_path, char **prog_argv,
+                            void *private_data)
 {
   struct locals *l = (struct locals *) private_data;
   pid_t child;
@@ -64,22 +64,23 @@ execute_and_read_po_output (const char *progname,
 
   /* Open a pipe to the JVM.  */
   child = create_pipe_in (progname, prog_path, prog_argv, DEV_NULL, false,
-			  true, true, fd);
+                          true, true, fd);
 
   fp = fdopen (fd[0], "r");
   if (fp == NULL)
     error (EXIT_FAILURE, errno, _("fdopen() failed"));
 
   /* Read the message list.  */
-  l->mdlp = read_po (fp, "(pipe)", "(pipe)");
+  l->mdlp = read_catalog_stream (fp, "(pipe)", "(pipe)", &input_format_po);
 
   fclose (fp);
 
   /* Remove zombie process from process list, and retrieve exit status.  */
-  exitstatus = wait_subprocess (child, progname, false, false, true, true);
+  exitstatus =
+    wait_subprocess (child, progname, false, false, true, true, NULL);
   if (exitstatus != 0)
     error (EXIT_FAILURE, 0, _("%s subprocess failed with exit code %d"),
-	   progname, exitstatus);
+           progname, exitstatus);
 
   return false;
 }
@@ -128,9 +129,9 @@ msgdomain_read_java (const char *resource_name, const char *locale_name)
      Here we use the user's CLASSPATH, not a minimal one, so that the
      resource can be found.  */
   if (execute_java_class (class_name, &gettextjar, 1, false, gettextjexedir,
-			  args,
-			  verbose, false,
-			  execute_and_read_po_output, &locals))
+                          args,
+                          verbose, false,
+                          execute_and_read_po_output, &locals))
     /* An error message should already have been provided.  */
     exit (EXIT_FAILURE);
 

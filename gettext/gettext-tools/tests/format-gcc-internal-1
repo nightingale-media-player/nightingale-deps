@@ -1,11 +1,8 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test recognition of GCC internal format strings.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles f-gi-1.data"
 cat <<\EOF > f-gi-1.data
 # Valid: no argument
 "abc%%"
@@ -43,6 +40,8 @@ cat <<\EOF > f-gi-1.data
 "abc%J"
 # Valid: %J with flags
 "%qJ"
+# Valid: %K with flags
+"%qK"
 # Valid: one pointer argument
 "abc%D"
 # Valid: one pointer argument
@@ -132,7 +131,6 @@ n=0
 while read comment; do
   read string
   n=`expr $n + 1`
-  tmpfiles="$tmpfiles f-gi-1-$n.in f-gi-1-$n.po"
   cat <<EOF > f-gi-1-$n.in
 gettext(${string});
 EOF
@@ -161,7 +159,5 @@ EOF
   fi
   rm -f f-gi-1-$n.in f-gi-1-$n.po
 done < f-gi-1.data
-
-rm -fr $tmpfiles
 
 exit 0

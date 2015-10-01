@@ -1,11 +1,12 @@
 /* Message list test for ASCII character set.
-   Copyright (C) 2001-2002, 2005 Free Software Foundation, Inc.
+   Copyright (C) 2001-2002, 2005-2006, 2015 Free Software Foundation,
+   Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 
 #ifdef HAVE_CONFIG_H
@@ -47,7 +47,7 @@ is_ascii_string_list (string_list_ty *slp)
   if (slp != NULL)
     for (i = 0; i < slp->nitems; i++)
       if (!is_ascii_string (slp->item[i]))
-	return false;
+        return false;
   return true;
 }
 
@@ -71,6 +71,18 @@ is_ascii_message (message_ty *mp)
   if (!is_ascii_string (mp->msgid))
     return false;
   if (mp->msgid_plural != NULL && !is_ascii_string (mp->msgid_plural))
+    return false;
+
+  /* Likewise for msgctxt.  */
+  if (mp->msgctxt != NULL && !is_ascii_string (mp->msgctxt))
+    return false;
+
+  /* Likewise for the prev_* fields.  */
+  if (mp->prev_msgctxt != NULL && !is_ascii_string (mp->prev_msgctxt))
+    return false;
+  if (mp->prev_msgid != NULL && !is_ascii_string (mp->prev_msgid))
+    return false;
+  if (mp->prev_msgid_plural != NULL && !is_ascii_string (mp->prev_msgid_plural))
     return false;
 
   return true;

@@ -1,10 +1,11 @@
 /* Reading file lists.
-   Copyright (C) 1995-1998, 2000-2002 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2002, 2007, 2015 Free Software
+   Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -29,8 +29,6 @@
 
 #include "str-list.h"
 #include "error.h"
-#include "exit.h"
-#include "getline.h"
 #include "gettext.h"
 
 /* A convenience macro.  I don't like writing gettext() every time.  */
@@ -52,8 +50,8 @@ read_names_from_file (const char *file_name)
     {
       fp = fopen (file_name, "r");
       if (fp == NULL)
-	error (EXIT_FAILURE, errno,
-	       _("error while opening \"%s\" for reading"), file_name);
+        error (EXIT_FAILURE, errno,
+               _("error while opening \"%s\" for reading"), file_name);
     }
 
   result = string_list_alloc ();
@@ -65,20 +63,20 @@ read_names_from_file (const char *file_name)
 
       /* In case of an error leave loop.  */
       if (len < 0)
-	break;
+        break;
 
       /* Remove trailing '\n' and trailing whitespace.  */
       if (len > 0 && line_buf[len - 1] == '\n')
-	line_buf[--len] = '\0';
+        line_buf[--len] = '\0';
       while (len > 0
-	     && (line_buf[len - 1] == ' '
-		 || line_buf[len - 1] == '\t'
-		 || line_buf[len - 1] == '\r'))
-	line_buf[--len] = '\0';
+             && (line_buf[len - 1] == ' '
+                 || line_buf[len - 1] == '\t'
+                 || line_buf[len - 1] == '\r'))
+        line_buf[--len] = '\0';
 
       /* Test if we have to ignore the line.  */
       if (*line_buf == '\0' || *line_buf == '#')
-	continue;
+        continue;
 
       string_list_append_unique (result, line_buf);
     }

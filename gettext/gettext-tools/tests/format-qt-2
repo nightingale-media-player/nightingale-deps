@@ -1,21 +1,33 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test checking of Qt format strings.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles f-qt-2.data"
 cat <<\EOF > f-qt-2.data
 # Valid: %% doesn't count
 msgid  "abc%%def"
 msgstr "xyz"
-# Invalid: invalid msgstr
-msgid  "abc%1def"
-msgstr "xyz%1%1"
 # Valid: same arguments
 msgid  "abc%2def"
 msgstr "xyz%2"
+# Valid: same arguments, msgstr may be simpler than msgid
+msgid  "abc%L2def"
+msgstr "xyz%2"
+# Valid: same arguments, msgstr may be simpler than msgid
+msgid  "abc%02def"
+msgstr "xyz%2"
+# Invalid: msgid is simple but msgstr is not
+msgid  "abc%2def"
+msgstr "xyz%L2"
+# Invalid: msgid is simple but msgstr is not
+msgid  "abc%2def"
+msgstr "xyz%02"
+# Valid: repetition of an argument in the translation
+msgid  "abc%2def"
+msgstr "xyz%2uvw%2"
+# Valid: removing repeated argument in the translation
+msgid  "abc%2def%2"
+msgstr "xyz%2uvw"
 # Valid: permutation
 msgid  "abc%3%1%2def"
 msgstr "xyz%2%1%3"
@@ -39,7 +51,6 @@ while read comment; do
   read msgid_line
   read msgstr_line
   n=`expr $n + 1`
-  tmpfiles="$tmpfiles f-qt-2-$n.po f-qt-2-$n.mo"
   cat <<EOF > f-qt-2-$n.po
 #, qt-format
 ${msgid_line}
@@ -67,7 +78,5 @@ EOF
   fi
   rm -f f-qt-2-$n.po f-qt-2-$n.mo
 done < f-qt-2.data
-
-rm -fr $tmpfiles
 
 exit 0

@@ -1,7 +1,10 @@
 # German translations for GNU gettext-runtime package.
-# Copyright © 1995, 1996, 1997, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
-# Karl Eichwalder <ke@suse.de>, 2001, 2002, 2003, 2004.
+# Copyright © 1995, 1996, 1997, 2001, 2002, 2003, 2004, 2005, 2006, 2009, 2012, 2013 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gettext package.
+# Karl Eichwalder <ke@suse.de>, 2001, 2002, 2003, 2004, 2005, 2006, 2009.
 # Ulrich Drepper <drepper@gnu.org>, 1995-1997.
+# Jakob Kramer <jakob.kramer@gmx.de>, 2012, 2013.
+# Philipp Thomas <pth@suse.com>, 2015.
 #
 # Wörterbuch:
 # message catalog     - Katalog (mit Meldungen)
@@ -74,103 +77,116 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gettext-runtime 0.14.1\n"
+"Project-Id-Version: gettext-runtime 0.19.4.73\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2005-01-14 13:07+0100\n"
-"PO-Revision-Date: 2004-08-28 12:02+0200\n"
-"Last-Translator: Karl Eichwalder <ke@suse.de>\n"
-"Language-Team: German <de@li.org>\n"
+"POT-Creation-Date: 2015-09-11 12:23+0900\n"
+"PO-Revision-Date: 2015-06-25 12:17+0200\n"
+"Last-Translator: Philipp Thomas <pth@suse.de>\n"
+"Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gettext-tools/lib/closeout.c:64
+#: gnulib-lib/closeout.c:66
 msgid "write error"
 msgstr "Fehler beim Schreiben"
 
-#: ../gettext-tools/lib/error.c:121
+#: gnulib-lib/error.c:191
 msgid "Unknown system error"
 msgstr "Unbekannter Systemfehler"
 
-#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
+#: gnulib-lib/getopt.c:575 gnulib-lib/getopt.c:604
 #, c-format
-msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: Option »%s« ist mehrdeutig\n"
+msgid "%s: option '%s' is ambiguous; possibilities:"
+msgstr "%s: Option »%s« ist mehrdeutig; Möglichkeiten:"
 
-#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
+#: gnulib-lib/getopt.c:619
 #, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
+msgid "%s: option '%s' is ambiguous\n"
+msgstr "%s: Option „%s“ ist mehrdeutig\n"
+
+#: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
+#, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: Option »--%s« erwartet kein Argument\n"
 
-#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
+#: gnulib-lib/getopt.c:667 gnulib-lib/getopt.c:672
 #, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: Option »%c%s« erwartet kein Argument\n"
 
-#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
-#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
+#: gnulib-lib/getopt.c:715 gnulib-lib/getopt.c:734
 #, c-format
-msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: Option »%s« erwartet ein Argument\n"
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: Option »--%s« erwartet ein Argument\n"
 
-#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
+#: gnulib-lib/getopt.c:772 gnulib-lib/getopt.c:775
 #, c-format
-msgid "%s: unrecognized option `--%s'\n"
+msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: unbekannte Option »--%s«\n"
 
-#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
+#: gnulib-lib/getopt.c:783 gnulib-lib/getopt.c:786
 #, c-format
-msgid "%s: unrecognized option `%c%s'\n"
+msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: unbekannte Option »%c%s«\n"
 
-#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
+#: gnulib-lib/getopt.c:835 gnulib-lib/getopt.c:838
 #, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: unzulässige Option -- %c\n"
+msgid "%s: invalid option -- '%c'\n"
+msgstr "%s: ungültige Option -- »%c«\n"
 
-#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
+#: gnulib-lib/getopt.c:891 gnulib-lib/getopt.c:908 gnulib-lib/getopt.c:1118
+#: gnulib-lib/getopt.c:1136
 #, c-format
-msgid "%s: invalid option -- %c\n"
-msgstr "%s: ungültige Option -- %c\n"
+msgid "%s: option requires an argument -- '%c'\n"
+msgstr "%s: Option erwartet ein Argument -- »%c«\n"
 
-#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
-#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
+#: gnulib-lib/getopt.c:964 gnulib-lib/getopt.c:980
 #, c-format
-msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: Option erwartet ein Argument -- %c\n"
-
-#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
+msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: Option »-W %s« ist mehrdeutig\n"
 
-#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
+#: gnulib-lib/getopt.c:1004 gnulib-lib/getopt.c:1022
 #, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: Option »-W %s« erwartet kein Argument\n"
 
-#: ../gettext-tools/lib/xmalloc.c:41
+#: gnulib-lib/getopt.c:1043 gnulib-lib/getopt.c:1061
+#, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: Option »-W %s« erwartet ein Argument\n"
+
+#: gnulib-lib/xmalloc.c:38
 #, c-format
 msgid "memory exhausted"
 msgstr "virtueller Speicher aufgebraucht"
 
-#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
+#: src/envsubst.c:112 src/gettext.c:134 src/ngettext.c:124
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 "Copyright © %s Free Software Foundation, Inc.\n"
-"Dies ist freie Software; in den Quellen befindet sich die Lizenzbedingung.\n"
-"Es gibt KEINERLEI Garantie; nicht einmal für die TAUGLICHKEIT oder\n"
-"die VERWENDBARKEIT ZU EINEN ANGEGEBENEN ZWECK.\n"
+"Lizenz GPLv3: GNU GPL Version 3 oder später <http://gnu.org/licenses/gpl.html>\n"
+"\n"
+"Dies ist freie Software; es steht Ihnen frei, sie zu verändern und\n"
+"weiterzugeben.\n"
+"Es gibt KEINE GARANTIE, soweit als vom Gesetz erlaubt.\n"
 
 #: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Geschrieben von %s.\n"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/envsubst.c:118
+msgid "Bruno Haible"
+msgstr "Bruno Haible"
 
 #: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
 #, c-format
@@ -184,7 +200,7 @@ msgstr "Argumente fehlen"
 
 #: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
 #, c-format
-msgid "Try `%s --help' for more information.\n"
+msgid "Try '%s --help' for more information.\n"
 msgstr "»%s --help« gibt weitere Informationen.\n"
 
 #: src/envsubst.c:176
@@ -249,21 +265,31 @@ msgstr ""
 "Standardausgabe wird aus allen Umgebungsvariablen bestehen, die im\n"
 "SHELL-FORMAT referenziert sind, immer eine pro Zeile.\n"
 
-#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/envsubst.c:219 src/gettext.c:280 src/ngettext.c:246
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr ""
 "Fehler bitte auf Englisch an <bug-gnu-gettext@gnu.org> melden.\n"
 "\n"
-"Für die deutsche Übersetzung ist die Mailingliste <de@li.org> zuständig.\n"
+"Für die deutsche Übersetzung sind die Übersetzer der Mailingliste\n"
+"<translation-team-de@lists.sourceforge.net> zuständig.\n"
 
-#: src/envsubst.c:438
+#: src/envsubst.c:442
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "Fehler beim Lesen von »%s«"
 
-#: src/envsubst.c:439
+#: src/envsubst.c:443
 msgid "standard input"
 msgstr "Standardeingabe"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/gettext.c:140 src/ngettext.c:130
+msgid "Ulrich Drepper"
+msgstr "Ulrich Drepper"
 
 #: src/gettext.c:244
 #, c-format, no-wrap
@@ -308,7 +334,7 @@ msgid ""
 "environment variable TEXTDOMAIN.  If the message catalog is not found in the\n"
 "regular directory, another location can be specified with the environment\n"
 "variable TEXTDOMAINDIR.\n"
-"When used with the -s option the program behaves like the `echo' command.\n"
+"When used with the -s option the program behaves like the 'echo' command.\n"
 "But it does not simply copy its arguments to stdout.  Instead those messages\n"
 "found in the selected catalog are translated.\n"
 "Standard search directory: %s\n"
@@ -377,3 +403,6 @@ msgstr ""
 "Umgebungsvariable TEXTDOMAINDIR ein anderes Verzeichnis angegeben werden.\n"
 "\n"
 "Standardverzeichnis: %s\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: unzulässige Option -- %c\n"

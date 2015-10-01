@@ -1,4 +1,5 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src ${top_srcdir=..}/../gettext-runtime/src
 
 # Test of gettext facilities in the sh language.
 # Assumes an fr_FR locale is installed.
@@ -7,10 +8,6 @@
 # Note: This test fails on BeOS because there all locales use the UTF-8
 # encoding, even the locale fr_FR, thus the output comes out in UTF-8.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles prog.sh"
 cat <<\EOF > prog.sh
 #! /bin/sh
 
@@ -28,11 +25,10 @@ $echo "`gettext \"'Your command, please?', asked the waiter.\"`"
 $echo "`eval_ngettext \"a piece of cake\" \"\\$n pieces of cake\" $n`"
 EOF
 
-tmpfiles="$tmpfiles prog.pot"
 : ${XGETTEXT=xgettext}
-${XGETTEXT} -o prog.pot --omit-header --no-location prog.sh
+${XGETTEXT} -o prog.tmp --omit-header --no-location prog.sh || exit 1
+LC_ALL=C tr -d '\r' < prog.tmp > prog.pot || exit 1
 
-tmpfiles="$tmpfiles prog.ok"
 cat <<\EOF > prog.ok
 msgid "'Your command, please?', asked the waiter."
 msgstr ""
@@ -47,7 +43,6 @@ EOF
 : ${DIFF=diff}
 ${DIFF} prog.ok prog.pot || exit 1
 
-tmpfiles="$tmpfiles fr.po"
 cat <<\EOF > fr.po
 msgid ""
 msgstr ""
@@ -65,14 +60,13 @@ msgstr[0] "un morceau de gateau"
 msgstr[1] "$n morceaux de gateau"
 EOF
 
-tmpfiles="$tmpfiles fr.po.new"
 : ${MSGMERGE=msgmerge}
-${MSGMERGE} -q -o fr.po.new fr.po prog.pot
+${MSGMERGE} -q -o fr.po.tmp fr.po prog.pot || exit 1
+LC_ALL=C tr -d '\r' < fr.po.tmp > fr.po.new || exit 1
 
 : ${DIFF=diff}
 ${DIFF} fr.po fr.po.new || exit 1
 
-tmpfiles="$tmpfiles fr"
 test -d fr || mkdir fr
 test -d fr/LC_MESSAGES || mkdir fr/LC_MESSAGES
 
@@ -83,7 +77,7 @@ ${MSGFMT} -o fr/LC_MESSAGES/prog.mo fr.po
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
 if test $LOCALE_FR != none; then
-  LC_ALL=$LOCALE_FR ./testlocale
+  LC_ALL=$LOCALE_FR ../testlocale
   case $? in
     0) ;;
     77) LOCALE_FR=none;;
@@ -91,7 +85,7 @@ if test $LOCALE_FR != none; then
   esac
 fi
 if test $LOCALE_FR_UTF8 != none; then
-  LC_ALL=$LOCALE_FR_UTF8 ./testlocale
+  LC_ALL=$LOCALE_FR_UTF8 ../testlocale
   case $? in
     0) ;;
     77) LOCALE_FR_UTF8=none;;
@@ -99,10 +93,14 @@ if test $LOCALE_FR_UTF8 != none; then
   esac
 fi
 if test $LOCALE_FR = none && test $LOCALE_FR_UTF8 = none; then
-  rm -fr $tmpfiles; exit 77
+  if test -f /usr/bin/localedef; then
+    echo "Skipping test: no french locale is installed"
+  else
+    echo "Skipping test: no french locale is supported"
+  fi
+  exit 77
 fi
 
-tmpfiles="$tmpfiles prog.ok prog.oku prog.out"
 : ${DIFF=diff}
 cat <<\EOF > prog.ok
 «Votre commande, s'il vous plait», dit le garçon.
@@ -116,14 +114,14 @@ EOF
 : ${LOCALE_FR=fr_FR}
 : ${LOCALE_FR_UTF8=fr_FR.UTF-8}
 if test $LOCALE_FR != none; then
+  prepare_locale_ fr $LOCALE_FR
   LANGUAGE= LC_ALL=$LOCALE_FR sh ./prog.sh 2 > prog.out || exit 1
   ${DIFF} prog.ok prog.out || exit 1
 fi
 if test $LOCALE_FR_UTF8 != none; then
+  prepare_locale_ fr $LOCALE_FR_UTF8
   LANGUAGE= LC_ALL=$LOCALE_FR_UTF8 sh ./prog.sh 2 > prog.out || exit 1
   ${DIFF} prog.oku prog.out || exit 1
 fi
-
-rm -fr $tmpfiles
 
 exit 0

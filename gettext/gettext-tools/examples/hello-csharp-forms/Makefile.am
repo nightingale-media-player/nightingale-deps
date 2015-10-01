@@ -1,5 +1,4 @@
 # Example for use of GNU gettext.
-# Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is in the public domain.
 #
 # Makefile configuration - processed by automake.
@@ -53,19 +52,19 @@ hello.sh:
 	} > $@
 
 install-exec-local: all-local
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	$(MKDIR_P) $(DESTDIR)$(bindir)
 	$(INSTALL_SCRIPT) hello.sh $(DESTDIR)$(bindir)/hello
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
+	$(MKDIR_P) $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) hello.net.exe $(DESTDIR)$(pkglibdir)/hello.net.exe
 
 install-data-local: all-local
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	$(MKDIR_P) $(DESTDIR)$(pkgdatadir)
 	$(INSTALL_DATA) csharpexec.sh $(DESTDIR)$(pkgdatadir)/csharpexec.sh
 
 installdirs-local:
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	$(MKDIR_P) $(DESTDIR)$(bindir)
+	$(MKDIR_P) $(DESTDIR)$(pkglibdir)
+	$(MKDIR_P) $(DESTDIR)$(pkgdatadir)
 
 uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/hello

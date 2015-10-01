@@ -1,20 +1,18 @@
 /* GNU gettext for Java
- * Copyright (C) 2001 Free Software Foundation, Inc.
+ * Copyright (C) 2001, 2007, 2015 Free Software Foundation, Inc.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Library General Public License as published
- * by the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
- * USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package gnu.gettext;
@@ -66,6 +64,18 @@ public abstract class GettextResource extends ResourceBundle {
   public static boolean verbose = false;
 
   /**
+   * Like gettext(catalog,msgid), except that it returns <CODE>null</CODE>
+   * when no translation was found.
+   */
+  private static String gettextnull (ResourceBundle catalog, String msgid) {
+    try {
+      return (String)catalog.getObject(msgid);
+    } catch (MissingResourceException e) {
+      return null;
+    }
+  }
+
+  /**
    * Returns the translation of <VAR>msgid</VAR>.
    * @param catalog a ResourceBundle
    * @param msgid the key string to be translated, an ASCII string
@@ -73,25 +83,17 @@ public abstract class GettextResource extends ResourceBundle {
    *         none is found
    */
   public static String gettext (ResourceBundle catalog, String msgid) {
-    try {
-      String result = (String)catalog.getObject(msgid);
-      if (result != null)
-        return result;
-    } catch (MissingResourceException e) {
-    }
+    String result = gettextnull(catalog,msgid);
+    if (result != null)
+      return result;
     return msgid;
   }
 
   /**
-   * Returns the plural form for <VAR>n</VAR> of the translation of
-   * <VAR>msgid</VAR>.
-   * @param catalog a ResourceBundle
-   * @param msgid the key string to be translated, an ASCII string
-   * @param msgid_plural its English plural form
-   * @return the translation of <VAR>msgid</VAR> depending on <VAR>n</VAR>,
-   *         or <VAR>msgid</VAR> or <VAR>msgid_plural</VAR> if none is found
+   * Like ngettext(catalog,msgid,msgid_plural,n), except that it returns
+   * <CODE>null</CODE> when no translation was found.
    */
-  public static String ngettext (ResourceBundle catalog, String msgid, String msgid_plural, long n) {
+  private static String ngettextnull (ResourceBundle catalog, String msgid, long n) {
     // The reason why we use so many reflective API calls instead of letting
     // the GNU gettext generated ResourceBundles implement some interface,
     // is that we want the generated ResourceBundles to be completely
@@ -205,6 +207,60 @@ public abstract class GettextResource extends ResourceBundle {
         // Found the value. It doesn't depend on n in this case.
         return (String)value;
     }
+    // Default: null.
+    return null;
+  }
+
+  /**
+   * Returns the plural form for <VAR>n</VAR> of the translation of
+   * <VAR>msgid</VAR>.
+   * @param catalog a ResourceBundle
+   * @param msgid the key string to be translated, an ASCII string
+   * @param msgid_plural its English plural form
+   * @return the translation of <VAR>msgid</VAR> depending on <VAR>n</VAR>,
+   *         or <VAR>msgid</VAR> or <VAR>msgid_plural</VAR> if none is found
+   */
+  public static String ngettext (ResourceBundle catalog, String msgid, String msgid_plural, long n) {
+    String result = ngettextnull(catalog,msgid,n);
+    if (result != null)
+      return result;
+    // Default: English strings and Germanic plural rule.
+    return (n != 1 ? msgid_plural : msgid);
+  }
+
+  /* The separator between msgctxt and msgid.  */
+  private static final String CONTEXT_GLUE = "\u0004";
+
+  /**
+   * Returns the translation of <VAR>msgid</VAR> in the context of
+   * <VAR>msgctxt</VAR>.
+   * @param catalog a ResourceBundle
+   * @param msgctxt the context for the key string, an ASCII string
+   * @param msgid the key string to be translated, an ASCII string
+   * @return the translation of <VAR>msgid</VAR>, or <VAR>msgid</VAR> if
+   *         none is found
+   */
+  public static String pgettext (ResourceBundle catalog, String msgctxt, String msgid) {
+    String result = gettextnull(catalog,msgctxt+CONTEXT_GLUE+msgid);
+    if (result != null)
+      return result;
+    return msgid;
+  }
+
+  /**
+   * Returns the plural form for <VAR>n</VAR> of the translation of
+   * <VAR>msgid</VAR> in the context of <VAR>msgctxt</VAR>.
+   * @param catalog a ResourceBundle
+   * @param msgctxt the context for the key string, an ASCII string
+   * @param msgid the key string to be translated, an ASCII string
+   * @param msgid_plural its English plural form
+   * @return the translation of <VAR>msgid</VAR> depending on <VAR>n</VAR>,
+   *         or <VAR>msgid</VAR> or <VAR>msgid_plural</VAR> if none is found
+   */
+  public static String npgettext (ResourceBundle catalog, String msgctxt, String msgid, String msgid_plural, long n) {
+    String result = ngettextnull(catalog,msgctxt+CONTEXT_GLUE+msgid,n);
+    if (result != null)
+      return result;
     // Default: English strings and Germanic plural rule.
     return (n != 1 ? msgid_plural : msgid);
   }

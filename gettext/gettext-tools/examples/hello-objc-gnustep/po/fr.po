@@ -1,24 +1,29 @@
-# Messages franÁais pour GNU gettext.
-# Copyright © 2003 Free Software Foundation, Inc.
-# Michel Robitaille <robitail@iro.umontreal.ca>, traducteur depuis/since 1996.
+# Messages fran√ßais pour GNU gettext.
+# Copyright (C) 2006 Yoyodyne, Inc. (msgids)
+# This file is distributed under the same license as the gettext package.
+#
+# Michel Robitaille <robitail@IRO.UMontreal.CA>, 2006.
+# Christophe Combelles <ccomb@free.fr>, 2006
+# St√©phane Aulery <lkppo@free.fr>, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU hello-objc-gnustep 0.13.1\n"
+"Project-Id-Version: hello-objc-gnustep 0.19.4-rc1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"PO-Revision-Date: 2003-12-18 08:00-0500\n"
-"Last-Translator: Michel Robitaille <robitail@IRO.UMontreal.CA>\n"
+"PO-Revision-Date: 2015-03-23 02:34+0100\n"
+"Last-Translator: St√©phane Aulery <lkppo@free.fr>\n"
 "Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: Hello.m:50
+#: Hello.m:49
 msgid "Hello, world!"
-msgstr "Bonjour, le monde!"
+msgstr "Bonjour, le monde !"
 
-#: Hello.m:59
+#: Hello.m:58
 #, objc-format
 msgid "This program is running as process number %d."
-msgstr "Ce programme est exÈcutÈ en tant que processus numÈro %d."
+msgstr "Ce programme est ex√©cut√© en tant que processus num√©ro %d."

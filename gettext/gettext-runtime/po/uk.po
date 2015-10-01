@@ -1,106 +1,120 @@
 # Ukrainian translation to gettext-runtime
 # Copyright (C) 2004 Free Software Foundation, Inc.
-# This file is distributed under the same license as the gettext-runtime package.
-# Maxim V. Dziumanenko <mvd@mylinux.com.ua>, 2004.
+# This file is distributed under the same license as the gettext package.
 #
+# Maxim V. Dziumanenko <dziumanenko@gmail.com>, 2004-2007.
+# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2013, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: gettext-runtime 0.14.1\n"
+"Project-Id-Version: gettext-runtime 0.19.4.73\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2005-01-14 13:07+0100\n"
-"PO-Revision-Date: 2004-08-01 13:59+0200\n"
-"Last-Translator: Maxim V. Dziumanenko <mvd@mylinux.com.ua>\n"
+"POT-Creation-Date: 2015-09-11 12:23+0900\n"
+"PO-Revision-Date: 2015-06-23 20:47+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../gettext-tools/lib/closeout.c:64
+#: gnulib-lib/closeout.c:66
 msgid "write error"
 msgstr "помилка запису"
 
-#: ../gettext-tools/lib/error.c:121
+#: gnulib-lib/error.c:191
 msgid "Unknown system error"
 msgstr "Невідома системна помилка"
 
-#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
+#: gnulib-lib/getopt.c:575 gnulib-lib/getopt.c:604
 #, c-format
-msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: неоднозначний параметр `%s'\n"
+msgid "%s: option '%s' is ambiguous; possibilities:"
+msgstr "%s: параметр «%s» не є однозначним. Можливі варіанти:"
 
-#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
+#: gnulib-lib/getopt.c:619
 #, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: параметр `--%s' має використовуватись без аргументів\n"
+msgid "%s: option '%s' is ambiguous\n"
+msgstr "%s: параметр «%s» не є однозначним\n"
 
-#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
+#: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: параметр `%c%s' має використовуватись без аргументів\n"
+msgid "%s: option '--%s' doesn't allow an argument\n"
+msgstr "%s: додавання аргументів до параметра «--%s» не передбачено\n"
 
-#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
-#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
+#: gnulib-lib/getopt.c:667 gnulib-lib/getopt.c:672
 #, c-format
-msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: параметр `%s' має використовуватись з аргументом\n"
+msgid "%s: option '%c%s' doesn't allow an argument\n"
+msgstr "%s: додавання аргументів до параметра «%c%s» не передбачено\n"
 
-#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
+#: gnulib-lib/getopt.c:715 gnulib-lib/getopt.c:734
 #, c-format
-msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: нерозпізнаний параметр `--%s'\n"
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: до параметра «--%s» слід додати аргумент\n"
 
-#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
+#: gnulib-lib/getopt.c:772 gnulib-lib/getopt.c:775
 #, c-format
-msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: нерозпізнаний параметр `%c%s'\n"
+msgid "%s: unrecognized option '--%s'\n"
+msgstr "%s: невідомий параметр «--%s»\n"
 
-#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
+#: gnulib-lib/getopt.c:783 gnulib-lib/getopt.c:786
 #, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: неправильний параметр -- %c\n"
+msgid "%s: unrecognized option '%c%s'\n"
+msgstr "%s: невідомий параметр «%c%s»\n"
 
-#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
+#: gnulib-lib/getopt.c:835 gnulib-lib/getopt.c:838
 #, c-format
-msgid "%s: invalid option -- %c\n"
-msgstr "%s: неправильний параметр -- %c\n"
+msgid "%s: invalid option -- '%c'\n"
+msgstr "%s: некоректний параметр — «%c»\n"
 
-#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
-#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
+#: gnulib-lib/getopt.c:891 gnulib-lib/getopt.c:908 gnulib-lib/getopt.c:1118
+#: gnulib-lib/getopt.c:1136
 #, c-format
-msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: параметр %c має використовуватись з аргументом\n"
+msgid "%s: option requires an argument -- '%c'\n"
+msgstr "%s: до параметра слід додати аргумент — «%c»\n"
 
-#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
+#: gnulib-lib/getopt.c:964 gnulib-lib/getopt.c:980
 #, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: неоднозначний параметр `-W %s'\n"
+msgid "%s: option '-W %s' is ambiguous\n"
+msgstr "%s: параметр «-W %s» не є однозначним\n"
 
-#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
+#: gnulib-lib/getopt.c:1004 gnulib-lib/getopt.c:1022
 #, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: параметр `-W %s' має використовуватись без аргументів\n"
+msgid "%s: option '-W %s' doesn't allow an argument\n"
+msgstr "%s: додавання аргументів до параметра «-W %s» не передбачено\n"
 
-#: ../gettext-tools/lib/xmalloc.c:41
+#: gnulib-lib/getopt.c:1043 gnulib-lib/getopt.c:1061
+#, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: до параметра «-W %s» слід додати аргумент\n"
+
+#: gnulib-lib/xmalloc.c:38
 #, c-format
 msgid "memory exhausted"
-msgstr "пам'ять вичерпана"
+msgstr "пам'ять вичерпано"
 
-#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
+#: src/envsubst.c:112 src/gettext.c:134 src/ngettext.c:124
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
-"Авторські права (C) %s Free Software Foundation, Inc.\n"
-"Це - вільне програмне забезпечення; умови копіювання викладені у вихідному\n"
-"коді. Не надається НІЯКОЇ гарантії; навіть гарантії КОМЕРЦІЙНОЇ ПРИДАТНОСТІ\n"
-"або ПРИДАТНОСТІ ДО ПЕВНОЇ МЕТИ.\n"
+"Авторські права належать Free Software Foundation, Inc., %s\n"
+"Умови ліцензування викладено у GPLv3+: GNU GPL версії 3 або новішій, <http://gnuorg/licenses/gpl.html>\n"
+"Це вільне програмне забезпечення: ви можете вільно змінювати і поширювати його.\n"
+"Вам не надається ЖОДНИХ ГАРАНТІЙ, окрім гарантій передбачених законодавством.\n"
 
 #: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Автор програми - %s.\n"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/envsubst.c:118
+msgid "Bruno Haible"
+msgstr "Bruno Haible"
 
 #: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
 #, c-format
@@ -114,8 +128,8 @@ msgstr "відсутні аргументи"
 
 #: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
 #, c-format
-msgid "Try `%s --help' for more information.\n"
-msgstr "Спробуйте `%s --help' для отримання докладнішого опису.\n"
+msgid "Try '%s --help' for more information.\n"
+msgstr "Віддайте команду «%s --help», щоб дізнатися більше.\n"
 
 #: src/envsubst.c:176
 #, c-format, no-wrap
@@ -125,7 +139,7 @@ msgstr "Використання: %s [ПАРАМЕТР] [SHELL-FORMAT]\n"
 #: src/envsubst.c:181
 #, c-format, no-wrap
 msgid "Substitutes the values of environment variables.\n"
-msgstr "Замінює значення змінних оточення.\n"
+msgstr "Замінює значення змінних середовища.\n"
 
 #: src/envsubst.c:185
 #, c-format, no-wrap
@@ -163,10 +177,10 @@ msgid ""
 "standard input are substituted.\n"
 msgstr ""
 "У звичайному режимі роботи, стандартний ввід копіюється на стандартний вивід,\n"
-"де посилання на змінні оточення у формі $VARIABLE або ${VARIABLE}, \n"
+"де посилання на змінні середовища у формі $VARIABLE або ${VARIABLE}, \n"
 "замінюються відповідними значеннями. Якщо вказано SHELL-FORMAT,\n"
 "будуть замінюватись лише змінні, що вказані у SHELL-FORMAT; у іншому\n"
-"випадку будуть замінюватись усі змінні оточення, що зустрічаються у\n"
+"випадку будуть замінюватись усі змінні середовища, що зустрічаються у\n"
 "стандартному вводі.\n"
 
 #: src/envsubst.c:211
@@ -176,20 +190,29 @@ msgid ""
 "of the environment variables that are referenced in SHELL-FORMAT, one per line.\n"
 msgstr ""
 "При використанні --variables, стандартний ввід ігнорується, а вивід\n"
-"складається зі змінних оточення, які вказані у SHELL-FORMAT, по одній на рядок.\n"
+"складається зі змінних середовища, які вказані у SHELL-FORMAT, по одній на рядок.\n"
 
-#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/envsubst.c:219 src/gettext.c:280 src/ngettext.c:246
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr "Про помилки повідомляйте на <bug-gnu-gettext@gnu.org>.\n"
 
-#: src/envsubst.c:438
+#: src/envsubst.c:442
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "помилка при читанні \"%s\""
 
-#: src/envsubst.c:439
+#: src/envsubst.c:443
 msgid "standard input"
 msgstr "стандартний ввід"
+
+#. This is a proper name. See the gettext manual, section Names.
+#: src/gettext.c:140 src/ngettext.c:130
+msgid "Ulrich Drepper"
+msgstr "Ulrich Drepper"
 
 #: src/gettext.c:244
 #, c-format, no-wrap
@@ -222,7 +245,7 @@ msgstr ""
 "  -e                        дозволити використання деяких escape-послідовностей\n"
 "  -E                        (ігнорується, використовується для сумісності)\n"
 "  -h, --help                показати цю довідку та вийти\n"
-"  -n                        не виводити наприкінці символ переводу рядка\n"
+"  -n                        не виводити наприкінці символ переведення рядка\n"
 "  -V, --version             відобразити інформацію про версію та вийти\n"
 "  [ДОМЕН_ТЕКСТУ] MSGID      знайти переклад повідомлення MSGID у ДОМЕН_ТЕКСТУ\n"
 
@@ -233,17 +256,17 @@ msgid ""
 "environment variable TEXTDOMAIN.  If the message catalog is not found in the\n"
 "regular directory, another location can be specified with the environment\n"
 "variable TEXTDOMAINDIR.\n"
-"When used with the -s option the program behaves like the `echo' command.\n"
+"When used with the -s option the program behaves like the 'echo' command.\n"
 "But it does not simply copy its arguments to stdout.  Instead those messages\n"
 "found in the selected catalog are translated.\n"
 "Standard search directory: %s\n"
 msgstr ""
 "Якщо не вказаний параметр ДОМЕН_ТЕКСТУ, використовується домен, встановлений\n"
-"у змінній оточення TEXTDOMAIN. Якщо файл з перекладеними повідомленнями\n"
+"у змінній середовища TEXTDOMAIN. Якщо файл з перекладеними повідомленнями\n"
 "відсутній у типовому каталозі, можна вказати інший каталог за допомогою\n"
-"змінної оточення TEXTDOMAINDIR.\n"
+"змінної середовища TEXTDOMAINDIR.\n"
 "При використанні з ключем -s, поведінка програми схожа на поведінку програми\n"
-"`echo'. Але замість простого копіювання аргументів у стандартний вивід,\n"
+"«echo». Але замість простого копіювання аргументів у стандартний вивід,\n"
 "виводяться їх переклади з вказаного домену.\n"
 "Стандартний каталог пошуку: %s\n"
 
@@ -293,7 +316,24 @@ msgid ""
 "Standard search directory: %s\n"
 msgstr ""
 "Якщо параметр ДОМЕН_ТЕКСТУ не вказаний, використовується домен, визначений у\n"
-"змінній оточення TEXTDOMAIN. Якщо файл з перекладеними повідомленнями\n"
+"змінній середовища TEXTDOMAIN. Якщо файл з перекладеними повідомленнями\n"
 "відсутній у стандартному каталозі, можна вказати інший каталог за допомогою\n"
-"змінної оточення TEXTDOMAINDIR.\n"
+"змінної середовища TEXTDOMAINDIR.\n"
 "Стандартний каталог пошуку: %s\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: неправильний параметр -- %c\n"
+
+#~ msgid ""
+#~ "Copyright (C) %s Free Software Foundation, Inc.\n"
+#~ "This is free software; see the source for copying conditions.  There is "
+#~ "NO\n"
+#~ "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR "
+#~ "PURPOSE.\n"
+#~ msgstr ""
+#~ "Авторські права (C) %s Free Software Foundation, Inc.\n"
+#~ "Це - вільне програмне забезпечення; умови копіювання викладені у "
+#~ "вихідному\n"
+#~ "коді. Не надається НІЯКОЇ гарантії; навіть гарантії КОМЕРЦІЙНОЇ "
+#~ "ПРИДАТНОСТІ\n"
+#~ "або ПРИДАТНОСТІ ДО ПЕВНОЇ МЕТИ.\n"

@@ -1,6 +1,13 @@
 \input texinfo          @c -*-texinfo-*-
 @c %**start of header
 @setfilename autosprintf.info
+@c The @ifset makeinfo ... @end ifset conditional evaluates to true in makeinfo
+@c for info and html output, but to false in texi2html.
+@ifnottex
+@ifclear texi2html
+@set makeinfo
+@end ifclear
+@end ifnottex
 @settitle GNU @code{autosprintf}
 @finalout
 @c Indices:
@@ -15,36 +22,37 @@
 @c %**end of header
 @set VERSION 1.0
 
+@ifinfo
 @dircategory C++ libraries
 @direntry
 * autosprintf: (autosprintf).   Support for printf format strings in C++.
 @end direntry
+@end ifinfo
 
 @ifinfo
 This file provides documentation for GNU @code{autosprintf} library.
 
-Copyright (C) 2002 Free Software Foundation, Inc.
+@copying
+Copyright (C) 2002-2003, 2006-2007, 2015 Free Software Foundation, Inc.
 
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
+This manual is free documentation.  It is dually licensed under the
+GNU FDL and the GNU GPL.  This means that you can redistribute this
+manual under either of these two licenses, at your choice.
 
-@ignore
-Permission is granted to process this file through TeX and print the
-results, provided the printed document carries copying permission
-notice identical to this one except for the removal of this paragraph
-(this paragraph not being relevant to the printed manual).
+This manual is covered by the GNU FDL.  Permission is granted to copy,
+distribute and/or modify this document under the terms of the
+GNU Free Documentation License (FDL), either version 1.2 of the
+License, or (at your option) any later version published by the
+Free Software Foundation (FSF); with no Invariant Sections, with no
+Front-Cover Text, and with no Back-Cover Texts.
+A copy of the license is at @url{http://www.gnu.org/licenses/fdl.html}.
 
-@end ignore
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
-
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
+This manual is covered by the GNU GPL.  You can redistribute it and/or
+modify it under the terms of the GNU General Public License (GPL), either
+version 2 of the License, or (at your option) any later version published
+by the Free Software Foundation (FSF).
+A copy of the license is at @url{http://www.gnu.org/licenses/gpl.html}.
+@end copying
 @end ifinfo
 
 @titlepage
@@ -54,24 +62,29 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 Free Software Foundation, Inc.
+@c @insertcopying
+Copyright (C) 2002-2003, 2006-2007 Free Software Foundation, Inc.
 
-Permission is granted to make and distribute verbatim copies of
-this manual provided the copyright notice and this permission notice
-are preserved on all copies.
+This manual is free documentation.  It is dually licensed under the
+GNU FDL and the GNU GPL.  This means that you can redistribute this
+manual under either of these two licenses, at your choice.
 
-Permission is granted to copy and distribute modified versions of this
-manual under the conditions for verbatim copying, provided that the entire
-resulting derived work is distributed under the terms of a permission
-notice identical to this one.
+This manual is covered by the GNU FDL.  Permission is granted to copy,
+distribute and/or modify this document under the terms of the
+GNU Free Documentation License (FDL), either version 1.2 of the
+License, or (at your option) any later version published by the
+Free Software Foundation (FSF); with no Invariant Sections, with no
+Front-Cover Text, and with no Back-Cover Texts.
+A copy of the license is at @url{http://www.gnu.org/licenses/fdl.html}.
 
-Permission is granted to copy and distribute translations of this manual
-into another language, under the above conditions for modified versions,
-except that this permission notice may be stated in a translation approved
-by the Foundation.
+This manual is covered by the GNU GPL.  You can redistribute it and/or
+modify it under the terms of the GNU General Public License (GPL), either
+version 2 of the License, or (at your option) any later version published
+by the Free Software Foundation (FSF).
+A copy of the license is at @url{http://www.gnu.org/licenses/gpl.html}.
 @end titlepage
 
-@ifinfo
+@ifset makeinfo
 @node Top, Introduction, (dir), (dir)
 @top GNU autosprintf
 
@@ -83,7 +96,7 @@ This manual documents the GNU autosprintf class, version @value{VERSION}.
 * Using autosprintf::           Using @code{autosprintf} in own programs
 @end menu
 
-@end ifinfo
+@end ifset
 
 @node Introduction, Class autosprintf, Top, Top
 @chapter Introduction
@@ -122,7 +135,7 @@ single string for a sentence than with multiple string pieces.
 
 @item
 It reduces the risk of programming errors due to forgotten state in the
-output stream (e.g. @code{cout << hex;} not followed by @code{cout << dec;}).
+output stream (e.g.@: @code{cout << hex;} not followed by @code{cout << dec;}).
 @end itemize
 
 @node Class autosprintf, Using autosprintf, Introduction, Top
@@ -130,14 +143,17 @@ output stream (e.g. @code{cout << hex;} not followed by @code{cout << dec;}).
 
 An instance of class @code{autosprintf} just contains a string with the
 formatted output result. Such an instance is usually allocated as an
-automatic storage variable, i.e. on the stack, not with @code{new} on the
+automatic storage variable, i.e.@: on the stack, not with @code{new} on the
 heap.
 
 The constructor @code{autosprintf (const char *format, ...)} takes a format
 string and additional arguments, like the C function @code{printf}.
 
 Conversions to @code{char *} and @code{std::string} are defined that return
-the encapsulated string.
+the encapsulated string.  The conversion to @code{char *} returns a freshly
+allocated copy of the encapsulated string; it needs to be freed using
+@code{delete[]}.  The conversion to @code{std::string} returns a copy of
+the encapsulated string, with automatic memory management.
 
 The destructor @code{~autosprintf ()} destroys the encapsulated string.
 

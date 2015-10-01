@@ -10,15 +10,16 @@ msgstr ""
 "PO-Revision-Date: 2003-12-31 10:30+2\n"
 "Last-Translator: Ysbeer <ysbeer@af.org.za>\n"
 "Language-Team: Afrikaans <i18n@af.org.za>\n"
+"Language: af\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hello.tcl:14
+#: hello.tcl:13
 msgid "Hello, world!"
 msgstr "Hallo wêreld!"
 
-#: hello.tcl:17
+#: hello.tcl:16
 #, tcl-format
 msgid "This program is running as process number %d."
 msgstr "Hierdie program loop as prosesnommer %d."

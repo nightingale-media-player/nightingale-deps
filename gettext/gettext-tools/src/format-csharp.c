@@ -1,11 +1,12 @@
 /* C# format strings.
-   Copyright (C) 2003-2004 Free Software Foundation, Inc.
+   Copyright (C) 2003-2004, 2006-2007, 2009, 2015 Free Software
+   Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -26,7 +26,7 @@
 #include "format.h"
 #include "c-ctype.h"
 #include "xalloc.h"
-#include "xerror.h"
+#include "xvasprintf.h"
 #include "gettext.h"
 
 #define _(str) gettext (str)
@@ -57,8 +57,10 @@ struct spec
 };
 
 static void *
-format_parse (const char *format, bool translated, char **invalid_reason)
+format_parse (const char *format, bool translated, char *fdi,
+              char **invalid_reason)
 {
+  const char *const format_start = format;
   struct spec spec;
   struct spec *result;
 
@@ -70,93 +72,103 @@ format_parse (const char *format, bool translated, char **invalid_reason)
       char c = *format++;
 
       if (c == '{')
-	{
-	  if (*format == '{')
-	    format++;
-	  else
-	    {
-	      /* A directive.  */
-	      unsigned int number;
+        {
+          FDI_SET (format - 1, FMTDIR_START);
+          if (*format == '{')
+            format++;
+          else
+            {
+              /* A directive.  */
+              unsigned int number;
 
-	      spec.directives++;
+              spec.directives++;
 
-	      if (!c_isdigit (*format))
-		{
-		  *invalid_reason =
-		    xasprintf (_("In the directive number %u, '{' is not followed by an argument number."), spec.directives);
-		  return NULL;
-		}
-	      number = 0;
-	      do
-		{
-		  number = 10 * number + (*format - '0');
-		  format++;
-		}
-	      while (c_isdigit (*format));
+              if (!c_isdigit (*format))
+                {
+                  *invalid_reason =
+                    xasprintf (_("In the directive number %u, '{' is not followed by an argument number."), spec.directives);
+                  FDI_SET (*format == '\0' ? format - 1 : format, FMTDIR_ERROR);
+                  return NULL;
+                }
+              number = 0;
+              do
+                {
+                  number = 10 * number + (*format - '0');
+                  format++;
+                }
+              while (c_isdigit (*format));
 
-	      if (*format == ',')
-		{
-		  /* Parse width.  */
-		  format++;
-		  if (*format == '-')
-		    format++;
-		  if (!c_isdigit (*format))
-		    {
-		      *invalid_reason =
-			xasprintf (_("In the directive number %u, ',' is not followed by a number."), spec.directives);
-		      return NULL;
-		    }
-		  do
-		    format++;
-		  while (c_isdigit (*format));
-		}
+              if (*format == ',')
+                {
+                  /* Parse width.  */
+                  format++;
+                  if (*format == '-')
+                    format++;
+                  if (!c_isdigit (*format))
+                    {
+                      *invalid_reason =
+                        xasprintf (_("In the directive number %u, ',' is not followed by a number."), spec.directives);
+                      FDI_SET (*format == '\0' ? format - 1 : format,
+                               FMTDIR_ERROR);
+                      return NULL;
+                    }
+                  do
+                    format++;
+                  while (c_isdigit (*format));
+                }
 
-	      if (*format == ':')
-		{
-		  /* Parse format specifiers.  */
-		  do
-		    format++;
-		  while (*format != '\0' && *format != '}');
-		}
+              if (*format == ':')
+                {
+                  /* Parse format specifiers.  */
+                  do
+                    format++;
+                  while (*format != '\0' && *format != '}');
+                }
 
-	      if (*format == '\0')
-		{
-		  *invalid_reason =
-		    xstrdup (_("The string ends in the middle of a directive: found '{' without matching '}'."));
-		  return NULL;
-		}
+              if (*format == '\0')
+                {
+                  *invalid_reason =
+                    xstrdup (_("The string ends in the middle of a directive: found '{' without matching '}'."));
+                  FDI_SET (format - 1, FMTDIR_ERROR);
+                  return NULL;
+                }
 
-	      if (*format != '}')
-		{
-		  *invalid_reason =
-		    (c_isprint (*format)
-		     ? xasprintf (_("The directive number %u ends with an invalid character '%c' instead of '}'."), spec.directives, *format)
-		     : xasprintf (_("The directive number %u ends with an invalid character instead of '}'."), spec.directives));
-		  return NULL;
-		}
+              if (*format != '}')
+                {
+                  *invalid_reason =
+                    (c_isprint (*format)
+                     ? xasprintf (_("The directive number %u ends with an invalid character '%c' instead of '}'."), spec.directives, *format)
+                     : xasprintf (_("The directive number %u ends with an invalid character instead of '}'."), spec.directives));
+                  FDI_SET (format, FMTDIR_ERROR);
+                  return NULL;
+                }
 
-	      format++;
+              format++;
 
-	      if (spec.numbered_arg_count <= number)
-		spec.numbered_arg_count = number + 1;
-	    }
-	}
+              if (spec.numbered_arg_count <= number)
+                spec.numbered_arg_count = number + 1;
+            }
+          FDI_SET (format - 1, FMTDIR_END);
+        }
       else if (c == '}')
-	{
-	  if (*format == '}')
-	    format++;
-	  else
-	    {
-	      *invalid_reason =
-		(spec.directives == 0
-		 ? xstrdup (_("The string starts in the middle of a directive: found '}' without matching '{'."))
-		 : xasprintf (_("The string contains a lone '}' after directive number %u."), spec.directives));
-	      return NULL;
-	    }
-	}
+        {
+          FDI_SET (format - 1, FMTDIR_START);
+          if (*format == '}')
+            format++;
+          else
+            {
+              *invalid_reason =
+                (spec.directives == 0
+                 ? xstrdup (_("The string starts in the middle of a directive: found '}' without matching '{'."))
+                 : xasprintf (_("The string contains a lone '}' after directive number %u."), spec.directives));
+              FDI_SET (*format == '\0' ? format - 1 : format, FMTDIR_ERROR);
+              return NULL;
+            }
+          FDI_SET (format - 1, FMTDIR_END);
+        }
     }
 
-  result = (struct spec *) xmalloc (sizeof (struct spec));
+  result = XMALLOC (struct spec);
   *result = spec;
   return result;
 }
@@ -179,8 +191,8 @@ format_get_number_of_directives (void *descr)
 
 static bool
 format_check (void *msgid_descr, void *msgstr_descr, bool equality,
-	      formatstring_error_logger_t error_logger,
-	      const char *pretty_msgstr)
+              formatstring_error_logger_t error_logger,
+              const char *pretty_msgid, const char *pretty_msgstr)
 {
   struct spec *spec1 = (struct spec *) msgid_descr;
   struct spec *spec2 = (struct spec *) msgstr_descr;
@@ -192,8 +204,8 @@ format_check (void *msgid_descr, void *msgstr_descr, bool equality,
       : spec1->numbered_arg_count < spec2->numbered_arg_count)
     {
       if (error_logger)
-	error_logger (_("number of format specifications in 'msgid' and '%s' does not match"),
-		      pretty_msgstr);
+        error_logger (_("number of format specifications in '%s' and '%s' does not match"),
+                      pretty_msgid, pretty_msgstr);
       err = true;
     }
 
@@ -206,6 +218,7 @@ struct formatstring_parser formatstring_csharp =
   format_parse,
   format_free,
   format_get_number_of_directives,
+  NULL,
   format_check
 };
 
@@ -216,7 +229,6 @@ struct formatstring_parser formatstring_csharp =
    format_parse for strings read from standard input.  */
 
 #include <stdio.h>
-#include "getline.h"
 
 static void
 format_print (void *descr)
@@ -234,7 +246,7 @@ format_print (void *descr)
   for (i = 0; i < spec->numbered_arg_count; i++)
     {
       if (i > 0)
-	printf (" ");
+        printf (" ");
       printf ("*");
     }
   printf (")");
@@ -253,17 +265,17 @@ main ()
 
       line_len = getline (&line, &line_size, stdin);
       if (line_len < 0)
-	break;
+        break;
       if (line_len > 0 && line[line_len - 1] == '\n')
-	line[--line_len] = '\0';
+        line[--line_len] = '\0';
 
       invalid_reason = NULL;
-      descr = format_parse (line, false, &invalid_reason);
+      descr = format_parse (line, false, NULL, &invalid_reason);
 
       format_print (descr);
       printf ("\n");
       if (descr == NULL)
-	printf ("%s\n", invalid_reason);
+        printf ("%s\n", invalid_reason);
 
       free (invalid_reason);
       free (line);
@@ -275,7 +287,7 @@ main ()
 /*
  * For Emacs M-x compile
  * Local Variables:
- * compile-command: "/bin/sh ../libtool --mode=link gcc -o a.out -static -O -g -Wall -I.. -I../lib -I../intl -DHAVE_CONFIG_H -DTEST format-csharp.c ../lib/libgettextlib.la"
+ * compile-command: "/bin/sh ../libtool --tag=CC --mode=link gcc -o a.out -static -O -g -Wall -I.. -I../gnulib-lib -I../intl -DHAVE_CONFIG_H -DTEST format-csharp.c ../gnulib-lib/libgettextlib.la"
  * End:
  */
 

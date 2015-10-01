@@ -1,11 +1,8 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
 # Test checking of Python format strings.
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles f-p-2.data"
 cat <<\EOF > f-p-2.data
 # Valid: %% doesn't count
 msgid  "abc%%def"
@@ -84,6 +81,9 @@ msgid  "abc%c"
 msgstr "xyz%s"
 # Invalid: type incompatibility
 msgid  "abc%c"
+msgstr "xyz%.0s"
+# Invalid: type incompatibility
+msgid  "abc%c"
 msgstr "xyz%i"
 # Invalid: type incompatibility
 msgid  "abc%c"
@@ -92,7 +92,13 @@ msgstr "xyz%e"
 msgid  "abc%s"
 msgstr "xyz%i"
 # Invalid: type incompatibility
+msgid  "abc%.0s"
+msgstr "xyz%i"
+# Invalid: type incompatibility
 msgid  "abc%s"
+msgstr "xyz%e"
+# Invalid: type incompatibility
+msgid  "abc%.0s"
 msgstr "xyz%e"
 # Invalid: type incompatibility
 msgid  "abc%i"
@@ -108,7 +114,6 @@ while read comment; do
   read msgid_line
   read msgstr_line
   n=`expr $n + 1`
-  tmpfiles="$tmpfiles f-p-2-$n.po f-p-2-$n.mo"
   cat <<EOF > f-p-2-$n.po
 #, python-format
 ${msgid_line}
@@ -136,7 +141,5 @@ EOF
   fi
   rm -f f-p-2-$n.po f-p-2-$n.mo
 done < f-p-2.data
-
-rm -fr $tmpfiles
 
 exit 0

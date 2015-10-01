@@ -1,16 +1,13 @@
 #! /bin/sh
+. "${srcdir=.}/init.sh"; path_prepend_ . ../src
 
-tmpfiles=""
-trap 'rm -fr $tmpfiles' 1 2 3 15
-
-tmpfiles="$tmpfiles ll ll.po dataout"
 : ${MSGFMT=msgfmt}
-test -d ll || mkdir ll
-test -d ll/LC_MESSAGES || mkdir ll/LC_MESSAGES
+test -d plural-2-dir || mkdir plural-2-dir
+test -d plural-2-dir/ll || mkdir plural-2-dir/ll
+test -d plural-2-dir/ll/LC_MESSAGES || mkdir plural-2-dir/ll/LC_MESSAGES
 
-tmpfiles="$tmpfiles plural-2.data"
 cat <<EOF > plural-2.data
-hu
+ja
 0
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 de
@@ -22,6 +19,9 @@ n>1
 gd
 n==1 ? 0 : n==2 ? 1 : 2
 20122222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+ro
+n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2
+10111111111111111111222222222222222222222222222222222222222222222222222222222222222222222222222222222111111111111111111122222222222222222222222222222222222222222222222222222222222222222222222222222222
 lt
 n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2
 20111111112222222222201111111120111111112011111111201111111120111111112011111111201111111120111111112011111111222222222220111111112011111111201111111120111111112011111111201111111120111111112011111111
@@ -44,7 +44,7 @@ EOF
 while read lang; do
   read formula
   read dataok
-  cat > ll.po <<EOF
+  cat > plural-2-ll.po <<EOF
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -65,9 +65,9 @@ msgstr[7] "7"
 msgstr[8] "8"
 msgstr[9] "9"
 EOF
-  ${MSGFMT} -o ll/LC_MESSAGES/plural.mo ll.po || exit 1
+  ${MSGFMT} -o plural-2-dir/ll/LC_MESSAGES/plural.mo plural-2-ll.po || exit 1
   (for i in '' 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19; do
-     LANGUAGE= TEXTDOMAIN=plural TEXTDOMAINDIR=. \
+     LANGUAGE= TEXTDOMAIN=plural TEXTDOMAINDIR=plural-2-dir \
        $NGETTEXT --env LC_ALL=ll X Y ${i}0 ${i}1 ${i}2 ${i}3 ${i}4 ${i}5 ${i}6 ${i}7 ${i}8 ${i}9
    done) > dataout
   test "$dataok" = `cat dataout` || {
@@ -75,11 +75,8 @@ EOF
     echo "plural=${formula}" 1>&2
     echo "Expected: $dataok" 1>&2
     echo "Got:      "`cat dataout` 1>&2
-    rm -fr $tmpfiles
     exit 1
   }
 done < plural-2.data
-
-rm -fr $tmpfiles
 
 exit 0

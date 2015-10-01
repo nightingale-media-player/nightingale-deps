@@ -1,10 +1,10 @@
 ## Makefile for the gettext-runtime/intl-csharp subdirectory of GNU gettext
-## Copyright (C) 2003, 2006 Free Software Foundation, Inc.
+## Copyright (C) 2003, 2006, 2015 Free Software Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
@@ -23,11 +22,8 @@ CLEANFILES =
 
 RM = rm -f
 
-docdir = @docdir@
-htmldir = $(docdir)
-
-CSHARPCOMP = $(SHELL) ../lib/csharpcomp.sh
-CSHARPCOMPFLAGS = -O -g
+CSHARPCOMP = $(SHELL) ../csharpcomp.sh
+CSHARPCOMPFLAGS = @CSHARPCOMPFLAGS@
 
 
 all-local: all-dll all-doc
@@ -51,13 +47,13 @@ CLEANFILES += GNU.Gettext.dll GNU.Gettext.dll.mdb
 
 install-dll: install-dll-@BUILDCSHARP@
 install-dll-no:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	$(MKDIR_P) $(DESTDIR)$(libdir)
 install-dll-yes: all-dll-yes
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	$(MKDIR_P) $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) GNU.Gettext.dll $(DESTDIR)$(libdir)/GNU.Gettext.dll
 
 installdirs-dll:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	$(MKDIR_P) $(DESTDIR)$(libdir)
 
 uninstall-dll:
 	$(RM) $(DESTDIR)$(libdir)/GNU.Gettext.dll
@@ -87,14 +83,14 @@ DOC_FILES = \
 EXTRA_DIST += $(DOC_FILES)
 
 install-doc: all-doc
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)/csharpdoc
+	$(MKDIR_P) $(DESTDIR)$(htmldir)/csharpdoc
 	@for f in $(DOC_FILES); do \
 	  echo "$(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(htmldir)/$$f"; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(htmldir)/$$f; \
 	done
 
 installdirs-doc:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)/csharpdoc
+	$(MKDIR_P) $(DESTDIR)$(htmldir)/csharpdoc
 
 uninstall-doc:
 	@for f in $(DOC_FILES); do \
