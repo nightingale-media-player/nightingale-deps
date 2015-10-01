@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES :=
 
 SB_VENDOR_TARGET := taglib
-SB_VENDOR_TARGET_VERSION := 1.8
+SB_VENDOR_TARGET_VERSION := 1.9.1
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 

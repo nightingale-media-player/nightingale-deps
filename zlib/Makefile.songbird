@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES :=
 
 SB_VENDOR_TARGET := zlib
-SB_VENDOR_TARGET_VERSION := 1.2.7
+SB_VENDOR_TARGET_VERSION := 1.2.8
 
 # Symbols don't work for this library, yet (ever?)
 SB_VENDOR_GENERATE_SYMBOLS = 0
