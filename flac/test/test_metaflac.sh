@@ -1,10 +1,11 @@
-#!/bin/sh
+#!/bin/sh -e
 
 #  FLAC - Free Lossless Audio Codec
-#  Copyright (C) 2002,2003,2004,2005,2006,2007  Josh Coalson
+#  Copyright (C) 2002-2009  Josh Coalson
+#  Copyright (C) 2011-2014  Xiph.Org Foundation
 #
 #  This file is part the FLAC project.  FLAC is comprised of several
-#  components distributed under difference licenses.  The codec libraries
+#  components distributed under different licenses.  The codec libraries
 #  are distributed under Xiph.Org's BSD-like license (see the file
 #  COPYING.Xiph in this distribution).  All other programs, libraries, and
 #  plugins are distributed under the GPL (see COPYING.GPL).  The documentation
@@ -17,38 +18,11 @@
 #  restrictive of those mentioned above.  See the file COPYING.Xiph in this
 #  distribution.
 
-die ()
-{
-	echo $* 1>&2
-	exit 1
-}
+. ./common.sh
 
-if [ x = x"$1" ] ; then
-	BUILD=debug
-else
-	BUILD="$1"
-fi
-
-# change to 'false' to show all flac/metaflac output (useful for debugging)
-if true ; then
-	SILENT='--silent'
-	TOTALLY_SILENT='--totally-silent'
-else
-	SILENT=''
-	TOTALLY_SILENT=''
-fi
-
-LD_LIBRARY_PATH=`pwd`/../src/libFLAC/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../src/share/grabbag/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../src/share/getopt/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../src/share/replaygain_analysis/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../src/share/replaygain_synthesis/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../src/share/utf8/.libs:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=`pwd`/../obj/$BUILD/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH
 PATH=`pwd`/../src/flac:$PATH
 PATH=`pwd`/../src/metaflac:$PATH
-PATH=`pwd`/../obj/$BUILD/bin:$PATH
+PATH=`pwd`/../objs/$BUILD/bin:$PATH
 
 if echo a | (grep -E '(a|b)') >/dev/null 2>&1
 	then EGREP='grep -E'
@@ -58,26 +32,26 @@ fi
 testdir="metaflac-test-files"
 flacfile="metaflac.flac"
 
-flac --help 1>/dev/null 2>/dev/null || die "ERROR can't find flac executable"
-metaflac --help 1>/dev/null 2>/dev/null || die "ERROR can't find metaflac executable"
+flac${EXE} --help 1>/dev/null 2>/dev/null || die "ERROR can't find flac executable"
+metaflac${EXE} --help 1>/dev/null 2>/dev/null || die "ERROR can't find metaflac executable"
 
 run_flac ()
 {
 	if [ x"$FLAC__TEST_WITH_VALGRIND" = xyes ] ; then
-		echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=100 flac $*" >>test_metaflac.valgrind.log
-		valgrind --leak-check=yes --show-reachable=yes --num-callers=100 --log-fd=4 flac $* 4>>test_metaflac.valgrind.log
+		echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=50 flac $*" >>test_metaflac.valgrind.log
+		valgrind --leak-check=yes --show-reachable=yes --num-callers=50 --log-fd=4 flac${EXE} --no-error-on-compression-fail $* 4>>test_metaflac.valgrind.log
 	else
-		flac $*
+		flac${EXE} --no-error-on-compression-fail $*
 	fi
 }
 
 run_metaflac ()
 {
 	if [ x"$FLAC__TEST_WITH_VALGRIND" = xyes ] ; then
-		echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=100 metaflac $*" >>test_metaflac.valgrind.log
-		valgrind --leak-check=yes --show-reachable=yes --num-callers=100 --log-fd=4 metaflac $* 4>>test_metaflac.valgrind.log
+		echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=50 metaflac $*" >>test_metaflac.valgrind.log
+		valgrind --leak-check=yes --show-reachable=yes --num-callers=50 --log-fd=4 metaflac${EXE} $* 4>>test_metaflac.valgrind.log
 	else
-		metaflac $*
+		metaflac${EXE} $*
 	fi
 }
 
@@ -87,10 +61,10 @@ run_metaflac_silent ()
 		run_metaflac $*
 	else
 		if [ x"$FLAC__TEST_WITH_VALGRIND" = xyes ] ; then
-			echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=100 metaflac $*" >>test_metaflac.valgrind.log
-			valgrind --leak-check=yes --show-reachable=yes --num-callers=100 --log-fd=4 metaflac $* 2>/dev/null 4>>test_metaflac.valgrind.log
+			echo "valgrind --leak-check=yes --show-reachable=yes --num-callers=50 metaflac $*" >>test_metaflac.valgrind.log
+			valgrind --leak-check=yes --show-reachable=yes --num-callers=50 --log-fd=4 metaflac${EXE} $* 2>/dev/null 4>>test_metaflac.valgrind.log
 		else
-			metaflac $* 2>/dev/null
+			metaflac${EXE} $* 2>/dev/null
 		fi
 	fi
 }
@@ -102,7 +76,7 @@ check_flac ()
 
 echo "Generating stream..."
 bytes=80000
-if dd if=/dev/zero ibs=1 count=$bytes | flac --force --verify -0 --input-size=$bytes --output-name=$flacfile --force-raw-format --endian=big --sign=signed --channels=1 --bps=8 --sample-rate=8000 - ; then
+if dd if=/dev/zero ibs=1 count=$bytes | flac${EXE} --force --verify -0 --input-size=$bytes --output-name=$flacfile --force-raw-format --endian=big --sign=signed --channels=1 --bps=8 --sample-rate=8000 - ; then
 	chmod +w $flacfile
 else
 	die "ERROR during generation"
@@ -391,7 +365,3 @@ cp -p metaflac.flac.in $flacfile
 run_metaflac --remove --block-type=VORBIS_COMMENT --dont-use-padding $flacfile
 cmp $flacfile metaflac.flac.ok || die "ERROR, $flacfile and metaflac.flac.ok differ"
 echo OK
-
-rm -f $testdir/out.flac $testdir/out.meta
-
-exit 0
