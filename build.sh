@@ -57,7 +57,7 @@ case $OSTYPE in
 
         echo -e "Building gettext..."
         cd gettext
-        bash autogen.sh
+        bash autogen.sh --skip-gnulib
         cd ..
         make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
         
