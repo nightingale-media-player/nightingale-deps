@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext 0.10.37\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2015-07-10 15:47+0900\n"
+"POT-Creation-Date: 2015-09-11 12:23+0900\n"
 "PO-Revision-Date: 2001-05-09 02:08+02:00\n"
 "Last-Translator: Trond Endrestøl <endrestol@hotmail.com>\n"
 "Language-Team: Norwegian-bokmål <no@li.org>\n"
@@ -32,7 +32,7 @@ msgstr "%s: flagget «%s» er flertydig\n"
 #: gnulib-lib/getopt.c:619
 #, fuzzy, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: flagget «%s» er flertydig\n"
+msgstr "%s: flagg «-W %s» er flertydig\n"
 
 #: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, fuzzy, c-format

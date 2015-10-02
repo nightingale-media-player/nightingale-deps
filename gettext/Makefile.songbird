@@ -33,14 +33,25 @@
 SB_VENDOR_TARGET_DEP_MODULES :=
 
 SB_VENDOR_TARGET = gettext
-SB_VENDOR_TARGET_VERSION = 0.19.5
+SB_VENDOR_TARGET_VERSION = 0.19.6
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
       --disable-libsuffix \
-      --enable-cxx-warnings=no
-
+      --enable-cxx-warnings=no \
+      --disable-csharp \
+      --disable-native-java \
+      --disable-openmp \
+      --without-emacs \
+      --with-included-gettext \
+      --with-included-glib \
+      --with-included-libcrocro \
+      --with-included-libunistring \
+      --with-included-libxml \
+      --without-cvs \
+      --without-git \
+      --without-xz
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
    libintl \
    libasprintf \
