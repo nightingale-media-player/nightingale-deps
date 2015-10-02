@@ -1,4 +1,5 @@
 #  FLAC - Free Lossless Audio Codec
+#  Copyright (C) 2001-2009  Josh Coalson
 #  Copyright (C) 2011-2014  Xiph.Org Foundation
 #
 #  This file is part the FLAC project.  FLAC is comprised of several
@@ -15,25 +16,25 @@
 #  restrictive of those mentioned above.  See the file COPYING.Xiph in this
 #  distribution.
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(srcdir)/include -I$(top_srcdir)/include
+ifeq ($(findstring Windows,$(OS)),Windows) # "Windows" is provided by GNU Make's internal $(OS)
+    LIBFLAC_DEPS = share/win_utf8_io
+else
+    LIBFLAC_DEPS =
+endif
 
-noinst_LTLIBRARIES = libutf8.la
-
-libutf8_la_SOURCES = charset.c charset.h iconvert.c utf8.c
-
-EXTRA_DIST = \
-	Makefile.lite \
-	charmaps.h \
-	makemap.c \
-	charset_test.c \
-	charsetmap.h \
-	iconvert.h \
-	utf8_static.vcproj \
-	utf8_static.vcxproj \
-	utf8_static.vcxproj.filters
-
-debug:
-	$(MAKE) all CFLAGS="@DEBUG@"
-
-profile:
-	$(MAKE) all CFLAGS="@PROFILE@"
+libFLAC: $(LIBFLAC_DEPS)
+flac: libFLAC share
+libFLAC++: libFLAC
+metaflac: libFLAC share
+plugin_common: libFLAC
+plugin_xmms: libFLAC plugin_common
+share: libFLAC
+test_grabbag: share
+test_libs_common: libFLAC
+test_libFLAC++: libFLAC libFLAC++ test_libs_common
+test_libFLAC: libFLAC test_libs_common
+test_seeking: libFLAC
+test_streams: libFLAC
+flacdiff: libFLAC libFLAC++
+flactimer: libFLAC libFLAC++
+utils: flacdiff flactimer
