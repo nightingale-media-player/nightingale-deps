@@ -26,15 +26,18 @@ case $OSTYPE in
 			mkdir "build"
 		fi
 
-		echo -e "Building xulrunner 1.9.2...\n"
-		make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
-
 		echo -e "Building sqlite...\n"
 		make -C sqlite -f Makefile.songbird
+		strip --strip-all "linux-$(uname -m)/sqlite/release/bin/sqlite3"
+		strip --strip-debug "linux-$(uname -m)/sqlite/release/lib/libsqlite3.a"
 		
 		#echo -e "Building taglib...\n"
 		#make -C taglib -f Makefile.songbird
-		
+		#strip --strip-debug "linux-$(uname -m)/taglib/release/lib/libtag.a"
+
+		echo -e "Building xulrunner 1.9.2...\n"
+		make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
 	;;
     darwin*)
