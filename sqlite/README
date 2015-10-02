@@ -1,34 +1,32 @@
-This directory contains source code to 
 
-    SQLite: An Embeddable SQL Database Engine
+This package contains:
 
-To compile the project, first create a directory in which to place
-the build products.  It is recommended, but not required, that the
-build directory be separate from the source directory.  Cd into the
-build directory and then from the build directory run the configure
-script found at the root of the source tree.  Then run "make".
+ * the SQLite library amalgamation (single file) source code distribution,
+ * the shell.c file used to build the sqlite3 shell too, and
+ * the sqlite3.h and sqlite3ext.h header files required to link programs
+   and sqlite extensions against the installed libary.
+ * autoconf/automake installation infrastucture.
 
-For example:
+The generic installation instructions for autoconf/automake are found
+in the INSTALL file.
 
-    tar xzf sqlite.tar.gz    ;#  Unpack the source tree into "sqlite"
-    mkdir bld                ;#  Build will occur in a sibling directory
-    cd bld                   ;#  Change to the build directory
-    ../sqlite/configure      ;#  Run the configure script
-    make                     ;#  Run the makefile.
-    make install             ;#  (Optional) Install the build products
+The following SQLite specific boolean options are supported:
 
-The configure script uses autoconf 2.61 and libtool.  If the configure
-script does not work out for you, there is a generic makefile named
-"Makefile.linux-gcc" in the top directory of the source tree that you
-can copy and edit to suit your needs.  Comments on the generic makefile
-show what changes are needed.
+  --enable-readline           use readline in shell tool   [default=yes]
+  --enable-threadsafe         build a thread-safe library  [default=yes]
+  --enable-dynamic-extensions support loadable extensions  [default=yes]
 
-The linux binaries on the website are created using the generic makefile,
-not the configure script.
-The windows binaries on the website are created using MinGW32 configured
-as a cross-compiler running under Linux.  For details, see the ./publish.sh
-script at the top-level of the source tree.
+The default value for the CFLAGS variable (options passed to the C 
+compiler) includes debugging symbols in the build, resulting in larger
+binaries than are necessary. Override it on the configure command
+line like this:
 
-Contacts:
+  $ CFLAGS="-Os" ./configure
 
-   http://www.sqlite.org/
+to produce a smaller installation footprint.
+
+Other SQLite compilation parameters can also be set using CFLAGS. For
+example:
+
+  $ CFLAGS="-Os -DSQLITE_OMIT_TRIGGERS" ./configure
+
