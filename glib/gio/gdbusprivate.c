@@ -2117,7 +2117,7 @@ _g_dbus_get_machine_id (GError **error)
   /* TODO: use PACKAGE_LOCALSTATEDIR ? */
   ret = NULL;
   first_error = NULL;
-  if (!g_file_get_contents ("/var/lib/dbus/machine-id",
+  if (!g_file_get_contents ("@@PREFIX@@/var/lib/dbus/machine-id",
                             &ret,
                             NULL,
                             &first_error) &&
@@ -2127,7 +2127,7 @@ _g_dbus_get_machine_id (GError **error)
                             NULL))
     {
       g_propagate_prefixed_error (error, first_error,
-                                  _("Unable to load /var/lib/dbus/machine-id or /etc/machine-id: "));
+                                  _("Unable to load @@PREFIX@@/var/lib/dbus/machine-id or /etc/machine-id: "));
     }
   else
     {

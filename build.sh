@@ -58,13 +58,16 @@ case $OSTYPE in
 #        echo -e "Building gettext..."
 #	make CC=gcc CXX=g++ -I /opt/local/lib -I /opt/local/include -C gettext -f Makefile.songbird
         
-        echo -e "Building glib..."
-        make CC=gcc CXX=g++ -I /opt/local/lib -I /opt/local/include -C glib -f Makefile.songbird
+#        echo -e "Building glib..."
+#        make CC=gcc CXX=g++ -I /opt/local/lib -I /opt/local/include -C glib -f Makefile.songbird
 
-        echo -e "Building libidl..."
-        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
+#        echo -e "Building libidl..."
+#        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
         
         echo -e "Building flac..."
+	cd flac
+	bash autogen.sh
+	cd ..
         make CC=gcc CXX=g++ -C flac -f Makefile.songbird
         
         echo -e "Building libjpeg-turbo..."

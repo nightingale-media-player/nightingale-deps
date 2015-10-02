@@ -255,7 +255,7 @@ xdg_run_command_on_dirs (XdgDirectoryFunc  func,
 
   xdg_data_dirs = getenv ("XDG_DATA_DIRS");
   if (xdg_data_dirs == NULL)
-    xdg_data_dirs = "/usr/local/share/:/usr/share/";
+    xdg_data_dirs = "@@PREFIX@@/share/:/usr/share/";
 
   ptr = xdg_data_dirs;
 

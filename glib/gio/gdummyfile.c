@@ -441,7 +441,7 @@ unescape_string (const gchar *escaped_string,
 		 const gchar *escaped_string_end,
 		 const gchar *illegal_characters)
 {
-  const gchar *in;
+  const gchar *_in;
   gchar *out, *result;
   gint character;
   
@@ -454,19 +454,19 @@ unescape_string (const gchar *escaped_string,
   result = g_malloc (escaped_string_end - escaped_string + 1);
 	
   out = result;
-  for (in = escaped_string; in < escaped_string_end; in++) 
+  for (_in = escaped_string; _in < escaped_string_end; _in++) 
     {
-      character = *in;
-      if (*in == '%') 
+      character = *_in;
+      if (*_in == '%') 
         {
-          in++;
-          if (escaped_string_end - in < 2)
+          _in++;
+          if (escaped_string_end - _in < 2)
 	    {
 	      g_free (result);
 	      return NULL;
 	    }
       
-          character = unescape_character (in);
+          character = unescape_character (_in);
       
           /* Check for an illegal character. We consider '\0' illegal here. */
           if (character <= 0 ||
@@ -476,7 +476,7 @@ unescape_string (const gchar *escaped_string,
 	      g_free (result);
 	      return NULL;
 	    }
-          in++; /* The other char will be eaten in the loop header */
+          _in++; /* The other char will be eaten in the loop header */
         }
       *out++ = (char)character;
     }
@@ -516,7 +516,7 @@ GDecodedUri *
 _g_decode_uri (const char *uri)
 {
   GDecodedUri *decoded;
-  const char *p, *in, *hier_part_start, *hier_part_end, *query_start, *fragment_start;
+  const char *p, *_in, *hier_part_start, *hier_part_end, *query_start, *fragment_start;
   char *out;
   char c;
 
@@ -551,8 +551,8 @@ _g_decode_uri (const char *uri)
   
   decoded->scheme = g_malloc (p - uri);
   out = decoded->scheme;
-  for (in = uri; in < p - 1; in++)
-    *out++ = g_ascii_tolower (*in);
+  for (_in = uri; _in < p - 1; _in++)
+    *out++ = g_ascii_tolower (*_in);
   *out = 0;
 
   hier_part_start = p;

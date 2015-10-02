@@ -25,6 +25,9 @@
 #include <wchar.h>
 #endif
 
+/* Carbon is not available on 64-bit */
+#undef HAVE_CARBON
+
 #ifdef HAVE_CARBON
 #include <CoreServices/CoreServices.h>
 #endif

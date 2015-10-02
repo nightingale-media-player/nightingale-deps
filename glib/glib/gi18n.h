@@ -25,7 +25,9 @@
 
 #define  _(String) gettext (String)
 #define Q_(String) g_dpgettext (NULL, String, 0)
+#ifndef N_
 #define N_(String) (String)
+#endif
 #define C_(Context,String) g_dpgettext (NULL, Context "\004" String, strlen (Context) + 1)
 #define NC_(Context, String) (String)
 
