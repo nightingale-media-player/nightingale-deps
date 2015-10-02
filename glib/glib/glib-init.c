@@ -233,7 +233,6 @@ glib_init (void)
 {
   g_messages_prefixed_init ();
   g_debug_init ();
-  g_quark_init ();
 }
 
 #if defined (G_OS_WIN32)

@@ -8,7 +8,7 @@
 <link rel="up" href="rn01.html" title="API Reference">
 <link rel="prev" href="gobject-Boxed-Types.html" title="Boxed Types">
 <link rel="next" href="gobject-Standard-Parameter-and-Value-Types.html" title="Parameters and Values">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -134,7 +134,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-value-fits-pointer" title="g_value_fits_pointer ()">g_value_fits_pointer</a> <span class="c_punctuation">()</span>
@@ -142,7 +142,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-value-peek-pointer" title="g_value_peek_pointer ()">g_value_peek_pointer</a> <span class="c_punctuation">()</span>
@@ -150,7 +150,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-value-type-compatible" title="g_value_type_compatible ()">g_value_type_compatible</a> <span class="c_punctuation">()</span>
@@ -158,7 +158,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-value-type-transformable" title="g_value_type_transformable ()">g_value_type_transformable</a> <span class="c_punctuation">()</span>
@@ -166,7 +166,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-value-transform" title="g_value_transform ()">g_value_transform</a> <span class="c_punctuation">()</span>
@@ -190,7 +190,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="gobject-Generic-values.html#g-strdup-value-contents" title="g_strdup_value_contents ()">g_strdup_value_contents</a> <span class="c_punctuation">()</span>
@@ -316,13 +316,13 @@ features.</p>
 <span class="normal">  </span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">message</span><span class="symbol">;</span>
 
 <span class="normal">  </span><span class="comment">// The GValue starts empty</span>
-<span class="normal">  </span><span class="function"><a href="../glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#G-VALUE-HOLDS-STRING:CAPS">G_VALUE_HOLDS_STRING</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#G-VALUE-HOLDS-STRING:CAPS">G_VALUE_HOLDS_STRING</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
 
 <span class="normal">  </span><span class="comment">// Put a string in it</span>
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-init">g_value_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-STRING:CAPS">G_TYPE_STRING</a></span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#G-VALUE-HOLDS-STRING:CAPS">G_VALUE_HOLDS_STRING</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#G-VALUE-HOLDS-STRING:CAPS">G_VALUE_HOLDS_STRING</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
 <span class="normal">  </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-set-static-string">g_value_set_static_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Hello, world!"</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">));</span>
 
 <span class="normal">  </span><span class="comment">// Reset it to its pristine state</span>
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-unset">g_value_unset</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">);</span>
@@ -335,15 +335,15 @@ features.</p>
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-init">g_value_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">b</span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-STRING:CAPS">G_TYPE_STRING</a></span><span class="symbol">);</span>
 
 <span class="normal">  </span><span class="comment">// An INT is transformable to a STRING</span>
-<span class="normal">  </span><span class="function"><a href="../glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="gobject-Generic-values.html#g-value-type-transformable">g_value_type_transformable</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="gobject-Type-Information.html#G-TYPE-INT:CAPS">G_TYPE_INT</a></span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-STRING:CAPS">G_TYPE_STRING</a></span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="gobject-Generic-values.html#g-value-type-transformable">g_value_type_transformable</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="gobject-Type-Information.html#G-TYPE-INT:CAPS">G_TYPE_INT</a></span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-STRING:CAPS">G_TYPE_STRING</a></span><span class="symbol">));</span>
 
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-transform">g_value_transform</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">b</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">b</span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">b</span><span class="symbol">));</span>
 
 <span class="normal">  </span><span class="comment">// Attempt to transform it again using a custom transform function</span>
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-register-transform-func">g_value_register_transform_func</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="gobject-Type-Information.html#G-TYPE-INT:CAPS">G_TYPE_INT</a></span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-STRING:CAPS">G_TYPE_STRING</a></span><span class="symbol">,</span><span class="normal"> int2string</span><span class="symbol">);</span>
 <span class="normal">  </span><span class="function"><a href="gobject-Generic-values.html#g-value-transform">g_value_transform</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">a</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">b</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">b</span><span class="symbol">));</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-string">g_value_get_string</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">b</span><span class="symbol">));</span>
 <span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
 <span class="cbracket">}</span></pre></td>
       </tr>
@@ -363,7 +363,7 @@ features.</p>
  holds (or contains) a value of <em class="parameter"><code>type</code></em>
 .
 This macro will also check for <em class="parameter"><code>value</code></em>
- != <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and issue a
+ != <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and issue a
 warning if the check fails.</p>
 <div class="refsect3">
 <a name="id-1.4.8.7.2.5"></a><h4>Parameters</h4>
@@ -389,9 +389,10 @@ warning if the check fails.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.2.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>value</code></em>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>value</code></em>
 holds the <em class="parameter"><code>type</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -419,6 +420,7 @@ holds the <em class="parameter"><code>type</code></em>
 <div class="refsect3">
 <a name="id-1.4.8.7.3.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -446,6 +448,7 @@ holds the <em class="parameter"><code>type</code></em>
 <div class="refsect3">
 <a name="id-1.4.8.7.4.6"></a><h4>Returns</h4>
 <p> the type name.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -475,6 +478,7 @@ of the <a class="link" href="gobject-Type-Information.html#GTypeValueTable" titl
 <a name="id-1.4.8.7.5.6"></a><h4>Returns</h4>
 <p> Whether <em class="parameter"><code>type</code></em>
 is suitable as a <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> type.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -503,7 +507,8 @@ an abstract base type for derived value types.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.6.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -530,7 +535,8 @@ an abstract base type for derived value types.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.7.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -548,7 +554,7 @@ used to pass around pointers to GValues.</p>
 </pre>
 <div class="warning">
 <p><code class="literal">G_TYPE_VALUE_ARRAY</code> has been deprecated since version 2.32 and should not be used in newly-written code.</p>
-<p>Use <a href="../glib-Arrays.html#GArray"><span class="type">GArray</span></a> instead of <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a></p>
+<p>Use <a href="https://developer.gnome.org/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> instead of <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a></p>
 </div>
 <p>The type ID of the "GValueArray" type which is a boxed type,
 used to pass around pointers to GValueArrays.</p>
@@ -649,6 +655,7 @@ g_value_reset (<em class="parameter"><code><a class="link" href="gobject-Generic
 <div class="refsect3">
 <a name="id-1.4.8.7.12.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> structure that has been passed in</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -682,7 +689,7 @@ An unset value is the same as an uninitialized (zero-filled)
 <a name="g-value-init-from-instance"></a><h3>g_value_init_from_instance ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_value_init_from_instance (<em class="parameter"><code><a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *value</code></em>,
-                            <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> instance</code></em>);</pre>
+                            <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> instance</code></em>);</pre>
 <p>Initializes and sets <em class="parameter"><code>value</code></em>
  from an instantiatable type via the
 value_table's <code class="function">collect_value()</code> function.</p>
@@ -715,14 +722,14 @@ value_table's <code class="function">collect_value()</code> function.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-42.html#api-index-2.42">2.42</a></p>
+<p class="since">Since 2.42</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-value-set-instance"></a><h3>g_value_set_instance ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_value_set_instance (<em class="parameter"><code><a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *value</code></em>,
-                      <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> instance</code></em>);</pre>
+                      <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> instance</code></em>);</pre>
 <p>Sets <em class="parameter"><code>value</code></em>
  from an instantiatable type via the
 value_table's <code class="function">collect_value()</code> function.</p>
@@ -752,7 +759,7 @@ value_table's <code class="function">collect_value()</code> function.</p>
 <hr>
 <div class="refsect2">
 <a name="g-value-fits-pointer"></a><h3>g_value_fits_pointer ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_value_fits_pointer (<em class="parameter"><code>const <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *value</code></em>);</pre>
 <p>Determines if <em class="parameter"><code>value</code></em>
  will fit inside the size of a pointer value.
@@ -774,17 +781,18 @@ This is an internal function introduced mainly for C marshallers.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.16.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>value</code></em>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>value</code></em>
 will fit inside a pointer value.</p>
+<p></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-value-peek-pointer"></a><h3>g_value_peek_pointer ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
 g_value_peek_pointer (<em class="parameter"><code>const <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *value</code></em>);</pre>
 <p>Returns the value contents as pointer. This function asserts that
-<a class="link" href="gobject-Generic-values.html#g-value-fits-pointer" title="g_value_fits_pointer ()"><code class="function">g_value_fits_pointer()</code></a> returned <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for the passed in value.
+<a class="link" href="gobject-Generic-values.html#g-value-fits-pointer" title="g_value_fits_pointer ()"><code class="function">g_value_fits_pointer()</code></a> returned <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for the passed in value.
 This is an internal function introduced mainly for C marshallers.</p>
 <div class="refsect3">
 <a name="id-1.4.8.7.17.5"></a><h4>Parameters</h4>
@@ -810,7 +818,7 @@ This is an internal function introduced mainly for C marshallers.</p>
 <hr>
 <div class="refsect2">
 <a name="g-value-type-compatible"></a><h3>g_value_type_compatible ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_value_type_compatible (<em class="parameter"><code><a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> src_type</code></em>,
                          <em class="parameter"><code><a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> dest_type</code></em>);</pre>
 <p>Returns whether a <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> of type <em class="parameter"><code>src_type</code></em>
@@ -841,15 +849,16 @@ a <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.18.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <a class="link" href="gobject-Generic-values.html#g-value-copy" title="g_value_copy ()"><code class="function">g_value_copy()</code></a> is possible with <em class="parameter"><code>src_type</code></em>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <a class="link" href="gobject-Generic-values.html#g-value-copy" title="g_value_copy ()"><code class="function">g_value_copy()</code></a> is possible with <em class="parameter"><code>src_type</code></em>
 and <em class="parameter"><code>dest_type</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-value-type-transformable"></a><h3>g_value_type_transformable ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_value_type_transformable (<em class="parameter"><code><a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> src_type</code></em>,
                             <em class="parameter"><code><a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> dest_type</code></em>);</pre>
 <p>Check whether <a class="link" href="gobject-Generic-values.html#g-value-transform" title="g_value_transform ()"><code class="function">g_value_transform()</code></a> is able to transform values
@@ -882,13 +891,14 @@ transform function must be registered.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.8.7.19.6"></a><h4>Returns</h4>
-<p> <a href="../glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the transformation is possible, <a href="../glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+<p> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the transformation is possible, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+<p></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-value-transform"></a><h3>g_value_transform ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_value_transform (<em class="parameter"><code>const <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *src_value</code></em>,
                    <em class="parameter"><code><a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *dest_value</code></em>);</pre>
 <p>Tries to cast the contents of <em class="parameter"><code>src_value</code></em>
@@ -927,6 +937,7 @@ as rcfile value or object property serialization).</p>
 <p> Whether a transformation rule was found and could be applied.
 Upon failing transformations, <em class="parameter"><code>dest_value</code></em>
 is left untouched.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -972,9 +983,8 @@ A previously registered transformation function for <em class="parameter"><code>
  and <em class="parameter"><code>dest_type</code></em>
 
 will be replaced.</p>
-<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.4.8.7.22.6"></a><h4>Parameters</h4>
+<a name="id-1.4.8.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1006,7 +1016,7 @@ into value of type <em class="parameter"><code>dest_type</code></em>
 <hr>
 <div class="refsect2">
 <a name="g-strdup-value-contents"></a><h3>g_strdup_value_contents ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 g_strdup_value_contents (<em class="parameter"><code>const <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> *value</code></em>);</pre>
 <p>Return a newly allocated string, which describes the contents of a
 <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a>.  The main purpose of this function is to describe <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a>
@@ -1030,6 +1040,7 @@ described may change between different GLib versions.</p>
 <div class="refsect3">
 <a name="id-1.4.8.7.23.6"></a><h4>Returns</h4>
 <p> Newly allocated string.</p>
+<p></p>
 </div>
 </div>
 </div>
@@ -1054,7 +1065,7 @@ a variable, but it cannot be assigned to a variable.</p>
 </div>
 
 <p></p>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1084,6 +1095,7 @@ only be accessed through the <a class="link" href="gobject-Generic-values.html#G
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

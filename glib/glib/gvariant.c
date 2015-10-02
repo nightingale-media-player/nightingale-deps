@@ -1217,9 +1217,7 @@ g_variant_new_fixed_array (const GVariantType  *element_type,
  *
  * Creates a string #GVariant with the contents of @string.
  *
- * @string must be valid UTF-8, and must not be %NULL. To encode
- * potentially-%NULL strings, use g_variant_new() with `ms` as the
- * [format string][gvariant-format-strings-maybe-types].
+ * @string must be valid UTF-8.
  *
  * Returns: (transfer none): a floating reference to a new string #GVariant instance
  *
@@ -1241,8 +1239,7 @@ g_variant_new_string (const gchar *string)
  *
  * Creates a string #GVariant with the contents of @string.
  *
- * @string must be valid UTF-8, and must not be %NULL. To encode
- * potentially-%NULL strings, use this with g_variant_new_maybe().
+ * @string must be valid UTF-8.
  *
  * This function consumes @string.  g_free() will be called on @string
  * when it is no longer required.
@@ -1410,7 +1407,7 @@ g_variant_is_signature (const gchar *string)
  * type.  This includes the types %G_VARIANT_TYPE_STRING,
  * %G_VARIANT_TYPE_OBJECT_PATH and %G_VARIANT_TYPE_SIGNATURE.
  *
- * The string will always be UTF-8 encoded, and will never be %NULL.
+ * The string will always be UTF-8 encoded.
  *
  * If @length is non-%NULL then the length of the string (in bytes) is
  * returned there.  For trusted values, this information is already

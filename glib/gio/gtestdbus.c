@@ -183,7 +183,7 @@ watch_parent (gint fd)
           for (n = 0; n < pids_to_kill->len; n++)
             {
               pid = g_array_index (pids_to_kill, guint, n);
-              g_printerr ("cleaning up pid %d\n", pid);
+              g_print ("cleaning up pid %d\n", pid);
               kill (pid, SIGTERM);
             }
 
@@ -838,6 +838,4 @@ g_test_dbus_unset (void)
   g_unsetenv ("DBUS_SESSION_BUS_ADDRESS");
   g_unsetenv ("DBUS_STARTER_ADDRESS");
   g_unsetenv ("DBUS_STARTER_BUS_TYPE");
-  /* avoid using XDG_RUNTIME_DIR/bus */
-  g_unsetenv ("XDG_RUNTIME_DIR");
 }

@@ -8,7 +8,7 @@
 <link rel="up" href="glib-data-types.html" title="GLib Data Types">
 <link rel="prev" href="glib-Datasets.html" title="Datasets">
 <link rel="next" href="glib-GVariant.html" title="GVariant">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -448,10 +448,10 @@ type".</p>
 <p>This is similar to how instances of abstract classes may not
 directly exist in other type systems, but instances of their
 non-abstract subtypes may.  For example, in GTK, no object that has
-the type of <a href="http://developer.gnome.org/gtk3/GtkBin.html#GtkBin-struct"><span class="type">GtkBin</span></a> can exist (since <a href="http://developer.gnome.org/gtk3/GtkBin.html#GtkBin-struct"><span class="type">GtkBin</span></a> is an abstract class),
-but a <a href="http://developer.gnome.org/gtk3/GtkWindow.html#GtkWindow-struct"><span class="type">GtkWindow</span></a> can certainly be instantiated, and you would say
-that the <a href="http://developer.gnome.org/gtk3/GtkWindow.html#GtkWindow-struct"><span class="type">GtkWindow</span></a> is a <a href="http://developer.gnome.org/gtk3/GtkBin.html#GtkBin-struct"><span class="type">GtkBin</span></a> (since <a href="http://developer.gnome.org/gtk3/GtkWindow.html#GtkWindow-struct"><span class="type">GtkWindow</span></a> is a subclass of
-<a href="http://developer.gnome.org/gtk3/GtkBin.html#GtkBin-struct"><span class="type">GtkBin</span></a>).</p>
+the type of <a href="http://developer.gnome.org/gtk2/GtkBin.html"><span class="type">GtkBin</span></a> can exist (since <a href="http://developer.gnome.org/gtk2/GtkBin.html"><span class="type">GtkBin</span></a> is an abstract class),
+but a <a href="http://developer.gnome.org/gtk2/GtkWindow.html"><span class="type">GtkWindow</span></a> can certainly be instantiated, and you would say
+that the <a href="http://developer.gnome.org/gtk2/GtkWindow.html"><span class="type">GtkWindow</span></a> is a <a href="http://developer.gnome.org/gtk2/GtkBin.html"><span class="type">GtkBin</span></a> (since <a href="http://developer.gnome.org/gtk2/GtkWindow.html"><span class="type">GtkWindow</span></a> is a subclass of
+<a href="http://developer.gnome.org/gtk2/GtkBin.html"><span class="type">GtkBin</span></a>).</p>
 <div class="refsect3">
 <a name="id-1.6.18.6.9"></a><h4>GVariant Type Strings</h4>
 <p>A GVariant type string can be any of the following:</p>
@@ -760,7 +760,7 @@ the last character in the array.</p>
 </pre>
 <p>The type of a dictionary mapping strings to variants (the ubiquitous
 "a{sv}" type).</p>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -879,7 +879,7 @@ string.  Use <a class="link" href="glib-GVariantType.html#g-variant-type-string-
 <p> a new <a class="link" href="glib-GVariantType.html#GVariantType" title="GVariantType"><span class="type">GVariantType</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -910,6 +910,7 @@ that the following character is a nul terminator.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type_string</code></em>
 is exactly one valid type string</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -965,8 +966,9 @@ see <a class="link" href="glib-GVariantType.html#g-variant-type-string-is-valid"
 <div class="refsect3">
 <a name="id-1.6.18.7.34.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a valid type string was found</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -996,6 +998,7 @@ the memory region returned by <a class="link" href="glib-GVariantType.html#g-var
 <a name="id-1.6.18.7.35.6"></a><h4>Returns</h4>
 <p> the length of the corresponding type string</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1008,9 +1011,8 @@ g_variant_type_peek_string (<em class="parameter"><code>const <a class="link" hr
 result is not nul-terminated; in order to determine its length you
 must call <a class="link" href="glib-GVariantType.html#g-variant-type-get-string-length" title="g_variant_type_get_string_length ()"><code class="function">g_variant_type_get_string_length()</code></a>.</p>
 <p>To get a nul-terminated string, see <a class="link" href="glib-GVariantType.html#g-variant-type-dup-string" title="g_variant_type_dup_string ()"><code class="function">g_variant_type_dup_string()</code></a>.</p>
-<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.6.18.7.36.7"></a><h4>Parameters</h4>
+<a name="id-1.6.18.7.36.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1025,9 +1027,10 @@ must call <a class="link" href="glib-GVariantType.html#g-variant-type-get-string
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.18.7.36.8"></a><h4>Returns</h4>
+<a name="id-1.6.18.7.36.7"></a><h4>Returns</h4>
 <p> the corresponding type string (not nul-terminated)</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1095,6 +1098,7 @@ indefinite type like <a class="link" href="glib-GVariantType.html#G-VARIANT-TYPE
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is definite</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1129,6 +1133,7 @@ example.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is a container type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1163,6 +1168,7 @@ paths and signatures.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is a basic type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1197,6 +1203,7 @@ example.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is a maybe type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1231,6 +1238,7 @@ example.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is an array type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1267,6 +1275,7 @@ example.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is a tuple type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1301,6 +1310,7 @@ definite subtype is a dictionary entry type --
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is a dictionary entry type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1330,6 +1340,7 @@ g_variant_type_is_variant (<em class="parameter"><code>const <a class="link" hre
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>type</code></em>
 is the variant type</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1362,6 +1373,7 @@ g_variant_type_hash (<em class="parameter"><code><a class="link" href="glib-Basi
 <a name="id-1.6.18.7.46.7"></a><h4>Returns</h4>
 <p> the hash value</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1410,6 +1422,7 @@ both arguments, a valid <a class="link" href="glib-GVariantType.html#GVariantTyp
 and <em class="parameter"><code>type2</code></em>
 are exactly equal</p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1454,6 +1467,7 @@ only indefinite types can have subtypes.</p>
 is a subtype of <em class="parameter"><code>supertype</code></em>
 </p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1465,9 +1479,8 @@ g_variant_type_new_maybe (<em class="parameter"><code>const <a class="link" href
 type <em class="parameter"><code>type</code></em>
  or Nothing.</p>
 <p>It is appropriate to call <a class="link" href="glib-GVariantType.html#g-variant-type-free" title="g_variant_type_free ()"><code class="function">g_variant_type_free()</code></a> on the return value.</p>
-<p><span class="annotation">[<acronym title="This symbol is a constructor, not a static method."><span class="acronym">constructor</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.6.18.7.49.7"></a><h4>Parameters</h4>
+<a name="id-1.6.18.7.49.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1482,7 +1495,7 @@ type <em class="parameter"><code>type</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.18.7.49.8"></a><h4>Returns</h4>
+<a name="id-1.6.18.7.49.7"></a><h4>Returns</h4>
 <p> a new maybe <a class="link" href="glib-GVariantType.html#GVariantType" title="GVariantType"><span class="type">GVariantType</span></a></p>
 <p>Since 2.24. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1497,9 +1510,8 @@ g_variant_type_new_array (<em class="parameter"><code>const <a class="link" href
 type <em class="parameter"><code>type</code></em>
 .</p>
 <p>It is appropriate to call <a class="link" href="glib-GVariantType.html#g-variant-type-free" title="g_variant_type_free ()"><code class="function">g_variant_type_free()</code></a> on the return value.</p>
-<p><span class="annotation">[<acronym title="This symbol is a constructor, not a static method."><span class="acronym">constructor</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.6.18.7.50.7"></a><h4>Parameters</h4>
+<a name="id-1.6.18.7.50.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1514,7 +1526,7 @@ type <em class="parameter"><code>type</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.18.7.50.8"></a><h4>Returns</h4>
+<a name="id-1.6.18.7.50.7"></a><h4>Returns</h4>
 <p> a new array <a class="link" href="glib-GVariantType.html#GVariantType" title="GVariantType"><span class="type">GVariantType</span></a></p>
 <p>Since 2.24. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1575,9 +1587,8 @@ of type <em class="parameter"><code>key</code></em>
  and a value of type <em class="parameter"><code>value</code></em>
 .</p>
 <p>It is appropriate to call <a class="link" href="glib-GVariantType.html#g-variant-type-free" title="g_variant_type_free ()"><code class="function">g_variant_type_free()</code></a> on the return value.</p>
-<p><span class="annotation">[<acronym title="This symbol is a constructor, not a static method."><span class="acronym">constructor</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.6.18.7.52.7"></a><h4>Parameters</h4>
+<a name="id-1.6.18.7.52.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1599,7 +1610,7 @@ of type <em class="parameter"><code>key</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.18.7.52.8"></a><h4>Returns</h4>
+<a name="id-1.6.18.7.52.7"></a><h4>Returns</h4>
 <p> a new dictionary entry <a class="link" href="glib-GVariantType.html#GVariantType" title="GVariantType"><span class="type">GVariantType</span></a></p>
 <p>Since 2.24. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1667,6 +1678,7 @@ return 2.</p>
 <p> the number of items in <em class="parameter"><code>type</code></em>
 </p>
 <p>Since 2.24</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1824,6 +1836,7 @@ g_variant_type_value (<em class="parameter"><code>const <a class="link" href="gl
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

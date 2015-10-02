@@ -1761,7 +1761,9 @@ test_strinfo (void)
     strinfo_builder_append_item (builder, "foo", 1);
     strinfo_builder_append_item (builder, "bar", 2);
     g_assert (strinfo_builder_append_alias (builder, "baz", "bar"));
-    g_assert_cmpmem (builder->str, builder->len, strinfo, length * 4);
+    g_assert_cmpint (builder->len % 4, ==, 0);
+    g_assert_cmpint (builder->len / 4, ==, length);
+    g_assert (memcmp (builder->str, strinfo, length * 4) == 0);
     g_string_free (builder, TRUE);
   }
 
@@ -2105,15 +2107,13 @@ strv_set_equal (gchar **strv, ...)
 static void
 test_list_items (void)
 {
-  GSettingsSchema *schema;
   GSettings *settings;
   gchar **children;
   gchar **keys;
 
   settings = g_settings_new ("org.gtk.test");
-  g_object_get (settings, "settings-schema", &schema, NULL);
   children = g_settings_list_children (settings);
-  keys = g_settings_schema_list_keys (schema);
+  keys = g_settings_list_keys (settings);
 
   g_assert (strv_set_equal (children, "basic-types", "complex-types", "localized", NULL));
   g_assert (strv_set_equal (keys, "greeting", "farewell", NULL));
@@ -2121,7 +2121,6 @@ test_list_items (void)
   g_strfreev (children);
   g_strfreev (keys);
 
-  g_settings_schema_unref (schema);
   g_object_unref (settings);
 }
 
@@ -2320,27 +2319,6 @@ test_schema_source (void)
   g_settings_schema_unref (schema);
 
   g_settings_schema_source_unref (source);
-}
-
-static void
-test_schema_list_keys (void)
-{
-  gchar                 **keys;
-  GSettingsSchemaSource  *src    = g_settings_schema_source_get_default ();
-  GSettingsSchema        *schema = g_settings_schema_source_lookup (src, "org.gtk.test", TRUE);
-  g_assert (schema != NULL);
-
-  keys = g_settings_schema_list_keys (schema);
-
-  g_assert (strv_set_equal ((gchar **)keys,
-                            "greeting",
-                            "farewell",
-                            NULL));
-
-
-  g_strfreev (keys);
-  g_settings_schema_unref (schema);
-  g_settings_schema_source_unref (src);
 }
 
 static void
@@ -2548,17 +2526,14 @@ test_default_value (void)
 static void
 test_extended_schema (void)
 {
-  GSettingsSchema *schema;
   GSettings *settings;
   gchar **keys;
 
   settings = g_settings_new_with_path ("org.gtk.test.extends.extended", "/test/extendes/");
-  g_object_get (settings, "settings-schema", &schema, NULL);
-  keys = g_settings_schema_list_keys (schema);
+  keys = g_settings_list_keys (settings);
   g_assert (strv_set_equal (keys, "int32", "string", "another-int32", NULL));
   g_strfreev (keys);
   g_object_unref (settings);
-  g_settings_schema_unref (schema);
 }
 
 int
@@ -2671,7 +2646,6 @@ main (int argc, char *argv[])
   g_test_add_func ("/gsettings/mapped", test_get_mapped);
   g_test_add_func ("/gsettings/get-range", test_get_range);
   g_test_add_func ("/gsettings/schema-source", test_schema_source);
-  g_test_add_func ("/gsettings/schema-list-keys", test_schema_list_keys);
   g_test_add_func ("/gsettings/actions", test_actions);
   g_test_add_func ("/gsettings/null-backend", test_null_backend);
   g_test_add_func ("/gsettings/memory-backend", test_memory_backend);

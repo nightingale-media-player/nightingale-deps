@@ -32,10 +32,10 @@
 #include "ginitable.h"
 #include "gasyncinitable.h"
 #include "gioerror.h"
-#include "gtask.h"
+#include "gasyncresult.h"
+#include "gsimpleasyncresult.h"
 #include "gcancellable.h"
 #include "gdbusinterface.h"
-#include "gasyncresult.h"
 
 #ifdef G_OS_UNIX
 #include "gunixfdlist.h"
@@ -590,7 +590,7 @@ g_dbus_proxy_class_init (GDBusProxyClass *klass)
    *
    * Since: 2.26
    */
-  signals[PROPERTIES_CHANGED_SIGNAL] = g_signal_new (I_("g-properties-changed"),
+  signals[PROPERTIES_CHANGED_SIGNAL] = g_signal_new ("g-properties-changed",
                                                      G_TYPE_DBUS_PROXY,
                                                      G_SIGNAL_RUN_LAST | G_SIGNAL_MUST_COLLECT,
                                                      G_STRUCT_OFFSET (GDBusProxyClass, g_properties_changed),
@@ -613,7 +613,7 @@ g_dbus_proxy_class_init (GDBusProxyClass *klass)
    *
    * Since: 2.26
    */
-  signals[SIGNAL_SIGNAL] = g_signal_new (I_("g-signal"),
+  signals[SIGNAL_SIGNAL] = g_signal_new ("g-signal",
                                          G_TYPE_DBUS_PROXY,
                                          G_SIGNAL_RUN_LAST | G_SIGNAL_MUST_COLLECT,
                                          G_STRUCT_OFFSET (GDBusProxyClass, g_signal),
@@ -1411,12 +1411,29 @@ on_name_owner_changed (GDBusConnection *connection,
 
 /* ---------------------------------------------------------------------------------------------------- */
 
+typedef struct
+{
+  GDBusProxy *proxy;
+  GCancellable *cancellable;
+  GSimpleAsyncResult *simple;
+} AsyncInitData;
+
+static void
+async_init_data_free (AsyncInitData *data)
+{
+  g_object_unref (data->proxy);
+  if (data->cancellable != NULL)
+    g_object_unref (data->cancellable);
+  g_object_unref (data->simple);
+  g_free (data);
+}
+
 static void
 async_init_get_all_cb (GDBusConnection *connection,
                        GAsyncResult    *res,
                        gpointer         user_data)
 {
-  GTask *task = user_data;
+  AsyncInitData *data = user_data;
   GVariant *result;
   GError *error;
 
@@ -1439,35 +1456,40 @@ async_init_get_all_cb (GDBusConnection *connection,
       //g_debug ("error: %d %d %s", error->domain, error->code, error->message);
       g_error_free (error);
     }
+  else
+    {
+      g_simple_async_result_set_op_res_gpointer (data->simple,
+                                                 result,
+                                                 (GDestroyNotify) g_variant_unref);
+    }
 
-  g_task_return_pointer (task, result,
-                         (GDestroyNotify) g_variant_unref);
-  g_object_unref (task);
+  g_simple_async_result_complete_in_idle (data->simple);
+  async_init_data_free (data);
 }
 
 static void
-async_init_data_set_name_owner (GTask       *task,
-                                const gchar *name_owner)
+async_init_data_set_name_owner (AsyncInitData *data,
+                                const gchar   *name_owner)
 {
-  GDBusProxy *proxy = g_task_get_source_object (task);
   gboolean get_all;
+
 
   if (name_owner != NULL)
     {
       /* it starts as NULL anyway */
       G_LOCK (properties_lock);
-      proxy->priv->name_owner = g_strdup (name_owner);
+      data->proxy->priv->name_owner = g_strdup (name_owner);
       G_UNLOCK (properties_lock);
     }
 
   get_all = TRUE;
 
-  if (proxy->priv->flags & G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES)
+  if (data->proxy->priv->flags & G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES)
     {
       /* Don't load properties if the API user doesn't want them */
       get_all = FALSE;
     }
-  else if (name_owner == NULL && proxy->priv->name != NULL)
+  else if (name_owner == NULL && data->proxy->priv->name != NULL)
     {
       /* Don't attempt to load properties if the name_owner is NULL (which
        * usually means the name isn't owned), unless name is also NULL (which
@@ -1480,23 +1502,23 @@ async_init_data_set_name_owner (GTask       *task,
   if (get_all)
     {
       /* load all properties asynchronously */
-      g_dbus_connection_call (proxy->priv->connection,
+      g_dbus_connection_call (data->proxy->priv->connection,
                               name_owner,
-                              proxy->priv->object_path,
+                              data->proxy->priv->object_path,
                               "org.freedesktop.DBus.Properties",
                               "GetAll",
-                              g_variant_new ("(s)", proxy->priv->interface_name),
+                              g_variant_new ("(s)", data->proxy->priv->interface_name),
                               G_VARIANT_TYPE ("(a{sv})"),
                               G_DBUS_CALL_FLAGS_NONE,
                               -1,           /* timeout */
-                              g_task_get_cancellable (task),
+                              data->cancellable,
                               (GAsyncReadyCallback) async_init_get_all_cb,
-                              task);
+                              data);
     }
   else
     {
-      g_task_return_pointer (task, NULL, NULL);
-      g_object_unref (task);
+      g_simple_async_result_complete_in_idle (data->simple);
+      async_init_data_free (data);
     }
 }
 
@@ -1505,7 +1527,7 @@ async_init_get_name_owner_cb (GDBusConnection *connection,
                               GAsyncResult    *res,
                               gpointer         user_data)
 {
-  GTask *task = user_data;
+  AsyncInitData *data = user_data;
   GError *error;
   GVariant *result;
 
@@ -1519,12 +1541,13 @@ async_init_get_name_owner_cb (GDBusConnection *connection,
           error->code == G_DBUS_ERROR_NAME_HAS_NO_OWNER)
         {
           g_error_free (error);
-          async_init_data_set_name_owner (task, NULL);
+          async_init_data_set_name_owner (data, NULL);
         }
       else
         {
-          g_task_return_error (task, error);
-          g_object_unref (task);
+          g_simple_async_result_take_error (data->simple, error);
+          g_simple_async_result_complete_in_idle (data->simple);
+          async_init_data_free (data);
         }
     }
   else
@@ -1533,29 +1556,27 @@ async_init_get_name_owner_cb (GDBusConnection *connection,
       const gchar *name_owner;
 
       g_variant_get (result, "(&s)", &name_owner);
-      async_init_data_set_name_owner (task, name_owner);
+      async_init_data_set_name_owner (data, name_owner);
       g_variant_unref (result);
     }
 }
 
 static void
-async_init_call_get_name_owner (GTask *task)
+async_init_call_get_name_owner (AsyncInitData *data)
 {
-  GDBusProxy *proxy = g_task_get_source_object (task);
-
-  g_dbus_connection_call (proxy->priv->connection,
+  g_dbus_connection_call (data->proxy->priv->connection,
                           "org.freedesktop.DBus",  /* name */
                           "/org/freedesktop/DBus", /* object path */
                           "org.freedesktop.DBus",  /* interface */
                           "GetNameOwner",
                           g_variant_new ("(s)",
-                                         proxy->priv->name),
+                                         data->proxy->priv->name),
                           G_VARIANT_TYPE ("(s)"),
                           G_DBUS_CALL_FLAGS_NONE,
                           -1,           /* timeout */
-                          g_task_get_cancellable (task),
+                          data->cancellable,
                           (GAsyncReadyCallback) async_init_get_name_owner_cb,
-                          task);
+                          data);
 }
 
 static void
@@ -1563,8 +1584,7 @@ async_init_start_service_by_name_cb (GDBusConnection *connection,
                                      GAsyncResult    *res,
                                      gpointer         user_data)
 {
-  GTask *task = user_data;
-  GDBusProxy *proxy = g_task_get_source_object (task);
+  AsyncInitData *data = user_data;
   GError *error;
   GVariant *result;
 
@@ -1608,7 +1628,7 @@ async_init_start_service_by_name_cb (GDBusConnection *connection,
             {
               g_prefix_error (&error,
                               _("Error calling StartServiceByName for %s: "),
-                              proxy->priv->name);
+                              data->proxy->priv->name);
               g_free (remote_error);
               goto failed;
             }
@@ -1632,39 +1652,38 @@ async_init_start_service_by_name_cb (GDBusConnection *connection,
                                G_IO_ERROR_FAILED,
                                _("Unexpected reply %d from StartServiceByName(\"%s\") method"),
                                start_service_result,
-                               proxy->priv->name);
+                               data->proxy->priv->name);
           goto failed;
         }
     }
 
-  async_init_call_get_name_owner (task);
+  async_init_call_get_name_owner (data);
   return;
 
  failed:
   g_warn_if_fail (error != NULL);
-  g_task_return_error (task, error);
-  g_object_unref (task);
+  g_simple_async_result_take_error (data->simple, error);
+  g_simple_async_result_complete_in_idle (data->simple);
+  async_init_data_free (data);
 }
 
 static void
-async_init_call_start_service_by_name (GTask *task)
+async_init_call_start_service_by_name (AsyncInitData *data)
 {
-  GDBusProxy *proxy = g_task_get_source_object (task);
-
-  g_dbus_connection_call (proxy->priv->connection,
+  g_dbus_connection_call (data->proxy->priv->connection,
                           "org.freedesktop.DBus",  /* name */
                           "/org/freedesktop/DBus", /* object path */
                           "org.freedesktop.DBus",  /* interface */
                           "StartServiceByName",
                           g_variant_new ("(su)",
-                                         proxy->priv->name,
+                                         data->proxy->priv->name,
                                          0),
                           G_VARIANT_TYPE ("(u)"),
                           G_DBUS_CALL_FLAGS_NONE,
                           -1,           /* timeout */
-                          g_task_get_cancellable (task),
+                          data->cancellable,
                           (GAsyncReadyCallback) async_init_start_service_by_name_cb,
-                          task);
+                          data);
 }
 
 static void
@@ -1675,31 +1694,37 @@ async_initable_init_second_async (GAsyncInitable      *initable,
                                   gpointer             user_data)
 {
   GDBusProxy *proxy = G_DBUS_PROXY (initable);
-  GTask *task;
+  AsyncInitData *data;
 
-  task = g_task_new (proxy, cancellable, callback, user_data);
-  g_task_set_priority (task, io_priority);
+  data = g_new0 (AsyncInitData, 1);
+  data->proxy = g_object_ref (proxy);
+  data->cancellable = cancellable != NULL ? g_object_ref (cancellable) : NULL;
+  data->simple = g_simple_async_result_new (G_OBJECT (proxy),
+                                            callback,
+                                            user_data,
+                                            NULL);
+  g_simple_async_result_set_check_cancellable (data->simple, cancellable);
 
   /* Check name ownership asynchronously - possibly also start the service */
   if (proxy->priv->name == NULL)
     {
       /* Do nothing */
-      async_init_data_set_name_owner (task, NULL);
+      async_init_data_set_name_owner (data, NULL);
     }
   else if (g_dbus_is_unique_name (proxy->priv->name))
     {
-      async_init_data_set_name_owner (task, proxy->priv->name);
+      async_init_data_set_name_owner (data, proxy->priv->name);
     }
   else
     {
       if ((proxy->priv->flags & G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START) ||
           (proxy->priv->flags & G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION))
         {
-          async_init_call_get_name_owner (task);
+          async_init_call_get_name_owner (data);
         }
       else
         {
-          async_init_call_start_service_by_name (task);
+          async_init_call_start_service_by_name (data);
         }
     }
 }
@@ -1710,18 +1735,24 @@ async_initable_init_second_finish (GAsyncInitable  *initable,
                                    GError         **error)
 {
   GDBusProxy *proxy = G_DBUS_PROXY (initable);
-  GTask *task = G_TASK (res);
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
   GVariant *result;
   gboolean ret;
 
-  ret = !g_task_had_error (task);
+  ret = FALSE;
 
-  result = g_task_propagate_pointer (task, error);
+  if (g_simple_async_result_propagate_error (simple, error))
+    goto out;
+
+  result = g_simple_async_result_get_op_res_gpointer (simple);
   if (result != NULL)
     {
       process_get_all_reply (proxy, result);
     }
 
+  ret = TRUE;
+
+ out:
   proxy->priv->initialized = TRUE;
   return ret;
 }
@@ -1784,7 +1815,7 @@ async_initable_init_first (GAsyncInitable *initable)
 /* ---------------------------------------------------------------------------------------------------- */
 
 /* initialization is split into two parts - the first is the
- * non-blocking part that requires the callers GMainContext - the
+ * non-blocing part that requires the callers GMainContext - the
  * second is a blocking part async part that doesn't require the
  * callers GMainContext.. we do this split so the code can be reused
  * in the GInitable implementation below.
@@ -1793,46 +1824,52 @@ async_initable_init_first (GAsyncInitable *initable)
  * paths.
  */
 
-static void
-init_second_async_cb (GObject       *source_object,
-		      GAsyncResult  *res,
-		      gpointer       user_data)
+typedef struct
 {
-  GTask *task = user_data;
-  GError *error = NULL;
-
-  if (async_initable_init_second_finish (G_ASYNC_INITABLE (source_object), res, &error))
-    g_task_return_boolean (task, TRUE);
-  else
-    g_task_return_error (task, error);
-  g_object_unref (task);
-}
+  GDBusProxy          *proxy;
+  gint                 io_priority;
+  GCancellable        *cancellable;
+  GAsyncReadyCallback  callback;
+  gpointer             user_data;
+} GetConnectionData;
 
 static void
 get_connection_cb (GObject       *source_object,
                    GAsyncResult  *res,
                    gpointer       user_data)
 {
-  GTask *task = user_data;
-  GDBusProxy *proxy = g_task_get_source_object (task);
+  GetConnectionData *data = user_data;
   GError *error;
 
   error = NULL;
-  proxy->priv->connection = g_bus_get_finish (res, &error);
-  if (proxy->priv->connection == NULL)
+  data->proxy->priv->connection = g_bus_get_finish (res, &error);
+  if (data->proxy->priv->connection == NULL)
     {
-      g_task_return_error (task, error);
-      g_object_unref (task);
+      GSimpleAsyncResult *simple;
+      simple = g_simple_async_result_new (G_OBJECT (data->proxy),
+                                          data->callback,
+                                          data->user_data,
+                                          NULL);
+      g_simple_async_result_set_check_cancellable (simple, data->cancellable);
+      g_simple_async_result_take_error (simple, error);
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
     }
   else
     {
-      async_initable_init_first (G_ASYNC_INITABLE (proxy));
-      async_initable_init_second_async (G_ASYNC_INITABLE (proxy),
-                                        g_task_get_priority (task),
-                                        g_task_get_cancellable (task),
-                                        init_second_async_cb,
-                                        task);
+      async_initable_init_first (G_ASYNC_INITABLE (data->proxy));
+      async_initable_init_second_async (G_ASYNC_INITABLE (data->proxy),
+                                        data->io_priority,
+                                        data->cancellable,
+                                        data->callback,
+                                        data->user_data);
     }
+
+  if (data->cancellable != NULL)
+    g_object_unref (data->cancellable);
+
+  g_object_unref (data->proxy);
+  g_free (data);
 }
 
 static void
@@ -1843,25 +1880,28 @@ async_initable_init_async (GAsyncInitable      *initable,
                            gpointer             user_data)
 {
   GDBusProxy *proxy = G_DBUS_PROXY (initable);
-  GTask *task;
-
-  task = g_task_new (proxy, cancellable, callback, user_data);
-  g_task_set_priority (task, io_priority);
 
   if (proxy->priv->bus_type != G_BUS_TYPE_NONE)
     {
+      GetConnectionData *data;
+
       g_assert (proxy->priv->connection == NULL);
 
+      data = g_new0 (GetConnectionData, 1);
+      data->proxy = g_object_ref (proxy);
+      data->io_priority = io_priority;
+      data->cancellable = cancellable != NULL ? g_object_ref (cancellable) : NULL;
+      data->callback = callback;
+      data->user_data = user_data;
       g_bus_get (proxy->priv->bus_type,
                  cancellable,
                  get_connection_cb,
-                 task);
+                 data);
     }
   else
     {
       async_initable_init_first (initable);
-      async_initable_init_second_async (initable, io_priority, cancellable,
-                                        init_second_async_cb, task);
+      async_initable_init_second_async (initable, io_priority, cancellable, callback, user_data);
     }
 }
 
@@ -1870,7 +1910,7 @@ async_initable_init_finish (GAsyncInitable  *initable,
                             GAsyncResult    *res,
                             GError         **error)
 {
-  return g_task_propagate_boolean (G_TASK (res), error);
+  return async_initable_init_second_finish (initable, res, error);
 }
 
 static void
@@ -2546,7 +2586,7 @@ reply_cb (GDBusConnection *connection,
           GAsyncResult    *res,
           gpointer         user_data)
 {
-  GTask *task = user_data;
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
   GVariant *value;
   GError *error;
 #ifdef G_OS_UNIX
@@ -2566,7 +2606,7 @@ reply_cb (GDBusConnection *connection,
 #endif
   if (error != NULL)
     {
-      g_task_return_error (task, error);
+      g_simple_async_result_take_error (simple, error);
     }
   else
     {
@@ -2576,10 +2616,12 @@ reply_cb (GDBusConnection *connection,
 #ifdef G_OS_UNIX
       data->fd_list = fd_list;
 #endif
-      g_task_return_pointer (task, data, (GDestroyNotify) reply_data_free);
+      g_simple_async_result_set_op_res_gpointer (simple, data, (GDestroyNotify) reply_data_free);
     }
 
-  g_object_unref (task);
+  /* no need to complete in idle since the method GDBusConnection already does */
+  g_simple_async_result_complete (simple);
+  g_object_unref (simple);
 }
 
 /* properties_lock must be held for as long as you will keep the
@@ -2641,7 +2683,7 @@ g_dbus_proxy_call_internal (GDBusProxy          *proxy,
                             GAsyncReadyCallback  callback,
                             gpointer             user_data)
 {
-  GTask *task;
+  GSimpleAsyncResult *simple;
   gboolean was_split;
   gchar *split_interface_name;
   const gchar *split_method_name;
@@ -2671,12 +2713,16 @@ g_dbus_proxy_call_internal (GDBusProxy          *proxy,
   if (callback != NULL)
     {
       my_callback = (GAsyncReadyCallback) reply_cb;
-      task = g_task_new (proxy, cancellable, callback, user_data);
+      simple = g_simple_async_result_new (G_OBJECT (proxy),
+                                          callback,
+                                          user_data,
+                                          g_dbus_proxy_call_internal);
+      g_simple_async_result_set_check_cancellable (simple, cancellable);
     }
   else
     {
       my_callback = NULL;
-      task = NULL;
+      simple = NULL;
     }
 
   G_LOCK (properties_lock);
@@ -2700,13 +2746,14 @@ g_dbus_proxy_call_internal (GDBusProxy          *proxy,
       destination = g_strdup (get_destination_for_call (proxy));
       if (destination == NULL)
         {
-          if (task != NULL)
+          if (simple != NULL)
             {
-              g_task_return_new_error (task,
-                                       G_IO_ERROR,
-                                       G_IO_ERROR_FAILED,
-                                       _("Cannot invoke method; proxy is for a well-known name without an owner and proxy was constructed with the G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START flag"));
-              g_object_unref (task);
+              g_simple_async_result_set_error (simple,
+                                               G_IO_ERROR,
+                                               G_IO_ERROR_FAILED,
+                                               _("Cannot invoke method; proxy is for a well-known name without an owner and proxy was constructed with the G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START flag"));
+              g_simple_async_result_complete_in_idle (simple);
+              g_object_unref (simple);
             }
           G_UNLOCK (properties_lock);
           goto out;
@@ -2728,7 +2775,7 @@ g_dbus_proxy_call_internal (GDBusProxy          *proxy,
                                             fd_list,
                                             cancellable,
                                             my_callback,
-                                            task);
+                                            simple);
 #else
   g_dbus_connection_call (proxy->priv->connection,
                           destination,
@@ -2741,7 +2788,7 @@ g_dbus_proxy_call_internal (GDBusProxy          *proxy,
                           timeout_msec == -1 ? proxy->priv->timeout_msec : timeout_msec,
                           cancellable,
                           my_callback,
-                          task);
+                          simple);
 #endif
 
  out:
@@ -2758,25 +2805,27 @@ g_dbus_proxy_call_finish_internal (GDBusProxy    *proxy,
                                    GAsyncResult  *res,
                                    GError       **error)
 {
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
   GVariant *value;
   ReplyData *data;
 
   g_return_val_if_fail (G_IS_DBUS_PROXY (proxy), NULL);
-  g_return_val_if_fail (g_task_is_valid (res, proxy), NULL);
+  g_return_val_if_fail (G_IS_ASYNC_RESULT (res), NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_dbus_proxy_call_internal);
 
   value = NULL;
 
-  data = g_task_propagate_pointer (G_TASK (res), error);
-  if (!data)
+  if (g_simple_async_result_propagate_error (simple, error))
     goto out;
 
+  data = g_simple_async_result_get_op_res_gpointer (simple);
   value = g_variant_ref (data->value);
 #ifdef G_OS_UNIX
   if (out_fd_list != NULL)
     *out_fd_list = data->fd_list != NULL ? g_object_ref (data->fd_list) : NULL;
 #endif
-  reply_data_free (data);
 
  out:
   return value;

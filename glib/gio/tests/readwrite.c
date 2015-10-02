@@ -46,7 +46,9 @@ verify_iostream (GFileIOStream *file_iostream)
 
   res = g_input_stream_read_all (in, buffer, 20, &n_bytes, NULL, NULL);
   g_assert (res);
-  g_assert_cmpmem (buffer, n_bytes, original_data, 20);
+  g_assert_cmpint ((int)n_bytes, ==, 20);
+
+  g_assert (memcmp (buffer, original_data, 20) == 0);
 
   verify_pos (iostream, 20);
 
@@ -58,7 +60,8 @@ verify_iostream (GFileIOStream *file_iostream)
 
   res = g_input_stream_read_all (in, buffer, 20, &n_bytes, NULL, NULL);
   g_assert (res);
-  g_assert_cmpmem (buffer, n_bytes, original_data + strlen (original_data) - 10, 10);
+  g_assert_cmpint ((int)n_bytes, ==, 10);
+  g_assert (memcmp (buffer, original_data + strlen (original_data) - 10, 10) == 0);
 
   verify_pos (iostream, strlen (original_data));
 
@@ -115,7 +118,8 @@ verify_iostream (GFileIOStream *file_iostream)
 
   res = g_input_stream_read_all (in, buffer, 15, &n_bytes, NULL, NULL);
   g_assert (res);
-  g_assert_cmpmem (buffer, n_bytes, modified_data, 15);
+  g_assert_cmpint ((int)n_bytes, ==, 15);
+  g_assert (memcmp (buffer, modified_data, 15) == 0);
 
   error = NULL;
   res = g_output_stream_write_all (out, new_data, strlen (new_data),

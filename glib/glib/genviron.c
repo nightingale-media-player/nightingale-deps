@@ -70,7 +70,8 @@ g_environ_find (gchar       **envp,
  * @envp: (allow-none) (array zero-terminated=1) (transfer none): an environment
  *     list (eg, as returned from g_get_environ()), or %NULL
  *     for an empty environment list
- * @variable: the environment variable to get
+ * @variable: the environment variable to get, in the GLib file name
+ *     encoding
  *
  * Returns the value of the environment variable @variable in the
  * provided list @envp.
@@ -217,13 +218,14 @@ g_environ_unsetenv (gchar       **envp,
 
 /**
  * g_getenv:
- * @variable: the environment variable to get
+ * @variable: the environment variable to get, in the GLib file name
+ *     encoding
  *
  * Returns the value of an environment variable.
  *
- * On UNIX, the name and value are byte strings which might or might not
- * be in some consistent character set and encoding. On Windows, they are
- * in UTF-8.
+ * The name and value are in the GLib file name encoding. On UNIX,
+ * this means the actual bytes which might or might not be in some
+ * consistent character set and encoding. On Windows, it is in UTF-8.
  * On Windows, in case the environment variable's value contains
  * references to other environment variables, they are expanded.
  *
@@ -246,9 +248,10 @@ g_getenv (const gchar *variable)
  * @value: the value for to set the variable to.
  * @overwrite: whether to change the variable if it already exists.
  *
- * Sets an environment variable. On UNIX, both the variable's name and
- * value can be arbitrary byte strings, except that the variable's name
- * cannot contain '='. On Windows, they should be in UTF-8.
+ * Sets an environment variable. Both the variable's name and value
+ * should be in the GLib file name encoding. On UNIX, this means that
+ * they can be arbitrary byte strings. On Windows, they should be in
+ * UTF-8.
  *
  * Note that on some systems, when variables are overwritten, the memory
  * used for the previous variables and its value isn't reclaimed.

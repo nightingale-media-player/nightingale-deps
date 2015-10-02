@@ -341,7 +341,8 @@ test_expander (void)
       total_read += res;
     }
 
-  g_assert_cmpmem (converted1, n_written, converted2, total_read);
+  g_assert (total_read == n_written);
+  g_assert (memcmp (converted1, converted2, n_written)  == 0);
 
   g_converter_reset (expander);
 
@@ -370,9 +371,10 @@ test_expander (void)
 
   g_output_stream_close (cstream_out, NULL, NULL);
 
-  g_assert_cmpmem (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   converted1, n_written);
+  g_assert (g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)) == n_written);
+  g_assert (memcmp (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
+		    converted1,
+		    n_written)  == 0);
 
   g_free (converted1);
   g_free (converted2);
@@ -431,8 +433,8 @@ test_compressor (void)
       total_read += res;
     }
 
-  /* "n_read - 1" because last 2 zeros are combined */
-  g_assert_cmpmem (unexpanded_data, n_read - 1, converted, total_read);
+  g_assert (total_read == n_read - 1); /* Last 2 zeros are combined */
+  g_assert (memcmp (converted, unexpanded_data, total_read)  == 0);
 
   g_object_unref (cstream);
 
@@ -459,11 +461,10 @@ test_compressor (void)
 
   g_output_stream_close (cstream_out, NULL, NULL);
 
-  /* "n_read - 1" because last 2 zeros are combined */
-  g_assert_cmpmem (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   unexpanded_data,
-                   n_read - 1);
+  g_assert (g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)) == n_read - 1); /* Last 2 zeros are combined */
+  g_assert (memcmp (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
+		    unexpanded_data,
+		    g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)))  == 0);
 
   g_object_unref (cstream_out);
 
@@ -716,7 +717,8 @@ test_converter_leftover (void)
       total_read += res;
   }
 
-  g_assert_cmpmem (orig, LEFTOVER_BUFSIZE, converted, total_read);
+  g_assert_cmpint (total_read, ==, LEFTOVER_BUFSIZE);
+  g_assert (memcmp (converted, orig, LEFTOVER_BUFSIZE)  == 0);
 
   g_object_unref (cstream);
   g_free (orig);
@@ -793,9 +795,10 @@ test_roundtrip (gconstpointer data)
   g_output_stream_splice (ostream2, cistream1, 0, NULL, &error);
   g_assert_no_error (error);
 
-  g_assert_cmpmem (data0, DATA_LENGTH * sizeof (guint32),
-                   g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (ostream2)),
-                   g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (ostream2)));
+  g_assert_cmpuint (DATA_LENGTH * sizeof (guint32), ==,
+    g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (ostream2)));
+  g_assert (memcmp (data0, g_memory_output_stream_get_data (
+    G_MEMORY_OUTPUT_STREAM (ostream2)), DATA_LENGTH * sizeof (guint32)) == 0);
   g_object_unref (istream1);
   g_converter_reset (decompressor);
   g_object_get (decompressor, "format", &fmt, NULL);
@@ -1054,8 +1057,8 @@ test_converter_pollable (void)
       total_read += res;
     }
 
-  /* "n_read - 1" because last 2 zeros are combined */
-  g_assert_cmpmem (unexpanded_data, n_read - 1, converted, total_read);
+  g_assert (total_read == n_read - 1); /* Last 2 zeros are combined */
+  g_assert (memcmp (converted, unexpanded_data, total_read)  == 0);
 
   g_object_unref (cstream);
   g_object_unref (left);
@@ -1091,11 +1094,10 @@ test_converter_pollable (void)
 
   g_output_stream_close (cstream_out, NULL, NULL);
 
-  /* "n_read - 1" because last 2 zeros are combined */
-  g_assert_cmpmem (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)),
-                   unexpanded_data,
-                   n_read - 1);
+  g_assert (g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)) == n_read - 1); /* Last 2 zeros are combined */
+  g_assert (memcmp (g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (mem_out)),
+		    unexpanded_data,
+		    g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (mem_out)))  == 0);
 
   g_object_unref (cstream_out);
 

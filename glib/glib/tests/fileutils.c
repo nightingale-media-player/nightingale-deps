@@ -488,18 +488,18 @@ test_mkdir_with_parents (void)
 {
   gchar *cwd;
   if (g_test_verbose())
-    g_printerr ("checking g_mkdir_with_parents() in subdir ./hum/");
+    g_print ("checking g_mkdir_with_parents() in subdir ./hum/");
   test_mkdir_with_parents_1 ("hum");
   g_remove ("hum");
   if (g_test_verbose())
-    g_printerr ("checking g_mkdir_with_parents() in subdir ./hii///haa/hee/");
+    g_print ("checking g_mkdir_with_parents() in subdir ./hii///haa/hee/");
   test_mkdir_with_parents_1 ("hii///haa/hee");
   g_remove ("hii/haa/hee");
   g_remove ("hii/haa");
   g_remove ("hii");
   cwd = g_get_current_dir ();
   if (g_test_verbose())
-    g_printerr ("checking g_mkdir_with_parents() in cwd: %s", cwd);
+    g_print ("checking g_mkdir_with_parents() in cwd: %s", cwd);
   test_mkdir_with_parents_1 (cwd);
   g_free (cwd);
 
@@ -827,7 +827,6 @@ test_read_link (void)
   g_assert_null (path);
   g_error_free (error);
 
-  remove (newpath);
   g_free (cwd);
   g_free (newpath);
   g_free (badpath);
@@ -905,7 +904,6 @@ int
 main (int   argc,
       char *argv[])
 {
-  g_setenv ("LC_ALL", "C", TRUE);
   g_test_init (&argc, &argv, NULL);
 
   g_test_add_func ("/fileutils/build-path", test_build_path);

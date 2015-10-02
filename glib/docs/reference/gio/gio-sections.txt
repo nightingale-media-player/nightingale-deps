@@ -256,7 +256,6 @@ G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN
 G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP
 G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK
 G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL
-G_FILE_ATTRIBUTE_STANDARD_IS_VOLATILE
 G_FILE_ATTRIBUTE_STANDARD_NAME
 G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME
 G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME
@@ -1827,26 +1826,6 @@ g_unix_socket_address_get_type
 </SECTION>
 
 <SECTION>
-<FILE>gnativesocketaddress</FILE>
-<TITLE>GNativeSocketAddress</TITLE>
-GNativeSocketAddress
-GNativeSocketAddressType
-g_native_socket_address_new
-<SUBSECTION Standard>
-GNativeSocketAddressClass
-GNativeSocketAddressPrivate
-G_IS_NATIVE_SOCKET_ADDRESS
-G_IS_NATIVE_SOCKET_ADDRESS_CLASS
-G_TYPE_NATIVE_SOCKET_ADDRESS
-G_NATIVE_SOCKET_ADDRESS
-G_NATIVE_SOCKET_ADDRESS_CLASS
-G_NATIVE_SOCKET_ADDRESS_GET_CLASS
-G_TYPE_NATIVE_SOCKET_ADDRESS_TYPE
-<SUBSECTION Private>
-g_native_socket_address_get_type
-</SECTION>
-
-<SECTION>
 <FILE>gresolver</FILE>
 <TITLE>GResolver</TITLE>
 GResolver
@@ -2246,7 +2225,6 @@ g_socket_control_message_get_type
 <FILE>gsocketlistener</FILE>
 <TITLE>GSocketListener</TITLE>
 GSocketListener
-GSocketListenerEvent
 g_socket_listener_new
 g_socket_listener_add_socket
 g_socket_listener_add_address
@@ -2529,7 +2507,6 @@ g_settings_schema_get_key
 g_settings_schema_key_ref
 g_settings_schema_key_unref
 g_settings_schema_list_children
-g_settings_schema_list_keys
 
 <SUBSECTION>
 g_settings_schema_key_get_value_type
@@ -2877,7 +2854,6 @@ GDBusInterfaceGetPropertyFunc
 GDBusInterfaceSetPropertyFunc
 g_dbus_connection_register_object
 g_dbus_connection_unregister_object
-g_dbus_connection_register_object_with_closures
 GDBusSubtreeVTable
 GDBusSubtreeEnumerateFunc
 GDBusSubtreeIntrospectFunc
@@ -3645,7 +3621,6 @@ g_tls_client_connection_get_validation_flags
 g_tls_client_connection_set_use_ssl3
 g_tls_client_connection_get_use_ssl3
 g_tls_client_connection_get_accepted_cas
-g_tls_client_connection_copy_session_state
 <SUBSECTION Standard>
 G_IS_TLS_CLIENT_CONNECTION
 G_TLS_CLIENT_CONNECTION
@@ -3659,7 +3634,6 @@ g_tls_client_connection_get_type
 <FILE>gtlsdatabase</FILE>
 <TITLE>GTlsDatabase</TITLE>
 GTlsDatabase
-GTlsDatabaseClass
 GTlsDatabaseVerifyFlags
 G_TLS_DATABASE_PURPOSE_AUTHENTICATE_SERVER
 G_TLS_DATABASE_PURPOSE_AUTHENTICATE_CLIENT
@@ -3759,7 +3733,6 @@ GTlsPasswordPrivate
 GTlsInteraction
 GTlsInteractionResult
 GTlsCertificateRequestFlags
-GTlsInteractionClass
 g_tls_interaction_invoke_ask_password
 g_tls_interaction_invoke_request_certificate
 g_tls_interaction_ask_password
@@ -3769,6 +3742,7 @@ g_tls_interaction_request_certificate
 g_tls_interaction_request_certificate_async
 g_tls_interaction_request_certificate_finish
 <SUBSECTION Standard>
+GTlsInteractionClass
 G_IS_TLS_INTERACTION
 G_IS_TLS_INTERACTION_CLASS
 G_TYPE_TLS_INTERACTION
@@ -3972,7 +3946,6 @@ GNetworkMonitorInterface
 G_NETWORK_MONITOR_EXTENSION_POINT_NAME
 g_network_monitor_get_default
 g_network_monitor_get_network_available
-g_network_monitor_get_network_metered
 g_network_monitor_can_reach
 g_network_monitor_can_reach_async
 g_network_monitor_can_reach_finish
@@ -4443,78 +4416,8 @@ g_list_store_append
 g_list_store_remove
 g_list_store_remove_all
 g_list_store_splice
-g_list_store_sort
 <SUBSECTION Standard>
 G_TYPE_LIST_STORE
 <SUBSECTION Private>
 g_list_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>gwin32registrykey</FILE>
-
-<SUBSECTION>
-GWin32RegistrySubkeyIter
-g_win32_registry_subkey_iter_copy
-g_win32_registry_subkey_iter_free
-g_win32_registry_subkey_iter_assign
-
-<SUBSECTION>
-GWin32RegistryValueIter
-g_win32_registry_value_iter_copy
-g_win32_registry_value_iter_free
-g_win32_registry_value_iter_assign
-
-<SUBSECTION>
-GWin32RegistryKey
-g_win32_registry_key_new
-g_win32_registry_key_new_w
-g_win32_registry_key_get_child
-g_win32_registry_key_get_child_w
-
-<SUBSECTION>
-g_win32_registry_subkey_iter_init
-g_win32_registry_subkey_iter_clear
-g_win32_registry_subkey_iter_n_subkeys
-g_win32_registry_subkey_iter_next
-g_win32_registry_subkey_iter_get_name
-g_win32_registry_subkey_iter_get_name_w
-
-<SUBSECTION>
-g_win32_registry_value_iter_init
-g_win32_registry_value_iter_clear
-g_win32_registry_value_iter_n_values
-g_win32_registry_value_iter_next
-GWin32RegistryValueType
-g_win32_registry_value_iter_get_value_type
-g_win32_registry_value_iter_get_name
-g_win32_registry_value_iter_get_name_w
-g_win32_registry_value_iter_get_data
-g_win32_registry_value_iter_get_data_w
-
-<SUBSECTION>
-g_win32_registry_key_get_value
-g_win32_registry_key_get_value_w
-g_win32_registry_key_get_path
-g_win32_registry_key_get_path_w
-GWin32RegistryKeyWatchCallbackFunc
-GWin32RegistryKeyWatcherFlags
-g_win32_registry_key_watch
-g_win32_registry_key_has_changed
-g_win32_registry_key_erase_change_indicator
-
-<SUBSECTION Standard>
-GWin32RegistryKeyClass
-
-<SUBSECTION Private>
-GWin32RegistryKeyPrivate
-g_win32_registry_key_get_type
-g_win32_registry_subkey_iter_get_type
-g_win32_registry_value_iter_get_type
-G_TYPE_WIN32_REGISTRY_KEY
-G_WIN32_REGISTRY_KEY
-G_WIN32_REGISTRY_KEY_CLASS
-G_IS_WIN32_REGISTRY_KEY
-G_IS_WIN32_REGISTRY_KEY_CLASS
-G_WIN32_REGISTRY_KEY_GET_CLASS
 </SECTION>

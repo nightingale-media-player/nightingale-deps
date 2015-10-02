@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-String-Utility-Functions.html" title="String Utility Functions">
 <link rel="next" href="glib-Unicode-Manipulation.html" title="Unicode Manipulation">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -286,7 +286,7 @@ encoding for file names in the file system.</p>
 name encodings correctly.</p>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem"><p>If you get a file name from the file system from a function
-such as <code class="function">readdir()</code> or <a href="http://developer.gnome.org/gtk3/GtkFileChooser.html#gtk-file-chooser-get-filename"><code class="function">gtk_file_chooser_get_filename()</code></a>, you do
+such as <code class="function">readdir()</code> or <a href="http://developer.gnome.org/gtk2/GtkFileChooser.html#gtk-file-chooser-get-filename"><code class="function">gtk_file_chooser_get_filename()</code></a>, you do
 not need to do any conversion to pass that file name to
 functions like <code class="function">open()</code>, <code class="function">rename()</code>, or <code class="function">fopen()</code> -- those are "raw"
 file names which the file system understands.</p></li>
@@ -407,6 +407,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 nul-terminated string, which must be freed with
 <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. Otherwise <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> and <em class="parameter"><code>error</code></em>
 will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -516,6 +517,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 nul-terminated string, which must be freed with
 <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. Otherwise <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> and <em class="parameter"><code>error</code></em>
 will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -601,6 +603,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 nul-terminated string, which must be freed with
 <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. Otherwise <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> and <em class="parameter"><code>error</code></em>
 will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -640,6 +643,7 @@ more convenient than the raw iconv wrappers.</p>
 <a name="id-1.5.3.7.5.7"></a><h4>Returns</h4>
 <p> a "conversion descriptor", or (GIConv)-1 if
 opening the converter failed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -698,6 +702,7 @@ more convenient than the raw iconv wrappers.</p>
 <div class="refsect3">
 <a name="id-1.5.3.7.6.7"></a><h4>Returns</h4>
 <p> count of non-reversible conversions, or -1 on error</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -730,6 +735,7 @@ more convenient than the raw iconv wrappers.</p>
 <div class="refsect3">
 <a name="id-1.5.3.7.7.7"></a><h4>Returns</h4>
 <p> -1 on error, 0 on success</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -800,6 +806,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 <a name="id-1.5.3.7.8.6"></a><h4>Returns</h4>
 <p> A newly-allocated buffer containing the converted string,
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on an error, and error will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -869,6 +876,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 <div class="refsect3">
 <a name="id-1.5.3.7.9.6"></a><h4>Returns</h4>
 <p> The converted string, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on an error.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -983,8 +991,9 @@ on a system might be in any random encoding or just gibberish.</p>
 <div class="refsect3">
 <a name="id-1.5.3.7.11.10"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the filename encoding is UTF-8.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1025,8 +1034,9 @@ translation of filenames.</p>
 <a name="id-1.5.3.7.12.8"></a><h4>Returns</h4>
 <p> a newly allocated string containing
 a rendition of the filename in valid UTF-8</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1067,8 +1077,9 @@ whole path, as it allows translation.</p>
 <a name="id-1.5.3.7.13.9"></a><h4>Returns</h4>
 <p> a newly allocated string containing
 a rendition of the basename of the filename in valid UTF-8</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1138,6 +1149,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 <a name="id-1.5.3.7.14.6"></a><h4>Returns</h4>
 <p> A newly-allocated buffer containing the converted string,
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on an error, and error will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1178,6 +1190,7 @@ name, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"
 <div class="refsect3">
 <a name="id-1.5.3.7.15.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the returned charset is UTF-8</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1190,6 +1203,7 @@ g_get_codeset (<em class="parameter"><code><span class="type">void</span></code>
 <a name="id-1.5.3.7.16.5"></a><h4>Returns</h4>
 <p> a newly allocated string containing the name
 of the character set. This string must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
 </div>
 </div>
@@ -1280,6 +1294,7 @@ error domains.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

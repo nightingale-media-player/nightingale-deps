@@ -30,9 +30,9 @@ m4_define(glib_configure_ac)
 # <mclasen> on the unstable (ie master), interface age = 0
 
 m4_define([glib_major_version], [2])
-m4_define([glib_minor_version], [45])
-m4_define([glib_micro_version], [8])
-m4_define([glib_interface_age], [0])
+m4_define([glib_minor_version], [44])
+m4_define([glib_micro_version], [1])
+m4_define([glib_interface_age], [1])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
 m4_define([glib_version],
@@ -223,15 +223,6 @@ AS_IF([test "x$glib_have_cocoa" = "xyes"], [
   AC_DEFINE(HAVE_COCOA, 1, [define to 1 if Cocoa is available])
   COCOA_LIBS="-Wl,-framework,Foundation"
   LDFLAGS="$LDFLAGS $COCOA_LIBS"
-
-  osx_version=`sw_vers -productVersion`
-  osx_min_version="10.9.0"
-  AC_MSG_CHECKING([OSX version >= $osx_min_version])
-  AS_VERSION_COMPARE([$osx_version], [$osx_min_version], [
-    AC_MSG_RESULT([no])
-    AC_MSG_ERROR([OSX version is too old!])
-  ])
-  AC_MSG_RESULT([yes])
 ], [COCOA_LIBS=""])
 
 AC_SUBST([COCOA_LIBS])
@@ -525,7 +516,7 @@ AM_CONDITIONAL(OS_WIN32_AND_DLL_COMPILATION, [test x$glib_native_win32 = xyes -a
 # Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(mmap posix_memalign memalign valloc fsync pipe2 issetugid)
-AC_CHECK_FUNCS(timegm gmtime_r strerror_r)
+AC_CHECK_FUNCS(timegm gmtime_r)
 
 AC_CACHE_CHECK([for __libc_enable_secure], glib_cv_have_libc_enable_secure,
   [AC_TRY_LINK([#include <unistd.h>
@@ -800,7 +791,7 @@ AC_HEADER_MAJOR
 AC_CHECK_HEADERS([xlocale.h])
 
 # check for structure fields
-AC_CHECK_MEMBERS([struct stat.st_mtimensec, struct stat.st_mtim.tv_nsec, struct stat.st_atimensec, struct stat.st_atim.tv_nsec, struct stat.st_ctimensec, struct stat.st_ctim.tv_nsec, struct stat.st_birthtime, struct stat.st_birthtimensec, struct stat.st_birthtim, struct stat.st_birthtim.tv_nsec])
+AC_CHECK_MEMBERS([struct stat.st_mtimensec, struct stat.st_mtim.tv_nsec, struct stat.st_atimensec, struct stat.st_atim.tv_nsec, struct stat.st_ctimensec, struct stat.st_ctim.tv_nsec])
 AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct statfs.f_fstypename, struct statfs.f_bavail],,, [#include <sys/types.h>
 #include <sys/stat.h>
 #ifdef G_OS_UNIX
@@ -1686,6 +1677,22 @@ AC_CHECK_HEADERS([sys/event.h],
 
 AM_CONDITIONAL(HAVE_KQUEUE, [test "$kqueue_support" = "yes"])
 
+dnl *********************************
+dnl ** Check for Solaris FEN (GIO) **
+dnl *********************************
+fen_support=no
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <port.h> 
+#ifndef PORT_SOURCE_FILE 
+#error "Please upgrade to Nevada 72 or above to suppoert FEN" 
+#endif 
+int main() { return 0; } ]])],
+[
+	fen_support=yes
+],)
+
+AM_CONDITIONAL(HAVE_FEN, [test "$fen_support" = "yes"])
+
 dnl ****************************
 dnl *** Checks for FAM (GIO) ***
 dnl ****************************
@@ -2537,9 +2544,29 @@ int error = EILSEQ;
 ], have_eilseq=yes, have_eilseq=no);
 AC_MSG_RESULT($have_eilseq)
 
-dnl Add a conditional we can use when cross-compiling, so we avoid running
-dnl binaries
+dnl ******************************************************************
+dnl *** If we are cross-compiling, look for glib-genmarshal and    ***
+dnl *** glib-compile-schemas in PATH                               ***
+dnl ******************************************************************
+
 AM_CONDITIONAL(CROSS_COMPILING, test $cross_compiling = yes)
+
+AS_IF([ test $cross_compiling = yes ], [
+  AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal, no)
+  if test x$GLIB_GENMARSHAL = xno; then
+    AC_MSG_ERROR(Could not find a glib-genmarshal in your PATH)
+  fi
+
+  AC_PATH_PROG(GLIB_COMPILE_SCHEMAS, glib-compile-schemas, no)
+  if test x$GLIB_COMPILE_SCHEMAS = xno; then
+    AC_MSG_ERROR(Could not find a glib-compile-schemas in your PATH)
+  fi
+
+  AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, no)
+  if test x$GLIB_COMPILE_RESOURCES = xno; then
+    AC_MSG_ERROR(Could not find a glib-compile-resources in your PATH)
+  fi
+])
 
 dnl **************************
 dnl *** Checks for gtk-doc ***
@@ -2583,7 +2610,7 @@ AS_IF([test "$enable_man" != no], [
   dnl check for DocBook XSL stylesheets in the local catalog
   JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl],
      [DocBook XSL Stylesheets], [have_docbook_style=yes],[have_docbook_style=no])
-  AS_IF([ test "$have_docbook_style" != yes ], [
+  AS_IF([ test "$have_docbook_dtd" != yes ], [
     AS_IF([ test "$enable_man" = yes ], [
       AC_MSG_ERROR([DocBook XSL Stylesheets are required for --enable-man])
     ])
@@ -3565,12 +3592,9 @@ build/Makefile
 build/win32/Makefile
 build/win32/dirent/Makefile
 build/win32/vs9/Makefile
-build/win32/vs9/glib-gen-srcs.vsprops
 build/win32/vs10/Makefile
-build/win32/vs10/glib-gen-srcs.props
 build/win32/vs11/Makefile
 build/win32/vs12/Makefile
-build/win32/vs14/Makefile
 glib/Makefile
 glib/glib.stp
 glib/libcharset/Makefile
@@ -3592,6 +3616,7 @@ gio/gnetworking.h
 gio/xdgmime/Makefile
 gio/inotify/Makefile
 gio/kqueue/Makefile
+gio/fen/Makefile
 gio/fam/Makefile
 gio/win32/Makefile
 gio/tests/Makefile

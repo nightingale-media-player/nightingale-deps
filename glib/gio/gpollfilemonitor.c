@@ -35,7 +35,7 @@ struct _GPollFileMonitor
   GFileMonitor parent_instance;
   GFile *file;
   GFileInfo *last_info;
-  GSource *timeout;
+  guint timeout;
 };
 
 #define POLL_TIME_SECS 5
@@ -72,6 +72,20 @@ g_poll_file_monitor_init (GPollFileMonitor* poll_monitor)
 {
 }
 
+static int 
+safe_strcmp (const char *a, 
+             const char *b)
+{
+  if (a == NULL && b == NULL)
+    return 0;
+  if (a == NULL)
+    return -1;
+  if (b == NULL)
+    return 1;
+  
+  return strcmp (a, b);
+}
+
 static int
 calc_event_type (GFileInfo *last,
 		 GFileInfo *new)
@@ -85,10 +99,12 @@ calc_event_type (GFileInfo *last,
   if (last != NULL && new == NULL)
     return G_FILE_MONITOR_EVENT_DELETED;
 
-  if (g_strcmp0 (g_file_info_get_etag (last), g_file_info_get_etag (new)))
+  if (safe_strcmp (g_file_info_get_etag (last),
+		   g_file_info_get_etag (new)))
     return G_FILE_MONITOR_EVENT_CHANGED;
   
-  if (g_file_info_get_size (last) != g_file_info_get_size (new))
+  if (g_file_info_get_size (last) !=
+      g_file_info_get_size (new))
     return G_FILE_MONITOR_EVENT_CHANGED;
 
   return -1;
@@ -115,8 +131,7 @@ got_new_info (GObject      *source_object,
 				     poll_monitor->file,
 				     NULL, event);
 	  /* We're polling so slowly anyway, so always emit the done hint */
-	  if (!g_file_monitor_is_cancelled (G_FILE_MONITOR (poll_monitor)) &&
-             (event == G_FILE_MONITOR_EVENT_CHANGED || event == G_FILE_MONITOR_EVENT_CREATED))
+	  if (event == G_FILE_MONITOR_EVENT_CHANGED)
 	    g_file_monitor_emit_event (G_FILE_MONITOR (poll_monitor),
 				       poll_monitor->file,
 				       NULL, G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT);
@@ -156,10 +171,8 @@ poll_file_timeout (gpointer data)
 static void
 schedule_poll_timeout (GPollFileMonitor* poll_monitor)
 {
-  poll_monitor->timeout = g_timeout_source_new_seconds (POLL_TIME_SECS);
-  g_source_set_callback (poll_monitor->timeout, poll_file_timeout, poll_monitor, NULL);
-  g_source_attach (poll_monitor->timeout, g_main_context_get_thread_default ());
-}
+  poll_monitor->timeout = g_timeout_add_seconds (POLL_TIME_SECS, poll_file_timeout, poll_monitor);
+ }
 
 static void
 got_initial_info (GObject      *source_object,
@@ -180,7 +193,7 @@ got_initial_info (GObject      *source_object,
 }
 
 /**
- * _g_poll_file_monitor_new:
+ * g_poll_file_monitor_new:
  * @file: a #GFile.
  * 
  * Polls @file for changes.
@@ -209,9 +222,8 @@ g_poll_file_monitor_cancel (GFileMonitor* monitor)
   
   if (poll_monitor->timeout)
     {
-      g_source_destroy (poll_monitor->timeout);
-      g_source_unref (poll_monitor->timeout);
-      poll_monitor->timeout = NULL;
+      g_source_remove (poll_monitor->timeout);
+      poll_monitor->timeout = 0;
     }
   
   return TRUE;

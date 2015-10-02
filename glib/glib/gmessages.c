@@ -106,7 +106,7 @@
  *
  * For example, GTK+ uses this in its Makefile.am:
  * |[
- * AM_CPPFLAGS = -DG_LOG_DOMAIN=\"Gtk\"
+ * INCLUDES = -DG_LOG_DOMAIN=\"Gtk\"
  * ]|
  */
 
@@ -180,10 +180,6 @@
  *
  * A convenience function/macro to log a warning message.
  *
- * This is not intended for end user error reporting. Use of #GError is
- * preferred for that instead, as it allows calling functions to perform actions
- * conditional on the type of error.
- *
  * You can make warnings fatal at runtime by setting the `G_DEBUG`
  * environment variable (see
  * [Running GLib Applications](glib-running.html)).
@@ -220,10 +216,6 @@
  *     into the format string (as with printf())
  *
  * A convenience function/macro to log an error message.
- *
- * This is not intended for end user error reporting. Use of #GError is
- * preferred for that instead, as it allows calling functions to perform actions
- * conditional on the type of error.
  *
  * Error messages are always fatal, resulting in a call to
  * abort() to terminate the application. This function will
@@ -287,7 +279,6 @@ struct _GLogHandler
   GLogLevelFlags log_level;
   GLogFunc	 log_func;
   gpointer	 data;
-  GDestroyNotify destroy;
   GLogHandler	*next;
 };
 
@@ -575,37 +566,9 @@ g_log_set_fatal_mask (const gchar   *log_domain,
  */
 guint
 g_log_set_handler (const gchar	 *log_domain,
-                   GLogLevelFlags log_levels,
-                   GLogFunc       log_func,
-                   gpointer       user_data)
-{
-  return g_log_set_handler_full (log_domain, log_levels, log_func, user_data, NULL);
-}
-
-/**
- * g_log_set_handler_full: (rename-to g_log_set_handler)
- * @log_domain: (allow-none): the log domain, or %NULL for the default ""
- *     application domain
- * @log_levels: the log levels to apply the log handler for.
- *     To handle fatal and recursive messages as well, combine
- *     the log levels with the #G_LOG_FLAG_FATAL and
- *     #G_LOG_FLAG_RECURSION bit flags.
- * @log_func: the log handler function
- * @user_data: data passed to the log handler
- * @destroy: destroy notify for @user_data, or %NULL
- *
- * Like g_log_sets_handler(), but takes a destroy notify for the @user_data.
- *
- * Returns: the id of the new handler
- *
- * Since: 2.46
- */
-guint
-g_log_set_handler_full (const gchar    *log_domain,
-                        GLogLevelFlags  log_levels,
-                        GLogFunc        log_func,
-                        gpointer        user_data,
-                        GDestroyNotify  destroy)
+		   GLogLevelFlags log_levels,
+		   GLogFunc	  log_func,
+		   gpointer	  user_data)
 {
   static guint handler_id = 0;
   GLogDomain *domain;
@@ -629,7 +592,6 @@ g_log_set_handler_full (const gchar    *log_domain,
   handler->log_level = log_levels;
   handler->log_func = log_func;
   handler->data = user_data;
-  handler->destroy = destroy;
   handler->next = domain->handlers;
   domain->handlers = handler;
 
@@ -737,8 +699,6 @@ g_log_remove_handler (const gchar *log_domain,
 		domain->handlers = work->next;
 	      g_log_domain_check_free_L (domain); 
 	      g_mutex_unlock (&g_messages_lock);
-              if (work->destroy)
-                work->destroy (work->data);
 	      g_free (work);
 	      return;
 	    }

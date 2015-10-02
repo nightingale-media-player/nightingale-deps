@@ -185,6 +185,8 @@ application_sources = \
 local_sources = \
 	ghttpproxy.c			\
 	ghttpproxy.h			\
+	glocaldirectorymonitor.c 	\
+	glocaldirectorymonitor.h 	\
 	glocalfile.c 			\
 	glocalfile.h 			\
 	glocalfileenumerator.c 		\
@@ -227,6 +229,13 @@ platform_libadd += kqueue/libkqueue.la
 platform_deps += kqueue/libkqueue.la
 endif
 
+if HAVE_FEN
+AM_CPPFLAGS += -DHAVE_FEN
+SUBDIRS += fen
+platform_libadd += fen/libfen.la
+platform_deps += fen/libfen.la
+endif
+
 if OS_WIN32
 SUBDIRS += win32
 platform_libadd += win32/libgiowin32.la
@@ -265,9 +274,6 @@ unix_sources = \
 	ggtknotificationbackend.c \
 	$(NULL)
 
-if OS_COCOA
-unix_sources += gcocoanotificationbackend.c
-endif
 
 giounixincludedir=$(includedir)/gio-unix-2.0/gio
 giounixinclude_HEADERS = \
@@ -302,8 +308,6 @@ gdbus_daemon_sources = \
 
 win32_actual_sources = \
 	$(gdbus_daemon_sources) \
-	gwin32registrykey.c \
-	gwin32registrykey.h \
 	gcontenttype-win32.c \
 	gwin32mount.c \
 	gwin32mount.h \
@@ -318,12 +322,11 @@ win32_actual_sources = \
 win32_more_sources_for_vcproj = \
 	gwin32appinfo.c \
 	gregistrysettingsbackend.c \
+	win32/gwin32directorymonitor.c \
 	win32/gwinhttpfile.c \
 	win32/gwinhttpfileinputstream.c \
 	win32/gwinhttpfileoutputstream.c \
-	win32/gwinhttpvfs.c \
-	win32/gwin32fsmonitorutils.c \
-	win32/gwin32filemonitor.c
+	win32/gwinhttpvfs.c
 
 if OS_WIN32
 appinfo_sources += gwin32appinfo.c gwin32appinfo.h
@@ -405,8 +408,6 @@ libgio_2_0_la_SOURCES =		\
 	gmountoperation.c 	\
 	gnativevolumemonitor.c 	\
 	gnativevolumemonitor.h 	\
-	gnativesocketaddress.c	\
-	gnativesocketaddress.h	\
 	gnetworkaddress.c	\
 	gnetworking.c		\
 	gnetworkingprivate.h	\
@@ -527,7 +528,7 @@ libgio_2_0_la_LDFLAGS = $(GLIB_LINK_FLAGS) \
 if OS_COCOA
 # This is dumb.  The ObjC source file should be properly named .m
 libgio_2_0_la_CFLAGS += -xobjective-c
-libgio_2_0_la_LDFLAGS += -Wl,-framework,Foundation -Wl,-framework,AppKit
+libgio_2_0_la_LDFLAGS += -Wl,-framework,Foundation
 endif
 
 libgio_2_0_la_DEPENDENCIES = $(gio_win32_res) $(gio_def) $(platform_deps)
@@ -706,7 +707,6 @@ bin_PROGRAMS = gio-querymodules glib-compile-schemas glib-compile-resources gset
 
 glib_compile_resources_LDADD = libgio-2.0.la 		\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
-	$(top_builddir)/gmodule/libgmodule-2.0.la 	\
 	$(top_builddir)/glib/libglib-2.0.la 		\
 	$(NULL)
 
@@ -736,7 +736,6 @@ glib_compile_schemas_SOURCES = \
 
 gsettings_LDADD = libgio-2.0.la 			\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
-	$(top_builddir)/gmodule/libgmodule-2.0.la 	\
 	$(top_builddir)/glib/libglib-2.0.la		\
 	$(NULL)
 gsettings_SOURCES = gsettings-tool.c
@@ -751,7 +750,6 @@ bin_PROGRAMS += gdbus
 gdbus_SOURCES = gdbus-tool.c
 gdbus_LDADD = libgio-2.0.la 				\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
-	$(top_builddir)/gmodule/libgmodule-2.0.la 	\
 	$(top_builddir)/glib/libglib-2.0.la		\
 	$(NULL)
 
@@ -762,7 +760,6 @@ bin_PROGRAMS += gapplication
 gapplication_SOURCES = gapplication-tool.c
 gapplication_LDADD = libgio-2.0.la 			\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
-	$(top_builddir)/gmodule/libgmodule-2.0.la 	\
 	$(top_builddir)/glib/libglib-2.0.la		\
 	$(NULL)
 endif
@@ -783,39 +780,49 @@ gresource_SOURCES = gresource-tool.c
 gresource_CPPFLAGS = $(LIBELF_CFLAGS) $(AM_CPPFLAGS)
 gresource_LDADD = libgio-2.0.la				\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
-	$(top_builddir)/gmodule/libgmodule-2.0.la 	\
 	$(top_builddir)/glib/libglib-2.0.la		\
 	$(LIBELF_LIBS)
 
 # ------------------------------------------------------------------------
-# ------ MSVC Project File Generation ------
-MSVCPROJS = gio glib-compile-resources glib-compile-schemas
 
-gio_FILES = $(libgio_2_0_la_SOURCES) $(win32_actual_sources) $(win32_more_sources_for_vcproj)
-gio_EXCLUDES = gunix*.c|gdesktopappinfo.c|gnetworkmonitornetlink.c|gcontenttype.c|gnetworkmonitornm.c
-
-gio_HEADERS_DIR = $(includedir)/glib-2.0/gio
-gio_HEADERS_INST = $(gioinclude_HEADERS) $(nodist_gioinclude_HEADERS)
-gio_HEADERS_EXCLUDES = dummy
-
-glib_compile_resources_FILES = $(glib_compile_resources_SOURCES)
-glib_compile_resources_EXCLUDES = dummy
-
-glib_compile_schemas_FILES = $(glib_compile_schemas_SOURCES)
-glib_compile_schemas_EXCLUDES = dummy
-
-include $(top_srcdir)/build/Makefile.msvcproj
-
-dist-hook: \
-	$(BUILT_EXTRA_DIST)	\
-	$(top_builddir)/build/win32/vs9/gio.vcproj	\
-	$(top_builddir)/build/win32/vs9/gio.headers	\
-	$(top_builddir)/build/win32/vs9/glib-compile-schemas.vcproj	\
-	$(top_builddir)/build/win32/vs9/glib-compile-resources.vcproj
+dist-hook: $(BUILT_EXTRA_DIST) ../build/win32/vs9/gio.vcproj ../build/win32/vs10/gio.vcxproj ../build/win32/vs10/gio.vcxproj.filters
 	files='$(BUILT_EXTRA_DIST)'; \
 	for f in $$files; do \
 	  if test -f $$f; then d=.; else d=$(srcdir); fi; \
 	  cp $$d/$$f $(distdir) || exit 1; done
+
+../build/win32/vs9/gio.vcproj: $(top_srcdir)/build/win32/vs9/gio.vcprojin
+	for F in `echo $(libgio_2_0_la_SOURCES) $(win32_actual_sources) $(win32_more_sources_for_vcproj) | tr '/' '\\'`; do \
+		case $$F in \
+		gunix*.c|gdesktopappinfo.c|gnetworkmonitornetlink.c|gcontenttype.c|gnetworkmonitornm.c) ;; \
+		*.c) echo '   <File RelativePath="..\..\..\gio\'$$F'" />' \
+		     ;; \
+		esac; \
+	done | sort -u >libgio.sourcefiles
+	$(CPP) -P - <$(top_srcdir)/build/win32/vs9/gio.vcprojin >$@
+	rm libgio.sourcefiles
+
+../build/win32/vs10/gio.vcxproj: $(top_srcdir)/build/win32/vs10/gio.vcxprojin
+	for F in `echo $(libgio_2_0_la_SOURCES) $(win32_actual_sources) $(win32_more_sources_for_vcproj) | tr '/' '\\'`; do \
+		case $$F in \
+		gunix*.c|gdesktopappinfo.c|gnetworkmonitornetlink.c|gcontenttype.c|gnetworkmonitornm.c) ;; \
+		*.c) echo '    <ClCompile Include="..\..\..\gio\'$$F'" />' \
+		     ;; \
+		esac; \
+	done | sort -u >libgio.vs10.sourcefiles
+	$(CPP) -P - <$(top_srcdir)/build/win32/vs10/gio.vcxprojin >$@
+	rm libgio.vs10.sourcefiles
+
+../build/win32/vs10/gio.vcxproj.filters: $(top_srcdir)/build/win32/vs10/gio.vcxproj.filtersin
+	for F in `echo $(libgio_2_0_la_SOURCES) $(win32_actual_sources) $(win32_more_sources_for_vcproj) | tr '/' '\\'`; do \
+		case $$F in \
+		gunix*.c|gdesktopappinfo.c|gnetworkmonitornetlink.c|gcontenttype.c|gnetworkmonitornm.c) ;; \
+		*.c) echo '    <ClCompile Include="..\..\..\gio\'$$F'"><Filter>Source Files</Filter></ClCompile>' \
+		     ;; \
+		esac; \
+	done | sort -u >libgio.vs10.sourcefiles.filters
+	$(CPP) -P - <$(top_srcdir)/build/win32/vs10/gio.vcxproj.filtersin >$@
+	rm libgio.vs10.sourcefiles.filters
 
 if HAVE_GLIB_RUNTIME_LIBDIR
 install-data-hook:

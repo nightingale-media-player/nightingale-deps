@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<book xmlns="http://www.devhelp.net/book" title="GLib Reference Manual" link="index.html" author="" name="glib" version="2" language="c" online="https://developer.gnome.org/glib/unstable/">
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GLib Reference Manual" link="index.html" author="" name="glib" version="2" language="c">
   <chapters>
     <sub name="GLib Overview" link="glib.html">
       <sub name="Compiling the GLib package" link="glib-building.html"/>
@@ -122,10 +123,15 @@
     <sub name="Index of new symbols in 2.40" link="api-index-2-40.html"/>
     <sub name="Index of new symbols in 2.42" link="api-index-2-42.html"/>
     <sub name="Index of new symbols in 2.44" link="api-index-2-44.html"/>
-    <sub name="Index of new symbols in 2.46" link="api-index-2-46.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
   <functions>
+    <keyword type="" name="Threads" link="glib-programming.html#id-1.2.5.3.2"/>
+    <keyword type="" name="Security" link="glib-programming.html#id-1.2.5.3.3"/>
+    <keyword type="" name="Environment variables" link="glib-running.html#id-1.2.7.3.2"/>
+    <keyword type="" name="Locale" link="glib-running.html#setlocale"/>
+    <keyword type="" name="SystemTap" link="glib-running.html#id-1.2.7.3.8"/>
+    <keyword type="" name="Memory statistics" link="glib-running.html#id-1.2.7.3.9"/>
     <keyword type="function" name="glib_check_version ()" link="glib-Version-Information.html#glib-check-version" since="2.6"/>
     <keyword type="macro" name="GLIB_CHECK_VERSION()" link="glib-Version-Information.html#GLIB-CHECK-VERSION:CAPS"/>
     <keyword type="macro" name="GLIB_VERSION_2_26" link="glib-Version-Information.html#GLIB-VERSION-2-26:CAPS" since="2.32"/>
@@ -138,7 +144,6 @@
     <keyword type="macro" name="GLIB_VERSION_2_40" link="glib-Version-Information.html#GLIB-VERSION-2-40:CAPS" since="2.40"/>
     <keyword type="macro" name="GLIB_VERSION_2_42" link="glib-Version-Information.html#GLIB-VERSION-2-42:CAPS" since="2.42"/>
     <keyword type="macro" name="GLIB_VERSION_2_44" link="glib-Version-Information.html#GLIB-VERSION-2-44:CAPS" since="2.44"/>
-    <keyword type="macro" name="GLIB_VERSION_2_46" link="glib-Version-Information.html#GLIB-VERSION-2-46:CAPS" since="2.46"/>
     <keyword type="macro" name="GLIB_VERSION_MIN_REQUIRED" link="glib-Version-Information.html#GLIB-VERSION-MIN-REQUIRED:CAPS" since="2.32"/>
     <keyword type="macro" name="GLIB_VERSION_MAX_ALLOWED" link="glib-Version-Information.html#GLIB-VERSION-MAX-ALLOWED:CAPS" since="2.32"/>
     <keyword type="variable" name="glib_major_version" link="glib-Version-Information.html#glib-major-version"/>
@@ -585,7 +590,6 @@
     <keyword type="function" name="g_thread_pool_set_sort_function ()" link="glib-Thread-Pools.html#g-thread-pool-set-sort-function" since="2.10"/>
     <keyword type="function" name="g_thread_pool_set_max_idle_time ()" link="glib-Thread-Pools.html#g-thread-pool-set-max-idle-time" since="2.10"/>
     <keyword type="function" name="g_thread_pool_get_max_idle_time ()" link="glib-Thread-Pools.html#g-thread-pool-get-max-idle-time" since="2.10"/>
-    <keyword type="function" name="g_thread_pool_move_to_front ()" link="glib-Thread-Pools.html#g-thread-pool-move-to-front" since="2.46"/>
     <keyword type="struct" name="struct GThreadPool" link="glib-Thread-Pools.html#GThreadPool"/>
     <keyword type="function" name="g_async_queue_new ()" link="glib-Asynchronous-Queues.html#g-async-queue-new"/>
     <keyword type="function" name="g_async_queue_new_full ()" link="glib-Asynchronous-Queues.html#g-async-queue-new-full" since="2.16"/>
@@ -593,8 +597,6 @@
     <keyword type="function" name="g_async_queue_unref ()" link="glib-Asynchronous-Queues.html#g-async-queue-unref"/>
     <keyword type="function" name="g_async_queue_push ()" link="glib-Asynchronous-Queues.html#g-async-queue-push"/>
     <keyword type="function" name="g_async_queue_push_sorted ()" link="glib-Asynchronous-Queues.html#g-async-queue-push-sorted" since="2.10"/>
-    <keyword type="function" name="g_async_queue_push_front ()" link="glib-Asynchronous-Queues.html#g-async-queue-push-front" since="2.46"/>
-    <keyword type="function" name="g_async_queue_remove ()" link="glib-Asynchronous-Queues.html#g-async-queue-remove" since="2.46"/>
     <keyword type="function" name="g_async_queue_pop ()" link="glib-Asynchronous-Queues.html#g-async-queue-pop"/>
     <keyword type="function" name="g_async_queue_try_pop ()" link="glib-Asynchronous-Queues.html#g-async-queue-try-pop"/>
     <keyword type="function" name="g_async_queue_timeout_pop ()" link="glib-Asynchronous-Queues.html#g-async-queue-timeout-pop"/>
@@ -606,8 +608,6 @@
     <keyword type="function" name="g_async_queue_unref_and_unlock ()" link="glib-Asynchronous-Queues.html#g-async-queue-unref-and-unlock" deprecated=""/>
     <keyword type="function" name="g_async_queue_push_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-push-unlocked"/>
     <keyword type="function" name="g_async_queue_push_sorted_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-push-sorted-unlocked" since="2.10"/>
-    <keyword type="function" name="g_async_queue_push_front_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-push-front-unlocked" since="2.46"/>
-    <keyword type="function" name="g_async_queue_remove_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-remove-unlocked" since="2.46"/>
     <keyword type="function" name="g_async_queue_pop_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-pop-unlocked"/>
     <keyword type="function" name="g_async_queue_try_pop_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-try-pop-unlocked"/>
     <keyword type="function" name="g_async_queue_timeout_pop_unlocked ()" link="glib-Asynchronous-Queues.html#g-async-queue-timeout-pop-unlocked"/>
@@ -656,12 +656,12 @@
     <keyword type="macro" name="g_newa()" link="glib-Memory-Allocation.html#g-newa"/>
     <keyword type="macro" name="g_memmove()" link="glib-Memory-Allocation.html#g-memmove" deprecated="2.40: Just use memmove()."/>
     <keyword type="function" name="g_memdup ()" link="glib-Memory-Allocation.html#g-memdup"/>
-    <keyword type="function" name="g_mem_set_vtable ()" link="glib-Memory-Allocation.html#g-mem-set-vtable" deprecated="2.46: Use other memory profiling tools instead"/>
-    <keyword type="function" name="g_mem_is_system_malloc ()" link="glib-Memory-Allocation.html#g-mem-is-system-malloc" deprecated=""/>
-    <keyword type="function" name="g_mem_profile ()" link="glib-Memory-Allocation.html#g-mem-profile" deprecated="2.46: Use other memory profiling tools instead"/>
+    <keyword type="function" name="g_mem_set_vtable ()" link="glib-Memory-Allocation.html#g-mem-set-vtable"/>
+    <keyword type="function" name="g_mem_is_system_malloc ()" link="glib-Memory-Allocation.html#g-mem-is-system-malloc"/>
+    <keyword type="function" name="g_mem_profile ()" link="glib-Memory-Allocation.html#g-mem-profile"/>
     <keyword type="variable" name="g_mem_gc_friendly" link="glib-Memory-Allocation.html#g-mem-gc-friendly"/>
     <keyword type="struct" name="struct GMemVTable" link="glib-Memory-Allocation.html#GMemVTable"/>
-    <keyword type="variable" name="glib_mem_profiler_table" link="glib-Memory-Allocation.html#glib-mem-profiler-table" deprecated="2.46: Use other memory profiling tools instead"/>
+    <keyword type="variable" name="glib_mem_profiler_table" link="glib-Memory-Allocation.html#glib-mem-profiler-table"/>
     <keyword type="function" name="g_slice_alloc ()" link="glib-Memory-Slices.html#g-slice-alloc" since="2.10"/>
     <keyword type="function" name="g_slice_alloc0 ()" link="glib-Memory-Slices.html#g-slice-alloc0" since="2.10"/>
     <keyword type="function" name="g_slice_copy ()" link="glib-Memory-Slices.html#g-slice-copy" since="2.14"/>
@@ -762,7 +762,6 @@
     <keyword type="macro" name="g_info()" link="glib-Message-Logging.html#g-info" since="2.40"/>
     <keyword type="macro" name="g_debug()" link="glib-Message-Logging.html#g-debug" since="2.6"/>
     <keyword type="function" name="g_log_set_handler ()" link="glib-Message-Logging.html#g-log-set-handler"/>
-    <keyword type="function" name="g_log_set_handler_full ()" link="glib-Message-Logging.html#g-log-set-handler-full" since="2.46"/>
     <keyword type="function" name="g_log_remove_handler ()" link="glib-Message-Logging.html#g-log-remove-handler"/>
     <keyword type="function" name="g_log_set_always_fatal ()" link="glib-Message-Logging.html#g-log-set-always-fatal"/>
     <keyword type="function" name="g_log_set_fatal_mask ()" link="glib-Message-Logging.html#g-log-set-fatal-mask"/>
@@ -1213,7 +1212,7 @@
     <keyword type="function" name="g_format_size ()" link="glib-Miscellaneous-Utility-Functions.html#g-format-size" since="2.30"/>
     <keyword type="function" name="g_format_size_full ()" link="glib-Miscellaneous-Utility-Functions.html#g-format-size-full" since="2.30"/>
     <keyword type="function" name="g_format_size_for_display ()" link="glib-Miscellaneous-Utility-Functions.html#g-format-size-for-display" deprecated="" since="2.16"/>
-    <keyword type="function" name="g_find_program_in_path ()" link="glib-Miscellaneous-Utility-Functions.html#g-find-program-in-path"/>
+    <keyword type="function" name="g_find_program_in_path ()" link="glib-Miscellaneous-Utility-Functions.html#g-find-program-in-path" deprecated=""/>
     <keyword type="function" name="g_bit_nth_lsf ()" link="glib-Miscellaneous-Utility-Functions.html#g-bit-nth-lsf"/>
     <keyword type="function" name="g_bit_nth_msf ()" link="glib-Miscellaneous-Utility-Functions.html#g-bit-nth-msf"/>
     <keyword type="function" name="g_bit_storage ()" link="glib-Miscellaneous-Utility-Functions.html#g-bit-storage"/>
@@ -1449,6 +1448,20 @@
     <keyword type="enum" name="enum GRegexMatchFlags" link="glib-Perl-compatible-regular-expressions.html#GRegexMatchFlags" since="2.14"/>
     <keyword type="struct" name="GRegex" link="glib-Perl-compatible-regular-expressions.html#GRegex" since="2.14"/>
     <keyword type="struct" name="GMatchInfo" link="glib-Perl-compatible-regular-expressions.html#GMatchInfo"/>
+    <keyword type="" name="Non-printing characters" link="glib-regex-syntax.html#id-1.5.25.4.7"/>
+    <keyword type="" name="Absolute and relative back references" link="glib-regex-syntax.html#id-1.5.25.4.8"/>
+    <keyword type="" name="Generic character types" link="glib-regex-syntax.html#id-1.5.25.4.9"/>
+    <keyword type="" name="Newline sequences" link="glib-regex-syntax.html#id-1.5.25.4.10"/>
+    <keyword type="" name="Unicode character properties" link="glib-regex-syntax.html#id-1.5.25.4.11"/>
+    <keyword type="" name="Simple assertions" link="glib-regex-syntax.html#id-1.5.25.4.12"/>
+    <keyword type="" name="Lookahead assertions" link="glib-regex-syntax.html#id-1.5.25.17.5"/>
+    <keyword type="" name="Lookbehind assertions" link="glib-regex-syntax.html#id-1.5.25.17.6"/>
+    <keyword type="" name="Using multiple assertions" link="glib-regex-syntax.html#id-1.5.25.17.7"/>
+    <keyword type="" name="Checking for a used subpattern by number" link="glib-regex-syntax.html#id-1.5.25.18.6"/>
+    <keyword type="" name="Checking for a used subpattern by name" link="glib-regex-syntax.html#id-1.5.25.18.7"/>
+    <keyword type="" name="Checking for pattern recursion" link="glib-regex-syntax.html#id-1.5.25.18.8"/>
+    <keyword type="" name="Defining subpatterns for use by reference only" link="glib-regex-syntax.html#id-1.5.25.18.9"/>
+    <keyword type="" name="Assertion conditions" link="glib-regex-syntax.html#id-1.5.25.18.10"/>
     <keyword type="function" name="g_markup_escape_text ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-escape-text"/>
     <keyword type="function" name="g_markup_printf_escaped ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-printf-escaped" since="2.4"/>
     <keyword type="function" name="g_markup_vprintf_escaped ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-vprintf-escaped" since="2.4"/>
@@ -1650,7 +1663,6 @@
     <keyword type="macro" name="g_assert_cmpuint()" link="glib-Testing.html#g-assert-cmpuint" since="2.16"/>
     <keyword type="macro" name="g_assert_cmphex()" link="glib-Testing.html#g-assert-cmphex" since="2.16"/>
     <keyword type="macro" name="g_assert_cmpfloat()" link="glib-Testing.html#g-assert-cmpfloat" since="2.16"/>
-    <keyword type="macro" name="g_assert_cmpmem()" link="glib-Testing.html#g-assert-cmpmem" since="2.46"/>
     <keyword type="macro" name="g_assert_no_error()" link="glib-Testing.html#g-assert-no-error" since="2.20"/>
     <keyword type="macro" name="g_assert_error()" link="glib-Testing.html#g-assert-error" since="2.20"/>
     <keyword type="macro" name="g_assert_true()" link="glib-Testing.html#g-assert-true" since="2.38"/>
@@ -2302,6 +2314,27 @@
     <keyword type="struct" name="struct GVariantBuilder" link="glib-GVariant.html#GVariantBuilder"/>
     <keyword type="struct" name="struct GVariantDict" link="glib-GVariant.html#GVariantDict" since="2.40"/>
     <keyword type="enum" name="enum GVariantParseError" link="glib-GVariant.html#GVariantParseError"/>
+    <keyword type="" name="Numeric Types" link="gvariant-format-strings.html#gvariant-format-strings-numeric-types"/>
+    <keyword type="" name="Strings" link="gvariant-format-strings.html#gvariant-format-strings-strings"/>
+    <keyword type="" name="Variants" link="gvariant-format-strings.html#gvariant-format-strings-variants"/>
+    <keyword type="" name="Arrays" link="gvariant-format-strings.html#gvariant-format-strings-arrays"/>
+    <keyword type="" name="Maybe Types" link="gvariant-format-strings.html#gvariant-format-strings-maybe-types"/>
+    <keyword type="" name="Tuples" link="gvariant-format-strings.html#gvariant-format-strings-tuples"/>
+    <keyword type="" name="Dictionaries" link="gvariant-format-strings.html#gvariant-format-strings-dictionaries"/>
+    <keyword type="" name="GVariant *" link="gvariant-format-strings.html#gvariant-format-strings-gvariant"/>
+    <keyword type="" name="Pointers" link="gvariant-format-strings.html#gvariant-format-strings-pointers"/>
+    <keyword type="" name="Convenience Conversions" link="gvariant-format-strings.html#gvariant-format-strings-convenience"/>
+    <keyword type="" name="Booleans" link="gvariant-text.html#gvariant-text-booleans"/>
+    <keyword type="" name="Strings" link="gvariant-text.html#gvariant-text-strings"/>
+    <keyword type="" name="Numbers" link="gvariant-text.html#gvariant-text-numbers"/>
+    <keyword type="" name="Tuples" link="gvariant-text.html#gvariant-text-tuples"/>
+    <keyword type="" name="Arrays" link="gvariant-text.html#gvariant-text-arrays"/>
+    <keyword type="" name="Dictionaries and Dictionary Entries" link="gvariant-text.html#gvariant-text-dictionaries"/>
+    <keyword type="" name="Variants" link="gvariant-text.html#gvariant-text-variants"/>
+    <keyword type="" name="Maybe Types" link="gvariant-text.html#gvariant-text-maybe-types"/>
+    <keyword type="" name="Type Annotations" link="gvariant-text.html#gvariant-text-type-annotations"/>
+    <keyword type="" name="Bytestrings" link="gvariant-text.html#gvariant-text-bytestrings"/>
+    <keyword type="" name="Positional Parameters" link="gvariant-text.html#gvariant-text-positional"/>
     <keyword type="function" name="g_thread_init ()" link="glib-Deprecated-Thread-APIs.html#g-thread-init" deprecated=""/>
     <keyword type="function" name="g_thread_supported ()" link="glib-Deprecated-Thread-APIs.html#g-thread-supported" deprecated=""/>
     <keyword type="function" name="g_thread_get_initialized ()" link="glib-Deprecated-Thread-APIs.html#g-thread-get-initialized" deprecated="" since="2.20"/>
@@ -2993,144 +3026,5 @@
     <keyword type="constant" name="G_THREAD_PRIORITY_NORMAL" link="glib-Deprecated-Thread-APIs.html#G-THREAD-PRIORITY-NORMAL:CAPS"/>
     <keyword type="constant" name="G_THREAD_PRIORITY_HIGH" link="glib-Deprecated-Thread-APIs.html#G-THREAD-PRIORITY-HIGH:CAPS"/>
     <keyword type="constant" name="G_THREAD_PRIORITY_URGENT" link="glib-Deprecated-Thread-APIs.html#G-THREAD-PRIORITY-URGENT:CAPS"/>
-    <keyword type="member" name="GPollFD.fd" link="glib-The-Main-Event-Loop.html#GPollFD.fd"/>
-    <keyword type="member" name="GPollFD.events" link="glib-The-Main-Event-Loop.html#GPollFD.events"/>
-    <keyword type="member" name="GPollFD.revents" link="glib-The-Main-Event-Loop.html#GPollFD.revents"/>
-    <keyword type="member" name="GSourceFuncs.prepare" link="glib-The-Main-Event-Loop.html#GSourceFuncs.prepare"/>
-    <keyword type="member" name="GSourceFuncs.check" link="glib-The-Main-Event-Loop.html#GSourceFuncs.check"/>
-    <keyword type="member" name="GSourceFuncs.dispatch" link="glib-The-Main-Event-Loop.html#GSourceFuncs.dispatch"/>
-    <keyword type="member" name="GSourceFuncs.finalize" link="glib-The-Main-Event-Loop.html#GSourceFuncs.finalize"/>
-    <keyword type="member" name="GSourceCallbackFuncs.ref" link="glib-The-Main-Event-Loop.html#GSourceCallbackFuncs.ref"/>
-    <keyword type="member" name="GSourceCallbackFuncs.unref" link="glib-The-Main-Event-Loop.html#GSourceCallbackFuncs.unref"/>
-    <keyword type="member" name="GSourceCallbackFuncs.get" link="glib-The-Main-Event-Loop.html#GSourceCallbackFuncs.get"/>
-    <keyword type="member" name="GOnce.status" link="glib-Threads.html#GOnce.status"/>
-    <keyword type="member" name="GOnce.retval" link="glib-Threads.html#GOnce.retval"/>
-    <keyword type="member" name="GThreadPool.func" link="glib-Thread-Pools.html#GThreadPool.func"/>
-    <keyword type="member" name="GThreadPool.user-data" link="glib-Thread-Pools.html#GThreadPool.user-data"/>
-    <keyword type="member" name="GThreadPool.exclusive" link="glib-Thread-Pools.html#GThreadPool.exclusive"/>
-    <keyword type="member" name="GMemVTable.malloc" link="glib-Memory-Allocation.html#GMemVTable.malloc"/>
-    <keyword type="member" name="GMemVTable.realloc" link="glib-Memory-Allocation.html#GMemVTable.realloc"/>
-    <keyword type="member" name="GMemVTable.free" link="glib-Memory-Allocation.html#GMemVTable.free"/>
-    <keyword type="member" name="GMemVTable.calloc" link="glib-Memory-Allocation.html#GMemVTable.calloc"/>
-    <keyword type="member" name="GMemVTable.try-malloc" link="glib-Memory-Allocation.html#GMemVTable.try-malloc"/>
-    <keyword type="member" name="GMemVTable.try-realloc" link="glib-Memory-Allocation.html#GMemVTable.try-realloc"/>
-    <keyword type="member" name="GIOFuncs.io-read" link="glib-IO-Channels.html#GIOFuncs.io-read"/>
-    <keyword type="member" name="GIOFuncs.io-write" link="glib-IO-Channels.html#GIOFuncs.io-write"/>
-    <keyword type="member" name="GIOFuncs.io-seek" link="glib-IO-Channels.html#GIOFuncs.io-seek"/>
-    <keyword type="member" name="GIOFuncs.io-close" link="glib-IO-Channels.html#GIOFuncs.io-close"/>
-    <keyword type="member" name="GIOFuncs.io-create-watch" link="glib-IO-Channels.html#GIOFuncs.io-create-watch"/>
-    <keyword type="member" name="GIOFuncs.io-free" link="glib-IO-Channels.html#GIOFuncs.io-free"/>
-    <keyword type="member" name="GIOFuncs.io-set-flags" link="glib-IO-Channels.html#GIOFuncs.io-set-flags"/>
-    <keyword type="member" name="GIOFuncs.io-get-flags" link="glib-IO-Channels.html#GIOFuncs.io-get-flags"/>
-    <keyword type="member" name="GError.domain" link="glib-Error-Reporting.html#GError.domain"/>
-    <keyword type="member" name="GError.code" link="glib-Error-Reporting.html#GError.code"/>
-    <keyword type="member" name="GError.message" link="glib-Error-Reporting.html#GError.message"/>
-    <keyword type="member" name="GTimeVal.tv-sec" link="glib-Date-and-Time-Functions.html#GTimeVal.tv-sec"/>
-    <keyword type="member" name="GTimeVal.tv-usec" link="glib-Date-and-Time-Functions.html#GTimeVal.tv-usec"/>
-    <keyword type="member" name="GDate.julian-days" link="glib-Date-and-Time-Functions.html#GDate.julian-days"/>
-    <keyword type="member" name="GDate.julian" link="glib-Date-and-Time-Functions.html#GDate.julian"/>
-    <keyword type="member" name="GDate.dmy" link="glib-Date-and-Time-Functions.html#GDate.dmy"/>
-    <keyword type="member" name="GDate.day" link="glib-Date-and-Time-Functions.html#GDate.day"/>
-    <keyword type="member" name="GDate.month" link="glib-Date-and-Time-Functions.html#GDate.month"/>
-    <keyword type="member" name="GDate.year" link="glib-Date-and-Time-Functions.html#GDate.year"/>
-    <keyword type="member" name="GHookList.seq-id" link="glib-Hook-Functions.html#GHookList.seq-id"/>
-    <keyword type="member" name="GHookList.hook-size" link="glib-Hook-Functions.html#GHookList.hook-size"/>
-    <keyword type="member" name="GHookList.is-setup" link="glib-Hook-Functions.html#GHookList.is-setup"/>
-    <keyword type="member" name="GHookList.hooks" link="glib-Hook-Functions.html#GHookList.hooks"/>
-    <keyword type="member" name="GHookList.dummy3" link="glib-Hook-Functions.html#GHookList.dummy3"/>
-    <keyword type="member" name="GHookList.finalize-hook" link="glib-Hook-Functions.html#GHookList.finalize-hook"/>
-    <keyword type="member" name="GHookList.dummy" link="glib-Hook-Functions.html#GHookList.dummy"/>
-    <keyword type="member" name="GHook.data" link="glib-Hook-Functions.html#GHook.data"/>
-    <keyword type="member" name="GHook.next" link="glib-Hook-Functions.html#GHook.next"/>
-    <keyword type="member" name="GHook.prev" link="glib-Hook-Functions.html#GHook.prev"/>
-    <keyword type="member" name="GHook.ref-count" link="glib-Hook-Functions.html#GHook.ref-count"/>
-    <keyword type="member" name="GHook.hook-id" link="glib-Hook-Functions.html#GHook.hook-id"/>
-    <keyword type="member" name="GHook.flags" link="glib-Hook-Functions.html#GHook.flags"/>
-    <keyword type="member" name="GHook.func" link="glib-Hook-Functions.html#GHook.func"/>
-    <keyword type="member" name="GHook.destroy" link="glib-Hook-Functions.html#GHook.destroy"/>
-    <keyword type="member" name="GDebugKey.key" link="glib-Miscellaneous-Utility-Functions.html#GDebugKey.key"/>
-    <keyword type="member" name="GDebugKey.value" link="glib-Miscellaneous-Utility-Functions.html#GDebugKey.value"/>
-    <keyword type="member" name="GScanner.user-data" link="glib-Lexical-Scanner.html#GScanner.user-data"/>
-    <keyword type="member" name="GScanner.max-parse-errors" link="glib-Lexical-Scanner.html#GScanner.max-parse-errors"/>
-    <keyword type="member" name="GScanner.parse-errors" link="glib-Lexical-Scanner.html#GScanner.parse-errors"/>
-    <keyword type="member" name="GScanner.input-name" link="glib-Lexical-Scanner.html#GScanner.input-name"/>
-    <keyword type="member" name="GScanner.qdata" link="glib-Lexical-Scanner.html#GScanner.qdata"/>
-    <keyword type="member" name="GScanner.config" link="glib-Lexical-Scanner.html#GScanner.config"/>
-    <keyword type="member" name="GScanner.token" link="glib-Lexical-Scanner.html#GScanner.token"/>
-    <keyword type="member" name="GScanner.value" link="glib-Lexical-Scanner.html#GScanner.value"/>
-    <keyword type="member" name="GScanner.line" link="glib-Lexical-Scanner.html#GScanner.line"/>
-    <keyword type="member" name="GScanner.position" link="glib-Lexical-Scanner.html#GScanner.position"/>
-    <keyword type="member" name="GScanner.next-token" link="glib-Lexical-Scanner.html#GScanner.next-token"/>
-    <keyword type="member" name="GScanner.next-value" link="glib-Lexical-Scanner.html#GScanner.next-value"/>
-    <keyword type="member" name="GScanner.next-line" link="glib-Lexical-Scanner.html#GScanner.next-line"/>
-    <keyword type="member" name="GScanner.next-position" link="glib-Lexical-Scanner.html#GScanner.next-position"/>
-    <keyword type="member" name="GScanner.msg-handler" link="glib-Lexical-Scanner.html#GScanner.msg-handler"/>
-    <keyword type="member" name="GScannerConfig.cset-skip-characters" link="glib-Lexical-Scanner.html#GScannerConfig.cset-skip-characters"/>
-    <keyword type="member" name="GScannerConfig.cset-identifier-first" link="glib-Lexical-Scanner.html#GScannerConfig.cset-identifier-first"/>
-    <keyword type="member" name="GScannerConfig.cset-identifier-nth" link="glib-Lexical-Scanner.html#GScannerConfig.cset-identifier-nth"/>
-    <keyword type="member" name="GScannerConfig.cpair-comment-single" link="glib-Lexical-Scanner.html#GScannerConfig.cpair-comment-single"/>
-    <keyword type="member" name="GScannerConfig.case-sensitive" link="glib-Lexical-Scanner.html#GScannerConfig.case-sensitive"/>
-    <keyword type="member" name="GScannerConfig.skip-comment-multi" link="glib-Lexical-Scanner.html#GScannerConfig.skip-comment-multi"/>
-    <keyword type="member" name="GScannerConfig.skip-comment-single" link="glib-Lexical-Scanner.html#GScannerConfig.skip-comment-single"/>
-    <keyword type="member" name="GScannerConfig.scan-comment-multi" link="glib-Lexical-Scanner.html#GScannerConfig.scan-comment-multi"/>
-    <keyword type="member" name="GScannerConfig.scan-identifier" link="glib-Lexical-Scanner.html#GScannerConfig.scan-identifier"/>
-    <keyword type="member" name="GScannerConfig.scan-identifier-1char" link="glib-Lexical-Scanner.html#GScannerConfig.scan-identifier-1char"/>
-    <keyword type="member" name="GScannerConfig.scan-identifier-NULL" link="glib-Lexical-Scanner.html#GScannerConfig.scan-identifier-NULL"/>
-    <keyword type="member" name="GScannerConfig.scan-symbols" link="glib-Lexical-Scanner.html#GScannerConfig.scan-symbols"/>
-    <keyword type="member" name="GScannerConfig.scan-binary" link="glib-Lexical-Scanner.html#GScannerConfig.scan-binary"/>
-    <keyword type="member" name="GScannerConfig.scan-octal" link="glib-Lexical-Scanner.html#GScannerConfig.scan-octal"/>
-    <keyword type="member" name="GScannerConfig.scan-float" link="glib-Lexical-Scanner.html#GScannerConfig.scan-float"/>
-    <keyword type="member" name="GScannerConfig.scan-hex" link="glib-Lexical-Scanner.html#GScannerConfig.scan-hex"/>
-    <keyword type="member" name="GScannerConfig.scan-hex-dollar" link="glib-Lexical-Scanner.html#GScannerConfig.scan-hex-dollar"/>
-    <keyword type="member" name="GScannerConfig.scan-string-sq" link="glib-Lexical-Scanner.html#GScannerConfig.scan-string-sq"/>
-    <keyword type="member" name="GScannerConfig.scan-string-dq" link="glib-Lexical-Scanner.html#GScannerConfig.scan-string-dq"/>
-    <keyword type="member" name="GScannerConfig.numbers-2-int" link="glib-Lexical-Scanner.html#GScannerConfig.numbers-2-int"/>
-    <keyword type="member" name="GScannerConfig.int-2-float" link="glib-Lexical-Scanner.html#GScannerConfig.int-2-float"/>
-    <keyword type="member" name="GScannerConfig.identifier-2-string" link="glib-Lexical-Scanner.html#GScannerConfig.identifier-2-string"/>
-    <keyword type="member" name="GScannerConfig.char-2-token" link="glib-Lexical-Scanner.html#GScannerConfig.char-2-token"/>
-    <keyword type="member" name="GScannerConfig.symbol-2-token" link="glib-Lexical-Scanner.html#GScannerConfig.symbol-2-token"/>
-    <keyword type="member" name="GScannerConfig.scope-0-fallback" link="glib-Lexical-Scanner.html#GScannerConfig.scope-0-fallback"/>
-    <keyword type="member" name="GScannerConfig.store-int64" link="glib-Lexical-Scanner.html#GScannerConfig.store-int64"/>
-    <keyword type="member" name="GOptionEntry.long-name" link="glib-Commandline-option-parser.html#GOptionEntry.long-name"/>
-    <keyword type="member" name="GOptionEntry.short-name" link="glib-Commandline-option-parser.html#GOptionEntry.short-name"/>
-    <keyword type="member" name="GOptionEntry.flags" link="glib-Commandline-option-parser.html#GOptionEntry.flags"/>
-    <keyword type="member" name="GOptionEntry.arg" link="glib-Commandline-option-parser.html#GOptionEntry.arg"/>
-    <keyword type="member" name="GOptionEntry.arg-data" link="glib-Commandline-option-parser.html#GOptionEntry.arg-data"/>
-    <keyword type="member" name="GOptionEntry.description" link="glib-Commandline-option-parser.html#GOptionEntry.description"/>
-    <keyword type="member" name="GOptionEntry.arg-description" link="glib-Commandline-option-parser.html#GOptionEntry.arg-description"/>
-    <keyword type="member" name="GMarkupParser.start-element" link="glib-Simple-XML-Subset-Parser.html#GMarkupParser.start-element"/>
-    <keyword type="member" name="GMarkupParser.end-element" link="glib-Simple-XML-Subset-Parser.html#GMarkupParser.end-element"/>
-    <keyword type="member" name="GMarkupParser.text" link="glib-Simple-XML-Subset-Parser.html#GMarkupParser.text"/>
-    <keyword type="member" name="GMarkupParser.passthrough" link="glib-Simple-XML-Subset-Parser.html#GMarkupParser.passthrough"/>
-    <keyword type="member" name="GMarkupParser.error" link="glib-Simple-XML-Subset-Parser.html#GMarkupParser.error"/>
-    <keyword type="member" name="GList.data" link="glib-Doubly-Linked-Lists.html#GList.data"/>
-    <keyword type="member" name="GList.next" link="glib-Doubly-Linked-Lists.html#GList.next"/>
-    <keyword type="member" name="GList.prev" link="glib-Doubly-Linked-Lists.html#GList.prev"/>
-    <keyword type="member" name="GSList.data" link="glib-Singly-Linked-Lists.html#GSList.data"/>
-    <keyword type="member" name="GSList.next" link="glib-Singly-Linked-Lists.html#GSList.next"/>
-    <keyword type="member" name="GQueue.head" link="glib-Double-ended-Queues.html#GQueue.head"/>
-    <keyword type="member" name="GQueue.tail" link="glib-Double-ended-Queues.html#GQueue.tail"/>
-    <keyword type="member" name="GQueue.length" link="glib-Double-ended-Queues.html#GQueue.length"/>
-    <keyword type="member" name="GTrashStack.next" link="glib-Trash-Stacks.html#GTrashStack.next"/>
-    <keyword type="member" name="GString.str" link="glib-Strings.html#GString.str"/>
-    <keyword type="member" name="GString.len" link="glib-Strings.html#GString.len"/>
-    <keyword type="member" name="GString.allocated-len" link="glib-Strings.html#GString.allocated-len"/>
-    <keyword type="member" name="GArray.data" link="glib-Arrays.html#GArray.data"/>
-    <keyword type="member" name="GArray.len" link="glib-Arrays.html#GArray.len"/>
-    <keyword type="member" name="GPtrArray.pdata" link="glib-Pointer-Arrays.html#GPtrArray.pdata"/>
-    <keyword type="member" name="GPtrArray.len" link="glib-Pointer-Arrays.html#GPtrArray.len"/>
-    <keyword type="member" name="GByteArray.data" link="glib-Byte-Arrays.html#GByteArray.data"/>
-    <keyword type="member" name="GByteArray.len" link="glib-Byte-Arrays.html#GByteArray.len"/>
-    <keyword type="member" name="GNode.data" link="glib-N-ary-Trees.html#GNode.data"/>
-    <keyword type="member" name="GNode.next" link="glib-N-ary-Trees.html#GNode.next"/>
-    <keyword type="member" name="GNode.prev" link="glib-N-ary-Trees.html#GNode.prev"/>
-    <keyword type="member" name="GNode.parent" link="glib-N-ary-Trees.html#GNode.parent"/>
-    <keyword type="member" name="GNode.children" link="glib-N-ary-Trees.html#GNode.children"/>
-    <keyword type="member" name="GTuples.len" link="glib-Relations-and-Tuples.html#GTuples.len"/>
-    <keyword type="member" name="GCompletion.items" link="glib-Automatic-String-Completion.html#GCompletion.items"/>
-    <keyword type="member" name="GCompletion.func" link="glib-Automatic-String-Completion.html#GCompletion.func"/>
-    <keyword type="member" name="GCompletion.prefix" link="glib-Automatic-String-Completion.html#GCompletion.prefix"/>
-    <keyword type="member" name="GCompletion.cache" link="glib-Automatic-String-Completion.html#GCompletion.cache"/>
-    <keyword type="member" name="GCompletion.strncmp-func" link="glib-Automatic-String-Completion.html#GCompletion.strncmp-func"/>
   </functions>
 </book>

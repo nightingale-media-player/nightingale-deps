@@ -26,7 +26,6 @@
 #include "gsocketaddress.h"
 #include "ginetaddress.h"
 #include "ginetsocketaddress.h"
-#include "gnativesocketaddress.h"
 #include "gnetworkingprivate.h"
 #include "gproxyaddress.h"
 #include "gproxyaddressenumerator.h"
@@ -300,7 +299,7 @@ g_socket_address_new_from_native (gpointer native,
     }
 #endif
 
-  return g_native_socket_address_new (native, len);
+  return NULL;
 }
 
 

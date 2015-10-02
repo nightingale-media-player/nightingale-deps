@@ -35,6 +35,7 @@
 #include "gmountprivate.h"
 #include "gvolumemonitor.h"
 #include "gthemedicon.h"
+#include "gsimpleasyncresult.h"
 #include "glibintl.h"
 
 

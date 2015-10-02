@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 8 -*- */
 
-/* inotify-sub.c - GVFS Monitor based on inotify.
+/* inotify-sub.c - GMonitor based on inotify.
 
    Copyright (C) 2006 John McCutchan
 
@@ -46,6 +46,7 @@ dup_dirname (const gchar *dirname)
 inotify_sub*
 _ih_sub_new (const gchar *dirname, 
              const gchar *filename,
+             gboolean     pair_moves,
              gboolean     watch_hardlinks,
              gpointer     user_data)
 {
@@ -54,6 +55,7 @@ _ih_sub_new (const gchar *dirname,
   sub = g_new0 (inotify_sub, 1);
   sub->dirname = dup_dirname (dirname);
   sub->filename = g_strdup (filename);
+  sub->pair_moves = pair_moves;
   sub->hardlinks = watch_hardlinks;
   sub->user_data = user_data;
 

@@ -31,6 +31,7 @@
 #include <glib/gstdio.h>
 #include <glib/glib-unix.h>
 #include "gioerror.h"
+#include "gsimpleasyncresult.h"
 #include "gunixinputstream.h"
 #include "gcancellable.h"
 #include "gasynchelper.h"

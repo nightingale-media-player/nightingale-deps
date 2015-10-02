@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-Testing.html" title="Testing">
 <link rel="next" href="glib-Windows-Compatibility-Functions.html" title="Windows Compatibility Functions">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -144,7 +144,7 @@ exported enumeration mapping <code class="literal">errno</code>. Instead, all fu
 error message is always generated via <a class="link" href="glib-String-Utility-Functions.html#g-strerror" title="g_strerror ()"><code class="function">g_strerror()</code></a>.</p>
 <p>It is expected that most code will not look at <code class="literal">errno</code> from these APIs.
 Important cases where one would want to differentiate between errors are
-already covered by existing cross-platform GLib API, such as e.g. <a href="https://developer.gnome.org/gio/unstable/GFile.html#GFile-struct"><span class="type">GFile</span></a>
+already covered by existing cross-platform GLib API, such as e.g. <a href="https://developer.gnome.org/gio/unstable/GFile.html"><span class="type">GFile</span></a>
 wrapping <code class="literal">ENOENT</code>. However, it is provided for completeness, at least.</p>
 </div>
 <hr>
@@ -191,8 +191,9 @@ for <code class="function">fcntl()</code>; these are different on Linux/glibc.</
 <div class="refsect3">
 <a name="id-1.5.30.6.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if not (and errno will be set).</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -235,8 +236,9 @@ on some older ones may use <code class="literal">O_NDELAY</code>.</p>
 <div class="refsect3">
 <a name="id-1.5.30.6.4.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if successful</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -279,8 +281,9 @@ using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title
 <div class="refsect3">
 <a name="id-1.5.30.6.5.6"></a><h4>Returns</h4>
 <p> An ID (greater than 0) for the event source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -294,9 +297,8 @@ g_unix_signal_add_full (<em class="parameter"><code><a class="link" href="glib-B
 <p>A convenience function for <a class="link" href="glib-UNIX-specific-utilities-and-integration.html#g-unix-signal-source-new" title="g_unix_signal_source_new ()"><code class="function">g_unix_signal_source_new()</code></a>, which
 attaches to the default <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>.  You can remove the watch
 using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title="g_source_remove ()"><code class="function">g_source_remove()</code></a>.</p>
-<p><span class="annotation">[<acronym title="Rename the original symbol's name to SYMBOL."><span class="acronym">rename-to</span></acronym> g_unix_signal_add]</span></p>
 <div class="refsect3">
-<a name="id-1.5.30.6.6.6"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -336,10 +338,11 @@ the range between <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.6.6.7"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.6.6"></a><h4>Returns</h4>
 <p> An ID (greater than 0) for the event source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -384,8 +387,9 @@ executed.</p>
 <div class="refsect3">
 <a name="id-1.5.30.6.7.10"></a><h4>Returns</h4>
 <p> A newly created <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -427,6 +431,7 @@ triggers.</p>
 <div class="refsect3">
 <a name="id-1.5.30.6.8.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the source should be removed</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -488,8 +493,9 @@ to cancel the watch at any time that it exists.</p>
 <div class="refsect3">
 <a name="id-1.5.30.6.9.9"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -556,8 +562,9 @@ specify a non-default priority and a provide a <a class="link" href="glib-Datase
 <div class="refsect3">
 <a name="id-1.5.30.6.10.7"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -594,8 +601,9 @@ descriptor.</p>
 <div class="refsect3">
 <a name="id-1.5.30.6.11.7"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 </div>
 <div class="refsect1">
@@ -603,6 +611,7 @@ descriptor.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

@@ -119,7 +119,7 @@ scan-build.stamp: setup-build.stamp $(HFILE_GLOB) $(CFILE_GLOB)
 	$(GTK_DOC_V_INTROSPECT)if grep -l '^..*$$' $(DOC_MODULE).types > /dev/null 2>&1 ; then \
 	    scanobj_options=""; \
 	    gtkdoc-scangobj 2>&1 --help | grep  >/dev/null "\-\-verbose"; \
-	    if test "$$?" = "0"; then \
+	    if test "$(?)" = "0"; then \
 	        if test "x$(V)" = "x1"; then \
 	            scanobj_options="--verbose"; \
 	        fi; \
@@ -142,7 +142,7 @@ GTK_DOC_V_XML=$(GTK_DOC_V_XML_$(V))
 GTK_DOC_V_XML_=$(GTK_DOC_V_XML_$(AM_DEFAULT_VERBOSITY))
 GTK_DOC_V_XML_0=@echo "  DOC   Building XML";
 
-sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(HFILE_GLOB) $(CFILE_GLOB) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt $(expand_content_files) xml/gtkdocentities.ent
+sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt $(expand_content_files)
 	$(GTK_DOC_V_XML)_source_dir='' ; \
 	for i in $(DOC_SOURCE_DIR) ; do \
 	    _source_dir="$${_source_dir} --source-dir=$$i" ; \
@@ -152,17 +152,6 @@ sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(HF
 
 sgml.stamp: sgml-build.stamp
 	@true
-
-xml/gtkdocentities.ent: Makefile
-	$(GTK_DOC_V_XML)$(MKDIR_P) $(@D) && ( \
-		echo "<!ENTITY package \"$(PACKAGE)\">"; \
-		echo "<!ENTITY package_bugreport \"$(PACKAGE_BUGREPORT)\">"; \
-		echo "<!ENTITY package_name \"$(PACKAGE_NAME)\">"; \
-		echo "<!ENTITY package_string \"$(PACKAGE_STRING)\">"; \
-		echo "<!ENTITY package_tarname \"$(PACKAGE_TARNAME)\">"; \
-		echo "<!ENTITY package_url \"$(PACKAGE_URL)\">"; \
-		echo "<!ENTITY package_version \"$(PACKAGE_VERSION)\">"; \
-	) > $@
 
 #### html ####
 
@@ -178,13 +167,13 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files) $(expand_con
 	$(GTK_DOC_V_HTML)rm -rf html && mkdir html && \
 	mkhtml_options=""; \
 	gtkdoc-mkhtml 2>&1 --help | grep  >/dev/null "\-\-verbose"; \
-	if test "$$?" = "0"; then \
+	if test "$(?)" = "0"; then \
 	  if test "x$(V)" = "x1"; then \
 	    mkhtml_options="$$mkhtml_options --verbose"; \
 	  fi; \
 	fi; \
 	gtkdoc-mkhtml 2>&1 --help | grep  >/dev/null "\-\-path"; \
-	if test "$$?" = "0"; then \
+	if test "$(?)" = "0"; then \
 	  mkhtml_options="$$mkhtml_options --path=\"$(abs_srcdir)\""; \
 	fi; \
 	cd html && gtkdoc-mkhtml $$mkhtml_options $(MKHTML_OPTIONS) $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
@@ -210,7 +199,7 @@ pdf-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files) $(expand_cont
 	$(GTK_DOC_V_PDF)rm -f $(DOC_MODULE).pdf && \
 	mkpdf_options=""; \
 	gtkdoc-mkpdf 2>&1 --help | grep  >/dev/null "\-\-verbose"; \
-	if test "$$?" = "0"; then \
+	if test "$(?)" = "0"; then \
 	  if test "x$(V)" = "x1"; then \
 	    mkpdf_options="$$mkpdf_options --verbose"; \
 	  fi; \

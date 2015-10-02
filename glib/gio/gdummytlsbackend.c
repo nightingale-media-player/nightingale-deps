@@ -31,6 +31,7 @@
 #include "gtlsdatabase.h"
 #include "gtlsfiledatabase.h"
 #include "gtlsserverconnection.h"
+#include "gsimpleasyncresult.h"
 
 #include "giomodule.h"
 #include "giomodule-priv.h"

@@ -398,27 +398,38 @@ inet_pton (gint family,
       struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&sa;
       gint len = sizeof (sa);
 
+      /* We need to make sure to not pass a string of the form
+       * "IPv4addr:port" or "[IPv6addr]:port" to WSAStringToAddress(),
+       * since it would accept them (returning both the address and the
+       * port), but we only want to accept standalone IP addresses. (In
+       * the IPv6 case, WINE actually only checks for the ']', not the
+       * '[', which is why we do the same here.)
+       */
       if (family != AF_INET && family != AF_INET6)
         {
           WSASetLastError (WSAEAFNOSUPPORT);
           return -1;
         }
-
-      /* WSAStringToAddress() will accept various not-an-IP-address
-       * strings like "127.0.0.1:80", "[1234::5678]:80", "127.1", etc.
-       */
-      if (!g_hostname_is_ip_address (addr_string))
-        return 0;
-
-      if (WSAStringToAddress ((LPTSTR) addr_string, family, NULL, (LPSOCKADDR) &sa, &len) != 0)
-        return 0;
-
-      if (family == AF_INET)
-        *(IN_ADDR *)addr = sin->sin_addr;
-      else
-        *(IN6_ADDR *)addr = sin6->sin6_addr;
-
-      return 1;
+      if (!strchr (addr_string, ':'))
+        {
+          if (WSAStringToAddress ((LPTSTR) addr_string, AF_INET, NULL, (LPSOCKADDR) &sa, &len) == 0)
+            {
+              /* XXX: Figure out when WSAStringToAddress() accepts a IPv4 address but the
+                      numbers-and-dots address is actually not complete.  This code will be
+                      removed once XP/Server 2003 support is dropped... */
+              addr = &sin->sin_addr;
+              return 1;
+            }
+        }
+      if (!strchr (addr_string, ']'))
+        {
+          if (WSAStringToAddress ((LPTSTR) addr_string, AF_INET6, NULL, (LPSOCKADDR) &sa, &len) == 0)
+            {
+              addr = &sin6->sin6_addr;
+              return 1;
+            }
+        }
+      return 0;
     }
 }
 
@@ -434,7 +445,7 @@ inet_ntop (gint family,
   else
     {
       /* Fallback codepath for XP/Server 2003 */
-      DWORD buflen = size, addrlen;
+      DWORD buflen = sizeof (addr_str), addrlen;
       struct sockaddr_storage sa;
       struct sockaddr_in *sin = (struct sockaddr_in *)&sa;
       struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&sa;

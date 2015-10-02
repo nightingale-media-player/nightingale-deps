@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-UNIX-specific-utilities-and-integration.html" title="UNIX-specific utilities and integration">
 <link rel="next" href="glib-data-types.html" title="GLib Data Types">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -214,8 +214,9 @@ as per the <code class="function">VerifyVersionInfo()</code> API documentation.<
 the specified major, minor and service pack versions, and
 whether the running Windows is a workstation or server edition
 of Windows, if specifically specified.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-44.html#api-index-2.44">2.44</a></p>
+<p class="since">Since 2.44</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -252,7 +253,7 @@ be freed with <a class="link" href="glib-String-Utility-Functions.html#g-strfree
 filename encoding (ie: UTF-8). </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-40.html#api-index-2.40">2.40</a></p>
+<p class="since">Since 2.40</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -283,6 +284,7 @@ deallocated with <a class="link" href="glib-Memory-Allocation.html#g-free" title
 <div class="refsect3">
 <a name="id-1.5.31.7.4.6"></a><h4>Returns</h4>
 <p> newly-allocated error message</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -300,6 +302,7 @@ file names etc. The returned string should be deallocated with
 <div class="refsect3">
 <a name="id-1.5.31.7.5.5"></a><h4>Returns</h4>
 <p> newly-allocated locale name.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -387,6 +390,7 @@ the same way as above.</p>
 . The string is in the GLib file name encoding,
 i.e. UTF-8. The return value should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when not
 needed any longer. If the function fails <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -440,8 +444,9 @@ is from. The string is in the GLib
 file name encoding, i.e. UTF-8. The return value should be freed
 with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when not needed any longer. If the function fails
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-16.html#api-index-2.16">2.16</a></p>
+<p class="since">Since 2.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -507,6 +512,7 @@ the installation directory of <em class="parameter"><code>package</code></em>
 the GLib file name encoding, i.e. UTF-8. The return value should be
 freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when no longer needed. If something goes wrong,
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -536,6 +542,7 @@ detailed version and feature information should use Win32 API like
 <div class="refsect3">
 <a name="id-1.5.31.7.9.7"></a><h4>Returns</h4>
 <p> The version information.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -578,8 +585,9 @@ possible, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL
 <a name="id-1.5.31.7.10.9"></a><h4>Returns</h4>
 <p> The converted filename, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on conversion
 failure and lack of short names.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -627,7 +635,7 @@ character versions of the Win32 API functions, and the wide character
 versions of the C library functions work. (They are always present in
 the DLLs, but don't work on Windows 9x and Me.)</p>
 <p>On non-Windows platforms, it is not defined.</p>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -637,7 +645,7 @@ the DLLs, but don't work on Windows 9x and Me.)</p>
 <p>On Windows, this macro defines an expression which evaluates to
 <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the code is running on an NT-based Windows operating system.</p>
 <p>On non-Windows platforms, it is not defined.</p>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 </div>
 <div class="refsect1">
@@ -694,6 +702,7 @@ macro <a class="link" href="glib-Windows-Compatibility-Functions.html#MAXPATHLEN
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

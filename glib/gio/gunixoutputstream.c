@@ -33,6 +33,7 @@
 #include "gioerror.h"
 #include "gunixoutputstream.h"
 #include "gcancellable.h"
+#include "gsimpleasyncresult.h"
 #include "gasynchelper.h"
 #include "gfiledescriptorbased.h"
 #include "glibintl.h"

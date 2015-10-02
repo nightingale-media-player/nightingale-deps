@@ -8,7 +8,7 @@
 <link rel="up" href="deprecated.html" title="Deprecated APIs">
 <link rel="prev" href="deprecated.html" title="Deprecated APIs">
 <link rel="next" href="glib-Caches.html" title="Caches">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -462,6 +462,7 @@ the same functionality as a function.</p>
 <div class="refsect3">
 <a name="id-1.7.2.7.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if the thread system is initialized</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -474,8 +475,9 @@ g_thread_get_initialized (<em class="parameter"><code><span class="type">void</s
 <div class="refsect3">
 <a name="id-1.7.2.7.4.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if threads have been initialized.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-20.html#api-index-2.20">2.20</a></p>
+<p class="since">Since 2.20</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -538,6 +540,7 @@ then you should probably not touch the return value.</p>
 <div class="refsect3">
 <a name="id-1.7.2.7.5.10"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a> on success</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -609,6 +612,7 @@ Use <a class="link" href="glib-Threads.html#g-thread-new" title="g_thread_new (
 <div class="refsect3">
 <a name="id-1.7.2.7.6.7"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a> on success.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -693,7 +697,7 @@ which is quadratic in the number of existing threads.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-10.html#api-index-2.10">2.10</a></p>
+<p class="since">Since 2.10</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -709,6 +713,7 @@ in structures and initialised with <a class="link" href="glib-Threads.html#g-mut
 <div class="refsect3">
 <a name="id-1.7.2.7.9.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Threads.html#GMutex" title="union GMutex"><span class="type">GMutex</span></a>. Use <a class="link" href="glib-Deprecated-Thread-APIs.html#g-mutex-free" title="g_mutex_free ()"><code class="function">g_mutex_free()</code></a> to free</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -755,6 +760,7 @@ in structures and initialised with <a class="link" href="glib-Threads.html#g-con
 <div class="refsect3">
 <a name="id-1.7.2.7.11.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Threads.html#GCond" title="struct GCond"><span class="type">GCond</span></a>. Free with <a class="link" href="glib-Deprecated-Thread-APIs.html#g-cond-free" title="g_cond_free ()"><code class="function">g_cond_free()</code></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -815,6 +821,7 @@ g_private_new (<em class="parameter"><code><a class="link" href="glib-Datasets.h
 <div class="refsect3">
 <a name="id-1.7.2.7.13.7"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Threads.html#GPrivate" title="struct GPrivate"><span class="type">GPrivate</span></a> (which can never be destroyed)</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -899,6 +906,7 @@ g_static_mutex_trylock (<em class="parameter"><code><a class="link" href="glib-D
 <div class="refsect3">
 <a name="id-1.7.2.7.16.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if the <a class="link" href="glib-Deprecated-Thread-APIs.html#GStaticMutex" title="GStaticMutex"><span class="type">GStaticMutex</span></a> could be locked.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -959,6 +967,7 @@ corresponding <a class="link" href="glib-Threads.html#GMutex" title="union GMute
 <a name="id-1.7.2.7.18.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Threads.html#GMutex" title="union GMutex"><span class="type">GMutex</span></a> corresponding to <em class="parameter"><code>mutex</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1094,6 +1103,7 @@ functions increases the depth of <em class="parameter"><code>mutex</code></em>
 <a name="id-1.7.2.7.22.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if <em class="parameter"><code>mutex</code></em>
 could be locked.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1208,6 +1218,7 @@ function.</p>
 <p> number of times <em class="parameter"><code>mutex</code></em>
 has been locked by the current
 thread.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1343,6 +1354,7 @@ lock <em class="parameter"><code>lock</code></em>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if <em class="parameter"><code>lock</code></em>
 could be locked for reading</p>
 <p>Deprectated: 2.32: Use <a class="link" href="glib-Threads.html#g-rw-lock-reader-trylock" title="g_rw_lock_reader_trylock ()"><code class="function">g_rw_lock_reader_trylock()</code></a> instead</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1445,6 +1457,7 @@ lock has to be unlocked by <a class="link" href="glib-Deprecated-Thread-APIs.htm
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if <em class="parameter"><code>lock</code></em>
 could be locked for writing</p>
 <p>Deprectated: 2.32: Use <a class="link" href="glib-Threads.html#g-rw-lock-writer-trylock" title="g_rw_lock_writer_trylock ()"><code class="function">g_rw_lock_writer_trylock()</code></a> instead</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1564,6 +1577,7 @@ g_static_private_get (<em class="parameter"><code><a class="link" href="glib-Dep
 <div class="refsect3">
 <a name="id-1.7.2.7.36.8"></a><h4>Returns</h4>
 <p> the corresponding pointer</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2081,6 +2095,7 @@ can be used.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

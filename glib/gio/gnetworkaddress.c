@@ -99,7 +99,15 @@ g_network_address_finalize (GObject *object)
 
   g_free (addr->priv->hostname);
   g_free (addr->priv->scheme);
-  g_list_free_full (addr->priv->sockaddrs, g_object_unref);
+
+  if (addr->priv->sockaddrs)
+    {
+      GList *a;
+
+      for (a = addr->priv->sockaddrs; a; a = a->next)
+        g_object_unref (a->data);
+      g_list_free (addr->priv->sockaddrs);
+    }
 
   G_OBJECT_CLASS (g_network_address_parent_class)->finalize (object);
 }
@@ -346,8 +354,7 @@ g_network_address_new_loopback (guint16 port)
  * is deprecated, because it depends on the contents of /etc/services,
  * which is generally quite sparse on platforms other than Linux.)
  *
- * Returns: (transfer full) (type GNetworkAddress): the new
- *   #GNetworkAddress, or %NULL on error
+ * Returns: (transfer full): the new #GNetworkAddress, or %NULL on error
  *
  * Since: 2.22
  */
@@ -765,8 +772,7 @@ _g_uri_from_authority (const gchar *protocol,
  * g_network_address_parse() allows #GSocketClient to determine
  * when to use application-specific proxy protocols.
  *
- * Returns: (transfer full) (type GNetworkAddress): the new
- *   #GNetworkAddress, or %NULL on error
+ * Returns: (transfer full): the new #GNetworkAddress, or %NULL on error
  *
  * Since: 2.26
  */

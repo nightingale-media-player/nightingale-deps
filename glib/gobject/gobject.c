@@ -45,12 +45,6 @@
  * construction and destruction, property access methods, and signal
  * support.  Signals are described in detail [here][gobject-Signals].
  *
- * For a tutorial on implementing a new GObject class, see [How to define and
- * implement a new GObject][howto-gobject]. For a list of naming conventions for
- * GObjects and their methods, see the [GType conventions][gtype-conventions].
- * For the high-level concepts behind GObject, read [Instantiable classed types:
- * Objects][gtype-instantiable-classed].
- *
  * ## Floating references # {#floating-ref}
  *
  * GInitiallyUnowned is derived from GObject. The only difference between
@@ -304,7 +298,7 @@ g_object_notify_queue_add (GObject            *object,
 {
   G_LOCK(notify_lock);
 
-  g_assert (nqueue->n_pspecs < 65535);
+  g_return_if_fail (nqueue->n_pspecs < 65535);
 
   if (g_slist_find (nqueue->pspecs, pspec) == NULL)
     {
@@ -1050,6 +1044,7 @@ g_object_finalize (GObject *object)
 #endif	/* G_ENABLE_DEBUG */
 }
 
+
 static void
 g_object_dispatch_properties_changed (GObject     *object,
 				      guint        n_pspecs,
@@ -1058,7 +1053,7 @@ g_object_dispatch_properties_changed (GObject     *object,
   guint i;
 
   for (i = 0; i < n_pspecs; i++)
-    g_signal_emit (object, gobject_signals[NOTIFY], g_param_spec_get_name_quark (pspecs[i]), pspecs[i]);
+    g_signal_emit (object, gobject_signals[NOTIFY], g_quark_from_string (pspecs[i]->name), pspecs[i]);
 }
 
 /**
@@ -1503,7 +1498,7 @@ object_interface_check_properties (gpointer check_data,
        *
        * If the interface was not writable to begin with then we don't
        * really have any problems here because "writable at construct
-       * time only" is still more permissive than "read only".
+       * type only" is still more permissive than "read only".
        */
       if (pspecs[n]->flags & G_PARAM_WRITABLE)
         {

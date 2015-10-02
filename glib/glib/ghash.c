@@ -1267,7 +1267,7 @@ g_hash_table_insert (GHashTable *hash_table,
  * If you supplied a @key_destroy_func when creating the
  * #GHashTable, the old key is freed using that function.
  *
- * Returns: %TRUE if the key did not exist yet
+ * Returns: %TRUE of the key did not exist yet
  */
 gboolean
 g_hash_table_replace (GHashTable *hash_table,
@@ -1859,10 +1859,6 @@ g_str_equal (gconstpointer v1,
  *
  * It can be passed to g_hash_table_new() as the @hash_func parameter,
  * when using non-%NULL strings as keys in a #GHashTable.
- *
- * Note that this function may not be a perfect fit for all use cases.
- * For example, it produces some hash collisions with strings as short
- * as 2.
  *
  * Returns: a hash value corresponding to the key
  */

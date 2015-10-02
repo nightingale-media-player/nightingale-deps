@@ -24,7 +24,6 @@
 #define __KQUEUE_HELPER_H
 
 #include "kqueue-sub.h"
-#include <gio/glocalfilemonitor.h>
 #include <gio/gfilemonitor.h>
 
 gboolean _kh_startup        (void);
@@ -33,6 +32,6 @@ gboolean _kh_cancel_sub     (kqueue_sub *sub);
 
 gboolean _kh_start_watching (kqueue_sub *sub);
 
-void     _kh_dir_diff       (kqueue_sub *sub, GFileMonitorSource *source);
+void     _kh_dir_diff       (kqueue_sub *sub, GFileMonitor *monitor);
 
 #endif /* __KQUEUE_HELPER_H */

@@ -8,7 +8,7 @@
 <link rel="up" href="glib-core.html" title="GLib Core Application Support">
 <link rel="prev" href="glib-Dynamic-Loading-of-Modules.html" title="Dynamic Loading of Modules">
 <link rel="next" href="glib-Memory-Slices.html" title="Memory Slices">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -286,7 +286,7 @@ This also means that there is no need to check if the call succeeded.</p>
 <a class="link" href="glib-Memory-Slices.html#g-slice-free" title="g_slice_free()"><code class="function">g_slice_free()</code></a>, plain <code class="function">malloc()</code> with <code class="function">free()</code>, and (if you're using C++)
 new with delete and new[] with delete[]. Otherwise bad things can happen,
 since these allocators may use different memory pools (and new/delete call
-constructors and destructors).</p>
+constructors and destructors). See also <a class="link" href="glib-Memory-Allocation.html#g-mem-set-vtable" title="g_mem_set_vtable ()"><code class="function">g_mem_set_vtable()</code></a>.</p>
 </div>
 <div class="refsect1">
 <a name="glib-Memory-Allocation.functions_details"></a><h2>Functions</h2>
@@ -329,6 +329,7 @@ so might hide memory allocation errors.</p>
 <a name="id-1.4.7.7.2.7"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -371,6 +372,7 @@ so might hide memory allocation errors.</p>
 <a name="id-1.4.7.7.3.7"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -415,6 +417,7 @@ Care is taken to avoid overflow when calculating the size of the allocated block
 <a name="id-1.4.7.7.4.6"></a><h4>Returns</h4>
 <p> a pointer to the new allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -454,8 +457,9 @@ The function returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" 
 <a name="id-1.4.7.7.5.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -468,7 +472,7 @@ to 0's, and returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" t
 the program on failure.
 The returned pointer is cast to a pointer to the given type.
 The function returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> when <em class="parameter"><code>n_structs</code></em>
- is 0 or if an overflow occurs.</p>
+ is 0 of if an overflow occurs.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -495,8 +499,9 @@ The function returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" 
 <a name="id-1.4.7.7.6.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -541,8 +546,9 @@ The function returns <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" 
 <a name="id-1.4.7.7.7.6"></a><h4>Returns</h4>
 <p> a pointer to the new allocated memory, cast to a pointer to <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -571,6 +577,7 @@ If <em class="parameter"><code>n_bytes</code></em>
 <div class="refsect3">
 <a name="id-1.4.7.7.8.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -600,6 +607,7 @@ If <em class="parameter"><code>n_bytes</code></em>
 <div class="refsect3">
 <a name="id-1.4.7.7.9.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -643,6 +651,7 @@ and <em class="parameter"><code>mem</code></em>
 <div class="refsect3">
 <a name="id-1.4.7.7.10.6"></a><h4>Returns</h4>
 <p> the new address of the allocated memory</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -671,6 +680,7 @@ Contrast with <a class="link" href="glib-Memory-Allocation.html#g-malloc" title=
 <div class="refsect3">
 <a name="id-1.4.7.7.11.6"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -699,8 +709,9 @@ failure. Contrast with <a class="link" href="glib-Memory-Allocation.html#g-mallo
 <div class="refsect3">
 <a name="id-1.4.7.7.12.6"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -740,6 +751,7 @@ on failure.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.13.7"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -777,8 +789,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.14.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -815,8 +828,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.15.6"></a><h4>Returns</h4>
 <p> a pointer to the allocated memory</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -859,8 +873,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.16.6"></a><h4>Returns</h4>
 <p> the new address of the allocated memory</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -897,8 +912,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.17.6"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -935,8 +951,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.18.6"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -979,8 +996,9 @@ but care is taken to detect possible overflow during multiplication.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.19.6"></a><h4>Returns</h4>
 <p> the allocated memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1024,9 +1042,8 @@ Otherwise, the variable is destroyed using <em class="parameter"><code>destroy</
 pointer is set to <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <p>A macro is also included that allows this function to be used without
 pointer casts.</p>
-<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.4.7.7.21.9"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.21.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1048,7 +1065,7 @@ pointer casts.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-34.html#api-index-2.34">2.34</a></p>
+<p class="since">Since 2.34</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1080,10 +1097,10 @@ the following example (which only works on GCC and clang):</p>
 8
 9
 10</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a> </span><span class="symbol">*</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a> </span><span class="symbol">*</span>
 <span class="function">create_object</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
 <span class="cbracket">{</span>
-<span class="normal">  </span><span class="function"><a href="glib-Miscellaneous-Macros.html#g-autoptr">g_autoptr</a></span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a></span><span class="symbol">)</span><span class="normal"> obj </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-new">g_object_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-OBJECT:CAPS">G_TYPE_OBJECT</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Miscellaneous-Macros.html#g-autoptr">g_autoptr</a></span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a></span><span class="symbol">)</span><span class="normal"> obj </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-new">g_object_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-OBJECT:CAPS">G_TYPE_OBJECT</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
 
 <span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">early_error_case</span><span class="symbol">)</span>
 <span class="normal">    </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
@@ -1118,7 +1135,7 @@ particularly useful for dealing with optional out parameters:</p>
         <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-Basic-Types.html#gboolean">gboolean</a></span>
 <span class="function">get_object</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GObject</span><span class="normal"> </span><span class="symbol">**</span><span class="normal">obj_out</span><span class="symbol">)</span>
 <span class="cbracket">{</span>
-<span class="normal">  </span><span class="function"><a href="glib-Miscellaneous-Macros.html#g-autoptr">g_autoptr</a></span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a></span><span class="symbol">)</span><span class="normal"> obj </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-new">g_object_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-OBJECT:CAPS">G_TYPE_OBJECT</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Miscellaneous-Macros.html#g-autoptr">g_autoptr</a></span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a></span><span class="symbol">)</span><span class="normal"> obj </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-new">g_object_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#G-TYPE-OBJECT:CAPS">G_TYPE_OBJECT</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
 
 <span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">early_error_case</span><span class="symbol">)</span>
 <span class="normal">    </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">;</span>
@@ -1153,7 +1170,7 @@ early error case and also in the case that <a class="link" href="glib-Standard-M
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-44.html#api-index-2.44">2.44</a></p>
+<p class="since">Since 2.44</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1200,6 +1217,7 @@ not upon exit of the enclosing function scope.</p></li>
 <a name="id-1.4.7.7.23.7"></a><h4>Returns</h4>
 <p> space for <em class="parameter"><code>size</code></em>
 bytes, allocated on the stack</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1234,6 +1252,7 @@ bytes, allocated on the stack</p>
 <p> Pointer to stack space for <em class="parameter"><code>n_structs</code></em>
 chunks of type <em class="parameter"><code>struct_type</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1315,6 +1334,7 @@ from <em class="parameter"><code>mem</code></em>
 <a name="id-1.4.7.7.26.6"></a><h4>Returns</h4>
 <p> a pointer to the newly-allocated copy of the memory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>mem</code></em>
 is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1322,16 +1342,19 @@ is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 <a name="g-mem-set-vtable"></a><h3>g_mem_set_vtable ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_mem_set_vtable (<em class="parameter"><code><a class="link" href="glib-Memory-Allocation.html#GMemVTable" title="struct GMemVTable"><span class="type">GMemVTable</span></a> *vtable</code></em>);</pre>
-<div class="warning">
-<p><code class="literal">g_mem_set_vtable</code> has been deprecated since version 2.46 and should not be used in newly-written code.</p>
-<p>Use other memory profiling tools instead</p>
-</div>
-<p>This function used to let you override the memory allocation function.
-However, its use was incompatible with the use of global constructors
-in GLib and GIO, because those use the GLib allocators before main is
-reached. Therefore this function is now deprecated and is just a stub.</p>
+<p>Sets the <a class="link" href="glib-Memory-Allocation.html#GMemVTable" title="struct GMemVTable"><span class="type">GMemVTable</span></a> to use for memory allocation. You can use this
+to provide custom memory allocation routines.</p>
+<p>The <em class="parameter"><code>vtable</code></em>
+ only needs to provide <code class="function">malloc()</code>, <code class="function">realloc()</code>, and <code class="function">free()</code>
+functions; GLib can provide default implementations of the others.
+The <code class="function">malloc()</code> and <code class="function">realloc()</code> implementations should return <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on
+failure, GLib will handle error-checking for you. <em class="parameter"><code>vtable</code></em>
+ is copied,
+so need not persist after this function has been called.</p>
+<p>Note that this function must be called before using any other GLib
+functions.</p>
 <div class="refsect3">
-<a name="id-1.4.7.7.27.6"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.27.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1351,19 +1374,16 @@ reached. Therefore this function is now deprecated and is just a stub.</p>
 <a name="g-mem-is-system-malloc"></a><h3>g_mem_is_system_malloc ()</h3>
 <pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean"><span class="returnvalue">gboolean</span></a>
 g_mem_is_system_malloc (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<div class="warning">
-<p><code class="literal">g_mem_is_system_malloc</code> has been deprecated since version 2.46 and should not be used in newly-written code.</p>
-<p>GLib always uses the system malloc, so this function always
-returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>.</p>
-</div>
 <p>Checks whether the allocator used by <a class="link" href="glib-Memory-Allocation.html#g-malloc" title="g_malloc ()"><code class="function">g_malloc()</code></a> is the system's
 malloc implementation. If it returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> memory allocated with
 <code class="function">malloc()</code> can be used interchangeable with memory allocated using <a class="link" href="glib-Memory-Allocation.html#g-malloc" title="g_malloc ()"><code class="function">g_malloc()</code></a>.
 This function is useful for avoiding an extra copy of allocated memory returned
 by a non-GLib-based API.</p>
+<p>A different allocator can be set using <a class="link" href="glib-Memory-Allocation.html#g-mem-set-vtable" title="g_mem_set_vtable ()"><code class="function">g_mem_set_vtable()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.7.7.28.6"></a><h4>Returns</h4>
 <p> if <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, <code class="function">malloc()</code> and <a class="link" href="glib-Memory-Allocation.html#g-malloc" title="g_malloc ()"><code class="function">g_malloc()</code></a> can be mixed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1371,13 +1391,14 @@ by a non-GLib-based API.</p>
 <a name="g-mem-profile"></a><h3>g_mem_profile ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_mem_profile (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<div class="warning">
-<p><code class="literal">g_mem_profile</code> has been deprecated since version 2.46 and should not be used in newly-written code.</p>
-<p>Use other memory profiling tools instead</p>
-</div>
-<p>GLib used to support some tools for memory profiling, but this
-no longer works. There are many other useful tools for memory
-profiling these days which can be used instead.</p>
+<p>Outputs a summary of memory usage.</p>
+<p>It outputs the frequency of allocations of different sizes,
+the total number of bytes which have been allocated,
+the total number of bytes which have been freed,
+and the difference between the previous two values, i.e. the number of bytes
+still in use.</p>
+<p>Note that this function will not output anything unless you have
+previously installed the <a class="link" href="glib-Memory-Allocation.html#glib-mem-profiler-table" title="glib_mem_profiler_table"><span class="type">glib_mem_profiler_table</span></a> with <a class="link" href="glib-Memory-Allocation.html#g-mem-set-vtable" title="g_mem_set_vtable ()"><code class="function">g_mem_set_vtable()</code></a>.</p>
 </div>
 </div>
 <div class="refsect1">
@@ -1408,9 +1429,8 @@ includes the key <code class="literal">gc-friendly</code>.</p>
 <p>A set of functions used to perform memory allocation. The same <a class="link" href="glib-Memory-Allocation.html#GMemVTable" title="struct GMemVTable"><span class="type">GMemVTable</span></a> must
 be used for all allocations in the same program; a call to <a class="link" href="glib-Memory-Allocation.html#g-mem-set-vtable" title="g_mem_set_vtable ()"><code class="function">g_mem_set_vtable()</code></a>,
 if it exists, should be prior to any use of GLib.</p>
-<p>This functions related to this has been deprecated in 2.46, and no longer work.</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.3.6"></a><h4>Members</h4>
+<a name="id-1.4.7.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1457,14 +1477,15 @@ if it exists, should be prior to any use of GLib.</p>
 <a name="glib-mem-profiler-table"></a><h3>glib_mem_profiler_table</h3>
 <pre class="programlisting">extern GMemVTable *glib_mem_profiler_table;
 </pre>
-<div class="warning">
-<p><code class="literal">glib_mem_profiler_table</code> has been deprecated since version 2.46 and should not be used in newly-written code.</p>
-<p>Use other memory profiling tools instead</p>
-</div>
+<p>A <a class="link" href="glib-Memory-Allocation.html#GMemVTable" title="struct GMemVTable"><span class="type">GMemVTable</span></a> containing profiling variants of the memory
+allocation functions. Use them together with <a class="link" href="glib-Memory-Allocation.html#g-mem-profile" title="g_mem_profile ()"><code class="function">g_mem_profile()</code></a>
+in order to get information about the memory allocation pattern
+of your program.</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

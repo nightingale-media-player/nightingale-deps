@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-Hook-Functions.html" title="Hook Functions">
 <link rel="next" href="glib-Lexical-Scanner.html" title="Lexical Scanner">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -468,8 +468,9 @@ been called).</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.2.5"></a><h4>Returns</h4>
 <p> human-readable application name. may return <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-2.html#api-index-2.2">2.2</a></p>
+<p class="since">Since 2.2</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -479,7 +480,7 @@ g_set_application_name (<em class="parameter"><code>const <a class="link" href="
 <p>Sets a human-readable name for the application. This name should be
 localized if possible, and is intended for display to the user.
 Contrast with <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a>, which sets a non-localized name.
-<a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a> will be called automatically by <a href="http://developer.gnome.org/gtk3/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>,
+<a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a> will be called automatically by <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>,
 but <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-application-name" title="g_set_application_name ()"><code class="function">g_set_application_name()</code></a> will not.</p>
 <p>Note that for thread safety reasons, this function can only
 be called once.</p>
@@ -500,7 +501,7 @@ or when displaying an application's name in the task list.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-2.html#api-index-2.2">2.2</a></p>
+<p class="since">Since 2.2</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -509,14 +510,15 @@ or when displaying an application's name in the task list.</p>
 g_get_prgname (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Gets the name of the program. This name should not be localized,
 in contrast to <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-application-name" title="g_get_application_name ()"><code class="function">g_get_application_name()</code></a>.</p>
-<p>If you are using GDK or GTK+ the program name is set in <a href="http://developer.gnome.org/gdk3/gdk3-General.html#gdk-init"><code class="function">gdk_init()</code></a>, 
-which is called by <a href="http://developer.gnome.org/gtk3/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>. The program name is found by taking 
+<p>If you are using GDK or GTK+ the program name is set in <a href="http://developer.gnome.org/gdk2/gdk3-General.html#gdk-init"><code class="function">gdk_init()</code></a>, 
+which is called by <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>. The program name is found by taking 
 the last component of <em class="parameter"><code>argv</code></em>
 [0].</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.4.6"></a><h4>Returns</h4>
 <p> the name of the program. The returned string belongs
 to GLib and must not be modified or freed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -561,7 +563,7 @@ except portable.</p>
 environment variables. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -591,7 +593,8 @@ for an empty environment list. </p></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>variable</p></td>
-<td class="parameter_description"><p>the environment variable to get</p></td>
+<td class="parameter_description"><p>the environment variable to get, in the GLib file name
+encoding</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -606,8 +609,9 @@ string is owned by <em class="parameter"><code>envp</code></em>
 , and will be freed if <em class="parameter"><code>variable</code></em>
 is
 set or unset again.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -663,7 +667,7 @@ environment list. </p></td>
 updated environment list. Free it using <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -705,7 +709,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 updated environment list. Free it using <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -713,9 +717,9 @@ updated environment list. Free it using <a class="link" href="glib-String-Utilit
 <pre class="programlisting">const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="returnvalue">gchar</span></a> *
 g_getenv (<em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *variable</code></em>);</pre>
 <p>Returns the value of an environment variable.</p>
-<p>On UNIX, the name and value are byte strings which might or might not
-be in some consistent character set and encoding. On Windows, they are
-in UTF-8.
+<p>The name and value are in the GLib file name encoding. On UNIX,
+this means the actual bytes which might or might not be in some
+consistent character set and encoding. On Windows, it is in UTF-8.
 On Windows, in case the environment variable's value contains
 references to other environment variables, they are expanded.</p>
 <div class="refsect3">
@@ -728,7 +732,8 @@ references to other environment variables, they are expanded.</p>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>variable</p></td>
-<td class="parameter_description"><p>the environment variable to get</p></td>
+<td class="parameter_description"><p>the environment variable to get, in the GLib file name
+encoding</p></td>
 <td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
@@ -739,6 +744,7 @@ references to other environment variables, they are expanded.</p>
 the environment variable is not found. The returned string
 may be overwritten by the next call to <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-getenv" title="g_getenv ()"><code class="function">g_getenv()</code></a>, <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-setenv" title="g_setenv ()"><code class="function">g_setenv()</code></a>
 or <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-unsetenv" title="g_unsetenv ()"><code class="function">g_unsetenv()</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -748,9 +754,10 @@ or <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-unsetenv" t
 g_setenv (<em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *variable</code></em>,
           <em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *value</code></em>,
           <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean"><span class="type">gboolean</span></a> overwrite</code></em>);</pre>
-<p>Sets an environment variable. On UNIX, both the variable's name and
-value can be arbitrary byte strings, except that the variable's name
-cannot contain '='. On Windows, they should be in UTF-8.</p>
+<p>Sets an environment variable. Both the variable's name and value
+should be in the GLib file name encoding. On UNIX, this means that
+they can be arbitrary byte strings. On Windows, they should be in
+UTF-8.</p>
 <p>Note that on some systems, when variables are overwritten, the memory
 used for the previous variables and its value isn't reclaimed.</p>
 <p>You should be mindful of the fact that environment variable handling
@@ -794,8 +801,9 @@ array directly to <code class="function">execvpe()</code>, <a class="link" href=
 <div class="refsect3">
 <a name="id-1.5.14.7.11.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the environment variable couldn't be set.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -831,7 +839,7 @@ array directly to <code class="function">execvpe()</code>, <a class="link" href=
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -851,7 +859,7 @@ the UTF-8 encoding that this function and <a class="link" href="glib-Miscellaneo
 list of strings which must be freed with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -865,6 +873,7 @@ consistent on a machine. On Windows, it is always UTF-8.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.14.5"></a><h4>Returns</h4>
 <p> the user name of the current user.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -880,6 +889,7 @@ returned.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.15.5"></a><h4>Returns</h4>
 <p> the user's real name.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -901,8 +911,9 @@ See documentation for CSIDL_INTERNET_CACHE.</p>
 <a name="id-1.5.14.7.16.7"></a><h4>Returns</h4>
 <p> a string owned by GLib that must not be modified
 or freed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -923,8 +934,9 @@ what <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-user-
 <a name="id-1.5.14.7.17.7"></a><h4>Returns</h4>
 <p> a string owned by GLib that must not be modified
 or freed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -945,8 +957,9 @@ what <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-user-
 <a name="id-1.5.14.7.18.7"></a><h4>Returns</h4>
 <p> a string owned by GLib that must not be modified
 or freed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -969,8 +982,9 @@ what <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-user-
 <div class="refsect3">
 <a name="id-1.5.14.7.19.7"></a><h4>Returns</h4>
 <p> a string owned by GLib that must not be modified or freed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1005,8 +1019,9 @@ will not reflect any change once the special directories are loaded.</p>
 <p> the path to the specified special directory, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the logical id was not found. The returned string is owned by
 GLib and should not be modified or freed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1042,7 +1057,7 @@ this function is called.</p>
 not be modified or freed. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1067,7 +1082,7 @@ This information will not roam and is available to anyone using the computer.</p
 not be modified or freed. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1081,7 +1096,7 @@ if you just changed the data on disk yourself.</p>
 that were previously returned from <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-user-special-dir" title="g_get_user_special_dir ()"><code class="function">g_get_user_special_dir()</code></a>
 that can't be freed. We ensure to only leak the data for
 the directories that actually changed value though.</p>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1102,8 +1117,9 @@ returned.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.24.6"></a><h4>Returns</h4>
 <p> the host name of the machine.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1129,6 +1145,7 @@ or unset it before calling any functions in GLib.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.25.9"></a><h4>Returns</h4>
 <p> the current user's home directory</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1150,6 +1167,7 @@ string.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.26.8"></a><h4>Returns</h4>
 <p> the directory to use for temporary files.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1168,6 +1186,7 @@ the current directory is the target of a symbolic link.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.27.7"></a><h4>Returns</h4>
 <p> the current directory</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1204,6 +1223,7 @@ string.</p>
 <a name="id-1.5.14.7.28.7"></a><h4>Returns</h4>
 <p> the name of the file without any leading
 directory components</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1251,6 +1271,7 @@ Windows-specific code.</p>
 <a name="id-1.5.14.7.29.10"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>file_name</code></em>
 is absolute</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1317,6 +1338,7 @@ separator is returned. If <em class="parameter"><code>file_name</code></em>
 <a name="id-1.5.14.7.31.7"></a><h4>Returns</h4>
 <p> a newly allocated string containing the last
 component of the filename</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1345,6 +1367,7 @@ The returned string should be freed when no longer needed.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.32.7"></a><h4>Returns</h4>
 <p> the directory components of the file</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1390,6 +1413,7 @@ be a relative path.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.33.9"></a><h4>Returns</h4>
 <p> a newly-allocated string that must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1418,8 +1442,9 @@ meant for language bindings.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.34.6"></a><h4>Returns</h4>
 <p> a newly-allocated string that must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1480,6 +1505,7 @@ of the separator are ignored.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.35.11"></a><h4>Returns</h4>
 <p> a newly-allocated string that must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1516,8 +1542,9 @@ meant for language bindings.</p>
 <div class="refsect3">
 <a name="id-1.5.14.7.36.6"></a><h4>Returns</h4>
 <p> a newly-allocated string that must be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1551,8 +1578,9 @@ formatted.</p>
 <a name="id-1.5.14.7.37.9"></a><h4>Returns</h4>
 <p> a newly-allocated formatted string containing a human readable
 file size</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1589,8 +1617,9 @@ that modify the output. See <a class="link" href="glib-Miscellaneous-Utility-Fun
 <a name="id-1.5.14.7.38.7"></a><h4>Returns</h4>
 <p> a newly-allocated formatted string containing a human
 readable file size</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1628,14 +1657,16 @@ string "3.1 MB".</p>
 <a name="id-1.5.14.7.39.10"></a><h4>Returns</h4>
 <p> a newly-allocated formatted string containing a human
 readable file size</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-16.html#api-index-2.16">2.16</a></p>
+<p class="since">Since 2.16</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-find-program-in-path"></a><h3>g_find_program_in_path ()</h3>
 <pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="returnvalue">gchar</span></a> *
 g_find_program_in_path (<em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *program</code></em>);</pre>
+<div class="warning"><p><code class="literal">g_find_program_in_path</code> is deprecated and should not be used in newly-written code.</p></div>
 <p>Locates the first executable named <em class="parameter"><code>program</code></em>
  in the user's path, in the
 same way that <code class="function">execvp()</code> would locate it. Returns an allocated string
@@ -1657,7 +1688,7 @@ finally in the directories in the <code class="literal">PATH</code> environment 
 the program is found, the return value contains the full name
 including the type suffix.</p>
 <div class="refsect3">
-<a name="id-1.5.14.7.40.7"></a><h4>Parameters</h4>
+<a name="id-1.5.14.7.40.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1672,8 +1703,9 @@ including the type suffix.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.14.7.40.8"></a><h4>Returns</h4>
+<a name="id-1.5.14.7.40.9"></a><h4>Returns</h4>
 <p> a newly-allocated string with the absolute path, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1714,8 +1746,8 @@ usually). To start searching from the 0th bit, set <em class="parameter"><code>n
 <div class="refsect3">
 <a name="id-1.5.14.7.41.6"></a><h4>Returns</h4>
 <p> the index of the first bit set which is higher than <em class="parameter"><code>nth_bit</code></em>
-, or -1
-if no higher bits are set</p>
+</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1757,8 +1789,8 @@ usually). To start searching from the last bit, set <em class="parameter"><code>
 <div class="refsect3">
 <a name="id-1.5.14.7.42.6"></a><h4>Returns</h4>
 <p> the index of the first bit set which is lower than <em class="parameter"><code>nth_bit</code></em>
-, or -1
-if no lower bits are set</p>
+</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1789,6 +1821,7 @@ e.g. if <em class="parameter"><code>number</code></em>
 <a name="id-1.5.14.7.43.6"></a><h4>Returns</h4>
 <p> the number of bits used to hold <em class="parameter"><code>number</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1822,6 +1855,7 @@ each prime is approximately 1.5-2 times the previous prime.</p>
 <p> the smallest prime number from a built-in array of primes
 which is larger than <em class="parameter"><code>num</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1926,6 +1960,7 @@ strings with bit flags. </p></td>
 <div class="refsect3">
 <a name="id-1.5.14.7.46.8"></a><h4>Returns</h4>
 <p> the combined set of bit flags.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2121,7 +2156,7 @@ enumeration.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2152,6 +2187,7 @@ The returned string should be freed when no longer needed.</p>
 <div class="refsect3">
 <a name="id-1.5.14.8.3.8"></a><h4>Returns</h4>
 <p> the directory components of the file</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2232,6 +2268,7 @@ Used in <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-parse-
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

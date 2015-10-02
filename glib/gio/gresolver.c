@@ -26,6 +26,7 @@
 #include "gnetworkingprivate.h"
 #include "gasyncresult.h"
 #include "ginetaddress.h"
+#include "gsimpleasyncresult.h"
 #include "gtask.h"
 #include "gsrvtarget.h"
 #include "gthreadedresolver.h"

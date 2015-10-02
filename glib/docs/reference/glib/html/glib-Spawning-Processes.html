@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-Timers.html" title="Timers">
 <link rel="next" href="glib-File-Utilities.html" title="File Utilities">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -146,7 +146,7 @@ convenient than the bare UNIX <code class="function">fork()</code> and <code cla
 and asynchronous variants (<a class="link" href="glib-Spawning-Processes.html#g-spawn-async" title="g_spawn_async ()"><code class="function">g_spawn_async()</code></a>, <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a>),
 as well as convenience variants that take a complete shell-like
 commandline (<a class="link" href="glib-Spawning-Processes.html#g-spawn-command-line-sync" title="g_spawn_command_line_sync ()"><code class="function">g_spawn_command_line_sync()</code></a>, <a class="link" href="glib-Spawning-Processes.html#g-spawn-command-line-async" title="g_spawn_command_line_async ()"><code class="function">g_spawn_command_line_async()</code></a>).</p>
-<p>See <a href="https://developer.gnome.org/gio/unstable/GSubprocess.html#GSubprocess-struct"><span class="type">GSubprocess</span></a> in GIO for a higher-level API that provides
+<p>See <a href="https://developer.gnome.org/gio/unstable/GSubprocess.html"><span class="type">GSubprocess</span></a> in GIO for a higher-level API that provides
 stream interfaces for communication with child processes.</p>
 </div>
 <div class="refsect1">
@@ -247,8 +247,13 @@ to retrieve its command line. For C programs built with Microsoft's
 tools it is enough to make the program have a <code class="function">wmain()</code> instead of
 <code class="function">main()</code>. <code class="function">wmain()</code> has a wide character argument vector as parameter.</p>
 <p>At least currently, mingw doesn't support <code class="function">wmain()</code>, so if you use
-mingw to develop the spawned program, it should call
-<a class="link" href="glib-Windows-Compatibility-Functions.html#g-win32-get-command-line" title="g_win32_get_command_line ()"><code class="function">g_win32_get_command_line()</code></a> to get arguments in UTF-8.</p>
+mingw to develop the spawned program, it will have to call the
+undocumented function <code class="function">__wgetmainargs()</code> to get the wide character
+argument vector and environment. See gspawn-win32-helper.c in the
+GLib sources or init.c in the mingw runtime sources for a prototype
+for that function. Alternatively, you can retrieve the Win32 system
+level wide character command line passed to the spawned program
+using the <code class="function">GetCommandLineW()</code> function.</p>
 <p>On Windows the low-level child process creation API <code class="function">CreateProcess()</code>
 doesn't use argument vectors, but a command line. The C runtime
 library's spawn*() family of functions (which <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a>
@@ -455,6 +460,7 @@ the spawned program opens its windows on the right screen.</p>
 <div class="refsect3">
 <a name="id-1.5.17.7.3.25"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -537,6 +543,7 @@ are different concepts on Windows.</p>
 <div class="refsect3">
 <a name="id-1.5.17.7.4.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error is set</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -643,6 +650,7 @@ how these functions work on Windows.</p>
 <div class="refsect3">
 <a name="id-1.5.17.7.5.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -717,8 +725,9 @@ change in future versions of GLib.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if child exited successfully, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise (and
 <em class="parameter"><code>error</code></em>
 will be set)</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-34.html#api-index-2.34">2.34</a></p>
+<p class="since">Since 2.34</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -759,6 +768,7 @@ errors are those from <a class="link" href="glib-Shell-related-Utilities.html#g-
 <div class="refsect3">
 <a name="id-1.5.17.7.7.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error is set</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -834,6 +844,7 @@ separator. You need to enclose such paths with single quotes, like
 <div class="refsect3">
 <a name="id-1.5.17.7.8.8"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1148,6 +1159,7 @@ will be the program exit code.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

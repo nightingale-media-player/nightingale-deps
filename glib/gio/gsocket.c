@@ -134,15 +134,6 @@ static gboolean g_socket_initable_init       (GInitable       *initable,
 					      GCancellable    *cancellable,
 					      GError         **error);
 
-static gint
-g_socket_send_messages_with_blocking   (GSocket        *socket,
-                                        GOutputMessage *messages,
-                                        guint           num_messages,
-                                        gint            flags,
-                                        gboolean        blocking,
-                                        GCancellable   *cancellable,
-                                        GError        **error);
-
 enum
 {
   PROP_0,
@@ -244,24 +235,6 @@ socket_strerror (int err)
 #endif
 }
 
-/* Wrapper around g_set_error() to avoid doing excess work */
-#define socket_set_error_lazy(err, errsv, fmt)                          \
-  G_STMT_START {                                                        \
-    GError **__err = (err);                                             \
-    int __errsv = (errsv);                                              \
-                                                                        \
-    if (__err)                                                          \
-      {                                                                 \
-        int __code = socket_io_error_from_errno (__errsv);              \
-        const char *__strerr = socket_strerror (__errsv);               \
-                                                                        \
-        if (__code == G_IO_ERROR_WOULD_BLOCK)                           \
-          g_set_error_literal (__err, G_IO_ERROR, __code, __strerr);    \
-        else                                                            \
-          g_set_error (__err, G_IO_ERROR, __code, fmt, __strerr);       \
-      }                                                                 \
-  } G_STMT_END
-
 #ifdef G_OS_WIN32
 #define win32_unset_event_mask(_socket, _mask) _win32_unset_event_mask (_socket, _mask)
 static void
@@ -345,6 +318,24 @@ g_socket_details_from_fd (GSocket *socket)
   if (!g_socket_get_option (socket, SOL_SOCKET, SO_TYPE, &value, NULL))
     {
       errsv = get_socket_errno ();
+
+      switch (errsv)
+	{
+#ifdef ENOTSOCK
+	 case ENOTSOCK:
+#else
+#ifdef WSAENOTSOCK
+	 case WSAENOTSOCK:
+#endif
+#endif
+	 case EBADF:
+	  /* programmer error */
+	  g_error ("creating GSocket from fd %d: %s\n",
+		   fd, socket_strerror (errsv));
+	 default:
+	   break;
+	}
+
       goto err;
     }
 
@@ -1068,9 +1059,6 @@ g_socket_new (GSocketFamily     family,
  *
  * On success, the returned #GSocket takes ownership of @fd. On failure, the
  * caller must close @fd themselves.
- *
- * Since GLib 2.46, it is no longer a fatal error to call this on a non-socket
- * descriptor.  Instead, a GError will be set with code %G_IO_ERROR_FAILED
  *
  * Returns: a #GSocket or %NULL on error.
  *     Free the returned object with g_object_unref().
@@ -2279,7 +2267,9 @@ g_socket_accept (GSocket       *socket,
                 }
             }
 
-	  socket_set_error_lazy (error, errsv, _("Error accepting connection: %s"));
+	  g_set_error (error, G_IO_ERROR,
+		       socket_io_error_from_errno (errsv),
+		       _("Error accepting connection: %s"), socket_strerror (errsv));
 	  return NULL;
 	}
       break;
@@ -2653,7 +2643,9 @@ g_socket_receive_with_blocking (GSocket       *socket,
 
 	  win32_unset_event_mask (socket, FD_READ);
 
-	  socket_set_error_lazy (error, errsv, _("Error receiving data: %s"));
+	  g_set_error (error, G_IO_ERROR,
+		       socket_io_error_from_errno (errsv),
+		       _("Error receiving data: %s"), socket_strerror (errsv));
 	  return -1;
 	}
 
@@ -2826,7 +2818,9 @@ g_socket_send_with_blocking (GSocket       *socket,
                 }
             }
 
-	  socket_set_error_lazy (error, errsv, _("Error sending data: %s"));
+	  g_set_error (error, G_IO_ERROR,
+		       socket_io_error_from_errno (errsv),
+		       _("Error sending data: %s"), socket_strerror (errsv));
 	  return -1;
 	}
       break;
@@ -3911,7 +3905,10 @@ g_socket_send_message (GSocket                *socket,
                 continue;
               }
 
-	    socket_set_error_lazy (error, errsv, _("Error sending message: %s"));
+	    g_set_error (error, G_IO_ERROR,
+			 socket_io_error_from_errno (errsv),
+			 _("Error sending message: %s"), socket_strerror (errsv));
+
 	    return -1;
 	  }
 	break;
@@ -3991,7 +3988,10 @@ g_socket_send_message (GSocket                *socket,
                   }
               }
 
-	    socket_set_error_lazy (error, errsv, _("Error sending message: %s"));
+	    g_set_error (error, G_IO_ERROR,
+			 socket_io_error_from_errno (errsv),
+			 _("Error sending message: %s"), socket_strerror (errsv));
+
 	    return -1;
 	  }
 	break;
@@ -4058,20 +4058,6 @@ g_socket_send_messages (GSocket        *socket,
 		        gint            flags,
 		        GCancellable   *cancellable,
 		        GError        **error)
-{
-  return g_socket_send_messages_with_blocking (socket, messages, num_messages,
-                                               flags, socket->priv->blocking,
-                                               cancellable, error);
-}
-
-static gint
-g_socket_send_messages_with_blocking (GSocket        *socket,
-                                      GOutputMessage *messages,
-                                      guint           num_messages,
-                                      gint            flags,
-                                      gboolean        blocking,
-                                      GCancellable   *cancellable,
-                                      GError        **error)
 {
   g_return_val_if_fail (G_IS_SOCKET (socket), -1);
   g_return_val_if_fail (num_messages == 0 || messages != NULL, -1);
@@ -4202,6 +4188,11 @@ g_socket_send_messages_with_blocking (GSocket        *socket,
       {
         gint ret;
 
+        if (socket->priv->blocking &&
+            !g_socket_condition_wait (socket,
+                                      G_IO_OUT, cancellable, error))
+          return -1;
+
         ret = sendmmsg (socket->priv->fd, msgvec + num_sent, num_messages - num_sent,
                         flags | G_SOCKET_DEFAULT_SEND_FLAGS);
 
@@ -4212,16 +4203,10 @@ g_socket_send_messages_with_blocking (GSocket        *socket,
             if (errsv == EINTR)
               continue;
 
-            if (blocking &&
+            if (socket->priv->blocking &&
                 (errsv == EWOULDBLOCK ||
                  errsv == EAGAIN))
-              {
-                if (!g_socket_condition_wait (socket,
-                                              G_IO_OUT, cancellable, error))
-                  return -1;
-
-                continue;
-              }
+              continue;
 
             if (num_sent > 0 &&
                 (errsv == EWOULDBLOCK ||
@@ -4231,7 +4216,9 @@ g_socket_send_messages_with_blocking (GSocket        *socket,
                 break;
               }
 
-            socket_set_error_lazy (error, errsv, _("Error sending message: %s"));
+            g_set_error (error, G_IO_ERROR,
+                         socket_io_error_from_errno (errsv),
+                         _("Error sending message: %s"), socket_strerror (errsv));
 
             /* we have to iterate over all messages below now, because we don't
              * know where between num_sent and num_messages the error occured */
@@ -4530,6 +4517,11 @@ g_socket_receive_message (GSocket                 *socket,
     /* do it */
     while (1)
       {
+	if (socket->priv->blocking &&
+	    !g_socket_condition_wait (socket,
+				      G_IO_IN, cancellable, error))
+	  return -1;
+
 	result = recvmsg (socket->priv->fd, &msg, msg.msg_flags);
 #ifdef MSG_CMSG_CLOEXEC	
 	if (result < 0 && get_socket_errno () == EINVAL)
@@ -4550,15 +4542,12 @@ g_socket_receive_message (GSocket                 *socket,
 	    if (socket->priv->blocking &&
 		(errsv == EWOULDBLOCK ||
 		 errsv == EAGAIN))
-	      {
-		if (!g_socket_condition_wait (socket,
-		                              G_IO_IN, cancellable, error))
-		  return -1;
+	      continue;
 
-		continue;
-	      }
+	    g_set_error (error, G_IO_ERROR,
+			 socket_io_error_from_errno (errsv),
+			 _("Error receiving message: %s"), socket_strerror (errsv));
 
-	    socket_set_error_lazy (error, errsv, _("Error receiving message: %s"));
 	    return -1;
 	  }
 	break;
@@ -4693,7 +4682,10 @@ g_socket_receive_message (GSocket                 *socket,
                   }
               }
 
-	    socket_set_error_lazy (error, errsv, _("Error receiving message: %s"));
+	    g_set_error (error, G_IO_ERROR,
+			 socket_io_error_from_errno (errsv),
+			 _("Error receiving message: %s"), socket_strerror (errsv));
+
 	    return -1;
 	  }
 	win32_unset_event_mask (socket, FD_READ);
