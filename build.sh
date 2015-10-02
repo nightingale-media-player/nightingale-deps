@@ -67,29 +67,32 @@ case $OSTYPE in
 #        echo -e "Building libidl..."
 #        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
         
-#        echo -e "Building flac..."
-#        make CC=gcc CXX=g++ -C flac -f Makefile.songbird
+        echo -e "Building flac..."
+	cd flac
+	bash autogen.sh
+	cd ..
+        make CC=gcc CXX=g++ -C flac -f Makefile.songbird
         
-#        echo -e "Building libjpeg-turbo..."
-#        make CC=gcc CXX=g++ -C libjpeg-turbo -f Makefile.songbird
+        echo -e "Building libjpeg-turbo..."
+        make CC=gcc CXX=g++ -C libjpeg-turbo -f Makefile.songbird
         
-#        echo -e "Building libogg..."
-#        make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
+        echo -e "Building libogg..."
+        make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
         
-#        echo -e "Building libtheora..."
-#        make CC=gcc CXX=g++ -C libtheora -f Makefile.songbird
+        echo -e "Building libtheora..."
+        make CC=gcc CXX=g++ -C libtheora -f Makefile.songbird
         
-#        echo -e "Building libtool..."
-#        make CC=gcc CXX=g++ -C libtool -f Makefile.songbird
+        echo -e "Building libtool..."
+        make CC=gcc CXX=g++ -C libtool -f Makefile.songbird
         
-#        echo -e "Building libvorbis..."        
-#        make CC=gcc CXX=g++ -C libvorbis -f Makefile.songbird
+        echo -e "Building libvorbis..."        
+        make CC=gcc CXX=g++ -C libvorbis -f Makefile.songbird
         
-#        echo -e "Building sqlite..."
-#        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
+        echo -e "Building sqlite..."
+        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
         
-#        echo -e "Building taglib..."        
-#        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
+        echo -e "Building taglib..."        
+        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
 
         echo -e "Building xulrunner and crossing our fingers..."
         make CC=gcc CXX=g++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
