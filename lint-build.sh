@@ -2,6 +2,12 @@
 
 set -e
 
+# build-dependencies on Debian-based systems:
+# automake autoconf2.13 libtool cmake unzip zip libasound2-dev libbz2-dev libcairo2-dev
+# libevent-dev libfreetype6-dev libgnomevfs2-dev libgtk2.0-dev libharfbuzz-dev libhunspell-dev
+# libidl-dev libjpeg-dev libnotify-dev libnspr4-dev libnss3-dev libpixman-1-dev libpng12-dev
+# libsqlite3-dev libxext-dev libxt-dev zlib1g-dev
+
 export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
