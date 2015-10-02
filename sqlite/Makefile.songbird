@@ -31,17 +31,15 @@
 SB_VENDOR_TARGET_DEP_MODULES := 
 
 SB_VENDOR_TARGET = sqlite
-SB_VENDOR_TARGET_VERSION = 3.6.10
+SB_VENDOR_TARGET_VERSION = 3.8.8.2
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-   --disable-tcl \
-   --disable-amalgamation \
-   --disable-load-extension \
+   --enable-static \
+   --disable-shared \
+   --with-pic \
    --enable-threadsafe \
-   --enable-cross-thread-connections \
-   --enable-tempstore=only \
    $(NULL)
 
 SB_CFLAGS += -DSQLITE_ALLOW_XTHREAD_CONNECT=1 \
@@ -74,4 +72,5 @@ include $(CURDIR)/../songbird-vendor-rules.mk
 module_setup_build: FORCE
 	@echo module_setup_build: Running $(AUTOCONF) to generate configure
 	$(AUTOCONF)
-	$(MV) configure $(SB_VENDOR_BUILD_DIR)
+	$(AUTOMAKE)
+	$(MV) autom4te.cache configure Makefile.in $(SB_VENDOR_BUILD_DIR)
