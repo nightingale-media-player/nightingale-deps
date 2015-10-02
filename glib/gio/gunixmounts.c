@@ -210,7 +210,7 @@ gboolean
 g_unix_is_mount_path_system_internal (const char *mount_path)
 {
   const char *ignore_mountpoints[] = {
-    /* Includes all FHS 2.3 toplevel dirs and other specialized
+    /* Includes all FHS 2.3 toplevel dirs and other specilized
      * directories that we want to hide from the user.
      */
     "/",              /* we already have "Filesystem root" in Nautilus */ 
@@ -1481,7 +1481,7 @@ g_unix_mount_monitor_class_init (GUnixMountMonitorClass *klass)
    * Emitted when the unix mounts have changed.
    */ 
   signals[MOUNTS_CHANGED] =
-    g_signal_new (I_("mounts-changed"),
+    g_signal_new ("mounts-changed",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_LAST,
 		  0,
@@ -1496,7 +1496,7 @@ g_unix_mount_monitor_class_init (GUnixMountMonitorClass *klass)
    * Emitted when the unix mount points have changed.
    */
   signals[MOUNTPOINTS_CHANGED] =
-    g_signal_new (I_("mountpoints-changed"),
+    g_signal_new ("mountpoints-changed",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_LAST,
 		  0,

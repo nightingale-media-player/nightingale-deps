@@ -86,12 +86,6 @@ guint           g_log_set_handler       (const gchar    *log_domain,
                                          GLogLevelFlags  log_levels,
                                          GLogFunc        log_func,
                                          gpointer        user_data);
-GLIB_AVAILABLE_IN_2_46
-guint           g_log_set_handler_full  (const gchar    *log_domain,
-                                         GLogLevelFlags  log_levels,
-                                         GLogFunc        log_func,
-                                         gpointer        user_data,
-                                         GDestroyNotify  destroy);
 GLIB_AVAILABLE_IN_ALL
 void            g_log_remove_handler    (const gchar    *log_domain,
                                          guint           handler_id);
@@ -198,7 +192,7 @@ void g_assert_warning         (const char *log_domain,
                                        G_LOG_LEVEL_DEBUG,    \
                                        format)
 #else   /* no varargs macros */
-static void g_error (const gchar *format, ...) G_GNUC_NORETURN G_ANALYZER_NORETURN;
+static void g_error (const gchar *format, ...) G_ANALYZER_NORETURN;
 static void g_critical (const gchar *format, ...) G_ANALYZER_NORETURN;
 
 static void

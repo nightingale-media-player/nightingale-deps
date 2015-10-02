@@ -14,8 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-
 static GObject      *got_source;
 static GAsyncResult *got_result;
 static gpointer      got_user_data;
@@ -195,5 +193,3 @@ main (int argc, char **argv)
 
   return g_test_run();
 }
-
-G_GNUC_END_IGNORE_DEPRECATIONS

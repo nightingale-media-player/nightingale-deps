@@ -55,7 +55,7 @@ po-time.h plural-table.h lang-table.h format.h filters.h \
 xgettext.h x-c.h x-po.h x-sh.h x-python.h x-lisp.h x-elisp.h x-librep.h \
 x-scheme.h x-smalltalk.h x-java.h x-properties.h x-csharp.h x-awk.h x-ycp.h \
 x-tcl.h x-perl.h x-php.h x-stringtable.h x-rst.h x-glade.h x-lua.h \
-x-javascript.h x-vala.h x-gsettings.h x-desktop.h libexpat-compat.h
+x-javascript.h x-vala.h x-gsettings.h x-desktop.h x-appdata.h libexpat-compat.h
 
 EXTRA_DIST += FILES project-id ChangeLog.0
 
@@ -183,7 +183,7 @@ xgettext_SOURCES += \
   x-c.c x-po.c x-sh.c x-python.c x-lisp.c x-elisp.c x-librep.c x-scheme.c \
   x-smalltalk.c x-java.c x-csharp.c x-awk.c x-ycp.c x-tcl.c x-perl.c x-php.c \
   x-rst.c x-glade.c x-lua.c x-javascript.c x-vala.c x-gsettings.c \
-  x-desktop.c
+  x-desktop.c x-appdata.c
 if !WOE32DLL
 msgattrib_SOURCES = msgattrib.c
 else
@@ -333,6 +333,7 @@ msguniq_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(bindir)\"
 recode_sr_latin_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(bindir)\"
 hostname_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
 urlget_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
+cldr_plurals_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
 if RELOCATABLE_VIA_LD
 msgcmp_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 msgfmt_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
@@ -352,6 +353,7 @@ msguniq_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 recode_sr_latin_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 hostname_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
 urlget_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
+cldr_plurals_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
 endif
 
 # Linking with C++ libraries is needed _only_ on mingw and Cygwin.

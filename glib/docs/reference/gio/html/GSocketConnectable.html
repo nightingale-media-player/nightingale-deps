@@ -8,7 +8,7 @@
 <link rel="up" href="resolver.html" title="DNS resolution">
 <link rel="prev" href="GSimpleProxyResolver.html" title="GSimpleProxyResolver">
 <link rel="next" href="GNetworkAddress.html" title="GNetworkAddress">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -102,7 +102,7 @@
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
 <tr>
-<td class="property_type"><a href="../glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_type"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
 <td class="property_name"><a class="link" href="GSocketConnectable.html#GProxyAddressEnumerator--default-port" title="The “default-port” property">default-port</a></td>
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
@@ -114,7 +114,7 @@
 </tr>
 <tr>
 <td class="property_type">
-<a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
 <td class="property_name"><a class="link" href="GSocketConnectable.html#GProxyAddressEnumerator--uri" title="The “uri” property">uri</a></td>
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
@@ -150,18 +150,20 @@
 </div>
 <div class="refsect1">
 <a name="GSocketConnectable.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GSocketConnectable
-    <a href="../gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">├──</span> <a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator">GSocketAddressEnumerator</a>
+    <span class="lineart">│</span>   <span class="lineart">╰──</span> GProxyAddressEnumerator
     <span class="lineart">╰──</span> GSocketAddressEnumerator
-        <span class="lineart">╰──</span> GProxyAddressEnumerator
+        <span class="lineart">╰──</span> <a class="link" href="GSocketConnectable.html#GProxyAddressEnumerator">GProxyAddressEnumerator</a>
 </pre>
 </div>
 <div class="refsect1">
 <a name="GSocketConnectable.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GSocketConnectable requires
- <a href="../gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>.</p>
+ <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
 </div>
 <div class="refsect1">
 <a name="GSocketConnectable.implementations"></a><h2>Known Implementations</h2>
@@ -240,25 +242,25 @@ in the sample code below.</p>
 <span class="normal">                 </span><span class="usertype">GCancellable</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">cancellable</span><span class="symbol">,</span>
 <span class="normal">                 </span><span class="usertype">GError</span><span class="normal">       </span><span class="symbol">**</span><span class="normal">error</span><span class="symbol">)</span>
 <span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">MyConnection</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn </span><span class="symbol">=</span><span class="normal"> <a href="../glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">MyConnection</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn </span><span class="symbol">=</span><span class="normal"> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
 <span class="normal">  </span><span class="usertype">GSocketConnectable</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">addr</span><span class="symbol">;</span>
 <span class="normal">  </span><span class="usertype">GSocketAddressEnumerator</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">enumerator</span><span class="symbol">;</span>
 <span class="normal">  </span><span class="usertype">GSocketAddress</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">sockaddr</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">GError</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn_error </span><span class="symbol">=</span><span class="normal"> <a href="../glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GError</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn_error </span><span class="symbol">=</span><span class="normal"> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
 
 <span class="normal">  addr </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GNetworkAddress.html#g-network-address-new">g_network_address_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">hostname</span><span class="symbol">,</span><span class="normal"> port</span><span class="symbol">);</span>
 <span class="normal">  enumerator </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GSocketConnectable.html#g-socket-connectable-enumerate">g_socket_connectable_enumerate</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">addr</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">addr</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">addr</span><span class="symbol">);</span>
 
 <span class="normal">  </span><span class="comment">// Try each sockaddr until we succeed. Record the first connection error,</span>
 <span class="normal">  </span><span class="comment">// but not any further ones (since they'll probably be basically the same</span>
 <span class="normal">  </span><span class="comment">// as the first).</span>
 <span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(!</span><span class="normal">conn </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GSocketConnectable.html#g-socket-address-enumerator-next">g_socket_address_enumerator_next</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumerator</span><span class="symbol">,</span><span class="normal"> cancellable</span><span class="symbol">,</span><span class="normal"> error</span><span class="symbol">))</span>
 <span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      conn </span><span class="symbol">=</span><span class="normal"> </span><span class="function">connect_to_sockaddr</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">,</span><span class="normal"> conn_error </span><span class="symbol">?</span><span class="normal"> <a href="../glib-Standard-Macros.html#NULL:CAPS">NULL</a> </span><span class="symbol">:</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="function"><a href="../gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">);</span>
+<span class="normal">      conn </span><span class="symbol">=</span><span class="normal"> </span><span class="function">connect_to_sockaddr</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">,</span><span class="normal"> conn_error </span><span class="symbol">?</span><span class="normal"> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a> </span><span class="symbol">:</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">conn_error</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">);</span>
 <span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="function"><a href="../gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumerator</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumerator</span><span class="symbol">);</span>
 
 <span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn</span><span class="symbol">)</span>
 <span class="normal">    </span><span class="cbracket">{</span>
@@ -266,7 +268,7 @@ in the sample code below.</p>
 <span class="normal">        </span><span class="cbracket">{</span>
 <span class="normal">          </span><span class="comment">// We couldn't connect to the first address, but we succeeded</span>
 <span class="normal">          </span><span class="comment">// in connecting to a later address.</span>
-<span class="normal">          </span><span class="function"><a href="../glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
+<span class="normal">          </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
 <span class="normal">        </span><span class="cbracket">}</span>
 <span class="normal">      </span><span class="keyword">return</span><span class="normal"> conn</span><span class="symbol">;</span>
 <span class="normal">    </span><span class="cbracket">}</span>
@@ -274,13 +276,13 @@ in the sample code below.</p>
 <span class="normal">    </span><span class="cbracket">{</span>
 <span class="normal">      </span><span class="comment">/// Either initial lookup failed, or else the caller cancelled us.</span>
 <span class="normal">      </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">)</span>
-<span class="normal">        </span><span class="function"><a href="../glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="../glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">        </span><span class="function"><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
 <span class="normal">    </span><span class="cbracket">}</span>
 <span class="normal">  </span><span class="keyword">else</span>
 <span class="normal">    </span><span class="cbracket">{</span>
 <span class="normal">      </span><span class="function">g_error_propagate</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error</span><span class="symbol">,</span><span class="normal"> conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="../glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
 <span class="normal">    </span><span class="cbracket">}</span>
 <span class="cbracket">}</span></pre></td>
       </tr>
@@ -318,7 +320,7 @@ g_socket_connectable_enumerate (<em class="parameter"><code><a class="link" href
 <p> a new <a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator"><span class="type">GSocketAddressEnumerator</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -353,7 +355,7 @@ calling <a class="link" href="GSocketConnectable.html#g-socket-connectable-enume
 <p> a new <a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator"><span class="type">GSocketAddressEnumerator</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-26.html#api-index-2.26">2.26</a></p>
+<p class="since">Since 2.26</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -361,7 +363,7 @@ calling <a class="link" href="GSocketConnectable.html#g-socket-connectable-enume
 <pre class="programlisting"><a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="returnvalue">GSocketAddress</span></a> *
 g_socket_address_enumerator_next (<em class="parameter"><code><a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator"><span class="type">GSocketAddressEnumerator</span></a> *enumerator</code></em>,
                                   <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                  <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                  <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Retrieves the next <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> from <em class="parameter"><code>enumerator</code></em>
 . Note that this
 may block for some amount of time. (Eg, a <a class="link" href="GNetworkAddress.html" title="GNetworkAddress"><span class="type">GNetworkAddress</span></a> may need
@@ -394,12 +396,12 @@ ignored.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> optional <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> object, <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore. </p></td>
+<td class="parameter_description"><p> optional <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> object, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a>.</p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -407,7 +409,7 @@ ignored.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.16.5.13.4.7"></a><h4>Returns</h4>
-<p> a <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> (owned by the caller), or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on
+<p> a <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> (owned by the caller), or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on
 error (in which case *<em class="parameter"><code>error</code></em>
 will be set) or if there are no
 more addresses. </p>
@@ -422,7 +424,7 @@ g_socket_address_enumerator_next_async
                                (<em class="parameter"><code><a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator"><span class="type">GSocketAddressEnumerator</span></a> *enumerator</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Asynchronously retrieves the next <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> from <em class="parameter"><code>enumerator</code></em>
 
 and then calls <em class="parameter"><code>callback</code></em>
@@ -444,7 +446,7 @@ and then calls <em class="parameter"><code>callback</code></em>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> optional <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> object, <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore. </p></td>
+<td class="parameter_description"><p> optional <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> object, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
@@ -469,7 +471,7 @@ is satisfied. </p></td>
 g_socket_address_enumerator_next_finish
                                (<em class="parameter"><code><a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator"><span class="type">GSocketAddressEnumerator</span></a> *enumerator</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Retrieves the result of a completed call to
 <a class="link" href="GSocketConnectable.html#g-socket-address-enumerator-next-async" title="g_socket_address_enumerator_next_async ()"><code class="function">g_socket_address_enumerator_next_async()</code></a>. See
 <a class="link" href="GSocketConnectable.html#g-socket-address-enumerator-next" title="g_socket_address_enumerator_next ()"><code class="function">g_socket_address_enumerator_next()</code></a> for more information about
@@ -495,7 +497,7 @@ error handling.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a></p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -503,7 +505,7 @@ error handling.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.16.5.13.6.6"></a><h4>Returns</h4>
-<p> a <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> (owned by the caller), or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on
+<p> a <a class="link" href="GSocketAddress.html" title="GSocketAddress"><span class="type">GSocketAddress</span></a> (owned by the caller), or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on
 error (in which case *<em class="parameter"><code>error</code></em>
 will be set) or if there are no
 more addresses. </p>
@@ -543,7 +545,7 @@ and <a class="link" href="GSocketConnectable.html#GProxyAddressEnumerator"><span
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a href="../gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GSocketConnectableIface.g-iface"></a>g_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="https://developer.gnome.org/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GSocketConnectableIface.g-iface"></a>g_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
@@ -588,13 +590,13 @@ directed by the default <a class="link" href="GProxyResolver.html" title="GProxy
 <hr>
 <div class="refsect2">
 <a name="GProxyAddressEnumerator--default-port"></a><h3>The <code class="literal">“default-port”</code> property</h3>
-<pre class="programlisting">  “default-port”             <a href="../glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<pre class="programlisting">  “default-port”             <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>The default port to use if <a class="link" href="GSocketConnectable.html#GProxyAddressEnumerator--uri" title="The “uri” property"><span class="type">“uri”</span></a> does not
 specify one.</p>
 <p>Flags: Read / Write / Construct Only</p>
 <p>Allowed values: &lt;= 65535</p>
 <p>Default value: 0</p>
-<p class="since">Since: <a class="link" href="api-index-2-38.html#api-index-2.38">2.38</a></p>
+<p class="since">Since 2.38</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -602,12 +604,12 @@ specify one.</p>
 <pre class="programlisting">  “proxy-resolver”           <a class="link" href="GProxyResolver.html" title="GProxyResolver"><span class="type">GProxyResolver</span></a> *</pre>
 <p>The proxy resolver to use.</p>
 <p>Flags: Read / Write / Construct</p>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GProxyAddressEnumerator--uri"></a><h3>The <code class="literal">“uri”</code> property</h3>
-<pre class="programlisting">  “uri”                      <a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<pre class="programlisting">  “uri”                      <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>The destination URI, use none:// for generic socket.</p>
 <p>Flags: Read / Write / Construct Only</p>
 <p>Default value: NULL</p>
@@ -615,6 +617,7 @@ specify one.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

@@ -6,14 +6,13 @@
 # Marcel Telka <marcel@telka.sk>, 2005, 2008.
 # Peter Mráz <etkinator@gmail.com>, 2011, 2012.
 # Ján Kyselica <kyselica.jan@gmail.com>, 2013.
-# Dušan Kazik <prescott66@gmail.com>, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: glib\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=glib&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-08-19 05:58+0000\n"
-"PO-Revision-Date: 2015-08-19 12:59+0200\n"
+"POT-Creation-Date: 2015-03-09 06:50+0000\n"
+"PO-Revision-Date: 2015-03-09 12:48+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -21,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #: ../gio/gapplication.c:531
 msgid "Enter GApplication service mode (use from D-Bus service files)"
@@ -35,7 +34,7 @@ msgstr "Voľby GApplication"
 msgid "Show GApplication options"
 msgstr "Zobrazí voľby GApplication"
 
-#: ../gio/gapplication-tool.c:45 ../gio/gapplication-tool.c:46 ../gio/gresource-tool.c:485 ../gio/gsettings-tool.c:525
+#: ../gio/gapplication-tool.c:45 ../gio/gapplication-tool.c:46 ../gio/gresource-tool.c:485 ../gio/gsettings-tool.c:521
 msgid "Print help"
 msgstr "Zobrazí pomocníka"
 
@@ -48,7 +47,7 @@ msgid "Print version"
 msgstr "Vypíše verziu"
 
 # MČ: „Vypíše …“, podobne ako nasledujúce reťazce.
-#: ../gio/gapplication-tool.c:50 ../gio/gsettings-tool.c:531
+#: ../gio/gapplication-tool.c:50 ../gio/gsettings-tool.c:527
 msgid "Print version information and exit"
 msgstr "Vypíše informácie o verzii a skončí"
 
@@ -114,8 +113,8 @@ msgid "FILE"
 msgstr "SÚBOR"
 
 #: ../gio/gapplication-tool.c:72
-msgid "Optional relative or absolute filenames, or URIs to open"
-msgstr "Voliteľné relatívne alebo absolútne názvy súborov, alebo URI na otvorenie"
+msgid "Optional relative or relative filenames, or URIs to open"
+msgstr "Voliteľné relatívne názvy súborov alebo URI na otvorenie"
 
 #: ../gio/gapplication-tool.c:73
 msgid "ACTION"
@@ -133,7 +132,7 @@ msgstr "PARAMETER"
 msgid "Optional parameter to the action invocation, in GVariant format"
 msgstr "Voliteľný parameter pre vyvolanie akcie vo formáte GVariant"
 
-#: ../gio/gapplication-tool.c:96 ../gio/gresource-tool.c:523 ../gio/gsettings-tool.c:611
+#: ../gio/gapplication-tool.c:96 ../gio/gresource-tool.c:523 ../gio/gsettings-tool.c:607
 #, c-format
 msgid ""
 "Unknown command %s\n"
@@ -146,7 +145,7 @@ msgstr ""
 msgid "Usage:\n"
 msgstr "Použitie:\n"
 
-#: ../gio/gapplication-tool.c:114 ../gio/gresource-tool.c:548 ../gio/gsettings-tool.c:645
+#: ../gio/gapplication-tool.c:114 ../gio/gresource-tool.c:548 ../gio/gsettings-tool.c:641
 msgid "Arguments:\n"
 msgstr "Parametre:\n"
 
@@ -267,7 +266,7 @@ msgstr "Prúd je už zatvorený"
 msgid "Truncate not supported on base stream"
 msgstr "Skrátenie nie je v základnom prúde podporované"
 
-#: ../gio/gcancellable.c:317 ../gio/gdbusconnection.c:1847 ../gio/gdbusprivate.c:1375 ../gio/glocalfile.c:2212 ../gio/gsimpleasyncresult.c:870 ../gio/gsimpleasyncresult.c:896
+#: ../gio/gcancellable.c:317 ../gio/gdbusconnection.c:1896 ../gio/gdbusconnection.c:1989 ../gio/gdbusprivate.c:1421 ../gio/glocalfile.c:2181 ../gio/gsimpleasyncresult.c:830 ../gio/gsimpleasyncresult.c:856
 #, c-format
 msgid "Operation was cancelled"
 msgstr "Operácia bola zrušená"
@@ -284,20 +283,20 @@ msgstr "Neúplná viacbajtová sekvencia na vstupe"
 msgid "Not enough space in destination"
 msgstr "Nedostatok miesta v cieli"
 
-#: ../gio/gcharsetconverter.c:342 ../gio/gdatainputstream.c:848 ../gio/gdatainputstream.c:1256 ../glib/gconvert.c:438 ../glib/gconvert.c:845 ../glib/giochannel.c:1556 ../glib/giochannel.c:1598 ../glib/giochannel.c:2442 ../glib/gutf8.c:837 ../glib/gutf8.c:1289
+#: ../gio/gcharsetconverter.c:342 ../gio/gdatainputstream.c:848 ../gio/gdatainputstream.c:1256 ../glib/gconvert.c:438 ../glib/gconvert.c:845 ../glib/giochannel.c:1557 ../glib/giochannel.c:1599 ../glib/giochannel.c:2443 ../glib/gutf8.c:837 ../glib/gutf8.c:1289
 msgid "Invalid byte sequence in conversion input"
 msgstr "Neplatná sekvencia bajtov na vstupe prevodu"
 
-#: ../gio/gcharsetconverter.c:347 ../glib/gconvert.c:446 ../glib/gconvert.c:770 ../glib/giochannel.c:1563 ../glib/giochannel.c:2454
+#: ../gio/gcharsetconverter.c:347 ../glib/gconvert.c:446 ../glib/gconvert.c:770 ../glib/giochannel.c:1564 ../glib/giochannel.c:2455
 #, c-format
 msgid "Error during conversion: %s"
 msgstr "Chyba počas prevodu: %s"
 
-#: ../gio/gcharsetconverter.c:444 ../gio/gsocket.c:981
+#: ../gio/gcharsetconverter.c:444 ../gio/gsocket.c:990
 msgid "Cancellable initialization not supported"
 msgstr "Zrušiteľná inicializácia nie je podporovaná"
 
-#: ../gio/gcharsetconverter.c:454 ../glib/gconvert.c:321 ../glib/giochannel.c:1384
+#: ../gio/gcharsetconverter.c:454 ../glib/gconvert.c:321 ../glib/giochannel.c:1385
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
 msgstr "Prevod zo znakovej sady „%s“ do „%s“ nie je podporovaný"
@@ -316,7 +315,7 @@ msgstr "typ %s"
 msgid "Unknown type"
 msgstr "Neznámy typ"
 
-#: ../gio/gcontenttype-win32.c:162
+#: ../gio/gcontenttype-win32.c:161
 #, c-format
 msgid "%s filetype"
 msgstr "typ súboru %s"
@@ -341,146 +340,146 @@ msgstr "Zmena poverení nie je možná v tomto operačnom systéme"
 msgid "Unexpected early end-of-stream"
 msgstr "Neočakávane skorý koniec prúdu"
 
-#: ../gio/gdbusaddress.c:153 ../gio/gdbusaddress.c:241 ../gio/gdbusaddress.c:322
+#: ../gio/gdbusaddress.c:148 ../gio/gdbusaddress.c:236 ../gio/gdbusaddress.c:317
 #, c-format
 msgid "Unsupported key '%s' in address entry '%s'"
 msgstr "Nepodporovaný kľúč „%s“ v položke adresy „%s“"
 
-#: ../gio/gdbusaddress.c:180
+#: ../gio/gdbusaddress.c:175
 #, c-format
 msgid "Address '%s' is invalid (need exactly one of path, tmpdir or abstract keys)"
 msgstr "Adresa „%s“ je neplatná (je potrebný práve jeden kľúč path, tmpdir alebo abstract)"
 
-#: ../gio/gdbusaddress.c:193
+#: ../gio/gdbusaddress.c:188
 #, c-format
 msgid "Meaningless key/value pair combination in address entry '%s'"
 msgstr "Nezmyselná kombinácia kľúč/hodnota v položke adresy „%s“"
 
-#: ../gio/gdbusaddress.c:256 ../gio/gdbusaddress.c:337
+#: ../gio/gdbusaddress.c:251 ../gio/gdbusaddress.c:332
 #, c-format
 msgid "Error in address '%s' - the port attribute is malformed"
 msgstr "Chyba v adrese „%s“ – atribút portu má zlý formát"
 
-#: ../gio/gdbusaddress.c:267 ../gio/gdbusaddress.c:348
+#: ../gio/gdbusaddress.c:262 ../gio/gdbusaddress.c:343
 #, c-format
 msgid "Error in address '%s' - the family attribute is malformed"
 msgstr "Chyba v adrese „%s“ – atribút rodiny má zlý formát"
 
-#: ../gio/gdbusaddress.c:457
+#: ../gio/gdbusaddress.c:452
 #, c-format
 msgid "Address element '%s' does not contain a colon (:)"
 msgstr "Prvok adresy „%s“ neobsahuje dvojbodku (:)"
 
-#: ../gio/gdbusaddress.c:478
+#: ../gio/gdbusaddress.c:473
 #, c-format
 msgid "Key/Value pair %d, '%s', in address element '%s' does not contain an equal sign"
 msgstr "Pár kľúč/hodnota %d, „%s“ v prvku adresy „%s“ neobsahuje znak rovnosti"
 
-#: ../gio/gdbusaddress.c:492
+#: ../gio/gdbusaddress.c:487
 #, c-format
 msgid "Error unescaping key or value in Key/Value pair %d, '%s', in address element '%s'"
 msgstr "Chyba kľúča alebo hodnoty s nahradenými špeciálne uvedenými sekvenciami v páre kľúč/hodnota %d, „%s“ v prvku adresy „%s“"
 
-#: ../gio/gdbusaddress.c:570
+#: ../gio/gdbusaddress.c:565
 #, c-format
 msgid "Error in address '%s' - the unix transport requires exactly one of the keys 'path' or 'abstract' to be set"
 msgstr "Chyba v adrese „%s“ – transport typu unix vyžaduje nastavenie práve jedného z kľúčov „path“ alebo „abstract“"
 
-#: ../gio/gdbusaddress.c:606
+#: ../gio/gdbusaddress.c:601
 #, c-format
 msgid "Error in address '%s' - the host attribute is missing or malformed"
 msgstr "Chyba v adrese „%s“ – atribút hostiteľa chýba alebo má zlý formát"
 
-#: ../gio/gdbusaddress.c:620
+#: ../gio/gdbusaddress.c:615
 #, c-format
 msgid "Error in address '%s' - the port attribute is missing or malformed"
 msgstr "Chyba v adrese „%s“ – atribút portu chýba alebo má zlý formát"
 
-#: ../gio/gdbusaddress.c:634
+#: ../gio/gdbusaddress.c:629
 #, c-format
 msgid "Error in address '%s' - the noncefile attribute is missing or malformed"
 msgstr "Chyba v adrese „%s“ – atribút noncefile chýba alebo má zlý formát"
 
-#: ../gio/gdbusaddress.c:655
+#: ../gio/gdbusaddress.c:650
 msgid "Error auto-launching: "
 msgstr "Chyba pri automatickom spustení: "
 
 # first is transport name
-#: ../gio/gdbusaddress.c:663
+#: ../gio/gdbusaddress.c:658
 #, c-format
 msgid "Unknown or unsupported transport '%s' for address '%s'"
 msgstr "Neznámy alebo nepodporovaný transport typu „%s“ pre adresu „%s“"
 
-#: ../gio/gdbusaddress.c:699
+#: ../gio/gdbusaddress.c:694
 #, c-format
 msgid "Error opening nonce file '%s': %s"
 msgstr "Chyba pri otváraní nonce súboru „%s“: %s"
 
-#: ../gio/gdbusaddress.c:717
+#: ../gio/gdbusaddress.c:712
 #, c-format
 msgid "Error reading from nonce file '%s': %s"
 msgstr "Chyba pri čítaní z nonce súboru „%s“: %s"
 
-#: ../gio/gdbusaddress.c:726
+#: ../gio/gdbusaddress.c:721
 #, c-format
 msgid "Error reading from nonce file '%s', expected 16 bytes, got %d"
 msgstr "Chyba pri čítaní z nonce súboru „%s“, očakávaných 16 bajtov, získaných %d"
 
-#: ../gio/gdbusaddress.c:744
+#: ../gio/gdbusaddress.c:739
 #, c-format
 msgid "Error writing contents of nonce file '%s' to stream:"
 msgstr "Chyba pri zápise obsahu nounce súboru „%s“ do prúdu:"
 
-#: ../gio/gdbusaddress.c:950
+#: ../gio/gdbusaddress.c:958
 msgid "The given address is empty"
 msgstr "Daná adresa je prázdna"
 
 # PM: tu si nie som istý
 # MČ: Komentár v kóde: /* Don't run binaries as root if we're setuid. */
 # MČ: v tomto prípade „spawn“ znamená: Spustí a posiela dáta, cez stdin a očakáva dáta cez stdout, takže by som skôr dal spustiť.
-#: ../gio/gdbusaddress.c:1063
+#: ../gio/gdbusaddress.c:1028
 #, c-format
 msgid "Cannot spawn a message bus when setuid"
 msgstr "Zbernica správ sa nedá spustiť pri setuid"
 
 # MČ: v tomto prípade „spawn“ znamená: Spustí a posiela dáta, cez stdin a očakáva dáta cez stdout, takže by som skôr dal spustiť.
-#: ../gio/gdbusaddress.c:1070
+#: ../gio/gdbusaddress.c:1035
 msgid "Cannot spawn a message bus without a machine-id: "
 msgstr "Zbernica správ sa nedá spustiť bez machine-id: "
 
 # MČ: v tomto prípade „spawn“ znamená: Spustí a posiela dáta, cez stdin a očakáva dáta cez stdout, takže by som skôr dal spustiť.
-#: ../gio/gdbusaddress.c:1112
+#: ../gio/gdbusaddress.c:1077
 #, c-format
 msgid "Error spawning command line '%s': "
 msgstr "Chyba pri spúšťaní príkazového riadka „%s“: "
 
 # PM: podľa mňa ked ide o zadanie treba na konci stlačiť enter, nie som si istý či je to tento prípad
-#: ../gio/gdbusaddress.c:1329
+#: ../gio/gdbusaddress.c:1294
 #, c-format
 msgid "(Type any character to close this window)\n"
 msgstr "(Toto okno zatvoríte zadaním ľubovolného znaku)\n"
 
-#: ../gio/gdbusaddress.c:1460
+#: ../gio/gdbusaddress.c:1425
 #, c-format
 msgid "Session dbus not running, and autolaunch failed"
 msgstr "Relácia dbus nebeží a automatické spustenie zlyhalo"
 
 # funkcia na určenie adresy relačnej zbernice
-#: ../gio/gdbusaddress.c:1471
+#: ../gio/gdbusaddress.c:1446
 #, c-format
 msgid "Cannot determine session bus address (not implemented for this OS)"
 msgstr "Nedá sa určiť adresa relačnej zbernice (nie je implementovaná pre tento operačný systém)"
 
-#: ../gio/gdbusaddress.c:1604 ../gio/gdbusconnection.c:7074
+#: ../gio/gdbusaddress.c:1546 ../gio/gdbusconnection.c:6931
 #, c-format
 msgid "Cannot determine bus address from DBUS_STARTER_BUS_TYPE environment variable - unknown value '%s'"
 msgstr "Nedá sa určiť adresa zbernice z premennej prostredia DBUS_STARTER_BUS_TYPE – neznáma hodnota „%s“"
 
-#: ../gio/gdbusaddress.c:1613 ../gio/gdbusconnection.c:7083
+#: ../gio/gdbusaddress.c:1555 ../gio/gdbusconnection.c:6940
 msgid "Cannot determine bus address because the DBUS_STARTER_BUS_TYPE environment variable is not set"
 msgstr "Nedá sa určiť adresa zbernice, pretože premenná prostredia DBUS_STARTER_BUS_TYPE nie je nastavená"
 
-#: ../gio/gdbusaddress.c:1623
+#: ../gio/gdbusaddress.c:1565
 #, c-format
 msgid "Unknown bus type %d"
 msgstr "Neznámy typ zbernice %d"
@@ -576,83 +575,73 @@ msgstr "Chyba pri otváraní zväzku kľúčov „%s“ na zápis: "
 msgid "(Additionally, releasing the lock for '%s' also failed: %s) "
 msgstr "(Okrem toho zlyhalo aj uvoľnenie zámky pre „%s“: %s)"
 
-#: ../gio/gdbusconnection.c:612 ../gio/gdbusconnection.c:2348
+#: ../gio/gdbusconnection.c:612 ../gio/gdbusconnection.c:2455
 msgid "The connection is closed"
 msgstr "Pripojenie je ukončené"
 
-#: ../gio/gdbusconnection.c:1877
+#: ../gio/gdbusconnection.c:1942
 msgid "Timeout was reached"
 msgstr "Vypršal časový limit"
 
-#: ../gio/gdbusconnection.c:2470
+#: ../gio/gdbusconnection.c:2577
 msgid "Unsupported flags encountered when constructing a client-side connection"
 msgstr "Pri vytváraní klientského pripojenia boli nájdené nepodporované príznaky"
 
-#: ../gio/gdbusconnection.c:4051 ../gio/gdbusconnection.c:4398
+#: ../gio/gdbusconnection.c:4157 ../gio/gdbusconnection.c:4504
 #, c-format
 msgid "No such interface 'org.freedesktop.DBus.Properties' on object at path %s"
 msgstr "Rozhranie „org.freedesktop.DBus.Properties“ nie je v objekte na ceste %s"
 
-#: ../gio/gdbusconnection.c:4193
+#: ../gio/gdbusconnection.c:4299
 #, c-format
 msgid "No such property '%s'"
 msgstr "Neexistuje vlastnosť „%s“"
 
-#: ../gio/gdbusconnection.c:4205
+#: ../gio/gdbusconnection.c:4311
 #, c-format
 msgid "Property '%s' is not readable"
 msgstr "Vlastnosť „%s“ nie je čitateľná"
 
-#: ../gio/gdbusconnection.c:4216
+#: ../gio/gdbusconnection.c:4322
 #, c-format
 msgid "Property '%s' is not writable"
 msgstr "Vlastnosť „%s“ nie je zapisovateľná"
 
-#: ../gio/gdbusconnection.c:4236
+#: ../gio/gdbusconnection.c:4342
 #, c-format
 msgid "Error setting property '%s': Expected type '%s' but got '%s'"
 msgstr "Chyba pri nastavovaní vlastnosti „%s“: Bol očakávaný typ „%s“, no získaný bol „%s“"
 
-#: ../gio/gdbusconnection.c:4341 ../gio/gdbusconnection.c:6514
+#: ../gio/gdbusconnection.c:4447 ../gio/gdbusconnection.c:6371
 #, c-format
 msgid "No such interface '%s'"
 msgstr "Neexistuje rozhranie „%s“"
 
-#: ../gio/gdbusconnection.c:4549
+#: ../gio/gdbusconnection.c:4655
 msgid "No such interface"
 msgstr "Také rozhranie neexistuje"
 
-#: ../gio/gdbusconnection.c:4767 ../gio/gdbusconnection.c:7023
+#: ../gio/gdbusconnection.c:4873 ../gio/gdbusconnection.c:6880
 #, c-format
 msgid "No such interface '%s' on object at path %s"
 msgstr "Rozhranie „%s“ nie je v objekte na ceste %s"
 
-#: ../gio/gdbusconnection.c:4865
+#: ../gio/gdbusconnection.c:4971
 #, c-format
 msgid "No such method '%s'"
 msgstr "Neexistuje metóda „%s“"
 
-#: ../gio/gdbusconnection.c:4896
+#: ../gio/gdbusconnection.c:5002
 #, c-format
 msgid "Type of message, '%s', does not match expected type '%s'"
 msgstr "Typ správy „%s“ nezodpovedá očakávanému typu „%s“"
 
-#: ../gio/gdbusconnection.c:5094
+#: ../gio/gdbusconnection.c:5200
 #, c-format
 msgid "An object is already exported for the interface %s at %s"
 msgstr "Pre rozhranie %s je už exportovaný objekt na %s"
 
-#: ../gio/gdbusconnection.c:5320
-#, c-format
-msgid "Unable to retrieve property %s.%s"
-msgstr "Nepodarilo sa získať vlastnosť %s.%s"
-
-#: ../gio/gdbusconnection.c:5376
-#, c-format
-msgid "Unable to set property %s.%s"
-msgstr "Nepodarilo sa nastaviť vlastnosť %s.%s"
-
-#: ../gio/gdbusconnection.c:5552
+#: ../gio/gdbusconnection.c:5399
 #, c-format
 msgid "Method '%s' returned type '%s', but expected '%s'"
 msgstr "Metóda „%s“ vrátila typ „%s“, no očakávaný bol „%s“"
@@ -660,12 +649,12 @@ msgstr "Metóda „%s“ vrátila typ „%s“, no očakávaný bol „%s“"
 # MČ: mám k tomuto preklady výhrady, ale keď to tak chcete, môže byť. Keď signatúra nevyhovuje, tak skôr značka. Ak sa rozhodnete upraviť, tak pri všetkých výskytoch.
 # PK: http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-signatures
 # PK: mozno oznacenie
-#: ../gio/gdbusconnection.c:6625
+#: ../gio/gdbusconnection.c:6482
 #, c-format
 msgid "Method '%s' on interface '%s' with signature '%s' does not exist"
 msgstr "Metóda „%s“ z rozhrania „%s“ s označením „%s“ neexistuje"
 
-#: ../gio/gdbusconnection.c:6746
+#: ../gio/gdbusconnection.c:6603
 #, c-format
 msgid "A subtree is already exported for %s"
 msgstr "Podstrom je už exportovaný do %s"
@@ -817,35 +806,35 @@ msgstr "Telo správy má označenie typu „%s“, no označenie v poli hlavičk
 msgid "Message body is empty but signature in the header field is '(%s)'"
 msgstr "Telo správy je prázdne, no označenie v poli hlavičky je „(%s)“"
 
-#: ../gio/gdbusmessage.c:3283
+#: ../gio/gdbusmessage.c:3280
 #, c-format
 msgid "Error return with body of type '%s'"
 msgstr "Chyba pri návrate s telom typu „%s“"
 
-#: ../gio/gdbusmessage.c:3291
+#: ../gio/gdbusmessage.c:3288
 msgid "Error return with empty body"
 msgstr "Chyba pri návrate s prázdnym telom"
 
-#: ../gio/gdbusprivate.c:2036
+#: ../gio/gdbusprivate.c:2085
 #, c-format
 msgid "Unable to get Hardware profile: %s"
 msgstr "Nepodarilo sa získať hardvérový profil: %s"
 
-#: ../gio/gdbusprivate.c:2081
+#: ../gio/gdbusprivate.c:2130
 msgid "Unable to load /var/lib/dbus/machine-id or /etc/machine-id: "
 msgstr "Nepodarilo sa načítať /var/lib/dbus/machine-id ani /etc/machine-id: "
 
-#: ../gio/gdbusproxy.c:1610
+#: ../gio/gdbusproxy.c:1630
 #, c-format
 msgid "Error calling StartServiceByName for %s: "
 msgstr "Chyba pri volaní StartServiceByName pre %s: "
 
-#: ../gio/gdbusproxy.c:1633
+#: ../gio/gdbusproxy.c:1653
 #, c-format
 msgid "Unexpected reply %d from StartServiceByName(\"%s\") method"
 msgstr "Neočakávaná odpoveď %d z metódy StartServiceByName(„%s“)"
 
-#: ../gio/gdbusproxy.c:2708 ../gio/gdbusproxy.c:2842
+#: ../gio/gdbusproxy.c:2754 ../gio/gdbusproxy.c:2891
 msgid "Cannot invoke method; proxy is for a well-known name without an owner and proxy was constructed with the G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START flag"
 msgstr "Nedá sa vyvolať metóda; proxy je pre dobre známy názov bez vlastníka a proxy bol vytvorený s príznakom G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START"
 
@@ -893,249 +882,239 @@ msgstr ""
 "\n"
 "Pomocníka pre každý z príkazov získate zadaním „%s PRÍKAZ --help“.\n"
 
-#: ../gio/gdbus-tool.c:164 ../gio/gdbus-tool.c:226 ../gio/gdbus-tool.c:298 ../gio/gdbus-tool.c:322 ../gio/gdbus-tool.c:711 ../gio/gdbus-tool.c:1043 ../gio/gdbus-tool.c:1477
+#: ../gio/gdbus-tool.c:164 ../gio/gdbus-tool.c:220 ../gio/gdbus-tool.c:292 ../gio/gdbus-tool.c:316 ../gio/gdbus-tool.c:705 ../gio/gdbus-tool.c:1031 ../gio/gdbus-tool.c:1465
 #, c-format
 msgid "Error: %s\n"
 msgstr "Chyba: %s\n"
 
-#: ../gio/gdbus-tool.c:175 ../gio/gdbus-tool.c:239 ../gio/gdbus-tool.c:1493
+#: ../gio/gdbus-tool.c:175 ../gio/gdbus-tool.c:233 ../gio/gdbus-tool.c:1481
 #, c-format
 msgid "Error parsing introspection XML: %s\n"
 msgstr "Chyba pri analýze XML vútorného preskúmania: %s\n"
 
-#: ../gio/gdbus-tool.c:208
-#, c-format
-msgid "Error: %s is not a valid name\n"
-msgstr "Chyba: %s nie je platný názov\n"
-
-#: ../gio/gdbus-tool.c:356
+#: ../gio/gdbus-tool.c:350
 msgid "Connect to the system bus"
 msgstr "Pripojiť k systémovej zbernici"
 
-#: ../gio/gdbus-tool.c:357
+#: ../gio/gdbus-tool.c:351
 msgid "Connect to the session bus"
 msgstr "Pripojiť k relačnej zbernici"
 
-#: ../gio/gdbus-tool.c:358
+#: ../gio/gdbus-tool.c:352
 msgid "Connect to given D-Bus address"
 msgstr "Pripojiť k danej adrese D-Bus"
 
-#: ../gio/gdbus-tool.c:368
+#: ../gio/gdbus-tool.c:362
 msgid "Connection Endpoint Options:"
 msgstr "Voľby koncového bodu pripojenia:"
 
-#: ../gio/gdbus-tool.c:369
+#: ../gio/gdbus-tool.c:363
 msgid "Options specifying the connection endpoint"
 msgstr "Voľby určujúce koncový bod pripojenia"
 
-#: ../gio/gdbus-tool.c:391
+#: ../gio/gdbus-tool.c:385
 #, c-format
 msgid "No connection endpoint specified"
 msgstr "Neurčený žiadny koncový bod pripojenia"
 
-#: ../gio/gdbus-tool.c:401
+#: ../gio/gdbus-tool.c:395
 #, c-format
 msgid "Multiple connection endpoints specified"
 msgstr "Určených viacero koncových bodov pripojenia"
 
-#: ../gio/gdbus-tool.c:471
+#: ../gio/gdbus-tool.c:465
 #, c-format
 msgid "Warning: According to introspection data, interface '%s' does not exist\n"
 msgstr "Upozornenie: Podľa údajov vnútorného preskúmania rozhranie „%s“ neexistuje\n"
 
-#: ../gio/gdbus-tool.c:480
+#: ../gio/gdbus-tool.c:474
 #, c-format
 msgid "Warning: According to introspection data, method '%s' does not exist on interface '%s'\n"
 msgstr "Upozornenie: Podľa údajov vnútorného preskúmania metóda „%s“ neexistuje na rozhraní „%s“\n"
 
-#: ../gio/gdbus-tool.c:542
+#: ../gio/gdbus-tool.c:536
 msgid "Optional destination for signal (unique name)"
 msgstr "Voliteľný cieľ pre signál (jedinečný názov)"
 
-#: ../gio/gdbus-tool.c:543
+#: ../gio/gdbus-tool.c:537
 msgid "Object path to emit signal on"
 msgstr "Cesta objektu, ktorému vyslať signál"
 
-#: ../gio/gdbus-tool.c:544
+#: ../gio/gdbus-tool.c:538
 msgid "Signal and interface name"
 msgstr "Názov signálu a rozhrania"
 
-#: ../gio/gdbus-tool.c:576
+#: ../gio/gdbus-tool.c:570
 msgid "Emit a signal."
 msgstr "Vyslať signál."
 
-#: ../gio/gdbus-tool.c:610 ../gio/gdbus-tool.c:842 ../gio/gdbus-tool.c:1583 ../gio/gdbus-tool.c:1818
+#: ../gio/gdbus-tool.c:604 ../gio/gdbus-tool.c:836 ../gio/gdbus-tool.c:1571 ../gio/gdbus-tool.c:1799
 #, c-format
 msgid "Error connecting: %s\n"
 msgstr "Chyba pri pripájaní: %s\n"
 
-#: ../gio/gdbus-tool.c:622
+#: ../gio/gdbus-tool.c:616
 #, c-format
 msgid "Error: object path not specified.\n"
 msgstr "Chyba: neurčená cesta objektu.\n"
 
-#: ../gio/gdbus-tool.c:627 ../gio/gdbus-tool.c:909 ../gio/gdbus-tool.c:1648 ../gio/gdbus-tool.c:1884
+#: ../gio/gdbus-tool.c:621 ../gio/gdbus-tool.c:897 ../gio/gdbus-tool.c:1629 ../gio/gdbus-tool.c:1858
 #, c-format
 msgid "Error: %s is not a valid object path\n"
 msgstr "Chyba: %s nie platná cesta objektu\n"
 
-#: ../gio/gdbus-tool.c:633
+#: ../gio/gdbus-tool.c:627
 #, c-format
 msgid "Error: signal not specified.\n"
 msgstr "Chyba: signál nebol určený.\n"
 
 # PM: nie som si istý
 # MČ: buď: „musí mať plne-kvalifikovaný názov.“, alebo „musí byť identifikovateľný plne-kvalifikovaným názvom“, majú predpísaný spôsob pomenovania. Preferoval by som prvý spôsob,
-#: ../gio/gdbus-tool.c:640
+#: ../gio/gdbus-tool.c:634
 #, c-format
 msgid "Error: signal must be the fully-qualified name.\n"
 msgstr "Chyba: signál musí byť identifikovateľný plne kvalifikovaným názvom.\n"
 
-#: ../gio/gdbus-tool.c:648
+#: ../gio/gdbus-tool.c:642
 #, c-format
 msgid "Error: %s is not a valid interface name\n"
 msgstr "Chyba: %s nie je platný názov rozhrania\n"
 
-#: ../gio/gdbus-tool.c:654
+#: ../gio/gdbus-tool.c:648
 #, c-format
 msgid "Error: %s is not a valid member name\n"
 msgstr "Chyba: %s nie je platný názov člena objektu\n"
 
-#: ../gio/gdbus-tool.c:660
+#: ../gio/gdbus-tool.c:654
 #, c-format
 msgid "Error: %s is not a valid unique bus name.\n"
 msgstr "Chyba: %s nie je platný jedinečný názov zbernice.\n"
 
 #. Use the original non-"parse-me-harder" error
-#: ../gio/gdbus-tool.c:687 ../gio/gdbus-tool.c:1011
+#: ../gio/gdbus-tool.c:681 ../gio/gdbus-tool.c:999
 #, c-format
 msgid "Error parsing parameter %d: %s\n"
 msgstr "Chyba pri spracovaní parametra %d: %s\n"
 
-#: ../gio/gdbus-tool.c:718
+#: ../gio/gdbus-tool.c:712
 #, c-format
 msgid "Error flushing connection: %s\n"
 msgstr "Chyba pri vyprázdnení pripojenia: %s\n"
 
-#: ../gio/gdbus-tool.c:745
+#: ../gio/gdbus-tool.c:739
 msgid "Destination name to invoke method on"
 msgstr "Názov cieľa, na ktorom sa má zavolať metóda"
 
 # PK: Nazov ciela, na ktorom zavolat metodu
-#: ../gio/gdbus-tool.c:746
+#: ../gio/gdbus-tool.c:740
 msgid "Object path to invoke method on"
 msgstr "Cesta objektu na zavolanie metódy"
 
-#: ../gio/gdbus-tool.c:747
+#: ../gio/gdbus-tool.c:741
 msgid "Method and interface name"
 msgstr "Názov metódy a rozhrania"
 
-#: ../gio/gdbus-tool.c:748
+#: ../gio/gdbus-tool.c:742
 msgid "Timeout in seconds"
 msgstr "Časový limit v sekundách"
 
-#: ../gio/gdbus-tool.c:787
+#: ../gio/gdbus-tool.c:781
 msgid "Invoke a method on a remote object."
 msgstr "Zavolať metódu na vzdialenom objekte."
 
-#: ../gio/gdbus-tool.c:862 ../gio/gdbus-tool.c:1602 ../gio/gdbus-tool.c:1837
+#: ../gio/gdbus-tool.c:856 ../gio/gdbus-tool.c:1590 ../gio/gdbus-tool.c:1818
 #, c-format
 msgid "Error: Destination is not specified\n"
 msgstr "Chyba: Cieľ nie je určený\n"
 
-#: ../gio/gdbus-tool.c:874 ../gio/gdbus-tool.c:1619 ../gio/gdbus-tool.c:1849
-#, c-format
-msgid "Error: %s is not a valid bus name\n"
-msgstr "Chyba: %s nie je platný názov zbernice\n"
-
-#: ../gio/gdbus-tool.c:889 ../gio/gdbus-tool.c:1628
+#: ../gio/gdbus-tool.c:877 ../gio/gdbus-tool.c:1609
 #, c-format
 msgid "Error: Object path is not specified\n"
 msgstr "Chyba: Cesta objektu nie je určená\n"
 
-#: ../gio/gdbus-tool.c:924
+#: ../gio/gdbus-tool.c:912
 #, c-format
 msgid "Error: Method name is not specified\n"
 msgstr "Chyba: Názov metódy nie je určený\n"
 
-#: ../gio/gdbus-tool.c:935
+#: ../gio/gdbus-tool.c:923
 #, c-format
 msgid "Error: Method name '%s' is invalid\n"
 msgstr "Chyba: Názov metódy „%s“ nie je platný\n"
 
-#: ../gio/gdbus-tool.c:1003
+#: ../gio/gdbus-tool.c:991
 #, c-format
 msgid "Error parsing parameter %d of type '%s': %s\n"
 msgstr "Chyba pri spracovaní parametra %d typu „%s“: %s\n"
 
-#: ../gio/gdbus-tool.c:1440
+#: ../gio/gdbus-tool.c:1428
 msgid "Destination name to introspect"
 msgstr "Názov cieľa na vnútorné preskúmanie"
 
-#: ../gio/gdbus-tool.c:1441
+#: ../gio/gdbus-tool.c:1429
 msgid "Object path to introspect"
 msgstr "Cesta objektu na vnútorné preskúmanie"
 
-#: ../gio/gdbus-tool.c:1442
+#: ../gio/gdbus-tool.c:1430
 msgid "Print XML"
 msgstr "Vypísať XML"
 
-#: ../gio/gdbus-tool.c:1443
+#: ../gio/gdbus-tool.c:1431
 msgid "Introspect children"
 msgstr "Vnútorne preskúmať potomka"
 
-#: ../gio/gdbus-tool.c:1444
+#: ../gio/gdbus-tool.c:1432
 msgid "Only print properties"
 msgstr "Iba vypísať vlastnosti"
 
-#: ../gio/gdbus-tool.c:1535
+#: ../gio/gdbus-tool.c:1523
 msgid "Introspect a remote object."
 msgstr "Vnútorne preskúmať vzdialený objekt."
 
-#: ../gio/gdbus-tool.c:1740
+#: ../gio/gdbus-tool.c:1721
 msgid "Destination name to monitor"
 msgstr "Názov cieľa na sledovanie"
 
-#: ../gio/gdbus-tool.c:1741
+#: ../gio/gdbus-tool.c:1722
 msgid "Object path to monitor"
 msgstr "Cesta objektu na sledovanie"
 
-#: ../gio/gdbus-tool.c:1770
+#: ../gio/gdbus-tool.c:1751
 msgid "Monitor a remote object."
 msgstr "Sledovať vzdialený objekt."
 
-#: ../gio/gdesktopappinfo.c:1993 ../gio/gdesktopappinfo.c:4511
+#: ../gio/gdesktopappinfo.c:1999 ../gio/gdesktopappinfo.c:4530 ../gio/gwin32appinfo.c:219
 msgid "Unnamed"
 msgstr "Bez názvu"
 
-#: ../gio/gdesktopappinfo.c:2402
+#: ../gio/gdesktopappinfo.c:2408
 msgid "Desktop file didn't specify Exec field"
 msgstr "V súbore desktop nie je určené pole Exec"
 
-#: ../gio/gdesktopappinfo.c:2687
+#: ../gio/gdesktopappinfo.c:2693
 msgid "Unable to find terminal required for application"
 msgstr "Nepodarilo sa nájsť terminál vyžadovaný pre aplikáciu"
 
-#: ../gio/gdesktopappinfo.c:3108
+#: ../gio/gdesktopappinfo.c:3114
 #, c-format
 msgid "Can't create user application configuration folder %s: %s"
 msgstr "Nedá sa vytvoriť používateľský konfiguračný priečinok aplikácie %s: %s"
 
-#: ../gio/gdesktopappinfo.c:3112
+#: ../gio/gdesktopappinfo.c:3118
 #, c-format
 msgid "Can't create user MIME configuration folder %s: %s"
 msgstr "Nedá sa vytvoriť používateľský konfiguračný priečinok MIME %s: %s"
 
-#: ../gio/gdesktopappinfo.c:3352 ../gio/gdesktopappinfo.c:3376
+#: ../gio/gdesktopappinfo.c:3358 ../gio/gdesktopappinfo.c:3382
 msgid "Application information lacks an identifier"
 msgstr "V informáciách o aplikácii chýba identifikátor"
 
-#: ../gio/gdesktopappinfo.c:3609
+#: ../gio/gdesktopappinfo.c:3615
 #, c-format
 msgid "Can't create user desktop file %s"
 msgstr "Nedá sa vytvoriť používateľský desktop súbor %s"
 
-#: ../gio/gdesktopappinfo.c:3743
+#: ../gio/gdesktopappinfo.c:3749
 #, c-format
 msgid "Custom definition for %s"
 msgstr "Vlastná definícia pre %s"
@@ -1163,7 +1142,7 @@ msgstr "mechanika neimplementuje spustenie"
 msgid "drive doesn't implement stop"
 msgstr "mechanika neimplementuje zastavenie"
 
-#: ../gio/gdummytlsbackend.c:188 ../gio/gdummytlsbackend.c:310 ../gio/gdummytlsbackend.c:400
+#: ../gio/gdummytlsbackend.c:189 ../gio/gdummytlsbackend.c:311 ../gio/gdummytlsbackend.c:401
 msgid "TLS support is not available"
 msgstr "Podpora TLS nie je dostupná"
 
@@ -1192,7 +1171,7 @@ msgid "Expected a GEmblem for GEmblemedIcon"
 msgstr "Očakávaný GEmblem pre GEmblemedIcon"
 
 #: ../gio/gfile.c:968 ../gio/gfile.c:1206 ../gio/gfile.c:1344 ../gio/gfile.c:1582 ../gio/gfile.c:1637 ../gio/gfile.c:1695 ../gio/gfile.c:1779 ../gio/gfile.c:1836 ../gio/gfile.c:1900 ../gio/gfile.c:1955 ../gio/gfile.c:3603 ../gio/gfile.c:3658 ../gio/gfile.c:3893 ../gio/gfile.c:3935 ../gio/gfile.c:4398 ../gio/gfile.c:4809 ../gio/gfile.c:4894 ../gio/gfile.c:4984 ../gio/gfile.c:5081
-#: ../gio/gfile.c:5168 ../gio/gfile.c:5269 ../gio/gfile.c:7790 ../gio/gfile.c:7880 ../gio/gfile.c:7964 ../gio/win32/gwinhttpfile.c:437
+#: ../gio/gfile.c:5168 ../gio/gfile.c:5269 ../gio/gfile.c:7788 ../gio/gfile.c:7878 ../gio/gfile.c:7962 ../gio/win32/gwinhttpfile.c:437
 msgid "Operation not supported"
 msgstr "Nepodporovaná operácia"
 
@@ -1206,11 +1185,11 @@ msgstr "Nepodporovaná operácia"
 #. Translators: This is an error message when trying to find
 #. * the enclosing (user visible) mount of a file, but none
 #. * exists.
-#: ../gio/gfile.c:1467 ../gio/glocalfile.c:1134 ../gio/glocalfile.c:1145 ../gio/glocalfile.c:1158
+#: ../gio/gfile.c:1467 ../gio/glocalfile.c:1103 ../gio/glocalfile.c:1114 ../gio/glocalfile.c:1127
 msgid "Containing mount does not exist"
 msgstr "Obklopujúce pripojenie neexistuje"
 
-#: ../gio/gfile.c:2514 ../gio/glocalfile.c:2368
+#: ../gio/gfile.c:2514 ../gio/glocalfile.c:2337
 msgid "Can't copy over directory"
 msgstr "Nedá sa prepísať adresár pri kopírovaní"
 
@@ -1218,7 +1197,7 @@ msgstr "Nedá sa prepísať adresár pri kopírovaní"
 msgid "Can't copy directory over directory"
 msgstr "Nedá sa prepísať adresár adresárom pri kopírovaní"
 
-#: ../gio/gfile.c:2582 ../gio/glocalfile.c:2377
+#: ../gio/gfile.c:2582 ../gio/glocalfile.c:2346
 msgid "Target file exists"
 msgstr "Cieľový súbor existuje"
 
@@ -1395,7 +1374,7 @@ msgstr "Adresa má bity nastavené za dĺžkou predpony"
 msgid "Could not parse '%s' as IP address mask"
 msgstr "Nepodarilo sa analyzovať „%s“ ako masku adresy IP"
 
-#: ../gio/ginetsocketaddress.c:196 ../gio/ginetsocketaddress.c:213 ../gio/gnativesocketaddress.c:106 ../gio/gunixsocketaddress.c:209
+#: ../gio/ginetsocketaddress.c:196 ../gio/ginetsocketaddress.c:213 ../gio/gunixsocketaddress.c:209
 msgid "Not enough space for socket address"
 msgstr "Nie je dostatok miesta pre adresu soketu"
 
@@ -1417,7 +1396,7 @@ msgstr "Vstupný prúd neimplementuje čítanie"
 msgid "Stream has outstanding operation"
 msgstr "Prúd má nevykonanú operáciu"
 
-#: ../gio/glib-compile-resources.c:142 ../gio/glib-compile-schemas.c:1491
+#: ../gio/glib-compile-resources.c:142 ../gio/glib-compile-schemas.c:1453
 #, c-format
 msgid "Element <%s> not allowed inside <%s>"
 msgstr "Prvok <%s> nie je dovolený vo vnútri <%s>"
@@ -1462,7 +1441,7 @@ msgstr "Chyba pri čítaní súboru %s: %s"
 msgid "Error compressing file %s"
 msgstr "Chyba pri komprimovaní súboru %s"
 
-#: ../gio/glib-compile-resources.c:464 ../gio/glib-compile-schemas.c:1603
+#: ../gio/glib-compile-resources.c:464 ../gio/glib-compile-schemas.c:1565
 #, c-format
 msgid "text may not appear inside <%s>"
 msgstr "text sa nemôže nachádzať vo vnútri <%s>"
@@ -1477,7 +1456,7 @@ msgstr "názov výstupného súboru"
 msgid "The directories where files are to be read from (default to current directory)"
 msgstr "Adresáre, z ktorých sa majú čítať súbory (predvolený je aktuálny adresár)"
 
-#: ../gio/glib-compile-resources.c:590 ../gio/glib-compile-schemas.c:2036 ../gio/glib-compile-schemas.c:2065
+#: ../gio/glib-compile-resources.c:590 ../gio/glib-compile-schemas.c:1994 ../gio/glib-compile-schemas.c:2023
 msgid "DIRECTORY"
 msgstr "ADRESÁR"
 
@@ -1532,215 +1511,210 @@ msgstr ""
 msgid "You should give exactly one file name\n"
 msgstr "Mali by ste zadať práve jeden názov súboru\n"
 
-#: ../gio/glib-compile-schemas.c:784
+#: ../gio/glib-compile-schemas.c:772
 msgid "empty names are not permitted"
 msgstr "prázdne názvy nie sú povolené"
 
-#: ../gio/glib-compile-schemas.c:794
+#: ../gio/glib-compile-schemas.c:782
 #, c-format
 msgid "invalid name '%s': names must begin with a lowercase letter"
 msgstr "neplatný názov „%s“: názvy musia začínať malým písmenom"
 
-#: ../gio/glib-compile-schemas.c:806
+#: ../gio/glib-compile-schemas.c:794
 #, c-format
 msgid "invalid name '%s': invalid character '%c'; only lowercase letters, numbers and hyphen ('-') are permitted."
 msgstr "neplatný názov „%s“: neplatný znak „%c“: povolené sú iba malé písmená, čísla a spojovník („-“)."
 
-#: ../gio/glib-compile-schemas.c:815
+#: ../gio/glib-compile-schemas.c:803
 #, c-format
 msgid "invalid name '%s': two successive hyphens ('--') are not permitted."
 msgstr "neplatný názov „%s“: dva za sebou nasledujúce spojovníky („--“) nie sú povolené."
 
-#: ../gio/glib-compile-schemas.c:824
+#: ../gio/glib-compile-schemas.c:812
 #, c-format
 msgid "invalid name '%s': the last character may not be a hyphen ('-')."
 msgstr "neplatný názov „%s“: posledný znak nesmie byť spojovník („-“)."
 
-#: ../gio/glib-compile-schemas.c:832
+#: ../gio/glib-compile-schemas.c:820
 #, c-format
 msgid "invalid name '%s': maximum length is 1024"
 msgstr "neplatný názov „%s“: maximálna dĺžka je 1024"
 
-#: ../gio/glib-compile-schemas.c:901
+#: ../gio/glib-compile-schemas.c:889
 #, c-format
 msgid "<child name='%s'> already specified"
 msgstr "<child name='%s'> je už určený"
 
-#: ../gio/glib-compile-schemas.c:927
+#: ../gio/glib-compile-schemas.c:915
 msgid "cannot add keys to a 'list-of' schema"
 msgstr "nedajú sa pridať kľúče do schémy „list-of“"
 
-#: ../gio/glib-compile-schemas.c:938
+#: ../gio/glib-compile-schemas.c:926
 #, c-format
 msgid "<key name='%s'> already specified"
 msgstr "<key name='%s'> je už určený"
 
-#: ../gio/glib-compile-schemas.c:956
+#: ../gio/glib-compile-schemas.c:944
 #, c-format
 msgid "<key name='%s'> shadows <key name='%s'> in <schema id='%s'>; use <override> to modify value"
 msgstr "<key name='%s'> zatieni <key name='%s'> v <schema id='%s'>; na úpravu hodnoty použite <override>"
 
-#: ../gio/glib-compile-schemas.c:967
+#: ../gio/glib-compile-schemas.c:955
 #, c-format
 msgid "exactly one of 'type', 'enum' or 'flags' must be specified as an attribute to <key>"
 msgstr "ako atribút pre <key> musí byť určená práve jedna hodnota z „type“, „enum“ alebo „flags“"
 
-#: ../gio/glib-compile-schemas.c:986
+#: ../gio/glib-compile-schemas.c:974
 #, c-format
 msgid "<%s id='%s'> not (yet) defined."
 msgstr "<%s id='%s'> nie je (zatiaľ) definovaný."
 
-#: ../gio/glib-compile-schemas.c:1001
+#: ../gio/glib-compile-schemas.c:989
 #, c-format
 msgid "invalid GVariant type string '%s'"
 msgstr "neplatný reťazec typu GVariant „%s“"
 
-#: ../gio/glib-compile-schemas.c:1031
+#: ../gio/glib-compile-schemas.c:1019
 msgid "<override> given but schema isn't extending anything"
 msgstr "zadaný <override>, no schéma nič nerozširuje"
 
-#: ../gio/glib-compile-schemas.c:1044
+#: ../gio/glib-compile-schemas.c:1032
 #, c-format
 msgid "no <key name='%s'> to override"
 msgstr "žiadny <key name='%s'> na preváženie"
 
-#: ../gio/glib-compile-schemas.c:1052
+#: ../gio/glib-compile-schemas.c:1040
 #, c-format
 msgid "<override name='%s'> already specified"
 msgstr "<override name='%s'> je už určený"
 
-#: ../gio/glib-compile-schemas.c:1125
+#: ../gio/glib-compile-schemas.c:1111
 #, c-format
 msgid "<schema id='%s'> already specified"
 msgstr "<schema id='%s'> je už určený"
 
-#: ../gio/glib-compile-schemas.c:1137
+#: ../gio/glib-compile-schemas.c:1123
 #, c-format
 msgid "<schema id='%s'> extends not yet existing schema '%s'"
 msgstr "<schema id='%s'> rozširuje zatiaľ neexistujúcu schému „%s“"
 
-#: ../gio/glib-compile-schemas.c:1153
+#: ../gio/glib-compile-schemas.c:1139
 #, c-format
 msgid "<schema id='%s'> is list of not yet existing schema '%s'"
 msgstr "<schema id='%s'> je zoznamom zatiaľ neexistujúcej schémy „%s“"
 
-#: ../gio/glib-compile-schemas.c:1161
+#: ../gio/glib-compile-schemas.c:1147
 #, c-format
 msgid "Can not be a list of a schema with a path"
 msgstr "Nemôže byť zoznamom schémy s cestou"
 
-#: ../gio/glib-compile-schemas.c:1171
+#: ../gio/glib-compile-schemas.c:1157
 #, c-format
 msgid "Can not extend a schema with a path"
 msgstr "Nemôže rozšíriť schému s cestou"
 
-#: ../gio/glib-compile-schemas.c:1181
+#: ../gio/glib-compile-schemas.c:1167
 #, c-format
 msgid "<schema id='%s'> is a list, extending <schema id='%s'> which is not a list"
 msgstr "<schema id='%s'> je zoznamom rozširujúcim <schema id='%s'>, ktorý nie je zoznamom"
 
-#: ../gio/glib-compile-schemas.c:1191
+#: ../gio/glib-compile-schemas.c:1177
 #, c-format
 msgid "<schema id='%s' list-of='%s'> extends <schema id='%s' list-of='%s'> but '%s' does not extend '%s'"
 msgstr "<schema id='%s' list-of='%s'> rozširuje <schema id='%s' list-of='%s'>, no „%s“ nerozširuje „%s“"
 
-#: ../gio/glib-compile-schemas.c:1208
+#: ../gio/glib-compile-schemas.c:1194
 #, c-format
 msgid "a path, if given, must begin and end with a slash"
 msgstr "cesta (ak je zadaná) musí začínať a končiť lomkou"
 
-#: ../gio/glib-compile-schemas.c:1215
+#: ../gio/glib-compile-schemas.c:1201
 #, c-format
 msgid "the path of a list must end with ':/'"
 msgstr "cesta zoznamu musí končiť „:/“"
 
-#: ../gio/glib-compile-schemas.c:1247
+#: ../gio/glib-compile-schemas.c:1233
 #, c-format
 msgid "<%s id='%s'> already specified"
 msgstr "<%s id='%s'> je už určený"
 
-#: ../gio/glib-compile-schemas.c:1397 ../gio/glib-compile-schemas.c:1413
-#, c-format
-msgid "Only one <%s> element allowed inside <%s>"
-msgstr "Iba jeden prvok <%s> je dovolený vo vnútri <%s>"
-
-#: ../gio/glib-compile-schemas.c:1495
+#: ../gio/glib-compile-schemas.c:1457
 #, c-format
 msgid "Element <%s> not allowed at the top level"
 msgstr "Prvok <%s> nie je dovolený na najvyššej úrovni"
 
 #. Translators: Do not translate "--strict".
-#: ../gio/glib-compile-schemas.c:1794 ../gio/glib-compile-schemas.c:1865 ../gio/glib-compile-schemas.c:1941
+#: ../gio/glib-compile-schemas.c:1752 ../gio/glib-compile-schemas.c:1823 ../gio/glib-compile-schemas.c:1899
 #, c-format
 msgid "--strict was specified; exiting.\n"
 msgstr "--strict bolo zadané; ukončuje sa.\n"
 
-#: ../gio/glib-compile-schemas.c:1802
+#: ../gio/glib-compile-schemas.c:1760
 #, c-format
 msgid "This entire file has been ignored.\n"
 msgstr "Celý tento súbor bol ignorovaný.\n"
 
-#: ../gio/glib-compile-schemas.c:1861
+#: ../gio/glib-compile-schemas.c:1819
 #, c-format
 msgid "Ignoring this file.\n"
 msgstr "Ignoruje sa tento súbor.\n"
 
-#: ../gio/glib-compile-schemas.c:1901
+#: ../gio/glib-compile-schemas.c:1859
 #, c-format
 msgid "No such key '%s' in schema '%s' as specified in override file '%s'"
 msgstr "Kľúč „%s“ neexistuje v schéme „%s“ ako to bolo určené v súbore preváženia „%s“"
 
-#: ../gio/glib-compile-schemas.c:1907 ../gio/glib-compile-schemas.c:1965 ../gio/glib-compile-schemas.c:1993
+#: ../gio/glib-compile-schemas.c:1865 ../gio/glib-compile-schemas.c:1923 ../gio/glib-compile-schemas.c:1951
 #, c-format
 msgid "; ignoring override for this key.\n"
 msgstr "; ignoruje sa preváženie tohto kľúča.\n"
 
-#: ../gio/glib-compile-schemas.c:1911 ../gio/glib-compile-schemas.c:1969 ../gio/glib-compile-schemas.c:1997
+#: ../gio/glib-compile-schemas.c:1869 ../gio/glib-compile-schemas.c:1927 ../gio/glib-compile-schemas.c:1955
 #, c-format
 msgid " and --strict was specified; exiting.\n"
 msgstr " a --strict bolo zadané; ukončuje sa.\n"
 
-#: ../gio/glib-compile-schemas.c:1927
+#: ../gio/glib-compile-schemas.c:1885
 #, c-format
 msgid "error parsing key '%s' in schema '%s' as specified in override file '%s': %s."
 msgstr "chyba pri analyzovaní kľúča „%s“ v schéme „%s“ ako bolo určené v súbore preváženia „%s“: %s."
 
-#: ../gio/glib-compile-schemas.c:1937
+#: ../gio/glib-compile-schemas.c:1895
 #, c-format
 msgid "Ignoring override for this key.\n"
 msgstr "Ignoruje sa preváženie tohto kľúča.\n"
 
-#: ../gio/glib-compile-schemas.c:1955
+#: ../gio/glib-compile-schemas.c:1913
 #, c-format
 msgid "override for key '%s' in schema '%s' in override file '%s' is outside the range given in the schema"
 msgstr "preváženie kľúča „%s“ v schéme „%s“ v prevažujúcom súbore „%s“ je mimo rozsah daný schémou"
 
-#: ../gio/glib-compile-schemas.c:1983
+#: ../gio/glib-compile-schemas.c:1941
 #, c-format
 msgid "override for key '%s' in schema '%s' in override file '%s' is not in the list of valid choices"
 msgstr "preváženie kľúča „%s“ v schéme „%s“ v súbore preváženia „%s“ nie je v zozname platných možností"
 
 # cmd desc
-#: ../gio/glib-compile-schemas.c:2036
+#: ../gio/glib-compile-schemas.c:1994
 msgid "where to store the gschemas.compiled file"
 msgstr "kam sa má uložiť súbor gschemas.compiled"
 
 # cmd desc
-#: ../gio/glib-compile-schemas.c:2037
+#: ../gio/glib-compile-schemas.c:1995
 msgid "Abort on any errors in schemas"
 msgstr "Preruší pri ľubovoľnej chybe v schémach"
 
 # cmd desc
-#: ../gio/glib-compile-schemas.c:2038
+#: ../gio/glib-compile-schemas.c:1996
 msgid "Do not write the gschema.compiled file"
 msgstr "Nezapíše súbor gschema.compiled"
 
 # cmd desc
-#: ../gio/glib-compile-schemas.c:2039
+#: ../gio/glib-compile-schemas.c:1997
 msgid "Do not enforce key name restrictions"
 msgstr "Nevynúti obmedzenia pre názvy kľúčov"
 
-#: ../gio/glib-compile-schemas.c:2068
+#: ../gio/glib-compile-schemas.c:2026
 msgid ""
 "Compile all GSettings schema files into a schema cache.\n"
 "Schema files are required to have the extension .gschema.xml,\n"
@@ -1750,137 +1724,141 @@ msgstr ""
 "Súbory schém musia mať príponu .gschema.xml,\n"
 "a súbor vyrovnávacej pamäte sa nazýva gschemas.compiled."
 
-#: ../gio/glib-compile-schemas.c:2084
+#: ../gio/glib-compile-schemas.c:2042
 #, c-format
 msgid "You should give exactly one directory name\n"
 msgstr "Mali by ste zadať práve jeden názov adresára\n"
 
-#: ../gio/glib-compile-schemas.c:2123
+#: ../gio/glib-compile-schemas.c:2081
 #, c-format
 msgid "No schema files found: "
 msgstr "Nenájdené žiadne súbory schém: "
 
-#: ../gio/glib-compile-schemas.c:2126
+#: ../gio/glib-compile-schemas.c:2084
 #, c-format
 msgid "doing nothing.\n"
 msgstr "neurobí sa nič.\n"
 
-#: ../gio/glib-compile-schemas.c:2129
+#: ../gio/glib-compile-schemas.c:2087
 #, c-format
 msgid "removed existing output file.\n"
 msgstr "odstránený existujúci výstupný súbor.\n"
 
-#: ../gio/glocalfile.c:635 ../gio/win32/gwinhttpfile.c:420
+#: ../gio/glocaldirectorymonitor.c:224
+msgid "Unable to find default local directory monitor type"
+msgstr "Nepodarilo sa nájsť predvolený typ sledovania lokálneho adresára"
+
+#: ../gio/glocalfile.c:604 ../gio/win32/gwinhttpfile.c:420
 #, c-format
 msgid "Invalid filename %s"
 msgstr "Neplatný názov súboru %s"
 
-#: ../gio/glocalfile.c:1012
+#: ../gio/glocalfile.c:981
 #, c-format
 msgid "Error getting filesystem info: %s"
 msgstr "Chyba pri získavaní informácií o súborovom systéme: %s"
 
-#: ../gio/glocalfile.c:1180
+#: ../gio/glocalfile.c:1149
 msgid "Can't rename root directory"
 msgstr "Koreňový adresár sa nedá premenovať"
 
-#: ../gio/glocalfile.c:1200 ../gio/glocalfile.c:1226
+#: ../gio/glocalfile.c:1169 ../gio/glocalfile.c:1195
 #, c-format
 msgid "Error renaming file: %s"
 msgstr "Chyba pri premenovaní súboru: %s"
 
-#: ../gio/glocalfile.c:1209
+#: ../gio/glocalfile.c:1178
 msgid "Can't rename file, filename already exists"
 msgstr "Nedá sa premenovať súbor, názov súboru už existuje"
 
-#: ../gio/glocalfile.c:1222 ../gio/glocalfile.c:2241 ../gio/glocalfile.c:2270 ../gio/glocalfile.c:2430 ../gio/glocalfileoutputstream.c:549
+#: ../gio/glocalfile.c:1191 ../gio/glocalfile.c:2210 ../gio/glocalfile.c:2239 ../gio/glocalfile.c:2399 ../gio/glocalfileoutputstream.c:549
 msgid "Invalid filename"
 msgstr "Neplatný názov súboru"
 
-#: ../gio/glocalfile.c:1389 ../gio/glocalfile.c:1413
+#: ../gio/glocalfile.c:1358 ../gio/glocalfile.c:1382
 msgid "Can't open directory"
 msgstr "Nedá sa otvoriť adresár"
 
-#: ../gio/glocalfile.c:1397
+#: ../gio/glocalfile.c:1366
 #, c-format
 msgid "Error opening file: %s"
 msgstr "Chyba pri otváraní súboru: %s"
 
-#: ../gio/glocalfile.c:1538
+#: ../gio/glocalfile.c:1507
 #, c-format
 msgid "Error removing file: %s"
 msgstr "Chyba pri odstraňovaní súboru: %s"
 
-#: ../gio/glocalfile.c:1918
+#: ../gio/glocalfile.c:1887
 #, c-format
 msgid "Error trashing file: %s"
 msgstr "Chyba pri zahadzovaní súboru do Koša: %s"
 
-#: ../gio/glocalfile.c:1941
+#: ../gio/glocalfile.c:1910
 #, c-format
 msgid "Unable to create trash dir %s: %s"
 msgstr "Nepodarilo sa vytvoriť adresár Kôš %s: %s"
 
-#: ../gio/glocalfile.c:1962
+#: ../gio/glocalfile.c:1931
 msgid "Unable to find toplevel directory for trash"
 msgstr "Nepodarilo sa nájsť adresár najvyššej úrovne pre Kôš"
 
-#: ../gio/glocalfile.c:2041 ../gio/glocalfile.c:2061
+#: ../gio/glocalfile.c:2010 ../gio/glocalfile.c:2030
 msgid "Unable to find or create trash directory"
 msgstr "Nepodarilo sa nájsť ani vytvoriť adresár Kôš"
 
-#: ../gio/glocalfile.c:2095
+#: ../gio/glocalfile.c:2064
 #, c-format
 msgid "Unable to create trashing info file: %s"
 msgstr "Nepodarilo sa vytvoriť informačný súbor o zahadzovaní do Koša: %s"
 
-#: ../gio/glocalfile.c:2126 ../gio/glocalfile.c:2131 ../gio/glocalfile.c:2211 ../gio/glocalfile.c:2218
+#: ../gio/glocalfile.c:2095 ../gio/glocalfile.c:2100 ../gio/glocalfile.c:2180 ../gio/glocalfile.c:2187
 #, c-format
 msgid "Unable to trash file: %s"
 msgstr "Nepodarilo sa zahodiť súbor do Koša: %s"
 
-#: ../gio/glocalfile.c:2219 ../glib/gregex.c:281
+#: ../gio/glocalfile.c:2188 ../glib/gregex.c:281
 msgid "internal error"
 msgstr "vnútorná chyba"
 
-#: ../gio/glocalfile.c:2245
+#: ../gio/glocalfile.c:2214
 #, c-format
 msgid "Error creating directory: %s"
 msgstr "Chyba pri vytváraní adresára: %s"
 
-#: ../gio/glocalfile.c:2274
+#: ../gio/glocalfile.c:2243
 #, c-format
 msgid "Filesystem does not support symbolic links"
 msgstr "Súborový systém nepodporuje symbolické odkazy"
 
-#: ../gio/glocalfile.c:2278
+#: ../gio/glocalfile.c:2247
 #, c-format
 msgid "Error making symbolic link: %s"
 msgstr "Chyba pri vytváraní symbolického odkazu: %s"
 
-#: ../gio/glocalfile.c:2340 ../gio/glocalfile.c:2434
+#: ../gio/glocalfile.c:2309 ../gio/glocalfile.c:2403
 #, c-format
 msgid "Error moving file: %s"
 msgstr "Chyba pri presúvaní súboru: %s"
 
-#: ../gio/glocalfile.c:2363
+#: ../gio/glocalfile.c:2332
 msgid "Can't move directory over directory"
 msgstr "Nedá sa prepísať adresár adresárom počas presúvania"
 
-#: ../gio/glocalfile.c:2390 ../gio/glocalfileoutputstream.c:925 ../gio/glocalfileoutputstream.c:939 ../gio/glocalfileoutputstream.c:954 ../gio/glocalfileoutputstream.c:970 ../gio/glocalfileoutputstream.c:984
+#: ../gio/glocalfile.c:2359 ../gio/glocalfileoutputstream.c:925 ../gio/glocalfileoutputstream.c:939 ../gio/glocalfileoutputstream.c:954 ../gio/glocalfileoutputstream.c:970 ../gio/glocalfileoutputstream.c:984
 msgid "Backup file creation failed"
 msgstr "Vytvorenie súboru zálohy zlyhalo"
 
-#: ../gio/glocalfile.c:2409
+#: ../gio/glocalfile.c:2378
 #, c-format
 msgid "Error removing target file: %s"
 msgstr "Chyba pri odstraňovaní cieľového súboru: %s"
 
-#: ../gio/glocalfile.c:2423
+#: ../gio/glocalfile.c:2392
 msgid "Move between mounts not supported"
 msgstr "Presun medzi pripojeniami nie je podporovaný"
 
-#: ../gio/glocalfile.c:2615
+#: ../gio/glocalfile.c:2603
 #, c-format
 msgid "Could not determine the disk usage of %s: %s"
 msgstr "Nepodarilo sa určiť využitie disku %s: %s"
@@ -1993,7 +1971,7 @@ msgstr "Chyba pri presúvaní v súbore: %s"
 msgid "Error closing file: %s"
 msgstr "Chyba pri zatváraní súboru: %s"
 
-#: ../gio/glocalfilemonitor.c:840
+#: ../gio/glocalfilemonitor.c:145
 msgid "Unable to find default local file monitor type"
 msgstr "Nepodarilo sa nájsť predvolený typ sledovania lokálneho súboru"
 
@@ -2125,16 +2103,16 @@ msgstr "pripojenie neimplementuje odhad typu obsahu"
 msgid "mount doesn't implement synchronous content type guessing"
 msgstr "pripojenie neimplementuje synchrónny odhad typu obsahu"
 
-#: ../gio/gnetworkaddress.c:376
+#: ../gio/gnetworkaddress.c:383
 #, c-format
 msgid "Hostname '%s' contains '[' but not ']'"
 msgstr "Názov hostiteľa „%s“ obsahuje „[“, ale neobsahuje „]“"
 
-#: ../gio/gnetworkmonitorbase.c:206 ../gio/gnetworkmonitorbase.c:309
+#: ../gio/gnetworkmonitorbase.c:199 ../gio/gnetworkmonitorbase.c:302
 msgid "Network unreachable"
 msgstr "Sieť nedostupná"
 
-#: ../gio/gnetworkmonitorbase.c:244 ../gio/gnetworkmonitorbase.c:274
+#: ../gio/gnetworkmonitorbase.c:237 ../gio/gnetworkmonitorbase.c:267
 msgid "Host unreachable"
 msgstr "Hostiteľ nedostupný"
 
@@ -2151,7 +2129,7 @@ msgstr "Nepodarilo sa vytvoriť monitor siete: "
 msgid "Could not get network status: "
 msgstr "Nepodarilo sa získať vzdialenú adresu: %s"
 
-#: ../gio/gnetworkmonitornm.c:326
+#: ../gio/gnetworkmonitornm.c:278
 #, c-format
 msgid "NetworkManager version too old"
 msgstr "Verzia programu NetworkManager je príliš stará"
@@ -2164,19 +2142,19 @@ msgstr "Výstupný prúd neimplementuje zápis"
 msgid "Source stream is already closed"
 msgstr "Zdrojový prúd je už zatvorený"
 
-#: ../gio/gresolver.c:330 ../gio/gthreadedresolver.c:116 ../gio/gthreadedresolver.c:126
+#: ../gio/gresolver.c:331 ../gio/gthreadedresolver.c:116 ../gio/gthreadedresolver.c:126
 #, c-format
 msgid "Error resolving '%s': %s"
 msgstr "Chyba pri preklade adresy „%s“: %s"
 
 # %s je cesta
-#: ../gio/gresource.c:304 ../gio/gresource.c:555 ../gio/gresource.c:572 ../gio/gresource.c:693 ../gio/gresource.c:762 ../gio/gresource.c:823 ../gio/gresource.c:903 ../gio/gresourcefile.c:452 ../gio/gresourcefile.c:553 ../gio/gresourcefile.c:655
+#: ../gio/gresource.c:298 ../gio/gresource.c:546 ../gio/gresource.c:563 ../gio/gresource.c:684 ../gio/gresource.c:753 ../gio/gresource.c:814 ../gio/gresource.c:894 ../gio/gresourcefile.c:452 ../gio/gresourcefile.c:553 ../gio/gresourcefile.c:655
 #, c-format
 msgid "The resource at '%s' does not exist"
 msgstr "Zdroj v „%s“ neexistuje"
 
 # %s je cesta
-#: ../gio/gresource.c:469
+#: ../gio/gresource.c:463
 #, c-format
 msgid "The resource at '%s' failed to decompress"
 msgstr "Zdroj v „%s“ sa nepodarilo rozbaliť"
@@ -2281,7 +2259,7 @@ msgstr ""
 msgid "  SECTION   An (optional) elf section name\n"
 msgstr "  ČASŤ      (voliteľný) názov časti elf\n"
 
-#: ../gio/gresource-tool.c:556 ../gio/gsettings-tool.c:652
+#: ../gio/gresource-tool.c:556 ../gio/gsettings-tool.c:648
 msgid "  COMMAND   The (optional) command to explain\n"
 msgstr "  PRÍKAZ    (voliteľný) príkaz na vysvetlenie\n"
 
@@ -2313,7 +2291,7 @@ msgstr "CESTA"
 msgid "  PATH      A resource path\n"
 msgstr "  CESTA     Cesta k súboru zdrojov\n"
 
-#: ../gio/gsettings-tool.c:51 ../gio/gsettings-tool.c:72 ../gio/gsettings-tool.c:837
+#: ../gio/gsettings-tool.c:51 ../gio/gsettings-tool.c:72
 #, c-format
 msgid "No such schema '%s'\n"
 msgstr "Neexistuje schéma „%s“\n"
@@ -2348,37 +2326,37 @@ msgstr "Cesta musí končiť lomkou (/)\n"
 msgid "Path must not contain two adjacent slashes (//)\n"
 msgstr "Cesta nesmie obsahovať dve po sebe nasledujúce lomky (//)\n"
 
-#: ../gio/gsettings-tool.c:494
+#: ../gio/gsettings-tool.c:490
 #, c-format
 msgid "The provided value is outside of the valid range\n"
 msgstr "Poskytnutá hodnota nepatrí do platného rozsahu\n"
 
-#: ../gio/gsettings-tool.c:501
+#: ../gio/gsettings-tool.c:497
 #, c-format
 msgid "The key is not writable\n"
 msgstr "Kľúč nie je zapisovateľný\n"
 
-#: ../gio/gsettings-tool.c:537
+#: ../gio/gsettings-tool.c:533
 msgid "List the installed (non-relocatable) schemas"
 msgstr "Vypíše nainštalované (nepremiestniteľné) schémy"
 
-#: ../gio/gsettings-tool.c:543
+#: ../gio/gsettings-tool.c:539
 msgid "List the installed relocatable schemas"
 msgstr "Vypíše nainštalované premiestniteľné schémy"
 
-#: ../gio/gsettings-tool.c:549
+#: ../gio/gsettings-tool.c:545
 msgid "List the keys in SCHEMA"
 msgstr "Vypíše kľúče v SCHÉME"
 
-#: ../gio/gsettings-tool.c:550 ../gio/gsettings-tool.c:556 ../gio/gsettings-tool.c:593
+#: ../gio/gsettings-tool.c:546 ../gio/gsettings-tool.c:552 ../gio/gsettings-tool.c:589
 msgid "SCHEMA[:PATH]"
 msgstr "SCHÉMA[:CESTA]"
 
-#: ../gio/gsettings-tool.c:555
+#: ../gio/gsettings-tool.c:551
 msgid "List the children of SCHEMA"
 msgstr "Vypíše potomkov SCHÉMY"
 
-#: ../gio/gsettings-tool.c:561
+#: ../gio/gsettings-tool.c:557
 msgid ""
 "List keys and values, recursively\n"
 "If no SCHEMA is given, list all keys\n"
@@ -2386,43 +2364,43 @@ msgstr ""
 "Vypíše rekurzívne všetky kľúče a hodnoty\n"
 "Ak SCHÉMA nie je zadaná, vypíše všetky kľúče\n"
 
-#: ../gio/gsettings-tool.c:563
+#: ../gio/gsettings-tool.c:559
 msgid "[SCHEMA[:PATH]]"
 msgstr "[SCHÉMA[:CESTA]]"
 
-#: ../gio/gsettings-tool.c:568
+#: ../gio/gsettings-tool.c:564
 msgid "Get the value of KEY"
 msgstr "Získa hodnotu KĽÚČA"
 
-#: ../gio/gsettings-tool.c:569 ../gio/gsettings-tool.c:575 ../gio/gsettings-tool.c:587 ../gio/gsettings-tool.c:599
+#: ../gio/gsettings-tool.c:565 ../gio/gsettings-tool.c:571 ../gio/gsettings-tool.c:583 ../gio/gsettings-tool.c:595
 msgid "SCHEMA[:PATH] KEY"
 msgstr "SCHÉMA[:CESTA] KĽÚČ"
 
-#: ../gio/gsettings-tool.c:574
+#: ../gio/gsettings-tool.c:570
 msgid "Query the range of valid values for KEY"
 msgstr "Spýta sa na platný rozsah hodnôt KĽÚČA"
 
-#: ../gio/gsettings-tool.c:580
+#: ../gio/gsettings-tool.c:576
 msgid "Set the value of KEY to VALUE"
 msgstr "Nastaví hodnotu KĽÚČA na HODNOTU"
 
-#: ../gio/gsettings-tool.c:581
+#: ../gio/gsettings-tool.c:577
 msgid "SCHEMA[:PATH] KEY VALUE"
 msgstr "SCHÉMA[:CESTA] KĽÚČ HODNOTA"
 
-#: ../gio/gsettings-tool.c:586
+#: ../gio/gsettings-tool.c:582
 msgid "Reset KEY to its default value"
 msgstr "Nastaví KĽÚČ na jeho predvolenú hodnotu"
 
-#: ../gio/gsettings-tool.c:592
+#: ../gio/gsettings-tool.c:588
 msgid "Reset all keys in SCHEMA to their defaults"
 msgstr "Nastaví všetky kľúče v SCHÉME na ich predvolené hodnoty"
 
-#: ../gio/gsettings-tool.c:598
+#: ../gio/gsettings-tool.c:594
 msgid "Check if KEY is writable"
 msgstr "Skontroluje, či je KĽÚČ zapisovateľný"
 
-#: ../gio/gsettings-tool.c:604
+#: ../gio/gsettings-tool.c:600
 msgid ""
 "Monitor KEY for changes.\n"
 "If no KEY is specified, monitor all keys in SCHEMA.\n"
@@ -2432,11 +2410,11 @@ msgstr ""
 "Ak KĽÚČ nie určený, sleduje všetky kľúče v SCHÉME.\n"
 "Sledovanie zastavíte pomocou ^C.\n"
 
-#: ../gio/gsettings-tool.c:607
+#: ../gio/gsettings-tool.c:603
 msgid "SCHEMA[:PATH] [KEY]"
 msgstr "SCHÉMA[:CESTA] [KĽÚČ]"
 
-#: ../gio/gsettings-tool.c:619
+#: ../gio/gsettings-tool.c:615
 msgid ""
 "Usage:\n"
 "  gsettings --version\n"
@@ -2482,7 +2460,7 @@ msgstr ""
 "Podrobnejšieho pomocníka získate pomocou „gsettings help PRÍKAZ“.\n"
 "\n"
 
-#: ../gio/gsettings-tool.c:642
+#: ../gio/gsettings-tool.c:638
 #, c-format
 msgid ""
 "Usage:\n"
@@ -2497,11 +2475,11 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../gio/gsettings-tool.c:648
+#: ../gio/gsettings-tool.c:644
 msgid "  SCHEMADIR A directory to search for additional schemas\n"
 msgstr "  ADRESÁR_SCHÉMY Adresár, v ktorom sa majú hľadať dodatočné schémy\n"
 
-#: ../gio/gsettings-tool.c:656
+#: ../gio/gsettings-tool.c:652
 msgid ""
 "  SCHEMA    The name of the schema\n"
 "  PATH      The path, for relocatable schemas\n"
@@ -2509,162 +2487,162 @@ msgstr ""
 "  SCHÉMA    Názov schémy\n"
 "  CESTA     Cesta pre premiestniteľné schémy\n"
 
-#: ../gio/gsettings-tool.c:661
+#: ../gio/gsettings-tool.c:657
 msgid "  KEY       The (optional) key within the schema\n"
 msgstr "  KĽÚČ      (voliteľný) kľúč vo vnútri schémy\n"
 
-#: ../gio/gsettings-tool.c:665
+#: ../gio/gsettings-tool.c:661
 msgid "  KEY       The key within the schema\n"
 msgstr "  KĽÚČ      Kľúč vo vnútri schémy\n"
 
-#: ../gio/gsettings-tool.c:669
+#: ../gio/gsettings-tool.c:665
 msgid "  VALUE     The value to set\n"
 msgstr "  HODNOTA   Hodnota, ktorá sa má nastaviť\n"
 
-#: ../gio/gsettings-tool.c:725
+#: ../gio/gsettings-tool.c:720
 #, c-format
 msgid "Could not load schemas from %s: %s\n"
 msgstr "Nepodarilo sa načítať schémy z %s: %s\n"
 
-#: ../gio/gsettings-tool.c:795
+#: ../gio/gsettings-tool.c:782
 #, c-format
 msgid "Empty schema name given\n"
 msgstr "Poskytnutý prázdny názov schémy\n"
 
-#: ../gio/gsettings-tool.c:850
+#: ../gio/gsettings-tool.c:811
 #, c-format
 msgid "No such key '%s'\n"
 msgstr "Neexistuje kľúč „%s“\n"
 
-#: ../gio/gsocket.c:280
+#: ../gio/gsocket.c:271
 msgid "Invalid socket, not initialized"
 msgstr "Neplatný soket, neinicializované"
 
-#: ../gio/gsocket.c:287
+#: ../gio/gsocket.c:278
 #, c-format
 msgid "Invalid socket, initialization failed due to: %s"
 msgstr "Neplatný soket, inicializácia zlyhala kvôli: %s"
 
-#: ../gio/gsocket.c:295
+#: ../gio/gsocket.c:286
 msgid "Socket is already closed"
 msgstr "Soket je už zatvorený"
 
-#: ../gio/gsocket.c:310 ../gio/gsocket.c:3624 ../gio/gsocket.c:3679
+#: ../gio/gsocket.c:301 ../gio/gsocket.c:3627 ../gio/gsocket.c:3682
 msgid "Socket I/O timed out"
 msgstr "Vypršal časový limit V/V soketu"
 
-#: ../gio/gsocket.c:439
+#: ../gio/gsocket.c:448
 #, c-format
 msgid "creating GSocket from fd: %s"
 msgstr "vytvára sa GSocket z popisovanča súboru: %s"
 
-#: ../gio/gsocket.c:467 ../gio/gsocket.c:521 ../gio/gsocket.c:528
+#: ../gio/gsocket.c:476 ../gio/gsocket.c:530 ../gio/gsocket.c:537
 #, c-format
 msgid "Unable to create socket: %s"
 msgstr "Nepodarilo sa vytvoriť soket: %s"
 
-#: ../gio/gsocket.c:521
+#: ../gio/gsocket.c:530
 msgid "Unknown family was specified"
 msgstr "Bola zadaná neznáma rodina protokolov"
 
-#: ../gio/gsocket.c:528
+#: ../gio/gsocket.c:537
 msgid "Unknown protocol was specified"
 msgstr "Bol zadaný neznámy protokol"
 
-#: ../gio/gsocket.c:1724
+#: ../gio/gsocket.c:1727
 #, c-format
 msgid "could not get local address: %s"
 msgstr "nepodarilo sa získať lokálnu adresu: %s"
 
-#: ../gio/gsocket.c:1767
+#: ../gio/gsocket.c:1770
 #, c-format
 msgid "could not get remote address: %s"
 msgstr "nepodarilo sa získať vzdialenú adresu: %s"
 
-#: ../gio/gsocket.c:1828
+#: ../gio/gsocket.c:1831
 #, c-format
 msgid "could not listen: %s"
 msgstr "nepodarilo sa počúvať: %s"
 
-#: ../gio/gsocket.c:1927
+#: ../gio/gsocket.c:1930
 #, c-format
 msgid "Error binding to address: %s"
 msgstr "Chyba pri viazaní sa na adresu: %s"
 
-#: ../gio/gsocket.c:2042 ../gio/gsocket.c:2079
+#: ../gio/gsocket.c:2045 ../gio/gsocket.c:2082
 #, c-format
 msgid "Error joining multicast group: %s"
 msgstr "Chyba pri pripájaní sa k multicast skupine: %s"
 
-#: ../gio/gsocket.c:2043 ../gio/gsocket.c:2080
+#: ../gio/gsocket.c:2046 ../gio/gsocket.c:2083
 #, c-format
 msgid "Error leaving multicast group: %s"
 msgstr "Chyba pri odpájaní sa od multicast skupiny: %s"
 
 # PM: SSM je termín neprekladal som to
 # http://en.wikipedia.org/wiki/Source-specific_multicast
-#: ../gio/gsocket.c:2044
+#: ../gio/gsocket.c:2047
 msgid "No support for source-specific multicast"
 msgstr "Nie je podpora pre source-specific multicast"
 
-#: ../gio/gsocket.c:2266
+#: ../gio/gsocket.c:2269
 #, c-format
 msgid "Error accepting connection: %s"
 msgstr "Chyba pri prijímaní pripojenia: %s"
 
-#: ../gio/gsocket.c:2389
+#: ../gio/gsocket.c:2392
 msgid "Connection in progress"
 msgstr "Prebieha pripájanie"
 
-#: ../gio/gsocket.c:2439
+#: ../gio/gsocket.c:2442
 msgid "Unable to get pending error: "
 msgstr "Nepodarilo sa získať chybu určenú na spracovanie: %s"
 
-#: ../gio/gsocket.c:2642
+#: ../gio/gsocket.c:2645
 #, c-format
 msgid "Error receiving data: %s"
 msgstr "Chyba pri prijímaní údajov: %s"
 
-#: ../gio/gsocket.c:2817
+#: ../gio/gsocket.c:2820
 #, c-format
 msgid "Error sending data: %s"
 msgstr "Chyba pri odosielaní údajov: %s"
 
-#: ../gio/gsocket.c:2931
+#: ../gio/gsocket.c:2934
 #, c-format
 msgid "Unable to shutdown socket: %s"
 msgstr "Nepodarilo sa vypnúť soket: %s"
 
-#: ../gio/gsocket.c:3010
+#: ../gio/gsocket.c:3013
 #, c-format
 msgid "Error closing socket: %s"
 msgstr "Chyba pri zatváraní soketu: %s"
 
-#: ../gio/gsocket.c:3617
+#: ../gio/gsocket.c:3620
 #, c-format
 msgid "Waiting for socket condition: %s"
 msgstr "Čaká sa na stav soketu: %s"
 
-#: ../gio/gsocket.c:3904 ../gio/gsocket.c:3987 ../gio/gsocket.c:4230
+#: ../gio/gsocket.c:3907 ../gio/gsocket.c:3990 ../gio/gsocket.c:4218
 #, c-format
 msgid "Error sending message: %s"
 msgstr "Chyba pri odosielaní správy: %s"
 
-#: ../gio/gsocket.c:3929
+#: ../gio/gsocket.c:3932
 msgid "GSocketControlMessage not supported on Windows"
 msgstr "GSocketControlMessage nie je podporovaný vo Windows"
 
-#: ../gio/gsocket.c:4559 ../gio/gsocket.c:4697
+#: ../gio/gsocket.c:4546 ../gio/gsocket.c:4684
 #, c-format
 msgid "Error receiving message: %s"
 msgstr "Chyba pri prijímaní správy: %s"
 
-#: ../gio/gsocket.c:4819
+#: ../gio/gsocket.c:4806
 #, c-format
 msgid "Unable to read socket credentials: %s"
 msgstr "Nepodarilo sa prečítať poverenia soketu: %s"
 
-#: ../gio/gsocket.c:4828
+#: ../gio/gsocket.c:4815
 msgid "g_socket_get_credentials not implemented for this OS"
 msgstr "g_socket_get_credentials nie je pre tento operačný systém implementovaný"
 
@@ -2695,11 +2673,11 @@ msgstr "Pripojenie cez proxy nepoužívajúce TCP nie je podporované."
 msgid "Proxy protocol '%s' is not supported."
 msgstr "Protokol proxy „%s“ nie je podporovaný."
 
-#: ../gio/gsocketlistener.c:218
+#: ../gio/gsocketlistener.c:188
 msgid "Listener is already closed"
 msgstr "Poslucháč je už zatvorený"
 
-#: ../gio/gsocketlistener.c:264
+#: ../gio/gsocketlistener.c:234
 msgid "Added socket is closed"
 msgstr "Pridaný soket je zatvorený"
 
@@ -2906,12 +2884,12 @@ msgstr "Neočakávala sa riadiaca správa, no získané %d"
 msgid "Error while disabling SO_PASSCRED: %s"
 msgstr "Chyba počas zakazovania SO_PASSCRED: %s"
 
-#: ../gio/gunixinputstream.c:369 ../gio/gunixinputstream.c:390
+#: ../gio/gunixinputstream.c:370 ../gio/gunixinputstream.c:391
 #, c-format
 msgid "Error reading from file descriptor: %s"
 msgstr "Chyba pri čítaní z popisovača súboru: %s"
 
-#: ../gio/gunixinputstream.c:423 ../gio/gunixoutputstream.c:409
+#: ../gio/gunixinputstream.c:424 ../gio/gunixoutputstream.c:410
 #, c-format
 msgid "Error closing file descriptor: %s"
 msgstr "Chyba pri zatváraní popisovača súboru: %s"
@@ -2920,7 +2898,7 @@ msgstr "Chyba pri zatváraní popisovača súboru: %s"
 msgid "Filesystem root"
 msgstr "Koreň súborového systému"
 
-#: ../gio/gunixoutputstream.c:355 ../gio/gunixoutputstream.c:376
+#: ../gio/gunixoutputstream.c:356 ../gio/gunixoutputstream.c:377
 #, c-format
 msgid "Error writing to file descriptor: %s"
 msgstr "Chyba pri zápise do popisovača súboru: %s"
@@ -2940,18 +2918,35 @@ msgstr "zväzok neimplementuje vysunutie"
 msgid "volume doesn't implement eject or eject_with_operation"
 msgstr "zväzok neimplementuje eject (vysunutie) ani eject_with_operation (vysunutie s operáciou)"
 
+#: ../gio/gwin32appinfo.c:274
+msgid "Can't find application"
+msgstr "Nedá sa nájsť aplikácia"
+
+#: ../gio/gwin32appinfo.c:303
+#, c-format
+msgid "Error launching application: %s"
+msgstr "Chyba pri spúšťaní aplikácie: %s"
+
+#: ../gio/gwin32appinfo.c:378
+msgid "association changes not supported on win32"
+msgstr "menenie asociácií nie je podporované na win32"
+
+#: ../gio/gwin32appinfo.c:390
+msgid "Association creation not supported on win32"
+msgstr "Vytváranie asociácií nie je podporované na win32"
+
 # PŠ: file handle (win32) je ekvivalent file descriptor - dovolil som si to preložiť rovnako. Keďže používané manipulátor, alebo rukoväť sú oba zlé preklady (obsluha je handler)... A dokonca aj v slovenskom preklade Správcu úloh vo win je použitý popisovač.
-#: ../gio/gwin32inputstream.c:343
+#: ../gio/gwin32inputstream.c:344
 #, c-format
 msgid "Error reading from handle: %s"
 msgstr "Chyba pri čítaní z popisovača: %s"
 
-#: ../gio/gwin32inputstream.c:387 ../gio/gwin32outputstream.c:374
+#: ../gio/gwin32inputstream.c:388 ../gio/gwin32outputstream.c:375
 #, c-format
 msgid "Error closing handle: %s"
 msgstr "Chyba pri zatváraní popisovača: %s"
 
-#: ../gio/gwin32outputstream.c:330
+#: ../gio/gwin32outputstream.c:331
 #, c-format
 msgid "Error writing to handle: %s"
 msgstr "Chyba pri zápise do popisovača: %s"
@@ -3417,24 +3412,24 @@ msgstr "Zlyhalo načítanie symbolického odkazu „%s“: %s"
 msgid "Symbolic links not supported"
 msgstr "Symbolické odkazy nie sú podporované"
 
-#: ../glib/giochannel.c:1388
+#: ../glib/giochannel.c:1389
 #, c-format
 msgid "Could not open converter from '%s' to '%s': %s"
 msgstr "Nepodarilo sa otvoriť program na prevod z „%s“ do „%s“: %s"
 
-#: ../glib/giochannel.c:1733
+#: ../glib/giochannel.c:1734
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "Nedá sa urobiť priame čítanie v g_io_channel_read_line_string"
 
-#: ../glib/giochannel.c:1780 ../glib/giochannel.c:2038 ../glib/giochannel.c:2125
+#: ../glib/giochannel.c:1781 ../glib/giochannel.c:2039 ../glib/giochannel.c:2126
 msgid "Leftover unconverted data in read buffer"
 msgstr "Zanechané neprevedené údaje v zásobníku na čítanie"
 
-#: ../glib/giochannel.c:1861 ../glib/giochannel.c:1938
+#: ../glib/giochannel.c:1862 ../glib/giochannel.c:1939
 msgid "Channel terminates in a partial character"
 msgstr "Kanál skončil s neúplným znakom"
 
-#: ../glib/giochannel.c:1924
+#: ../glib/giochannel.c:1925
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Nedá sa urobiť priame čítanie v g_io_channel_read_to_end"
 
@@ -3470,7 +3465,7 @@ msgstr "Neplatný názov kľúča: %s"
 msgid "Key file contains unsupported encoding '%s'"
 msgstr "Súbor kľúčov obsahuje nepodporované kódovane „%s“"
 
-#: ../glib/gkeyfile.c:1548 ../glib/gkeyfile.c:1721 ../glib/gkeyfile.c:3099 ../glib/gkeyfile.c:3162 ../glib/gkeyfile.c:3292 ../glib/gkeyfile.c:3422 ../glib/gkeyfile.c:3566 ../glib/gkeyfile.c:3795 ../glib/gkeyfile.c:3862
+#: ../glib/gkeyfile.c:1548 ../glib/gkeyfile.c:1721 ../glib/gkeyfile.c:3099 ../glib/gkeyfile.c:3162 ../glib/gkeyfile.c:3288 ../glib/gkeyfile.c:3418 ../glib/gkeyfile.c:3560 ../glib/gkeyfile.c:3789 ../glib/gkeyfile.c:3856
 #, c-format
 msgid "Key file does not have group '%s'"
 msgstr "Súbor kľúčov nemá skupinu „%s“"
@@ -3500,31 +3495,31 @@ msgstr "Súbor kľúčov obsahuje kľúč „%s“ v skupine „%s“, ktorý m�
 msgid "Key '%s' in group '%s' has value '%s' where %s was expected"
 msgstr "Kľúč „%s“ v skupine „%s“ má hodnotu „%s“, pričom bola očakávaná %s"
 
-#: ../glib/gkeyfile.c:4102
+#: ../glib/gkeyfile.c:4096
 msgid "Key file contains escape character at end of line"
 msgstr "Súbor kľúčov obsahuje znak escape na konci riadku"
 
-#: ../glib/gkeyfile.c:4124
+#: ../glib/gkeyfile.c:4118
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Súbor kľúčov obsahuje neplatnú špeciálnu (escape) sekvenciu „%s“"
 
-#: ../glib/gkeyfile.c:4266
+#: ../glib/gkeyfile.c:4260
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Hodnota „%s“ nemôže byť interpretovaná ako číslo."
 
-#: ../glib/gkeyfile.c:4280
+#: ../glib/gkeyfile.c:4274
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Celočíselná hodnota „%s“ je mimo rozsah"
 
-#: ../glib/gkeyfile.c:4313
+#: ../glib/gkeyfile.c:4307
 #, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
 msgstr "Hodnota „%s“ nemôže byť interpretovaná ako reálne číslo."
 
-#: ../glib/gkeyfile.c:4337
+#: ../glib/gkeyfile.c:4331
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Hodnota „%s“ nemôže byť interpretovaná ako logická hodnota."
@@ -3692,66 +3687,62 @@ msgstr "Dokument neočakávane skončil v koncovej značke pre prvok „%s“"
 msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr "Dokument neočakávane skončil v komentári alebo inštrukcii pre spracovanie"
 
-#: ../glib/goption.c:857
+#: ../glib/goption.c:858
 msgid "Usage:"
 msgstr "Použitie:"
 
-#: ../glib/goption.c:861
+#: ../glib/goption.c:858
 msgid "[OPTION...]"
 msgstr "[VOĽBA...]"
 
-#: ../glib/goption.c:977
+#: ../glib/goption.c:974
 msgid "Help Options:"
 msgstr "Voľby pomocníka:"
 
-#: ../glib/goption.c:978
+#: ../glib/goption.c:975
 msgid "Show help options"
 msgstr "Zobrazí voľby pomocníka"
 
-#: ../glib/goption.c:984
+#: ../glib/goption.c:981
 msgid "Show all help options"
 msgstr "Zobrazí všetky voľby pomocníka"
 
-#: ../glib/goption.c:1047
+#: ../glib/goption.c:1043
 msgid "Application Options:"
 msgstr "Voľby aplikácie:"
 
-#: ../glib/goption.c:1049
-msgid "Options:"
-msgstr "Voľby:"
-
-#: ../glib/goption.c:1113 ../glib/goption.c:1183
+#: ../glib/goption.c:1107 ../glib/goption.c:1177
 #, c-format
 msgid "Cannot parse integer value '%s' for %s"
 msgstr "Nedá sa analyzovať celočíselná hodnota „%s“ pre %s"
 
-#: ../glib/goption.c:1123 ../glib/goption.c:1191
+#: ../glib/goption.c:1117 ../glib/goption.c:1185
 #, c-format
 msgid "Integer value '%s' for %s out of range"
 msgstr "Celočíselná hodnota „%s“ pre %s je mimo rozsah"
 
 # PŠ: double je dvojitá presnosť (čísla s desatinnou čiarkou)
-#: ../glib/goption.c:1148
+#: ../glib/goption.c:1142
 #, c-format
 msgid "Cannot parse double value '%s' for %s"
 msgstr "Nedá sa analyzovať hodnota double „%s“ pre %s"
 
-#: ../glib/goption.c:1156
+#: ../glib/goption.c:1150
 #, c-format
 msgid "Double value '%s' for %s out of range"
 msgstr "Hodnota double „%s“ pre %s je mimo rozsah"
 
-#: ../glib/goption.c:1442 ../glib/goption.c:1521
+#: ../glib/goption.c:1436 ../glib/goption.c:1515
 #, c-format
 msgid "Error parsing option %s"
 msgstr "Chyba analyzovania voľby %s"
 
-#: ../glib/goption.c:1552 ../glib/goption.c:1665
+#: ../glib/goption.c:1546 ../glib/goption.c:1659
 #, c-format
 msgid "Missing argument for %s"
 msgstr "Chýbajúci parameter pre %s"
 
-#: ../glib/goption.c:2126
+#: ../glib/goption.c:2120
 #, c-format
 msgid "Unknown option %s"
 msgstr "Neznáma voľba %s"
@@ -4050,70 +4041,70 @@ msgstr "názov v (*MARK), (*PRUNE), (*SKIP) alebo (*THEN) je príliš dlhý"
 msgid "character value in \\u.... sequence is too large"
 msgstr "hodnota znaku v postupnosti \\u.... je príliš veľká"
 
-#: ../glib/gregex.c:746 ../glib/gregex.c:1973
+#: ../glib/gregex.c:746 ../glib/gregex.c:1915
 #, c-format
 msgid "Error while matching regular expression %s: %s"
 msgstr "Chyba počas porovnávania regulárneho výrazu %s: %s"
 
-#: ../glib/gregex.c:1317
+#: ../glib/gregex.c:1312
 msgid "PCRE library is compiled without UTF8 support"
 msgstr "Knižnica PCRE je preložená bez podpory UTF8"
 
-#: ../glib/gregex.c:1321
+#: ../glib/gregex.c:1316
 msgid "PCRE library is compiled without UTF8 properties support"
 msgstr "Knižnica PCRE je preložená bez podpory vlastností UTF8"
 
-#: ../glib/gregex.c:1329
+#: ../glib/gregex.c:1324
 msgid "PCRE library is compiled with incompatible options"
 msgstr "Knižnica PCRE je preložená s nekompatibilnými voľbami"
 
-#: ../glib/gregex.c:1358
-#, c-format
-msgid "Error while optimizing regular expression %s: %s"
-msgstr "Chyba počas optimalizovania regulárneho výrazu %s: %s"
-
-#: ../glib/gregex.c:1438
+#: ../glib/gregex.c:1383
 #, c-format
 msgid "Error while compiling regular expression %s at char %d: %s"
 msgstr "Chyba počas prekladu regulárneho výrazu %s pri znaku %d: %s"
 
-#: ../glib/gregex.c:2409
+#: ../glib/gregex.c:1425
+#, c-format
+msgid "Error while optimizing regular expression %s: %s"
+msgstr "Chyba počas optimalizovania regulárneho výrazu %s: %s"
+
+#: ../glib/gregex.c:2347
 msgid "hexadecimal digit or '}' expected"
 msgstr "očakávaná šestnástková číslica alebo „}“"
 
-#: ../glib/gregex.c:2425
+#: ../glib/gregex.c:2363
 msgid "hexadecimal digit expected"
 msgstr "očakávaná šestnástková číslica"
 
-#: ../glib/gregex.c:2465
+#: ../glib/gregex.c:2403
 msgid "missing '<' in symbolic reference"
 msgstr "chýba „<“ v symbolickom odkaze"
 
-#: ../glib/gregex.c:2474
+#: ../glib/gregex.c:2412
 msgid "unfinished symbolic reference"
 msgstr "neukončený symbolický odkaz"
 
-#: ../glib/gregex.c:2481
+#: ../glib/gregex.c:2419
 msgid "zero-length symbolic reference"
 msgstr "symbolický odkaz s nulovou dĺžkou"
 
-#: ../glib/gregex.c:2492
+#: ../glib/gregex.c:2430
 msgid "digit expected"
 msgstr "očakávaná číslica"
 
-#: ../glib/gregex.c:2510
+#: ../glib/gregex.c:2448
 msgid "illegal symbolic reference"
 msgstr "neplatný symbolický odkaz"
 
-#: ../glib/gregex.c:2572
+#: ../glib/gregex.c:2510
 msgid "stray final '\\'"
 msgstr "zabudnuté koncové „\\“"
 
-#: ../glib/gregex.c:2576
+#: ../glib/gregex.c:2514
 msgid "unknown escape sequence"
 msgstr "neznáma špeciálna (escape) sekvencia"
 
-#: ../glib/gregex.c:2586
+#: ../glib/gregex.c:2524
 #, c-format
 msgid "Error while parsing replacement text \"%s\" at char %lu: %s"
 msgstr "Chyba počas analyzovania nahrádzajúceho textu „%s“ pri znaku %lu: %s"
@@ -4155,62 +4146,62 @@ msgstr "Neočakávaná chyba v select() pri čítaní údajov z dcérskeho proce
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Neočakávaná chyba vo waitpid() (%s)"
 
-#: ../glib/gspawn.c:844 ../glib/gspawn-win32.c:1233
+#: ../glib/gspawn.c:849 ../glib/gspawn-win32.c:1233
 #, c-format
 msgid "Child process exited with code %ld"
 msgstr "Dcérsky proces skončil s kódom %ld"
 
-#: ../glib/gspawn.c:852
+#: ../glib/gspawn.c:857
 #, c-format
 msgid "Child process killed by signal %ld"
 msgstr "Dcérsky proces bol zabitý signálom %ld"
 
-#: ../glib/gspawn.c:859
+#: ../glib/gspawn.c:864
 #, c-format
 msgid "Child process stopped by signal %ld"
 msgstr "Dcérsky proces bol zastavený signálom %ld"
 
-#: ../glib/gspawn.c:866
+#: ../glib/gspawn.c:871
 #, c-format
 msgid "Child process exited abnormally"
 msgstr "Dcérsky proces skončil neobvykle"
 
-#: ../glib/gspawn.c:1271 ../glib/gspawn-win32.c:339 ../glib/gspawn-win32.c:347
+#: ../glib/gspawn.c:1276 ../glib/gspawn-win32.c:339 ../glib/gspawn-win32.c:347
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Zlyhalo čítanie zo zreťazenia s potomkom (%s)"
 
-#: ../glib/gspawn.c:1341
+#: ../glib/gspawn.c:1346
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Zlyhalo vytvorenie vetvy (%s)"
 
-#: ../glib/gspawn.c:1490 ../glib/gspawn-win32.c:370
+#: ../glib/gspawn.c:1495 ../glib/gspawn-win32.c:370
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Zlyhala zmena adresára na „%s“ (%s)"
 
-#: ../glib/gspawn.c:1500
+#: ../glib/gspawn.c:1505
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Zlyhalo spustenie dcérskeho procesu „%s“ (%s)"
 
-#: ../glib/gspawn.c:1510
+#: ../glib/gspawn.c:1515
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Zlyhalo presmerovanie vstupu alebo výstupu dcérskeho procesu (%s)"
 
-#: ../glib/gspawn.c:1519
+#: ../glib/gspawn.c:1524
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Zlyhalo vytvorenie vetvy dcérskeho procesu (%s)"
 
-#: ../glib/gspawn.c:1527
+#: ../glib/gspawn.c:1532
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Neznáma chyba pri spúšťaní dcérskeho procesu „%s“"
 
-#: ../glib/gspawn.c:1551
+#: ../glib/gspawn.c:1556
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "Nepodarilo sa prečítať dostatok údajov zo zreťazenia s dcérskym procesom (%s)"
@@ -4360,21 +4351,6 @@ msgstr[2] "%s bajty"
 #, c-format
 msgid "%.1f KB"
 msgstr "%.1f kB"
-
-#~ msgid "Can't find application"
-#~ msgstr "Nedá sa nájsť aplikácia"
-
-#~ msgid "Error launching application: %s"
-#~ msgstr "Chyba pri spúšťaní aplikácie: %s"
-
-#~ msgid "association changes not supported on win32"
-#~ msgstr "menenie asociácií nie je podporované na win32"
-
-#~ msgid "Association creation not supported on win32"
-#~ msgstr "Vytváranie asociácií nie je podporované na win32"
-
-#~ msgid "Unable to find default local directory monitor type"
-#~ msgstr "Nepodarilo sa nájsť predvolený typ sledovania lokálneho adresára"
 
 #~ msgid ""
 #~ "Error processing input file with xmllint:\n"

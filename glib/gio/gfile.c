@@ -512,8 +512,7 @@ g_file_get_basename (GFile *file)
  * g_file_get_path:
  * @file: input #GFile
  *
- * Gets the local pathname for #GFile, if one exists. If non-%NULL, this is
- * guaranteed to be an absolute, canonical path. It might contain symlinks.
+ * Gets the local pathname for #GFile, if one exists.
  *
  * This call does no blocking I/O.
  *
@@ -714,10 +713,10 @@ g_file_get_parent (GFile *file)
  *
  * If @parent is %NULL then this function returns %TRUE if @file has any
  * parent at all.  If @parent is non-%NULL then %TRUE is only returned
- * if @file is an immediate child of @parent.
+ * if @file is a child of @parent.
  *
- * Returns: %TRUE if @file is an immediate child of @parent (or any parent in
- *          the case that @parent is %NULL).
+ * Returns: %TRUE if @file is a child of @parent (or any parent in the
+ *          case that @parent is %NULL).
  *
  * Since: 2.24
  */
@@ -4338,14 +4337,9 @@ g_file_query_writable_namespaces (GFile         *file,
 
   if (list == NULL)
     {
-      g_warn_if_reached();
-      list = g_file_attribute_info_list_new ();
-    }
-
-  if (my_error != NULL)
-    {
       if (my_error->domain == G_IO_ERROR && my_error->code == G_IO_ERROR_NOT_SUPPORTED)
         {
+          list = g_file_attribute_info_list_new ();
           g_error_free (my_error);
         }
       else
@@ -7138,9 +7132,7 @@ g_file_load_contents_finish (GFile         *file,
  * or the error %G_IO_ERROR_WRONG_ETAG will be returned.
  *
  * If @make_backup is %TRUE, this function will attempt to make a backup
- * of @file. Internally, it uses g_file_replace(), so will try to replace the
- * file contents in the safest way possible. For example, atomic renames are
- * used when replacing local files’ contents.
+ * of @file.
  *
  * If @cancellable is not %NULL, then the operation can be cancelled by
  * triggering the cancellable object from another thread. If the operation

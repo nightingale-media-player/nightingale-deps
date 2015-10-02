@@ -45,7 +45,7 @@ case $OSTYPE in
 		export CPPFLAGS="$arch_flags"
 		export LDFLAGS="$arch_flags"
 		export OBJCFLAGS="$arch_flags"
-
+		
 		if [ ! -d "macosx-i686" ]; then
 			mkdir -p "macosx-i686/mozilla-1.9.2/release/scripts"
 			cp xulrunner-1.9.2/mozilla/toolkit/crashreporter/tools/symbolstore.py macosx-i686/mozilla-1.9.2/release/scripts
@@ -55,16 +55,19 @@ case $OSTYPE in
 			fi
 		fi
 
-        echo -e "Building gettext..."
-        make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
+#        echo -e "Building gettext..."
+#	make CC=gcc CXX=g++ -I /opt/local/lib -I /opt/local/include -C gettext -f Makefile.songbird
         
-        echo -e "Building glib..."
-        make CC=gcc CXX=g++ -C glib -f Makefile.songbird
+#        echo -e "Building glib..."
+#        make CC=gcc CXX=g++ -I /opt/local/lib -I /opt/local/include -C glib -f Makefile.songbird
 
-        echo -e "Building libidl..."
-        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
+#        echo -e "Building libidl..."
+#        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
         
         echo -e "Building flac..."
+	cd flac
+	bash autogen.sh
+	cd ..
         make CC=gcc CXX=g++ -C flac -f Makefile.songbird
         
         echo -e "Building libjpeg-turbo..."

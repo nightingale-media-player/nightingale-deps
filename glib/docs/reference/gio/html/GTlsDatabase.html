@@ -8,7 +8,7 @@
 <link rel="up" href="tls.html" title="TLS (SSL) support">
 <link rel="prev" href="GTlsBackend.html" title="GTlsBackend">
 <link rel="next" href="GTlsFileDatabase.html" title="GTlsFileDatabase">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -91,7 +91,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by" title="g_tls_database_lookup_certificates_issued_by ()">g_tls_database_lookup_certificates_issued_by</a> <span class="c_punctuation">()</span>
@@ -107,7 +107,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by-finish" title="g_tls_database_lookup_certificates_issued_by_finish ()">g_tls_database_lookup_certificates_issued_by_finish</a> <span class="c_punctuation">()</span>
@@ -115,7 +115,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GTlsDatabase.html#g-tls-database-create-certificate-handle" title="g_tls_database_create_certificate_handle ()">g_tls_database_create_certificate_handle</a> <span class="c_punctuation">()</span>
@@ -161,10 +161,6 @@
 <td class="function_name"><a class="link" href="GTlsDatabase.html#GTlsDatabase-struct" title="GTlsDatabase">GTlsDatabase</a></td>
 </tr>
 <tr>
-<td class="datatype_keyword">struct</td>
-<td class="function_name"><a class="link" href="GTlsDatabase.html#GTlsDatabaseClass" title="struct GTlsDatabaseClass">GTlsDatabaseClass</a></td>
-</tr>
-<tr>
 <td class="datatype_keyword">enum</td>
 <td class="function_name"><a class="link" href="GTlsDatabase.html#GTlsDatabaseVerifyFlags" title="enum GTlsDatabaseVerifyFlags">GTlsDatabaseVerifyFlags</a></td>
 </tr>
@@ -185,7 +181,7 @@
 </div>
 <div class="refsect1">
 <a name="GTlsDatabase.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GTlsDatabase
 </pre>
 </div>
@@ -215,12 +211,12 @@ TLS library specific subtypes override.</p>
 <pre class="programlisting"><a class="link" href="gio-TLS-Overview.html#GTlsCertificateFlags" title="enum GTlsCertificateFlags"><span class="returnvalue">GTlsCertificateFlags</span></a>
 g_tls_database_verify_chain (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                              <em class="parameter"><code><a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a> *chain</code></em>,
-                             <em class="parameter"><code>const <a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *purpose</code></em>,
+                             <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *purpose</code></em>,
                              <em class="parameter"><code><a class="link" href="GSocketConnectable.html" title="GSocketConnectable"><span class="type">GSocketConnectable</span></a> *identity</code></em>,
                              <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                              <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseVerifyFlags" title="enum GTlsDatabaseVerifyFlags"><span class="type">GTlsDatabaseVerifyFlags</span></a> flags</code></em>,
                              <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                             <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                             <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Verify's a certificate chain after looking up and adding any missing
 certificates to the chain.</p>
 <p><em class="parameter"><code>chain</code></em>
@@ -288,12 +284,12 @@ the verification operation asynchronously.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p> a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -303,8 +299,9 @@ the verification operation asynchronously.</p>
 <a name="id-1.4.15.8.9.2.11"></a><h4>Returns</h4>
 <p> the appropriate <a class="link" href="gio-TLS-Overview.html#GTlsCertificateFlags" title="enum GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a> which represents the
 result of verification.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -312,13 +309,13 @@ result of verification.</p>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_tls_database_verify_chain_async (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                    <em class="parameter"><code><a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a> *chain</code></em>,
-                                   <em class="parameter"><code>const <a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *purpose</code></em>,
+                                   <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *purpose</code></em>,
                                    <em class="parameter"><code><a class="link" href="GSocketConnectable.html" title="GSocketConnectable"><span class="type">GSocketConnectable</span></a> *identity</code></em>,
                                    <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                    <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseVerifyFlags" title="enum GTlsDatabaseVerifyFlags"><span class="type">GTlsDatabaseVerifyFlags</span></a> flags</code></em>,
                                    <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                    <em class="parameter"><code><a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                   <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                   <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Asynchronously verify's a certificate chain after looking up and adding
 any missing certificates to the chain. See <a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain" title="g_tls_database_verify_chain ()"><code class="function">g_tls_database_verify_chain()</code></a>
 for more information.</p>
@@ -363,7 +360,7 @@ for more information.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
@@ -379,7 +376,7 @@ for more information.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -387,7 +384,7 @@ for more information.</p>
 <pre class="programlisting"><a class="link" href="gio-TLS-Overview.html#GTlsCertificateFlags" title="enum GTlsCertificateFlags"><span class="returnvalue">GTlsCertificateFlags</span></a>
 g_tls_database_verify_chain_finish (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                     <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                    <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                    <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Finish an asynchronous verify chain operation. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain" title="g_tls_database_verify_chain ()"><code class="function">g_tls_database_verify_chain()</code></a> for more information. *</p>
 <div class="refsect3">
@@ -411,7 +408,7 @@ g_tls_database_verify_chain_finish (<em class="parameter"><code><a class="link" 
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -421,8 +418,9 @@ g_tls_database_verify_chain_finish (<em class="parameter"><code><a class="link" 
 <a name="id-1.4.15.8.9.4.6"></a><h4>Returns</h4>
 <p> the appropriate <a class="link" href="gio-TLS-Overview.html#GTlsCertificateFlags" title="enum GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a> which represents the
 result of verification.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -434,7 +432,7 @@ g_tls_database_lookup_certificate_issuer
                                 <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Lookup the issuer of <em class="parameter"><code>certificate</code></em>
  in the database.</p>
 <p>The <code class="literal">issuer</code> property
@@ -474,12 +472,12 @@ the lookup operation asynchronously.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p> a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -488,10 +486,10 @@ the lookup operation asynchronously.</p>
 <div class="refsect3">
 <a name="id-1.4.15.8.9.5.8"></a><h4>Returns</h4>
 <p> a newly allocated issuer <a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>,
-or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
+or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -504,7 +502,7 @@ g_tls_database_lookup_certificate_issuer_async
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Asynchronously lookup the issuer of <em class="parameter"><code>certificate</code></em>
  in the database. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer" title="g_tls_database_lookup_certificate_issuer ()"><code class="function">g_tls_database_lookup_certificate_issuer()</code></a> for more information.</p>
@@ -539,7 +537,7 @@ g_tls_database_lookup_certificate_issuer_async
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
@@ -555,7 +553,7 @@ g_tls_database_lookup_certificate_issuer_async
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -564,7 +562,7 @@ g_tls_database_lookup_certificate_issuer_async
 g_tls_database_lookup_certificate_issuer_finish
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Finish an asynchronous lookup issuer operation. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer" title="g_tls_database_lookup_certificate_issuer ()"><code class="function">g_tls_database_lookup_certificate_issuer()</code></a> for more information.</p>
 <div class="refsect3">
@@ -588,7 +586,7 @@ g_tls_database_lookup_certificate_issuer_finish
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -597,22 +595,22 @@ g_tls_database_lookup_certificate_issuer_finish
 <div class="refsect3">
 <a name="id-1.4.15.8.9.7.6"></a><h4>Returns</h4>
 <p> a newly allocated issuer <a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>,
-or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
+or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-tls-database-lookup-certificates-issued-by"></a><h3>g_tls_database_lookup_certificates_issued_by ()</h3>
-<pre class="programlisting"><a href="../glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 g_tls_database_lookup_certificates_issued_by
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
-                                <em class="parameter"><code><a href="../glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> *issuer_raw_dn</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> *issuer_raw_dn</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Lookup certificates issued by this issuer in the database.</p>
 <p>This function can block, use <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by-async" title="g_tls_database_lookup_certificates_issued_by_async ()"><code class="function">g_tls_database_lookup_certificates_issued_by_async()</code></a> to perform
 the lookup operation asynchronously.</p>
@@ -632,7 +630,7 @@ the lookup operation asynchronously.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>issuer_raw_dn</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which holds the DER encoded issuer DN.</p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which holds the DER encoded issuer DN.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
@@ -647,12 +645,12 @@ the lookup operation asynchronously.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p> a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -661,10 +659,10 @@ the lookup operation asynchronously.</p>
 <div class="refsect3">
 <a name="id-1.4.15.8.9.8.7"></a><h4>Returns</h4>
 <p> a newly allocated list of <a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>
-objects. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> on each certificate, and <a href="../glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a> on the release the list. </p>
+objects. Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> on each certificate, and <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a> on the release the list. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GTlsCertificate]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -672,12 +670,12 @@ objects. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_tls_database_lookup_certificates_issued_by_async
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
-                                <em class="parameter"><code><a href="../glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> *issuer_raw_dn</code></em>,
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> *issuer_raw_dn</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Asynchronously lookup certificates issued by this issuer in the database. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by" title="g_tls_database_lookup_certificates_issued_by ()"><code class="function">g_tls_database_lookup_certificates_issued_by()</code></a> for more information.</p>
 <p>The database may choose to hold a reference to the issuer byte array for the duration
@@ -699,7 +697,7 @@ this time.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>issuer_raw_dn</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which holds the DER encoded issuer DN.</p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which holds the DER encoded issuer DN.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
@@ -714,7 +712,7 @@ this time.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
@@ -730,16 +728,16 @@ this time.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-tls-database-lookup-certificates-issued-by-finish"></a><h3>g_tls_database_lookup_certificates_issued_by_finish ()</h3>
-<pre class="programlisting"><a href="../glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 g_tls_database_lookup_certificates_issued_by_finish
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Finish an asynchronous lookup of certificates. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by" title="g_tls_database_lookup_certificates_issued_by ()"><code class="function">g_tls_database_lookup_certificates_issued_by()</code></a> for more information.</p>
 <div class="refsect3">
@@ -763,7 +761,7 @@ g_tls_database_lookup_certificates_issued_by_finish
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -772,21 +770,21 @@ g_tls_database_lookup_certificates_issued_by_finish
 <div class="refsect3">
 <a name="id-1.4.15.8.9.10.6"></a><h4>Returns</h4>
 <p> a newly allocated list of <a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>
-objects. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> on each certificate, and <a href="../glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a> on the release the list. </p>
+objects. Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> on each certificate, and <a href="https://developer.gnome.org/glib/unstable/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a> on the release the list. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GTlsCertificate]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-tls-database-create-certificate-handle"></a><h3>g_tls_database_create_certificate_handle ()</h3>
-<pre class="programlisting"><a href="../glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<pre class="programlisting"><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 g_tls_database_create_certificate_handle
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a> *certificate</code></em>);</pre>
 <p>Create a handle string for the certificate. The database will only be able
 to create a handle for certificates that originate from the database. In
-cases where the database cannot create a handle for a certificate, <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+cases where the database cannot create a handle for a certificate, <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 will be returned.</p>
 <p>This handle should be stable across various instances of the application,
 and between applications. If a certificate is modified in the database,
@@ -819,7 +817,7 @@ then it is not guaranteed that this handle will continue to point to it.</p>
 handle. </p>
 <p><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -827,18 +825,18 @@ handle. </p>
 <pre class="programlisting"><a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="returnvalue">GTlsCertificate</span></a> *
 g_tls_database_lookup_certificate_for_handle
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
-                                <em class="parameter"><code>const <a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *handle</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *handle</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Lookup a certificate by its handle.</p>
 <p>The handle should have been created by calling
 <a class="link" href="GTlsDatabase.html#g-tls-database-create-certificate-handle" title="g_tls_database_create_certificate_handle ()"><code class="function">g_tls_database_create_certificate_handle()</code></a> on a <a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> object of
 the same TLS backend. The handle is designed to remain valid across
 instantiations of the database.</p>
 <p>If the handle is no longer valid, or does not point to a certificate in
-this database, then <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> will be returned.</p>
+this database, then <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> will be returned.</p>
 <p>This function can block, use <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle-async" title="g_tls_database_lookup_certificate_for_handle_async ()"><code class="function">g_tls_database_lookup_certificate_for_handle_async()</code></a> to perform
 the lookup operation asynchronously.</p>
 <div class="refsect3">
@@ -872,12 +870,12 @@ the lookup operation asynchronously.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p> a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -886,10 +884,10 @@ the lookup operation asynchronously.</p>
 <div class="refsect3">
 <a name="id-1.4.15.8.9.12.9"></a><h4>Returns</h4>
 <p> a newly allocated
-<a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
+<a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -897,12 +895,12 @@ the lookup operation asynchronously.</p>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_tls_database_lookup_certificate_for_handle_async
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
-                                <em class="parameter"><code>const <a href="../glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *handle</code></em>,
+                                <em class="parameter"><code>const <a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *handle</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsInteraction.html" title="GTlsInteraction"><span class="type">GTlsInteraction</span></a> *interaction</code></em>,
                                 <em class="parameter"><code><a class="link" href="GTlsDatabase.html#GTlsDatabaseLookupFlags" title="enum GTlsDatabaseLookupFlags"><span class="type">GTlsDatabaseLookupFlags</span></a> flags</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> callback</code></em>,
-                                <em class="parameter"><code><a href="../glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Asynchronously lookup a certificate by its handle in the database. See
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle" title="g_tls_database_lookup_certificate_for_handle ()"><code class="function">g_tls_database_lookup_certificate_for_handle()</code></a> for more information.</p>
 <div class="refsect3">
@@ -936,7 +934,7 @@ g_tls_database_lookup_certificate_for_handle_async
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
@@ -952,7 +950,7 @@ g_tls_database_lookup_certificate_for_handle_async
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -961,11 +959,11 @@ g_tls_database_lookup_certificate_for_handle_async
 g_tls_database_lookup_certificate_for_handle_finish
                                (<em class="parameter"><code><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a> *self</code></em>,
                                 <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *result</code></em>,
-                                <em class="parameter"><code><a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Finish an asynchronous lookup of a certificate by its handle. See
 <code class="function">g_tls_database_lookup_certificate_handle()</code> for more information.</p>
 <p>If the handle is no longer valid, or does not point to a certificate in
-this database, then <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> will be returned.</p>
+this database, then <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> will be returned.</p>
 <div class="refsect3">
 <a name="id-1.4.15.8.9.14.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -987,7 +985,7 @@ this database, then <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>a <a href="../glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>a <a href="https://developer.gnome.org/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> pointer, or <a href="https://developer.gnome.org/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -996,10 +994,10 @@ this database, then <a href="../glib-Standard-Macros.html#NULL:CAPS"><code class
 <div class="refsect3">
 <a name="id-1.4.15.8.9.14.7"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a> object.
-Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
+Use <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> to release the certificate. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 </div>
 <div class="refsect1">
@@ -1008,206 +1006,14 @@ Use <a href="../gobject-The-Base-Object-Type.html#g-object-unref"><code class="f
 <a name="GTlsDatabase-struct"></a><h3>GTlsDatabase</h3>
 <pre class="programlisting">typedef struct _GTlsDatabase GTlsDatabase;</pre>
 <p>Abstract base class for the backend-specific database types.</p>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GTlsDatabaseClass"></a><h3>struct GTlsDatabaseClass</h3>
-<pre class="programlisting">struct GTlsDatabaseClass {
-  GObjectClass parent_class;
-
-  /* virtual methods */
-
-  GTlsCertificateFlags  (*verify_chain)                         (GTlsDatabase            *self,
-                                                                 GTlsCertificate         *chain,
-                                                                 const gchar             *purpose,
-                                                                 GSocketConnectable      *identity,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseVerifyFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GError                 **error);
-
-  void                  (*verify_chain_async)                   (GTlsDatabase            *self,
-                                                                 GTlsCertificate         *chain,
-                                                                 const gchar             *purpose,
-                                                                 GSocketConnectable      *identity,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseVerifyFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GAsyncReadyCallback      callback,
-                                                                 gpointer                 user_data);
-
-  GTlsCertificateFlags  (*verify_chain_finish)                  (GTlsDatabase            *self,
-                                                                 GAsyncResult            *result,
-                                                                 GError                 **error);
-
-  gchar*                (*create_certificate_handle)            (GTlsDatabase            *self,
-                                                                 GTlsCertificate         *certificate);
-
-  GTlsCertificate*      (*lookup_certificate_for_handle)        (GTlsDatabase            *self,
-                                                                 const gchar             *handle,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GError                 **error);
-
-  void                  (*lookup_certificate_for_handle_async)  (GTlsDatabase            *self,
-                                                                 const gchar             *handle,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GAsyncReadyCallback      callback,
-                                                                 gpointer                 user_data);
-
-  GTlsCertificate*      (*lookup_certificate_for_handle_finish) (GTlsDatabase            *self,
-                                                                 GAsyncResult            *result,
-                                                                 GError                 **error);
-
-  GTlsCertificate*      (*lookup_certificate_issuer)            (GTlsDatabase            *self,
-                                                                 GTlsCertificate         *certificate,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GError                 **error);
-
-  void                  (*lookup_certificate_issuer_async)      (GTlsDatabase            *self,
-                                                                 GTlsCertificate         *certificate,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GAsyncReadyCallback      callback,
-                                                                 gpointer                 user_data);
-
-  GTlsCertificate*      (*lookup_certificate_issuer_finish)     (GTlsDatabase            *self,
-                                                                 GAsyncResult            *result,
-                                                                 GError                 **error);
-
-  GList*                (*lookup_certificates_issued_by)        (GTlsDatabase            *self,
-                                                                 GByteArray              *issuer_raw_dn,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GError                 **error);
-
-  void                  (*lookup_certificates_issued_by_async)  (GTlsDatabase            *self,
-                                                                 GByteArray              *issuer_raw_dn,
-                                                                 GTlsInteraction         *interaction,
-                                                                 GTlsDatabaseLookupFlags  flags,
-                                                                 GCancellable            *cancellable,
-                                                                 GAsyncReadyCallback      callback,
-                                                                 gpointer                 user_data);
-
-  GList*                (*lookup_certificates_issued_by_finish) (GTlsDatabase            *self,
-                                                                 GAsyncResult            *result,
-                                                                 GError                 **error);
-};
-</pre>
-<p>The class for <a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="type">GTlsDatabase</span></a>. Derived classes should implement the various
-virtual methods. _async and _finish methods have a default
-implementation that runs the corresponding sync method in a thread.</p>
-<div class="refsect3">
-<a name="id-1.4.15.8.10.3.5"></a><h4>Members</h4>
-<div class="informaltable"><table width="100%" border="0">
-<colgroup>
-<col width="300px" class="struct_members_name">
-<col class="struct_members_description">
-<col width="200px" class="struct_members_annotations">
-</colgroup>
-<tbody>
-<tr>
-<td class="struct_member_name"><p><a href="../gobject-The-Base-Object-Type.html#GObjectClass"><span class="type">GObjectClass</span></a> <em class="structfield"><code><a name="GTlsDatabaseClass.parent-class"></a>parent_class</code></em>;</p></td>
-<td> </td>
-<td> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.verify-chain"></a>verify_chain</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain" title="g_tls_database_verify_chain ()"><code class="function">g_tls_database_verify_chain()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.verify-chain-async"></a>verify_chain_async</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain-async" title="g_tls_database_verify_chain_async ()"><code class="function">g_tls_database_verify_chain_async()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.verify-chain-finish"></a>verify_chain_finish</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain-finish" title="g_tls_database_verify_chain_finish ()"><code class="function">g_tls_database_verify_chain_finish()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.create-certificate-handle"></a>create_certificate_handle</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-create-certificate-handle" title="g_tls_database_create_certificate_handle ()"><code class="function">g_tls_database_create_certificate_handle()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-for-handle"></a>lookup_certificate_for_handle</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle" title="g_tls_database_lookup_certificate_for_handle ()"><code class="function">g_tls_database_lookup_certificate_for_handle()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-for-handle-async"></a>lookup_certificate_for_handle_async</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle-async" title="g_tls_database_lookup_certificate_for_handle_async ()"><code class="function">g_tls_database_lookup_certificate_for_handle_async()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-for-handle-finish"></a>lookup_certificate_for_handle_finish</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle-finish" title="g_tls_database_lookup_certificate_for_handle_finish ()"><code class="function">g_tls_database_lookup_certificate_for_handle_finish()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-issuer"></a>lookup_certificate_issuer</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer" title="g_tls_database_lookup_certificate_issuer ()"><code class="function">g_tls_database_lookup_certificate_issuer()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-issuer-async"></a>lookup_certificate_issuer_async</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer-async" title="g_tls_database_lookup_certificate_issuer_async ()"><code class="function">g_tls_database_lookup_certificate_issuer_async()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificate-issuer-finish"></a>lookup_certificate_issuer_finish</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer-finish" title="g_tls_database_lookup_certificate_issuer_finish ()"><code class="function">g_tls_database_lookup_certificate_issuer_finish()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificates-issued-by"></a>lookup_certificates_issued_by</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by" title="g_tls_database_lookup_certificates_issued_by ()"><code class="function">g_tls_database_lookup_certificates_issued_by()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificates-issued-by-async"></a>lookup_certificates_issued_by_async</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by-async" title="g_tls_database_lookup_certificates_issued_by_async ()"><code class="function">g_tls_database_lookup_certificates_issued_by_async()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><em class="structfield"><code><a name="GTlsDatabaseClass.lookup-certificates-issued-by-finish"></a>lookup_certificates_issued_by_finish</code></em> ()</p></td>
-<td class="struct_member_description"><p>Virtual method implementing
-<a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by-finish" title="g_tls_database_lookup_certificates_issued_by_finish ()"><code class="function">g_tls_database_lookup_certificates_issued_by_finish()</code></a>.</p></td>
-<td class="struct_member_annotations"> </td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GTlsDatabaseVerifyFlags"></a><h3>enum GTlsDatabaseVerifyFlags</h3>
 <p>Flags for <a class="link" href="GTlsDatabase.html#g-tls-database-verify-chain" title="g_tls_database_verify_chain ()"><code class="function">g_tls_database_verify_chain()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.15.8.10.4.4"></a><h4>Members</h4>
+<a name="id-1.4.15.8.10.3.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1223,7 +1029,7 @@ implementation that runs the corresponding sync method in a thread.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1248,7 +1054,7 @@ Used by TLS servers.</p>
 <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificate-issuer" title="g_tls_database_lookup_certificate_issuer ()"><code class="function">g_tls_database_lookup_certificate_issuer()</code></a>,
 and <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-issued-by" title="g_tls_database_lookup_certificates_issued_by ()"><code class="function">g_tls_database_lookup_certificates_issued_by()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.15.8.10.7.4"></a><h4>Members</h4>
+<a name="id-1.4.15.8.10.6.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1274,11 +1080,12 @@ and <a class="link" href="GTlsDatabase.html#g-tls-database-lookup-certificates-i
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

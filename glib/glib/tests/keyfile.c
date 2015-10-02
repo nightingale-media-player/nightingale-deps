@@ -508,11 +508,7 @@ test_string (void)
   GKeyFile *keyfile;
   GError *error = NULL;
   gchar *value;
-  const gchar * const list[3] = {
-    "one",
-    "two;andahalf",
-    "3",
-  };
+  const gchar const *list[3];
   const gchar *data =
     "[valid]\n"
     "key1=\\s\\n\\t\\r\\\\\n"
@@ -548,6 +544,9 @@ test_string (void)
   g_key_file_set_string (keyfile, "inserted", "key4", "new\nline");
   g_key_file_set_string (keyfile, "inserted", "key5", "carriage\rreturn");
   g_key_file_set_string (keyfile, "inserted", "key6", "slash\\yay!");
+  list[0] = "one";
+  list[1] = "two;andahalf";
+  list[2] = "3";
   g_key_file_set_string_list (keyfile, "inserted", "key7", list, 3);
 
   check_string_value (keyfile, "inserted", "key1", "simple");
@@ -1397,7 +1396,6 @@ test_save (void)
   c = g_key_file_get_uint64 (kf2, "bees", "c", NULL);
   g_assert (c == G_GUINT64_CONSTANT (123456789123456789));
 
-  remove (file);
   g_free (file);
   g_key_file_free (kf);
   g_key_file_free (kf2);

@@ -15,6 +15,8 @@ libinotify_la_SOURCES = 		\
 	inotify-helper.h		\
 	ginotifyfilemonitor.c		\
 	ginotifyfilemonitor.h		\
+	ginotifydirectorymonitor.c	\
+	ginotifydirectorymonitor.h	\
 	$(NULL)
 
 libinotify_la_CFLAGS = \

@@ -854,11 +854,8 @@ g_option_context_get_help (GOptionContext *context,
         }
     }
 
-  g_string_append_printf (string, "%s\n  %s", _("Usage:"), g_get_prgname ());
-  if (context->help_enabled ||
-      (context->main_group && context->main_group->n_entries > 0) ||
-      context->groups != NULL)
-    g_string_append_printf (string, " %s", _("[OPTION...]"));
+  g_string_append_printf (string, "%s\n  %s %s",
+                          _("Usage:"), g_get_prgname(), _("[OPTION...]"));
 
   if (rest_description)
     {
@@ -1043,10 +1040,7 @@ g_option_context_get_help (GOptionContext *context,
     {
       list = context->groups;
 
-      if (context->help_enabled || list)
-        g_string_append (string,  _("Application Options:"));
-      else
-        g_string_append (string, _("Options:"));
+      g_string_append (string,  _("Application Options:"));
       g_string_append (string, "\n");
       if (context->main_group)
         for (i = 0; i < context->main_group->n_entries; i++)

@@ -46,11 +46,6 @@ GFile * _g_local_file_new      (const char *filename);
 
 const char * _g_local_file_get_filename (GLocalFile *file);
 
-gboolean g_local_file_is_remote (const gchar *filename);
-
-GFile * g_local_file_new_from_dirname_and_basename (const char *dirname,
-                                                    const char *basename);
-
 G_END_DECLS
 
 #endif /* __G_LOCAL_FILE_H__ */

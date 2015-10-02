@@ -60,6 +60,8 @@ quit_later_cb (gpointer data G_GNUC_UNUSED)
   return FALSE;
 }
 
+#define VANISHED_PATTERN "*Remote peer vanished with error: Underlying GIOStream returned 0 bytes on an async read (g-io-error-quark, 0). Exiting.*"
+
 static void
 closed_cb (GDBusConnection  *c G_GNUC_UNUSED,
            gboolean          remote_peer_vanished,
@@ -186,9 +188,15 @@ test_exit_on_close (gconstpointer test_data)
 
   if (td->exit_on_close == EXPLICITLY_FALSE ||
       td->who_closes == LOCAL)
-    g_test_trap_assert_passed ();
+    {
+      g_test_trap_assert_stderr_unmatched (VANISHED_PATTERN);
+      g_test_trap_assert_passed ();
+    }
   else
-    g_test_trap_assert_failed();
+    {
+      g_test_trap_assert_stderr (VANISHED_PATTERN);
+      g_test_trap_assert_failed();
+    }
 }
 
 /* ---------------------------------------------------------------------------------------------------- */

@@ -76,7 +76,8 @@ gboolean     _g_dbus_worker_flush_sync   (GDBusWorker    *worker,
 
 /* can be called from any thread */
 void         _g_dbus_worker_close        (GDBusWorker         *worker,
-                                          GTask               *task);
+                                          GCancellable        *cancellable,
+                                          GSimpleAsyncResult  *result);
 
 /* ---------------------------------------------------------------------------------------------------- */
 

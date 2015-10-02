@@ -8,7 +8,7 @@
 <link rel="up" href="glib-data-types.html" title="GLib Data Types">
 <link rel="prev" href="glib-Quarks.html" title="Quarks">
 <link rel="next" href="glib-Datasets.html" title="Datasets">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -214,7 +214,7 @@ be accessed either with a string or with a <a class="link" href="glib-Quarks.htm
 the string.</p>
 <p>The <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> methods are quicker, since the strings have to be
 converted to <a href="glib-Quarks.html#GQuark"><span class="type">GQuarks</span></a> anyway.</p>
-<p>Data lists are used for associating arbitrary data with <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObjects</span></a>,
+<p>Data lists are used for associating arbitrary data with <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObjects</span></a>,
 using <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-set-data"><code class="function">g_object_set_data()</code></a> and related functions.</p>
 <p>To create a datalist, use <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-init" title="g_datalist_init ()"><code class="function">g_datalist_init()</code></a>.</p>
 <p>To add data elements to a datalist use <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-id-set-data" title="g_datalist_id_set_data()"><code class="function">g_datalist_id_set_data()</code></a>,
@@ -375,6 +375,7 @@ g_datalist_id_get_data (<em class="parameter"><code><a class="link" href="glib-K
 <div class="refsect3">
 <a name="id-1.6.16.7.5.6"></a><h4>Returns</h4>
 <p> the data element, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if it is not found.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -439,6 +440,7 @@ function.</p>
 <a name="id-1.6.16.7.7.6"></a><h4>Returns</h4>
 <p> the data previously stored at <em class="parameter"><code>key_id</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if none.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -477,6 +479,7 @@ object.</p>
 <div class="refsect3">
 <a name="id-1.6.16.7.8.6"></a><h4>Returns</h4>
 <p> a duplicate of data</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -543,8 +546,9 @@ in <em class="parameter"><code>datalist</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if not set.
 If <em class="parameter"><code>dup_func</code></em>
 is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>, the value is returned unmodified.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-34.html#api-index-2.34">2.34</a></p>
+<p class="since">Since 2.34</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -624,8 +628,9 @@ should not destroy the object in the normal way.</p>
 was replaced
 by <em class="parameter"><code>newval</code></em>
 , <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-34.html#api-index-2.34">2.34</a></p>
+<p class="since">Since 2.34</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -741,6 +746,7 @@ g_datalist_get_data (<em class="parameter"><code><a class="link" href="glib-Keye
 <div class="refsect3">
 <a name="id-1.6.16.7.13.6"></a><h4>Returns</h4>
 <p> the data element, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if it is not found.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -877,7 +883,7 @@ g_datalist_set_flags (<em class="parameter"><code><a class="link" href="glib-Key
 to keep a small number of boolean flags in an object with
 a data list without using any additional space. It is
 not generally useful except in circumstances where space
-is very tight. (It is used in the base <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> type, for
+is very tight. (It is used in the base <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> type, for
 example.)</p>
 <div class="refsect3">
 <a name="id-1.6.16.7.18.5"></a><h4>Parameters</h4>
@@ -906,7 +912,7 @@ an error.</p></td>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -942,7 +948,7 @@ an error.</p></td>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -969,8 +975,9 @@ See <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-set-flags" title
 <div class="refsect3">
 <a name="id-1.6.16.7.20.6"></a><h4>Returns</h4>
 <p> the flags of the datalist</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 </div>
 <div class="refsect1">
@@ -994,6 +1001,7 @@ flags &amp; ~G_DATALIST_FLAGS_MASK != 0 is an error.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

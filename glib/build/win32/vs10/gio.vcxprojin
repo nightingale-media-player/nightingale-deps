@@ -178,7 +178,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-#include "gio.vs10.sourcefiles"
+#include "libgio.vs10.sourcefiles"
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\gio\gnetworking.h.win32">

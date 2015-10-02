@@ -2745,9 +2745,6 @@ g_dbus_message_to_blob (GDBusMessage          *message,
   ret = (guchar *)mbuf.data;
 
  out:
-  if (ret == NULL)
-    g_free (mbuf.data);
-
   return ret;
 }
 

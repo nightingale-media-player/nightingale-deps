@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-runtime 0.13-pre1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2015-07-10 15:47+0900\n"
+"POT-Creation-Date: 2015-09-11 12:23+0900\n"
 "PO-Revision-Date: 2003-11-23 09:19+0200\n"
 "Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
 "Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
@@ -32,7 +32,7 @@ msgstr "%s: opþiunea `%s' este ambiguã\n"
 #: gnulib-lib/getopt.c:619
 #, fuzzy, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: opþiunea `%s' este ambiguã\n"
+msgstr "%s: opþiunea `-W %s' este ambiguã\n"
 
 #: gnulib-lib/getopt.c:654 gnulib-lib/getopt.c:658
 #, fuzzy, c-format

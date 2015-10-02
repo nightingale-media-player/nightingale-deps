@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-Spawning-Processes.html" title="Spawning Processes">
 <link rel="next" href="glib-URI-Functions.html" title="URI Functions">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -456,6 +456,7 @@ from a function that manipulates files. So you would use
 <a name="id-1.5.18.7.2.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> corresponding to the given <em class="parameter"><code>errno</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -518,6 +519,7 @@ the returned string. </p></td>
 <div class="refsect3">
 <a name="id-1.5.18.7.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error occurred</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -597,8 +599,9 @@ is a nul-terminated string</p></td>
 <div class="refsect3">
 <a name="id-1.5.18.7.4.10"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -682,6 +685,7 @@ extensions and those listed in the <code class="literal">PATHEXT</code> environm
 <div class="refsect3">
 <a name="id-1.5.18.7.5.13"></a><h4>Returns</h4>
 <p> whether a test was <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -720,6 +724,7 @@ opened for reading and writing. The file is opened in binary
 mode on platforms where there is a difference. The file handle
 should be closed with <code class="function">close()</code>. In case of errors, -1 is
 returned and <code class="literal">errno</code> will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -775,8 +780,9 @@ and O_CREAT, which are passed automatically</p></td>
 opened for reading and writing. The file handle should be
 closed with <code class="function">close()</code>. In case of errors, -1 is returned
 and <code class="literal">errno</code> will be set.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -838,6 +844,7 @@ reading and writing. The file is opened in binary mode on platforms
 where there is a difference. The file handle should be closed with
 <code class="function">close()</code>. In case of errors, -1 is returned and <em class="parameter"><code>error</code></em>
 will be set.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -876,8 +883,9 @@ for filenames. Use <a class="link" href="glib-Character-Set-Conversion.html#g-fi
 <a name="id-1.5.18.7.9.6"></a><h4>Returns</h4>
 <p> A newly-allocated string with the contents of the symbolic link,
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if an error occurred.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -913,8 +921,9 @@ parent directories as needed, too.</p>
 <a name="id-1.5.18.7.10.6"></a><h4>Returns</h4>
 <p> 0 if the directory already exists, or was successfully
 created. Returns -1 if an error occurred, with errno set.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -954,8 +963,9 @@ on Windows it should be in UTF-8.</p>
 , which has been modified
 to hold the directory name.  In case of errors, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
 returned and <code class="literal">errno</code> will be set.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1002,8 +1012,9 @@ should be in UTF-8.</p>
 , which has been modified
 to hold the directory name. In case of errors, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
 returned, and <code class="literal">errno</code> will be set.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1054,7 +1065,7 @@ returned and <em class="parameter"><code>error</code></em>
 will be set. </p>
 <p><span class="annotation">[<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> filename]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1101,6 +1112,7 @@ If non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GDir" title="GDir"><span class="type">GDir</span></a> on success, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on failure.
 If non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>, you must free the result with <a class="link" href="glib-File-Utilities.html#g-dir-close" title="g_dir_close ()"><code class="function">g_dir_close()</code></a>
 when you are finished with it.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1138,6 +1150,7 @@ filenames, the returned name is in UTF-8.</p>
 <p> The entry's name or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if there are no
 more entries. The return value is owned by GLib and
 must not be modified or freed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1239,8 +1252,9 @@ to the <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GF
 <a name="id-1.5.18.7.18.9"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> which must be unref'd
 with <a class="link" href="glib-File-Utilities.html#g-mapped-file-unref" title="g_mapped_file_unref ()"><code class="function">g_mapped_file_unref()</code></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the mapping failed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1290,8 +1304,9 @@ atomically (e.g. using <a class="link" href="glib-File-Utilities.html#g-file-set
 <a name="id-1.5.18.7.19.8"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> which must be unref'd
 with <a class="link" href="glib-File-Utilities.html#g-mapped-file-unref" title="g_mapped_file_unref ()"><code class="function">g_mapped_file_unref()</code></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the mapping failed.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1319,8 +1334,9 @@ this function from any thread.</p>
 <div class="refsect3">
 <a name="id-1.5.18.7.20.6"></a><h4>Returns</h4>
 <p> the passed in <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1375,7 +1391,7 @@ exactly the same as <a class="link" href="glib-File-Utilities.html#g-mapped-file
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1402,8 +1418,9 @@ g_mapped_file_get_length (<em class="parameter"><code><a class="link" href="glib
 <a name="id-1.5.18.7.23.6"></a><h4>Returns</h4>
 <p> the length of the contents of <em class="parameter"><code>file</code></em>
 .</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1433,8 +1450,9 @@ even if the <a class="link" href="glib-File-Utilities.html#GMappedFile" title="G
 <a name="id-1.5.18.7.24.8"></a><h4>Returns</h4>
 <p> the contents of <em class="parameter"><code>file</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1467,7 +1485,7 @@ from <em class="parameter"><code>file</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-34.html#api-index-2.34">2.34</a></p>
+<p class="since">Since 2.34</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1523,8 +1541,9 @@ or <code class="function">read()</code>.</p>
 <p> a new file descriptor, or -1 if an error occurred.
 The return value can be used exactly like the return value
 from <code class="function">open()</code>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1562,8 +1581,9 @@ a file that is open to some process.</p>
 <div class="refsect3">
 <a name="id-1.5.18.7.27.7"></a><h4>Returns</h4>
 <p> 0 if the renaming succeeded, -1 if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1601,8 +1621,9 @@ The mode argument is ignored on Windows.</p>
 <a name="id-1.5.18.7.28.7"></a><h4>Returns</h4>
 <p> 0 if the directory was successfully created, -1 if an error
 occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1655,8 +1676,9 @@ information</p></td>
 <a name="id-1.5.18.7.29.9"></a><h4>Returns</h4>
 <p> 0 if the information was successfully retrieved,
 -1 if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1697,8 +1719,9 @@ information</p></td>
 <a name="id-1.5.18.7.30.7"></a><h4>Returns</h4>
 <p> 0 if the information was successfully retrieved,
 -1 if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1731,8 +1754,9 @@ are open to some process, or mapped into memory.</p>
 <a name="id-1.5.18.7.31.7"></a><h4>Returns</h4>
 <p> 0 if the name was successfully deleted, -1 if an error
 occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1772,8 +1796,9 @@ set by <code class="function">rmdir()</code>.</p>
 <a name="id-1.5.18.7.32.8"></a><h4>Returns</h4>
 <p> 0 if the file was successfully removed, -1 if an error
 occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1803,8 +1828,9 @@ on your system.</p>
 <a name="id-1.5.18.7.33.7"></a><h4>Returns</h4>
 <p> 0 if the directory was successfully removed, -1 if an error
 occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1847,8 +1873,9 @@ functions like <code class="function">fprintf()</code> or <code class="function"
 <a name="id-1.5.18.7.34.8"></a><h4>Returns</h4>
 <p> A FILE* if the file was successfully opened, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1891,8 +1918,9 @@ opens a file and associates it with an existing stream.</p>
 <a name="id-1.5.18.7.35.7"></a><h4>Returns</h4>
 <p> A FILE* if the file was successfully opened, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 an error occurred.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1933,8 +1961,9 @@ exactly should use the Win32 API.</p>
 <div class="refsect3">
 <a name="id-1.5.18.7.36.8"></a><h4>Returns</h4>
 <p> 0 if the operation succeeded, -1 on error</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1979,8 +2008,9 @@ more exactly should use the Win32 API.</p>
 <p> zero if the pathname refers to an existing file system
 object that has all the tested permissions, or -1 otherwise
 or on error.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2031,8 +2061,9 @@ or <code class="function">read()</code>.</p>
 <p> a new file descriptor, or -1 if an error occurred.
 The return value can be used exactly like the return value
 from <code class="function">creat()</code>.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2061,8 +2092,9 @@ current directory of the process to <em class="parameter"><code>path</code></em>
 <div class="refsect3">
 <a name="id-1.5.18.7.39.7"></a><h4>Returns</h4>
 <p> 0 on success, -1 if an error occurred.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-8.html#api-index-2.8">2.8</a></p>
+<p class="since">Since 2.8</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2099,8 +2131,9 @@ on your system.</p>
 <div class="refsect3">
 <a name="id-1.5.18.7.40.7"></a><h4>Returns</h4>
 <p> 0 if the operation was successful, -1 if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-18.html#api-index-2.18">2.18</a></p>
+<p class="since">Since 2.18</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2140,8 +2173,9 @@ semantics.</p>
 <div class="refsect3">
 <a name="id-1.5.18.7.41.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if there was an error.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 </div>
 <div class="refsect1">
@@ -2481,6 +2515,7 @@ system call, depending on the platform and/or compiler being used.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

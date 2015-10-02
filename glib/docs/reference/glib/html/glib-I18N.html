@@ -8,7 +8,7 @@
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
 <link rel="prev" href="glib-Data-HMACs.html" title="Secure HMAC Digests">
 <link rel="next" href="glib-Date-and-Time-Functions.html" title="Date and Time Functions">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -185,7 +185,7 @@ For an application, note that you also have to call <code class="function">bindt
 <span class="type">int</span>
 <span class="function">main</span><span class="normal"> </span><span class="symbol">(</span><span class="type">int</span><span class="normal"> argc</span><span class="symbol">,</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">**</span><span class="normal">argv</span><span class="symbol">)</span>
 <span class="cbracket">{</span>
-<span class="normal">  </span><span class="function">setlocale</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">LC_ALL</span><span class="symbol">,</span><span class="normal"> </span><span class="string">""</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-running.html#setlocale">setlocale</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">LC_ALL</span><span class="symbol">,</span><span class="normal"> </span><span class="string">""</span><span class="symbol">);</span>
 <span class="normal">  </span><span class="function">bindtextdomain</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">GETTEXT_PACKAGE</span><span class="symbol">,</span><span class="normal"> DATADIR </span><span class="string">"/locale"</span><span class="symbol">);</span>
 <span class="normal">  </span><span class="function">bind_textdomain_codeset</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">GETTEXT_PACKAGE</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"UTF-8"</span><span class="symbol">);</span>
 <span class="normal">  </span><span class="function">textdomain</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">GETTEXT_PACKAGE</span><span class="symbol">);</span>
@@ -230,7 +230,7 @@ at runtime.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -271,8 +271,9 @@ which must not be translated</p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.3.9"></a><h4>Returns</h4>
 <p> the translated message</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -326,8 +327,9 @@ Note that this only works with GNU gettext &gt;= 0.15.</p>
 <div class="refsect3">
 <a name="id-1.5.8.6.4.9"></a><h4>Returns</h4>
 <p> the translated message</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-16.html#api-index-2.16">2.16</a></p>
+<p class="since">Since 2.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -388,7 +390,7 @@ at runtime.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -462,7 +464,7 @@ for the <a class="link" href="glib-I18N.html#NC-:CAPS" title="NC_()"><code class
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-18.html#api-index-2.18">2.18</a></p>
+<p class="since">Since 2.18</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -523,8 +525,9 @@ the domain set with <code class="function">textdomain()</code>. </p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.7.11"></a><h4>Returns</h4>
 <p> The translated string</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-18.html#api-index-2.18">2.18</a></p>
+<p class="since">Since 2.18</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -568,8 +571,9 @@ the domain set with <code class="function">textdomain()</code>. </p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.8.6"></a><h4>Returns</h4>
 <p> the translated string for the given locale category</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-26.html#api-index-2.26">2.26</a></p>
+<p class="since">Since 2.26</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -620,8 +624,9 @@ the domain set with <code class="function">textdomain()</code>. </p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.9.7"></a><h4>Returns</h4>
 <p> The translated string</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-18.html#api-index-2.18">2.18</a></p>
+<p class="since">Since 2.18</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -676,8 +681,9 @@ by a \004 character</p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.10.8"></a><h4>Returns</h4>
 <p> The translated string</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-16.html#api-index-2.16">2.16</a></p>
+<p class="since">Since 2.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -726,8 +732,9 @@ the domain set with <code class="function">textdomain()</code>. </p></td>
 <div class="refsect3">
 <a name="id-1.5.8.6.11.8"></a><h4>Returns</h4>
 <p> The translated string</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-18.html#api-index-2.18">2.18</a></p>
+<p class="since">Since 2.18</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -765,8 +772,9 @@ g_strip_context (<em class="parameter"><code>const <a class="link" href="glib-Ba
 is identical to <em class="parameter"><code>msgid</code></em>
 and contains a '|' character, in which case a pointer to
 the substring of msgid after the first '|' character is returned.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -788,7 +796,7 @@ user.</p>
 that must not be modified or freed. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-6.html#api-index-2.6">2.6</a></p>
+<p class="since">Since 2.6</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -827,7 +835,7 @@ allocated array of newly allocated strings with the locale variants. Free with
 <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> utf8]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 </div>
 <div class="refsect1">
@@ -839,6 +847,7 @@ allocated array of newly allocated strings with the locale variants. Free with
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

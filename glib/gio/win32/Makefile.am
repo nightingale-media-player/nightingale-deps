@@ -3,10 +3,8 @@ include $(top_srcdir)/glib.mk
 noinst_LTLIBRARIES += libgiowin32.la
 
 libgiowin32_la_SOURCES =			\
-	gwin32fsmonitorutils.c			\
-	gwin32fsmonitorutils.h			\
-	gwin32filemonitor.c			\
-	gwin32filemonitor.h			\
+	gwin32directorymonitor.c		\
+	gwin32directorymonitor.h		\
 	gwinhttpvfs.c				\
 	gwinhttpvfs.h				\
 	gwinhttpfile.c				\

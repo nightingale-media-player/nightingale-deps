@@ -124,7 +124,8 @@ main (int   argc,
   g_assert (g_spawn_command_line_async (path, NULL));
   g_free (path);
 
-  ensure_gdbus_testserver_up ();
+  /* wait for the service to come up */
+  usleep (500 * 1000);
 
   /* Create the connection in the main thread */
   error = NULL;

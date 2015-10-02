@@ -486,8 +486,9 @@ am_libgettextsrc_la_OBJECTS = $(am__objects_1) \
 	libgettextsrc_la-read-desktop.lo $(am__objects_3)
 libgettextsrc_la_OBJECTS = $(am_libgettextsrc_la_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_cldr_plurals_OBJECTS = cldr-plural.$(OBJEXT) \
-	cldr-plural-exp.$(OBJEXT) cldr-plurals.$(OBJEXT)
+am_cldr_plurals_OBJECTS = cldr_plurals-cldr-plural.$(OBJEXT) \
+	cldr_plurals-cldr-plural-exp.$(OBJEXT) \
+	cldr_plurals-cldr-plurals.$(OBJEXT)
 cldr_plurals_OBJECTS = $(am_cldr_plurals_OBJECTS)
 am__DEPENDENCIES_1 =
 @WOE32_TRUE@am__DEPENDENCIES_2 = gettext.res
@@ -498,6 +499,9 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+cldr_plurals_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(cldr_plurals_LDFLAGS) $(LDFLAGS) -o $@
 am_hostname_OBJECTS = hostname-hostname.$(OBJEXT)
 hostname_OBJECTS = $(am_hostname_OBJECTS)
 hostname_LDADD = $(LDADD)
@@ -616,7 +620,8 @@ am__xgettext_SOURCES_DIST = xgettext.c x-c.c x-po.c x-sh.c x-python.c \
 	x-lisp.c x-elisp.c x-librep.c x-scheme.c x-smalltalk.c \
 	x-java.c x-csharp.c x-awk.c x-ycp.c x-tcl.c x-perl.c x-php.c \
 	x-rst.c x-glade.c x-lua.c x-javascript.c x-vala.c \
-	x-gsettings.c x-desktop.c ../woe32dll/c++xgettext.cc
+	x-gsettings.c x-desktop.c x-appdata.c \
+	../woe32dll/c++xgettext.cc
 @WOE32DLL_FALSE@am_xgettext_OBJECTS = xgettext-xgettext.$(OBJEXT) \
 @WOE32DLL_FALSE@	xgettext-x-c.$(OBJEXT) xgettext-x-po.$(OBJEXT) \
 @WOE32DLL_FALSE@	xgettext-x-sh.$(OBJEXT) \
@@ -639,7 +644,8 @@ am__xgettext_SOURCES_DIST = xgettext.c x-c.c x-po.c x-sh.c x-python.c \
 @WOE32DLL_FALSE@	xgettext-x-javascript.$(OBJEXT) \
 @WOE32DLL_FALSE@	xgettext-x-vala.$(OBJEXT) \
 @WOE32DLL_FALSE@	xgettext-x-gsettings.$(OBJEXT) \
-@WOE32DLL_FALSE@	xgettext-x-desktop.$(OBJEXT)
+@WOE32DLL_FALSE@	xgettext-x-desktop.$(OBJEXT) \
+@WOE32DLL_FALSE@	xgettext-x-appdata.$(OBJEXT)
 @WOE32DLL_TRUE@am_xgettext_OBJECTS =  \
 @WOE32DLL_TRUE@	../woe32dll/xgettext-c++xgettext.$(OBJEXT) \
 @WOE32DLL_TRUE@	xgettext-x-c.$(OBJEXT) xgettext-x-po.$(OBJEXT) \
@@ -663,7 +669,8 @@ am__xgettext_SOURCES_DIST = xgettext.c x-c.c x-po.c x-sh.c x-python.c \
 @WOE32DLL_TRUE@	xgettext-x-javascript.$(OBJEXT) \
 @WOE32DLL_TRUE@	xgettext-x-vala.$(OBJEXT) \
 @WOE32DLL_TRUE@	xgettext-x-gsettings.$(OBJEXT) \
-@WOE32DLL_TRUE@	xgettext-x-desktop.$(OBJEXT)
+@WOE32DLL_TRUE@	xgettext-x-desktop.$(OBJEXT) \
+@WOE32DLL_TRUE@	xgettext-x-appdata.$(OBJEXT)
 xgettext_OBJECTS = $(am_xgettext_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -786,6 +793,7 @@ AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 APPLE_UNIVERSAL_BUILD = @APPLE_UNIVERSAL_BUILD@
 AR = @AR@
 ARCHIVE_FORMAT = @ARCHIVE_FORMAT@
+ARCHIVE_VERSION = @ARCHIVE_VERSION@
 ARFLAGS = @ARFLAGS@
 AS = @AS@
 ASM_SYMBOL_PREFIX = @ASM_SYMBOL_PREFIX@
@@ -1096,6 +1104,7 @@ GNULIB_SYMLINKAT = @GNULIB_SYMLINKAT@
 GNULIB_SYSTEM_POSIX = @GNULIB_SYSTEM_POSIX@
 GNULIB_TIMEGM = @GNULIB_TIMEGM@
 GNULIB_TIME_R = @GNULIB_TIME_R@
+GNULIB_TIME_RZ = @GNULIB_TIME_RZ@
 GNULIB_TMPFILE = @GNULIB_TMPFILE@
 GNULIB_TOWCTRANS = @GNULIB_TOWCTRANS@
 GNULIB_TTYNAME_R = @GNULIB_TTYNAME_R@
@@ -1374,6 +1383,7 @@ HAVE_SYS_SELECT_H = @HAVE_SYS_SELECT_H@
 HAVE_SYS_TIME_H = @HAVE_SYS_TIME_H@
 HAVE_SYS_TYPES_H = @HAVE_SYS_TYPES_H@
 HAVE_TIMEGM = @HAVE_TIMEGM@
+HAVE_TIMEZONE_T = @HAVE_TIMEZONE_T@
 HAVE_TYPE_VOLATILE_SIG_ATOMIC_T = @HAVE_TYPE_VOLATILE_SIG_ATOMIC_T@
 HAVE_UNISTD_H = @HAVE_UNISTD_H@
 HAVE_UNLINKAT = @HAVE_UNLINKAT@
@@ -1908,7 +1918,7 @@ po-time.h plural-table.h lang-table.h format.h filters.h \
 xgettext.h x-c.h x-po.h x-sh.h x-python.h x-lisp.h x-elisp.h x-librep.h \
 x-scheme.h x-smalltalk.h x-java.h x-properties.h x-csharp.h x-awk.h x-ycp.h \
 x-tcl.h x-perl.h x-php.h x-stringtable.h x-rst.h x-glade.h x-lua.h \
-x-javascript.h x-vala.h x-gsettings.h x-desktop.h libexpat-compat.h
+x-javascript.h x-vala.h x-gsettings.h x-desktop.h x-appdata.h libexpat-compat.h
 
 aliaspath = $(localedir)
 jardir = $(datadir)/gettext
@@ -1994,14 +2004,14 @@ msgunfmt_SOURCES = msgunfmt.c read-mo.c read-java.c read-csharp.c \
 @WOE32DLL_FALSE@	x-scheme.c x-smalltalk.c x-java.c x-csharp.c \
 @WOE32DLL_FALSE@	x-awk.c x-ycp.c x-tcl.c x-perl.c x-php.c \
 @WOE32DLL_FALSE@	x-rst.c x-glade.c x-lua.c x-javascript.c \
-@WOE32DLL_FALSE@	x-vala.c x-gsettings.c x-desktop.c
+@WOE32DLL_FALSE@	x-vala.c x-gsettings.c x-desktop.c x-appdata.c
 @WOE32DLL_TRUE@xgettext_SOURCES = ../woe32dll/c++xgettext.cc x-c.c \
 @WOE32DLL_TRUE@	x-po.c x-sh.c x-python.c x-lisp.c x-elisp.c \
 @WOE32DLL_TRUE@	x-librep.c x-scheme.c x-smalltalk.c x-java.c \
 @WOE32DLL_TRUE@	x-csharp.c x-awk.c x-ycp.c x-tcl.c x-perl.c \
 @WOE32DLL_TRUE@	x-php.c x-rst.c x-glade.c x-lua.c \
 @WOE32DLL_TRUE@	x-javascript.c x-vala.c x-gsettings.c \
-@WOE32DLL_TRUE@	x-desktop.c
+@WOE32DLL_TRUE@	x-desktop.c x-appdata.c
 @WOE32DLL_FALSE@msgattrib_SOURCES = msgattrib.c
 @WOE32DLL_TRUE@msgattrib_SOURCES = ../woe32dll/c++msgattrib.cc
 @WOE32DLL_FALSE@msgcat_SOURCES = msgcat.c
@@ -2110,6 +2120,7 @@ msguniq_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(bindir)\"
 recode_sr_latin_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(bindir)\"
 hostname_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
 urlget_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
+cldr_plurals_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
 @RELOCATABLE_VIA_LD_TRUE@msgcmp_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 @RELOCATABLE_VIA_LD_TRUE@msgfmt_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 @RELOCATABLE_VIA_LD_TRUE@msgmerge_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
@@ -2128,6 +2139,7 @@ urlget_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(pkglibdir)\"
 @RELOCATABLE_VIA_LD_TRUE@recode_sr_latin_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 @RELOCATABLE_VIA_LD_TRUE@hostname_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
 @RELOCATABLE_VIA_LD_TRUE@urlget_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
+@RELOCATABLE_VIA_LD_TRUE@cldr_plurals_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(pkglibdir)`
 
 # Linking with C++ libraries is needed _only_ on mingw and Cygwin.
 @WOE32DLL_FALSE@libgettextsrc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -2417,7 +2429,7 @@ clean-noinstPROGRAMS:
 
 cldr-plurals$(EXEEXT): $(cldr_plurals_OBJECTS) $(cldr_plurals_DEPENDENCIES) $(EXTRA_cldr_plurals_DEPENDENCIES) 
 	@rm -f cldr-plurals$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(cldr_plurals_OBJECTS) $(cldr_plurals_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(cldr_plurals_LINK) $(cldr_plurals_OBJECTS) $(cldr_plurals_LDADD) $(LIBS)
 
 hostname$(EXEEXT): $(hostname_OBJECTS) $(hostname_DEPENDENCIES) $(EXTRA_hostname_DEPENDENCIES) 
 	@rm -f hostname$(EXEEXT)
@@ -2720,6 +2732,24 @@ libgettextsrc_la-read-desktop.lo: read-desktop.c
 
 ../woe32dll/libgettextsrc_la-gettextsrc-exports.lo: ../woe32dll/gettextsrc-exports.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgettextsrc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ../woe32dll/libgettextsrc_la-gettextsrc-exports.lo `test -f '../woe32dll/gettextsrc-exports.c' || echo '$(srcdir)/'`../woe32dll/gettextsrc-exports.c
+
+cldr_plurals-cldr-plural.o: cldr-plural.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plural.o `test -f 'cldr-plural.c' || echo '$(srcdir)/'`cldr-plural.c
+
+cldr_plurals-cldr-plural.obj: cldr-plural.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plural.obj `if test -f 'cldr-plural.c'; then $(CYGPATH_W) 'cldr-plural.c'; else $(CYGPATH_W) '$(srcdir)/cldr-plural.c'; fi`
+
+cldr_plurals-cldr-plural-exp.o: cldr-plural-exp.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plural-exp.o `test -f 'cldr-plural-exp.c' || echo '$(srcdir)/'`cldr-plural-exp.c
+
+cldr_plurals-cldr-plural-exp.obj: cldr-plural-exp.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plural-exp.obj `if test -f 'cldr-plural-exp.c'; then $(CYGPATH_W) 'cldr-plural-exp.c'; else $(CYGPATH_W) '$(srcdir)/cldr-plural-exp.c'; fi`
+
+cldr_plurals-cldr-plurals.o: cldr-plurals.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plurals.o `test -f 'cldr-plurals.c' || echo '$(srcdir)/'`cldr-plurals.c
+
+cldr_plurals-cldr-plurals.obj: cldr-plurals.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cldr_plurals_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cldr_plurals-cldr-plurals.obj `if test -f 'cldr-plurals.c'; then $(CYGPATH_W) 'cldr-plurals.c'; else $(CYGPATH_W) '$(srcdir)/cldr-plurals.c'; fi`
 
 hostname-hostname.o: hostname.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(hostname_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hostname-hostname.o `test -f 'hostname.c' || echo '$(srcdir)/'`hostname.c
@@ -3110,6 +3140,12 @@ xgettext-x-desktop.o: x-desktop.c
 
 xgettext-x-desktop.obj: x-desktop.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xgettext_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xgettext-x-desktop.obj `if test -f 'x-desktop.c'; then $(CYGPATH_W) 'x-desktop.c'; else $(CYGPATH_W) '$(srcdir)/x-desktop.c'; fi`
+
+xgettext-x-appdata.o: x-appdata.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xgettext_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xgettext-x-appdata.o `test -f 'x-appdata.c' || echo '$(srcdir)/'`x-appdata.c
+
+xgettext-x-appdata.obj: x-appdata.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(xgettext_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xgettext-x-appdata.obj `if test -f 'x-appdata.c'; then $(CYGPATH_W) 'x-appdata.c'; else $(CYGPATH_W) '$(srcdir)/x-appdata.c'; fi`
 
 .cc.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -c -o $@ $<

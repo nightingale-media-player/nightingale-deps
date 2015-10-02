@@ -350,6 +350,8 @@ if ! $skip_gnulib; then
       stdbool
       stdio
       stdlib
+      stpcpy
+      stpncpy
       strchrnul
       strerror
       unictype/ctype-space

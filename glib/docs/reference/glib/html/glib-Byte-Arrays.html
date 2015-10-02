@@ -8,7 +8,7 @@
 <link rel="up" href="glib-data-types.html" title="GLib Data Types">
 <link rel="prev" href="glib-Pointer-Arrays.html" title="Pointer Arrays">
 <link rel="next" href="glib-Balanced-Binary-Trees.html" title="Balanced Binary Trees">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -401,7 +401,7 @@ and will be freed with <a class="link" href="glib-Memory-Allocation.html#g-free"
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -431,6 +431,7 @@ bytes to the array. Note however that the size of the array is still
 <div class="refsect3">
 <a name="id-1.6.12.7.4.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -459,8 +460,9 @@ This function is thread-safe and may be called from any thread.</p>
 <div class="refsect3">
 <a name="id-1.6.12.7.5.6"></a><h4>Returns</h4>
 <p> The passed in <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -487,7 +489,7 @@ thread.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -528,6 +530,7 @@ The array will grow in size automatically if necessary.</p>
 <div class="refsect3">
 <a name="id-1.6.12.7.7.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -569,6 +572,7 @@ The array will grow in size automatically if necessary.</p>
 <div class="refsect3">
 <a name="id-1.6.12.7.8.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -604,6 +608,7 @@ The following bytes are moved down one place.</p>
 <div class="refsect3">
 <a name="id-1.6.12.7.9.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -641,6 +646,7 @@ than <a class="link" href="glib-Byte-Arrays.html#g-byte-array-remove-index" titl
 <div class="refsect3">
 <a name="id-1.6.12.7.10.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -683,8 +689,9 @@ g_byte_array_remove_range (<em class="parameter"><code><a class="link" href="gli
 <div class="refsect3">
 <a name="id-1.6.12.7.11.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -795,6 +802,7 @@ g_byte_array_set_size (<em class="parameter"><code><a class="link" href="glib-By
 <div class="refsect3">
 <a name="id-1.6.12.7.14.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -837,6 +845,7 @@ the size of <em class="parameter"><code>array</code></em>
 <p> the element data if <em class="parameter"><code>free_segment</code></em>
 is <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a>, otherwise
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.  The element data should be freed using <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -873,7 +882,7 @@ together.</p>
 byte data that was in the array. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -915,7 +924,7 @@ g_bytes_new (<em class="parameter"><code><a class="link" href="glib-Basic-Types.
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -966,7 +975,7 @@ functions that wrap these calls (such as <a class="link" href="glib-Memory-Alloc
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -979,9 +988,8 @@ g_bytes_new_static (<em class="parameter"><code><a class="link" href="glib-Basic
  must be static (ie: never modified or freed). It may be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>size</code></em>
 
 is 0.</p>
-<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
-<a name="id-1.6.12.7.19.7"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.19.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1004,11 +1012,11 @@ is 0.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.7.19.8"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.19.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1070,7 +1078,7 @@ been called to indicate that the bytes is no longer in use.</p>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1119,7 +1127,7 @@ the byte data is no longer needed.</p>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1164,7 +1172,7 @@ not be returned if <em class="parameter"><code>size</code></em>
 byte data, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size][<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> guint8][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1191,8 +1199,9 @@ g_bytes_get_size (<em class="parameter"><code><a class="link" href="glib-Byte-Ar
 <div class="refsect3">
 <a name="id-1.6.12.7.23.7"></a><h4>Returns</h4>
 <p> the size</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1221,8 +1230,9 @@ parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:C
 <div class="refsect3">
 <a name="id-1.6.12.7.24.7"></a><h4>Returns</h4>
 <p> a hash value corresponding to the key.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1261,8 +1271,9 @@ parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:C
 <div class="refsect3">
 <a name="id-1.6.12.7.25.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the two keys match.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1299,8 +1310,9 @@ g_bytes_compare (<em class="parameter"><code><a class="link" href="glib-Basic-Ty
 <a name="id-1.6.12.7.26.7"></a><h4>Returns</h4>
 <p> a negative value if bytes2 is lesser, a positive value if bytes2 is
 greater, and zero if bytes2 is equal to bytes1</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1327,8 +1339,9 @@ g_bytes_ref (<em class="parameter"><code><a class="link" href="glib-Byte-Arrays.
 <div class="refsect3">
 <a name="id-1.6.12.7.27.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1353,7 +1366,7 @@ freed.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1395,7 +1408,7 @@ data is copied.</p>
 be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1428,7 +1441,7 @@ other cases the data is copied.</p>
 <p> a new mutable <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a> containing the same byte data. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 </div>
 <div class="refsect1">
@@ -1489,11 +1502,12 @@ function to <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-new" ti
 array of bytes see <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>. Use <a class="link" href="glib-Byte-Arrays.html#g-bytes-unref-to-array" title="g_bytes_unref_to_array ()"><code class="function">g_bytes_unref_to_array()</code></a> to create a
 mutable array for a <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> sequence. To create an immutable <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> from
 a mutable <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>, use the <a class="link" href="glib-Byte-Arrays.html#g-byte-array-free-to-bytes" title="g_byte_array_free_to_bytes ()"><code class="function">g_byte_array_free_to_bytes()</code></a> function.</p>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

@@ -119,7 +119,7 @@
 #include "gasyncinitable.h"
 #include "giostream.h"
 #include "gasyncresult.h"
-#include "gtask.h"
+#include "gsimpleasyncresult.h"
 
 #ifdef G_OS_UNIX
 #include "gunixconnection.h"
@@ -432,7 +432,7 @@ struct _GDBusConnection
   GDBusConnectionFlags flags;
 
   /* Map used for managing method replies, protected by @lock */
-  GHashTable *map_method_serial_to_task;  /* guint32 -> GTask* */
+  GHashTable *map_method_serial_to_send_message_data;  /* guint32 -> SendMessageData* */
 
   /* Maps used for managing signal subscription, protected by @lock */
   GHashTable *map_rule_to_signal_data;                      /* match rule (gchar*)    -> SignalData */
@@ -679,7 +679,7 @@ g_dbus_connection_finalize (GObject *object)
   if (connection->initialization_error != NULL)
     g_error_free (connection->initialization_error);
 
-  g_hash_table_unref (connection->map_method_serial_to_task);
+  g_hash_table_unref (connection->map_method_serial_to_send_message_data);
 
   g_hash_table_unref (connection->map_rule_to_signal_data);
   g_hash_table_unref (connection->map_id_to_signal_data);
@@ -804,6 +804,17 @@ g_dbus_connection_real_closed (GDBusConnection *connection,
       (flags & FLAG_INITIALIZED) != 0 &&
       connection->initialization_error == NULL)
     {
+      if (error != NULL)
+        {
+          g_printerr ("%s: Remote peer vanished with error: %s (%s, %d). Exiting.\n",
+                      G_STRFUNC,
+                      error->message,
+                      g_quark_to_string (error->domain), error->code);
+        }
+      else
+        {
+          g_printerr ("%s: Remote peer vanished. Exiting.\n", G_STRFUNC);
+        }
       raise (SIGTERM);
     }
 }
@@ -1047,7 +1058,7 @@ g_dbus_connection_class_init (GDBusConnectionClass *klass)
    *
    * Since: 2.26
    */
-  signals[CLOSED_SIGNAL] = g_signal_new (I_("closed"),
+  signals[CLOSED_SIGNAL] = g_signal_new ("closed",
                                          G_TYPE_DBUS_CONNECTION,
                                          G_SIGNAL_RUN_LAST,
                                          G_STRUCT_OFFSET (GDBusConnectionClass, closed),
@@ -1066,7 +1077,7 @@ g_dbus_connection_init (GDBusConnection *connection)
   g_mutex_init (&connection->lock);
   g_mutex_init (&connection->init_lock);
 
-  connection->map_method_serial_to_task = g_hash_table_new (g_direct_hash, g_direct_equal);
+  connection->map_method_serial_to_send_message_data = g_hash_table_new (g_direct_hash, g_direct_equal);
 
   connection->map_rule_to_signal_data = g_hash_table_new (g_str_hash,
                                                           g_str_equal);
@@ -1199,19 +1210,17 @@ g_dbus_connection_get_capabilities (GDBusConnection *connection)
 
 /* Called in a temporary thread without holding locks. */
 static void
-flush_in_thread_func (GTask         *task,
-                      gpointer       source_object,
-                      gpointer       task_data,
-                      GCancellable  *cancellable)
+flush_in_thread_func (GSimpleAsyncResult *res,
+                      GObject            *object,
+                      GCancellable       *cancellable)
 {
-  GError *error = NULL;
+  GError *error;
 
-  if (g_dbus_connection_flush_sync (source_object,
-                                    cancellable,
-                                    &error))
-    g_task_return_boolean (task, TRUE);
-  else
-    g_task_return_error (task, error);
+  error = NULL;
+  if (!g_dbus_connection_flush_sync (G_DBUS_CONNECTION (object),
+                                     cancellable,
+                                     &error))
+    g_simple_async_result_take_error (res, error);
 }
 
 /**
@@ -1245,13 +1254,20 @@ g_dbus_connection_flush (GDBusConnection     *connection,
                          GAsyncReadyCallback  callback,
                          gpointer             user_data)
 {
-  GTask *task;
+  GSimpleAsyncResult *simple;
 
   g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
 
-  task = g_task_new (connection, cancellable, callback, user_data);
-  g_task_run_in_thread (task, flush_in_thread_func);
-  g_object_unref (task);
+  simple = g_simple_async_result_new (G_OBJECT (connection),
+                                      callback,
+                                      user_data,
+                                      g_dbus_connection_flush);
+  g_simple_async_result_set_check_cancellable (simple, cancellable);
+  g_simple_async_result_run_in_thread (simple,
+                                       flush_in_thread_func,
+                                       G_PRIORITY_DEFAULT,
+                                       cancellable);
+  g_object_unref (simple);
 }
 
 /**
@@ -1272,11 +1288,24 @@ g_dbus_connection_flush_finish (GDBusConnection  *connection,
                                 GAsyncResult     *res,
                                 GError          **error)
 {
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+  gboolean ret;
+
+  ret = FALSE;
+
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
-  g_return_val_if_fail (g_task_is_valid (res, connection), FALSE);
+  g_return_val_if_fail (G_IS_ASYNC_RESULT (res), FALSE);
   g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-  return g_task_propagate_boolean (G_TASK (res), error);
+  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_dbus_connection_flush);
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    goto out;
+
+  ret = TRUE;
+
+ out:
+  return ret;
 }
 
 /**
@@ -1435,7 +1464,7 @@ g_dbus_connection_close (GDBusConnection     *connection,
                          GAsyncReadyCallback  callback,
                          gpointer             user_data)
 {
-  GTask *task;
+  GSimpleAsyncResult *simple;
 
   g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
 
@@ -1445,9 +1474,13 @@ g_dbus_connection_close (GDBusConnection     *connection,
 
   g_assert (connection->worker != NULL);
 
-  task = g_task_new (connection, cancellable, callback, user_data);
-  _g_dbus_worker_close (connection->worker, task);
-  g_object_unref (task);
+  simple = g_simple_async_result_new (G_OBJECT (connection),
+                                      callback,
+                                      user_data,
+                                      g_dbus_connection_close);
+  g_simple_async_result_set_check_cancellable (simple, cancellable);
+  _g_dbus_worker_close (connection->worker, cancellable, simple);
+  g_object_unref (simple);
 }
 
 /**
@@ -1468,11 +1501,24 @@ g_dbus_connection_close_finish (GDBusConnection  *connection,
                                 GAsyncResult     *res,
                                 GError          **error)
 {
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+  gboolean ret;
+
+  ret = FALSE;
+
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
-  g_return_val_if_fail (g_task_is_valid (res, connection), FALSE);
+  g_return_val_if_fail (G_IS_ASYNC_RESULT (res), FALSE);
   g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-  return g_task_propagate_boolean (G_TASK (res), error);
+  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_dbus_connection_close);
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    goto out;
+
+  ret = TRUE;
+
+ out:
+  return ret;
 }
 
 typedef struct {
@@ -1735,7 +1781,14 @@ g_dbus_connection_send_message (GDBusConnection        *connection,
 
 typedef struct
 {
+  volatile gint ref_count;
+  GDBusConnection *connection;
   guint32 serial;
+  GSimpleAsyncResult *simple;
+
+  GMainContext *main_context;
+
+  GCancellable *cancellable;
 
   gulong cancellable_handler_id;
 
@@ -1745,29 +1798,45 @@ typedef struct
 } SendMessageData;
 
 /* Can be called from any thread with or without lock held */
-static void
-send_message_data_free (SendMessageData *data)
+static SendMessageData *
+send_message_data_ref (SendMessageData *data)
 {
-  g_assert (data->timeout_source == NULL);
-  g_assert (data->cancellable_handler_id == 0);
+  g_atomic_int_inc (&data->ref_count);
+  return data;
+}
 
-  g_slice_free (SendMessageData, data);
+/* Can be called from any thread with or without lock held */
+static void
+send_message_data_unref (SendMessageData *data)
+{
+  if (g_atomic_int_dec_and_test (&data->ref_count))
+    {
+      g_assert (data->timeout_source == NULL);
+      g_assert (data->simple == NULL);
+      g_assert (data->cancellable_handler_id == 0);
+      g_object_unref (data->connection);
+      if (data->cancellable != NULL)
+        g_object_unref (data->cancellable);
+      g_main_context_unref (data->main_context);
+      g_free (data);
+    }
 }
 
 /* ---------------------------------------------------------------------------------------------------- */
 
-/* can be called from any thread with lock held */
+/* can be called from any thread with lock held - caller must have prepared GSimpleAsyncResult already */
 static void
-send_message_with_reply_cleanup (GTask *task, gboolean remove)
+send_message_with_reply_deliver (SendMessageData *data, gboolean remove)
 {
-  GDBusConnection *connection = g_task_get_source_object (task);
-  SendMessageData *data = g_task_get_task_data (task);
-
-  CONNECTION_ENSURE_LOCK (connection);
+  CONNECTION_ENSURE_LOCK (data->connection);
 
   g_assert (!data->delivered);
 
   data->delivered = TRUE;
+
+  g_simple_async_result_complete_in_idle (data->simple);
+  g_object_unref (data->simple);
+  data->simple = NULL;
 
   if (data->timeout_source != NULL)
     {
@@ -1776,63 +1845,37 @@ send_message_with_reply_cleanup (GTask *task, gboolean remove)
     }
   if (data->cancellable_handler_id > 0)
     {
-      g_cancellable_disconnect (g_task_get_cancellable (task), data->cancellable_handler_id);
+      g_cancellable_disconnect (data->cancellable, data->cancellable_handler_id);
       data->cancellable_handler_id = 0;
     }
 
   if (remove)
     {
-      gboolean removed = g_hash_table_remove (connection->map_method_serial_to_task,
-                                              GUINT_TO_POINTER (data->serial));
-      g_warn_if_fail (removed);
+      g_warn_if_fail (g_hash_table_remove (data->connection->map_method_serial_to_send_message_data,
+                                           GUINT_TO_POINTER (data->serial)));
     }
 
-  g_object_unref (task);
+  send_message_data_unref (data);
 }
 
 /* ---------------------------------------------------------------------------------------------------- */
 
-/* Called from GDBus worker thread with lock held */
+/* Can be called from any thread with lock held */
 static void
-send_message_data_deliver_reply_unlocked (GTask           *task,
+send_message_data_deliver_reply_unlocked (SendMessageData *data,
                                           GDBusMessage    *reply)
 {
-  SendMessageData *data = g_task_get_task_data (task);
-
   if (data->delivered)
     goto out;
 
-  g_task_return_pointer (task, g_object_ref (reply), g_object_unref);
+  g_simple_async_result_set_op_res_gpointer (data->simple,
+                                             g_object_ref (reply),
+                                             g_object_unref);
 
-  send_message_with_reply_cleanup (task, TRUE);
+  send_message_with_reply_deliver (data, TRUE);
 
  out:
   ;
-}
-
-/* Called from a user thread, lock is not held */
-static void
-send_message_data_deliver_error (GTask      *task,
-                                 GQuark      domain,
-                                 gint        code,
-                                 const char *message)
-{
-  GDBusConnection *connection = g_task_get_source_object (task);
-  SendMessageData *data = g_task_get_task_data (task);
-
-  CONNECTION_LOCK (connection);
-  if (data->delivered)
-    {
-      CONNECTION_UNLOCK (connection);
-      return;
-    }
-
-  g_object_ref (task);
-  send_message_with_reply_cleanup (task, TRUE);
-  CONNECTION_UNLOCK (connection);
-
-  g_task_return_new_error (task, domain, code, "%s", message);
-  g_object_unref (task);
 }
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -1841,10 +1884,21 @@ send_message_data_deliver_error (GTask      *task,
 static gboolean
 send_message_with_reply_cancelled_idle_cb (gpointer user_data)
 {
-  GTask *task = user_data;
+  SendMessageData *data = user_data;
 
-  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+  CONNECTION_LOCK (data->connection);
+  if (data->delivered)
+    goto out;
+
+  g_simple_async_result_set_error (data->simple,
+                                   G_IO_ERROR,
+                                   G_IO_ERROR_CANCELLED,
                                    _("Operation was cancelled"));
+
+  send_message_with_reply_deliver (data, TRUE);
+
+ out:
+  CONNECTION_UNLOCK (data->connection);
   return FALSE;
 }
 
@@ -1853,15 +1907,20 @@ static void
 send_message_with_reply_cancelled_cb (GCancellable *cancellable,
                                       gpointer      user_data)
 {
-  GTask *task = user_data;
+  SendMessageData *data = user_data;
   GSource *idle_source;
 
   /* postpone cancellation to idle handler since we may be called directly
    * via g_cancellable_connect() (e.g. holding lock)
    */
   idle_source = g_idle_source_new ();
+  g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
+  g_source_set_callback (idle_source,
+                         send_message_with_reply_cancelled_idle_cb,
+                         send_message_data_ref (data),
+                         (GDestroyNotify) send_message_data_unref);
   g_source_set_name (idle_source, "[gio] send_message_with_reply_cancelled_idle_cb");
-  g_task_attach_source (task, idle_source, send_message_with_reply_cancelled_idle_cb);
+  g_source_attach (idle_source, data->main_context);
   g_source_unref (idle_source);
 }
 
@@ -1871,10 +1930,22 @@ send_message_with_reply_cancelled_cb (GCancellable *cancellable,
 static gboolean
 send_message_with_reply_timeout_cb (gpointer user_data)
 {
-  GTask *task = user_data;
+  SendMessageData *data = user_data;
 
-  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
+  CONNECTION_LOCK (data->connection);
+  if (data->delivered)
+    goto out;
+
+  g_simple_async_result_set_error (data->simple,
+                                   G_IO_ERROR,
+                                   G_IO_ERROR_TIMED_OUT,
                                    _("Timeout was reached"));
+
+  send_message_with_reply_deliver (data, TRUE);
+
+ out:
+  CONNECTION_UNLOCK (data->connection);
+
   return FALSE;
 }
 
@@ -1891,10 +1962,12 @@ g_dbus_connection_send_message_with_reply_unlocked (GDBusConnection     *connect
                                                     GAsyncReadyCallback  callback,
                                                     gpointer             user_data)
 {
-  GTask *task;
+  GSimpleAsyncResult *simple;
   SendMessageData *data;
-  GError *error = NULL;
+  GError *error;
   volatile guint32 serial;
+
+  data = NULL;
 
   if (out_serial == NULL)
     out_serial = &serial;
@@ -1902,43 +1975,66 @@ g_dbus_connection_send_message_with_reply_unlocked (GDBusConnection     *connect
   if (timeout_msec == -1)
     timeout_msec = 25 * 1000;
 
-  data = g_slice_new0 (SendMessageData);
-  task = g_task_new (connection, cancellable, callback, user_data);
-  g_task_set_task_data (task, data, (GDestroyNotify) send_message_data_free);
+  simple = g_simple_async_result_new (G_OBJECT (connection),
+                                      callback,
+                                      user_data,
+                                      g_dbus_connection_send_message_with_reply);
+  g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-  if (g_task_return_error_if_cancelled (task))
+  if (g_cancellable_is_cancelled (cancellable))
     {
-      g_object_unref (task);
-      return;
+      g_simple_async_result_set_error (simple,
+                                       G_IO_ERROR,
+                                       G_IO_ERROR_CANCELLED,
+                                       _("Operation was cancelled"));
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
+      goto out;
     }
 
+  error = NULL;
   if (!g_dbus_connection_send_message_unlocked (connection, message, flags, out_serial, &error))
     {
-      g_task_return_error (task, error);
-      g_object_unref (task);
-      return;
+      g_simple_async_result_take_error (simple, error);
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
+      goto out;
     }
+
+  data = g_new0 (SendMessageData, 1);
+  data->ref_count = 1;
+  data->connection = g_object_ref (connection);
+  data->simple = simple;
   data->serial = *out_serial;
+  data->main_context = g_main_context_ref_thread_default ();
 
   if (cancellable != NULL)
     {
+      data->cancellable = g_object_ref (cancellable);
       data->cancellable_handler_id = g_cancellable_connect (cancellable,
                                                             G_CALLBACK (send_message_with_reply_cancelled_cb),
-                                                            g_object_ref (task),
-                                                            g_object_unref);
+                                                            send_message_data_ref (data),
+                                                            (GDestroyNotify) send_message_data_unref);
     }
 
   if (timeout_msec != G_MAXINT)
     {
       data->timeout_source = g_timeout_source_new (timeout_msec);
-      g_task_attach_source (task, data->timeout_source,
-                            (GSourceFunc) send_message_with_reply_timeout_cb);
+      g_source_set_priority (data->timeout_source, G_PRIORITY_DEFAULT);
+      g_source_set_callback (data->timeout_source,
+                             send_message_with_reply_timeout_cb,
+                             send_message_data_ref (data),
+                             (GDestroyNotify) send_message_data_unref);
+      g_source_attach (data->timeout_source, data->main_context);
       g_source_unref (data->timeout_source);
     }
 
-  g_hash_table_insert (connection->map_method_serial_to_task,
+  g_hash_table_insert (connection->map_method_serial_to_send_message_data,
                        GUINT_TO_POINTER (*out_serial),
-                       task);
+                       data);
+
+ out:
+  ;
 }
 
 /**
@@ -2039,11 +2135,23 @@ g_dbus_connection_send_message_with_reply_finish (GDBusConnection  *connection,
                                                   GAsyncResult     *res,
                                                   GError          **error)
 {
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+  GDBusMessage *reply;
+
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
-  g_return_val_if_fail (g_task_is_valid (res, connection), NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  return g_task_propagate_pointer (G_TASK (res), error);
+  reply = NULL;
+
+  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_dbus_connection_send_message_with_reply);
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    goto out;
+
+  reply = g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+
+ out:
+  return reply;
 }
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -2121,7 +2229,7 @@ g_dbus_connection_send_message_with_reply_sync (GDBusConnection        *connecti
                                                 GCancellable           *cancellable,
                                                 GError                **error)
 {
-  SendMessageSyncData data;
+  SendMessageSyncData *data;
   GDBusMessage *reply;
 
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
@@ -2130,11 +2238,11 @@ g_dbus_connection_send_message_with_reply_sync (GDBusConnection        *connecti
   g_return_val_if_fail (timeout_msec >= 0 || timeout_msec == -1, NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  data.res = NULL;
-  data.context = g_main_context_new ();
-  data.loop = g_main_loop_new (data.context, FALSE);
+  data = g_new0 (SendMessageSyncData, 1);
+  data->context = g_main_context_new ();
+  data->loop = g_main_loop_new (data->context, FALSE);
 
-  g_main_context_push_thread_default (data.context);
+  g_main_context_push_thread_default (data->context);
 
   g_dbus_connection_send_message_with_reply (connection,
                                              message,
@@ -2143,18 +2251,18 @@ g_dbus_connection_send_message_with_reply_sync (GDBusConnection        *connecti
                                              out_serial,
                                              cancellable,
                                              (GAsyncReadyCallback) send_message_with_reply_sync_cb,
-                                             &data);
-  g_main_loop_run (data.loop);
+                                             data);
+  g_main_loop_run (data->loop);
   reply = g_dbus_connection_send_message_with_reply_finish (connection,
-                                                            data.res,
+                                                            data->res,
                                                             error);
 
-  g_main_context_pop_thread_default (data.context);
+  g_main_context_pop_thread_default (data->context);
 
-  g_main_context_unref (data.context);
-  g_main_loop_unref (data.loop);
-  if (data.res)
-    g_object_unref (data.res);
+  g_main_context_unref (data->context);
+  g_main_loop_unref (data->loop);
+  g_object_unref (data->res);
+  g_free (data);
 
   return reply;
 }
@@ -2163,52 +2271,17 @@ g_dbus_connection_send_message_with_reply_sync (GDBusConnection        *connecti
 
 typedef struct
 {
+  GDBusMessageFilterFunction func;
+  gpointer user_data;
+} FilterCallback;
+
+typedef struct
+{
   guint                       id;
-  guint                       ref_count;
   GDBusMessageFilterFunction  filter_function;
   gpointer                    user_data;
   GDestroyNotify              user_data_free_func;
-  GMainContext               *context;
 } FilterData;
-
-/* requires CONNECTION_LOCK */
-static FilterData **
-copy_filter_list (GPtrArray *filters)
-{
-  FilterData **copy;
-  guint n;
-
-  copy = g_new (FilterData *, filters->len + 1);
-  for (n = 0; n < filters->len; n++)
-    {
-      copy[n] = filters->pdata[n];
-      copy[n]->ref_count++;
-    }
-  copy[n] = NULL;
-
-  return copy;
-}
-
-/* requires CONNECTION_LOCK */
-static void
-free_filter_list (FilterData **filters)
-{
-  guint n;
-
-  for (n = 0; filters[n]; n++)
-    {
-      filters[n]->ref_count--;
-      if (filters[n]->ref_count == 0)
-        {
-          call_destroy_notify (filters[n]->context,
-                               filters[n]->user_data_free_func,
-                               filters[n]->user_data);
-          g_main_context_unref (filters[n]->context);
-          g_free (filters[n]);
-        }
-    }
-  g_free (filters);
-}
 
 /* Called in GDBusWorker's thread - we must not block - with no lock held */
 static void
@@ -2217,7 +2290,8 @@ on_worker_message_received (GDBusWorker  *worker,
                             gpointer      user_data)
 {
   GDBusConnection *connection;
-  FilterData **filters;
+  FilterCallback *filters;
+  guint num_filters;
   guint n;
   gboolean alive;
 
@@ -2241,24 +2315,27 @@ on_worker_message_received (GDBusWorker  *worker,
 
   /* First collect the set of callback functions */
   CONNECTION_LOCK (connection);
-  filters = copy_filter_list (connection->filters);
+  num_filters = connection->filters->len;
+  filters = g_new0 (FilterCallback, num_filters);
+  for (n = 0; n < num_filters; n++)
+    {
+      FilterData *data = connection->filters->pdata[n];
+      filters[n].func = data->filter_function;
+      filters[n].user_data = data->user_data;
+    }
   CONNECTION_UNLOCK (connection);
 
   /* then call the filters in order (without holding the lock) */
-  for (n = 0; filters[n]; n++)
+  for (n = 0; n < num_filters; n++)
     {
-      message = filters[n]->filter_function (connection,
-                                             message,
-                                             TRUE,
-                                             filters[n]->user_data);
+      message = filters[n].func (connection,
+                                 message,
+                                 TRUE,
+                                 filters[n].user_data);
       if (message == NULL)
         break;
       g_dbus_message_lock (message);
     }
-
-  CONNECTION_LOCK (connection);
-  free_filter_list (filters);
-  CONNECTION_UNLOCK (connection);
 
   /* Standard dispatch unless the filter ate the message - no need to
    * do anything if the message was altered
@@ -2271,16 +2348,16 @@ on_worker_message_received (GDBusWorker  *worker,
       if (message_type == G_DBUS_MESSAGE_TYPE_METHOD_RETURN || message_type == G_DBUS_MESSAGE_TYPE_ERROR)
         {
           guint32 reply_serial;
-          GTask *task;
+          SendMessageData *send_message_data;
 
           reply_serial = g_dbus_message_get_reply_serial (message);
           CONNECTION_LOCK (connection);
-          task = g_hash_table_lookup (connection->map_method_serial_to_task,
-                                      GUINT_TO_POINTER (reply_serial));
-          if (task != NULL)
+          send_message_data = g_hash_table_lookup (connection->map_method_serial_to_send_message_data,
+                                                   GUINT_TO_POINTER (reply_serial));
+          if (send_message_data != NULL)
             {
               //g_debug ("delivering reply/error for serial %d for %p", reply_serial, connection);
-              send_message_data_deliver_reply_unlocked (task, message);
+              send_message_data_deliver_reply_unlocked (send_message_data, message);
             }
           else
             {
@@ -2305,6 +2382,7 @@ on_worker_message_received (GDBusWorker  *worker,
   if (message != NULL)
     g_object_unref (message);
   g_object_unref (connection);
+  g_free (filters);
 }
 
 /* Called in GDBusWorker's thread, lock is not held */
@@ -2314,7 +2392,8 @@ on_worker_message_about_to_be_sent (GDBusWorker  *worker,
                                     gpointer      user_data)
 {
   GDBusConnection *connection;
-  FilterData **filters;
+  FilterCallback *filters;
+  guint num_filters;
   guint n;
   gboolean alive;
 
@@ -2333,26 +2412,30 @@ on_worker_message_about_to_be_sent (GDBusWorker  *worker,
 
   /* First collect the set of callback functions */
   CONNECTION_LOCK (connection);
-  filters = copy_filter_list (connection->filters);
+  num_filters = connection->filters->len;
+  filters = g_new0 (FilterCallback, num_filters);
+  for (n = 0; n < num_filters; n++)
+    {
+      FilterData *data = connection->filters->pdata[n];
+      filters[n].func = data->filter_function;
+      filters[n].user_data = data->user_data;
+    }
   CONNECTION_UNLOCK (connection);
 
   /* then call the filters in order (without holding the lock) */
-  for (n = 0; filters[n]; n++)
+  for (n = 0; n < num_filters; n++)
     {
       g_dbus_message_lock (message);
-      message = filters[n]->filter_function (connection,
-                                             message,
-                                             FALSE,
-                                             filters[n]->user_data);
+      message = filters[n].func (connection,
+                                 message,
+                                 FALSE,
+                                 filters[n].user_data);
       if (message == NULL)
         break;
     }
 
-  CONNECTION_LOCK (connection);
-  free_filter_list (filters);
-  CONNECTION_UNLOCK (connection);
-
   g_object_unref (connection);
+  g_free (filters);
 
   return message;
 }
@@ -2361,22 +2444,21 @@ on_worker_message_about_to_be_sent (GDBusWorker  *worker,
 static gboolean
 cancel_method_on_close (gpointer key, gpointer value, gpointer user_data)
 {
-  GTask *task = value;
-  SendMessageData *data = g_task_get_task_data (task);
+  SendMessageData *data = value;
 
   if (data->delivered)
     return FALSE;
 
-  g_task_return_new_error (task,
-                           G_IO_ERROR,
-                           G_IO_ERROR_CLOSED,
-                           _("The connection is closed"));
+  g_simple_async_result_set_error (data->simple,
+                                   G_IO_ERROR,
+                                   G_IO_ERROR_CLOSED,
+                                   _("The connection is closed"));
 
-  /* Ask send_message_with_reply_cleanup not to remove the element from the
+  /* Ask send_message_with_reply_deliver not to remove the element from the
    * hash table - we're in the middle of a foreach; that would be unsafe.
    * Instead, return TRUE from this function so that it gets removed safely.
    */
-  send_message_with_reply_cleanup (task, FALSE);
+  send_message_with_reply_deliver (data, FALSE);
   return TRUE;
 }
 
@@ -2413,7 +2495,7 @@ on_worker_closed (GDBusWorker *worker,
 
   if (!(old_atomic_flags & FLAG_CLOSED))
     {
-      g_hash_table_foreach_remove (connection->map_method_serial_to_task, cancel_method_on_close, NULL);
+      g_hash_table_foreach_remove (connection->map_method_serial_to_send_message_data, cancel_method_on_close, NULL);
       schedule_closed_unlocked (connection, remote_peer_vanished, error);
     }
   CONNECTION_UNLOCK (connection);
@@ -3084,13 +3166,6 @@ static guint _global_filter_id = 1;
  * message. Similary, if a filter consumes an outgoing message, the
  * message will not be sent to the other peer.
  *
- * If @user_data_free_func is non-%NULL, it will be called (in the
- * thread-default main context of the thread you are calling this
- * method from) at some point after @user_data is no longer
- * needed. (It is not guaranteed to be called synchronously when the
- * filter is removed, and may be called after @connection has been
- * destroyed.)
- *
  * Returns: a filter identifier that can be used with
  *     g_dbus_connection_remove_filter()
  *
@@ -3111,11 +3186,9 @@ g_dbus_connection_add_filter (GDBusConnection            *connection,
   CONNECTION_LOCK (connection);
   data = g_new0 (FilterData, 1);
   data->id = _global_filter_id++; /* TODO: overflow etc. */
-  data->ref_count = 1;
   data->filter_function = filter_function;
   data->user_data = user_data;
   data->user_data_free_func = user_data_free_func;
-  data->context = g_main_context_ref_thread_default ();
   g_ptr_array_add (connection->filters, data);
   CONNECTION_UNLOCK (connection);
 
@@ -3130,11 +3203,8 @@ purge_all_filters (GDBusConnection *connection)
   for (n = 0; n < connection->filters->len; n++)
     {
       FilterData *data = connection->filters->pdata[n];
-
-      call_destroy_notify (data->context,
-                           data->user_data_free_func,
-                           data->user_data);
-      g_main_context_unref (data->context);
+      if (data->user_data_free_func != NULL)
+        data->user_data_free_func (data->user_data);
       g_free (data);
     }
 }
@@ -3145,13 +3215,6 @@ purge_all_filters (GDBusConnection *connection)
  * @filter_id: an identifier obtained from g_dbus_connection_add_filter()
  *
  * Removes a filter.
- *
- * Note that since filters run in a different thread, there is a race
- * condition where it is possible that the filter will be running even
- * after calling g_dbus_connection_remove_filter(), so you cannot just
- * free data that the filter might be using. Instead, you should pass
- * a #GDestroyNotify to g_dbus_connection_add_filter(), which will be
- * called when it is guaranteed that the data is no longer needed.
  *
  * Since: 2.26
  */
@@ -3173,9 +3236,7 @@ g_dbus_connection_remove_filter (GDBusConnection *connection,
       if (data->id == filter_id)
         {
           g_ptr_array_remove_index (connection->filters, n);
-          data->ref_count--;
-          if (data->ref_count == 0)
-            to_destroy = data;
+          to_destroy = data;
           break;
         }
     }
@@ -3186,7 +3247,6 @@ g_dbus_connection_remove_filter (GDBusConnection *connection,
     {
       if (to_destroy->user_data_free_func != NULL)
         to_destroy->user_data_free_func (to_destroy->user_data);
-      g_main_context_unref (to_destroy->context);
       g_free (to_destroy);
     }
   else
@@ -3366,8 +3426,7 @@ is_signal_data_for_name_lost_or_acquired (SignalData *signal_data)
  *     all object paths
  * @arg0: (allow-none): contents of first string argument to match on or %NULL
  *     to match on all kinds of arguments
- * @flags: #GDBusSignalFlags describing how arg0 is used in subscribing to the
- *     signal
+ * @flags: flags describing how to subscribe to the signal (currently unused)
  * @callback: callback to invoke when there is a signal matching the requested data
  * @user_data: user data to pass to @callback
  * @user_data_free_func: (allow-none): function to free @user_data with when
@@ -3392,13 +3451,6 @@ is_signal_data_for_name_lost_or_acquired (SignalData *signal_data)
  * %G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_PATH are given, @arg0 is
  * interpreted as part of a namespace or path.  The first argument
  * of a signal is matched against that part as specified by D-Bus.
- *
- * If @user_data_free_func is non-%NULL, it will be called (in the
- * thread-default main context of the thread you are calling this
- * method from) at some point after @user_data is no longer
- * needed. (It is not guaranteed to be called synchronously when the
- * signal is unsubscribed from, and may be called after @connection
- * has been destroyed.)
  *
  * Returns: a subscription identifier that can be used with g_dbus_connection_signal_unsubscribe()
  *
@@ -3747,10 +3799,10 @@ path_rule_matches (const gchar *path_a,
   len_a = strlen (path_a);
   len_b = strlen (path_b);
 
-  if (len_a < len_b && (len_a == 0 || path_a[len_a - 1] != '/'))
+  if (len_a < len_b && path_a[len_a - 1] != '/')
     return FALSE;
 
-  if (len_b < len_a && (len_b == 0 || path_b[len_b - 1] != '/'))
+  if (len_b < len_a && path_b[len_b - 1] != '/')
     return FALSE;
 
   return memcmp (path_a, path_b, MIN (len_a, len_b)) == 0;
@@ -5226,259 +5278,6 @@ g_dbus_connection_unregister_object (GDBusConnection *connection,
   return ret;
 }
 
-typedef struct {
-  GClosure *method_call_closure;
-  GClosure *get_property_closure;
-  GClosure *set_property_closure;
-} RegisterObjectData;
-
-static RegisterObjectData *
-register_object_data_new (GClosure *method_call_closure,
-                          GClosure *get_property_closure,
-                          GClosure *set_property_closure)
-{
-  RegisterObjectData *data;
-
-  data = g_new0 (RegisterObjectData, 1);
-
-  if (method_call_closure != NULL)
-    {
-      data->method_call_closure = g_closure_ref (method_call_closure);
-      g_closure_sink (method_call_closure);
-      if (G_CLOSURE_NEEDS_MARSHAL (method_call_closure))
-        g_closure_set_marshal (method_call_closure, g_cclosure_marshal_generic);
-    }
-
-  if (get_property_closure != NULL)
-    {
-      data->get_property_closure = g_closure_ref (get_property_closure);
-      g_closure_sink (get_property_closure);
-      if (G_CLOSURE_NEEDS_MARSHAL (get_property_closure))
-        g_closure_set_marshal (get_property_closure, g_cclosure_marshal_generic);
-    }
-
-  if (set_property_closure != NULL)
-    {
-      data->set_property_closure = g_closure_ref (set_property_closure);
-      g_closure_sink (set_property_closure);
-      if (G_CLOSURE_NEEDS_MARSHAL (set_property_closure))
-        g_closure_set_marshal (set_property_closure, g_cclosure_marshal_generic);
-    }
-
-  return data;
-}
-
-static void
-register_object_free_func (gpointer user_data)
-{
-  RegisterObjectData *data = user_data;
-
-  g_clear_pointer (&data->method_call_closure, g_closure_unref);
-  g_clear_pointer (&data->get_property_closure, g_closure_unref);
-  g_clear_pointer (&data->set_property_closure, g_closure_unref);
-
-  g_free (data);
-}
-
-static void
-register_with_closures_on_method_call (GDBusConnection       *connection,
-                                       const gchar           *sender,
-                                       const gchar           *object_path,
-                                       const gchar           *interface_name,
-                                       const gchar           *method_name,
-                                       GVariant              *parameters,
-                                       GDBusMethodInvocation *invocation,
-                                       gpointer               user_data)
-{
-  RegisterObjectData *data = user_data;
-  GValue params[] = { G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT };
-
-  g_value_init (&params[0], G_TYPE_DBUS_CONNECTION);
-  g_value_set_object (&params[0], connection);
-
-  g_value_init (&params[1], G_TYPE_STRING);
-  g_value_set_string (&params[1], sender);
-
-  g_value_init (&params[2], G_TYPE_STRING);
-  g_value_set_string (&params[2], object_path);
-
-  g_value_init (&params[3], G_TYPE_STRING);
-  g_value_set_string (&params[3], interface_name);
-
-  g_value_init (&params[4], G_TYPE_STRING);
-  g_value_set_string (&params[4], method_name);
-
-  g_value_init (&params[5], G_TYPE_VARIANT);
-  g_value_set_variant (&params[5], parameters);
-
-  g_value_init (&params[6], G_TYPE_DBUS_METHOD_INVOCATION);
-  g_value_set_object (&params[6], invocation);
-
-  g_closure_invoke (data->method_call_closure, NULL, G_N_ELEMENTS (params), params, NULL);
-
-  g_value_unset (params + 0);
-  g_value_unset (params + 1);
-  g_value_unset (params + 2);
-  g_value_unset (params + 3);
-  g_value_unset (params + 4);
-  g_value_unset (params + 5);
-  g_value_unset (params + 6);
-}
-
-static GVariant *
-register_with_closures_on_get_property (GDBusConnection *connection,
-                                        const gchar     *sender,
-                                        const gchar     *object_path,
-                                        const gchar     *interface_name,
-                                        const gchar     *property_name,
-                                        GError         **error,
-                                        gpointer         user_data)
-{
-  RegisterObjectData *data = user_data;
-  GValue params[] = { G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT };
-  GValue result_value = G_VALUE_INIT;
-  GVariant *result;
-
-  g_value_init (&params[0], G_TYPE_DBUS_CONNECTION);
-  g_value_set_object (&params[0], connection);
-
-  g_value_init (&params[1], G_TYPE_STRING);
-  g_value_set_string (&params[1], sender);
-
-  g_value_init (&params[2], G_TYPE_STRING);
-  g_value_set_string (&params[2], object_path);
-
-  g_value_init (&params[3], G_TYPE_STRING);
-  g_value_set_string (&params[3], interface_name);
-
-  g_value_init (&params[4], G_TYPE_STRING);
-  g_value_set_string (&params[4], property_name);
-
-  g_value_init (&result_value, G_TYPE_VARIANT);
-
-  g_closure_invoke (data->get_property_closure, &result_value, G_N_ELEMENTS (params), params, NULL);
-
-  result = g_value_get_variant (&result_value);
-  if (result)
-    g_variant_ref (result);
-
-  g_value_unset (params + 0);
-  g_value_unset (params + 1);
-  g_value_unset (params + 2);
-  g_value_unset (params + 3);
-  g_value_unset (params + 4);
-  g_value_unset (&result_value);
-
-  if (!result)
-    g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                 _("Unable to retrieve property %s.%s"),
-                 interface_name, property_name);
-
-  return result;
-}
-
-static gboolean
-register_with_closures_on_set_property (GDBusConnection *connection,
-                                        const gchar     *sender,
-                                        const gchar     *object_path,
-                                        const gchar     *interface_name,
-                                        const gchar     *property_name,
-                                        GVariant        *value,
-                                        GError         **error,
-                                        gpointer         user_data)
-{
-  RegisterObjectData *data = user_data;
-  GValue params[] = { G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT };
-  GValue result_value = G_VALUE_INIT;
-  gboolean result;
-
-  g_value_init (&params[0], G_TYPE_DBUS_CONNECTION);
-  g_value_set_object (&params[0], connection);
-
-  g_value_init (&params[1], G_TYPE_STRING);
-  g_value_set_string (&params[1], sender);
-
-  g_value_init (&params[2], G_TYPE_STRING);
-  g_value_set_string (&params[2], object_path);
-
-  g_value_init (&params[3], G_TYPE_STRING);
-  g_value_set_string (&params[3], interface_name);
-
-  g_value_init (&params[4], G_TYPE_STRING);
-  g_value_set_string (&params[4], property_name);
-
-  g_value_init (&params[5], G_TYPE_VARIANT);
-  g_value_set_variant (&params[5], value);
-
-  g_value_init (&result_value, G_TYPE_BOOLEAN);
-
-  g_closure_invoke (data->set_property_closure, &result_value, G_N_ELEMENTS (params), params, NULL);
-
-  result = g_value_get_boolean (&result_value);
-
-  g_value_unset (params + 0);
-  g_value_unset (params + 1);
-  g_value_unset (params + 2);
-  g_value_unset (params + 3);
-  g_value_unset (params + 4);
-  g_value_unset (params + 5);
-  g_value_unset (&result_value);
-
-  if (!result)
-    g_set_error (error,
-                 G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                 _("Unable to set property %s.%s"),
-                 interface_name, property_name);
-
-  return result;
-}
-
-/**
- * g_dbus_connection_register_object_with_closures: (rename-to g_dbus_connection_register_object)
- * @connection: A #GDBusConnection.
- * @object_path: The object path to register at.
- * @interface_info: Introspection data for the interface.
- * @method_call_closure: (nullable): #GClosure for handling incoming method calls.
- * @get_property_closure: (nullable): #GClosure for getting a property.
- * @set_property_closure: (nullable): #GClosure for setting a property.
- * @error: Return location for error or %NULL.
- *
- * Version of g_dbus_connection_register_object() using closures instead of a
- * #GDBusInterfaceVTable for easier binding in other languages.
- *
- * Returns: 0 if @error is set, otherwise a registration id (never 0)
- * that can be used with g_dbus_connection_unregister_object() .
- *
- * Since: 2.46
- */
-guint
-g_dbus_connection_register_object_with_closures (GDBusConnection     *connection,
-                                                 const gchar         *object_path,
-                                                 GDBusInterfaceInfo  *interface_info,
-                                                 GClosure            *method_call_closure,
-                                                 GClosure            *get_property_closure,
-                                                 GClosure            *set_property_closure,
-                                                 GError             **error)
-{
-  RegisterObjectData *data;
-  GDBusInterfaceVTable vtable =
-    {
-      method_call_closure != NULL  ? register_with_closures_on_method_call  : NULL,
-      get_property_closure != NULL ? register_with_closures_on_get_property : NULL,
-      set_property_closure != NULL ? register_with_closures_on_set_property : NULL
-    };
-
-  data = register_object_data_new (method_call_closure, get_property_closure, set_property_closure);
-
-  return g_dbus_connection_register_object (connection,
-                                            object_path,
-                                            interface_info,
-                                            &vtable,
-                                            data,
-                                            register_object_free_func,
-                                            error);
-}
-
 /* ---------------------------------------------------------------------------------------------------- */
 
 /**
@@ -5562,14 +5361,8 @@ static void
 add_call_flags (GDBusMessage           *message,
                          GDBusCallFlags  flags)
 {
-  GDBusMessageFlags msg_flags = 0;
-
   if (flags & G_DBUS_CALL_FLAGS_NO_AUTO_START)
-    msg_flags |= G_DBUS_MESSAGE_FLAGS_NO_AUTO_START;
-  if (flags & G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION)
-    msg_flags |= G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION;
-  if (msg_flags)
-    g_dbus_message_set_flags (message, msg_flags);
+    g_dbus_message_set_flags (message, G_DBUS_MESSAGE_FLAGS_NO_AUTO_START);
 }
 
 static GVariant *
@@ -5639,10 +5432,12 @@ decode_method_reply (GDBusMessage        *reply,
 
 typedef struct
 {
+  GSimpleAsyncResult *simple;
   GVariantType *reply_type;
   gchar *method_name; /* for error message */
   guint32 serial;
 
+  GVariant *value;
   GUnixFDList *fd_list;
 } CallState;
 
@@ -5652,6 +5447,8 @@ call_state_free (CallState *state)
   g_variant_type_free (state->reply_type);
   g_free (state->method_name);
 
+  if (state->value != NULL)
+    g_variant_unref (state->value);
   if (state->fd_list != NULL)
     g_object_unref (state->fd_list);
   g_slice_free (CallState, state);
@@ -5663,13 +5460,13 @@ g_dbus_connection_call_done (GObject      *source,
                              GAsyncResult *result,
                              gpointer      user_data)
 {
+  GSimpleAsyncResult *simple;
   GDBusConnection *connection = G_DBUS_CONNECTION (source);
-  GTask *task = user_data;
-  CallState *state = g_task_get_task_data (task);
-  GError *error = NULL;
+  CallState *state = user_data;
+  GError *error;
   GDBusMessage *reply;
-  GVariant *value = NULL;
 
+  error = NULL;
   reply = g_dbus_connection_send_message_with_reply_finish (connection,
                                                             result,
                                                             &error);
@@ -5696,15 +5493,22 @@ g_dbus_connection_call_done (GObject      *source,
     }
 
   if (reply != NULL)
-    value = decode_method_reply (reply, state->method_name, state->reply_type, &state->fd_list, &error);
+    state->value = decode_method_reply (reply, state->method_name, state->reply_type, &state->fd_list, &error);
 
+  simple = state->simple; /* why? because state is freed before we unref simple.. */
   if (error != NULL)
-    g_task_return_error (task, error);
+    {
+      g_simple_async_result_take_error (state->simple, error);
+      g_simple_async_result_complete (state->simple);
+      call_state_free (state);
+    }
   else
-    g_task_return_pointer (task, value, (GDestroyNotify) g_variant_unref);
-
+    {
+      g_simple_async_result_set_op_res_gpointer (state->simple, state, (GDestroyNotify) call_state_free);
+      g_simple_async_result_complete (state->simple);
+    }
   g_clear_object (&reply);
-  g_object_unref (task);
+  g_object_unref (simple);
 }
 
 /* called in any thread, with the connection's lock not held */
@@ -5761,18 +5565,18 @@ g_dbus_connection_call_internal (GDBusConnection        *connection,
   if (callback != NULL)
     {
       CallState *state;
-      GTask *task;
 
       state = g_slice_new0 (CallState);
+      state->simple = g_simple_async_result_new (G_OBJECT (connection),
+                                                 callback, user_data,
+                                                 g_dbus_connection_call_internal);
+      g_simple_async_result_set_check_cancellable (state->simple, cancellable);
       state->method_name = g_strjoin (".", interface_name, method_name, NULL);
 
       if (reply_type == NULL)
         reply_type = G_VARIANT_TYPE_ANY;
 
       state->reply_type = g_variant_type_copy (reply_type);
-
-      task = g_task_new (connection, cancellable, callback, user_data);
-      g_task_set_task_data (task, state, (GDestroyNotify) call_state_free);
 
       g_dbus_connection_send_message_with_reply (connection,
                                                  message,
@@ -5781,7 +5585,7 @@ g_dbus_connection_call_internal (GDBusConnection        *connection,
                                                  &state->serial,
                                                  cancellable,
                                                  g_dbus_connection_call_done,
-                                                 task);
+                                                 state);
       serial = state->serial;
     }
   else
@@ -5825,24 +5629,23 @@ g_dbus_connection_call_finish_internal (GDBusConnection  *connection,
                                         GAsyncResult     *res,
                                         GError          **error)
 {
-  GTask *task;
+  GSimpleAsyncResult *simple;
   CallState *state;
-  GVariant *ret;
 
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
-  g_return_val_if_fail (g_task_is_valid (res, connection), NULL);
+  g_return_val_if_fail (g_simple_async_result_is_valid (res, G_OBJECT (connection),
+                                                        g_dbus_connection_call_internal), NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  task = G_TASK (res);
-  state = g_task_get_task_data (task);
+  simple = G_SIMPLE_ASYNC_RESULT (res);
 
-  ret = g_task_propagate_pointer (task, error);
-  if (!ret)
+  if (g_simple_async_result_propagate_error (simple, error))
     return NULL;
 
+  state = g_simple_async_result_get_op_res_gpointer (simple);
   if (out_fd_list != NULL)
     *out_fd_list = state->fd_list != NULL ? g_object_ref (state->fd_list) : NULL;
-  return ret;
+  return g_variant_ref (state->value);
 }
 
 /* called in any user thread, with the connection's lock not held */
@@ -7266,22 +7069,26 @@ bus_get_async_initable_cb (GObject      *source_object,
                            GAsyncResult *res,
                            gpointer      user_data)
 {
-  GTask *task = user_data;
-  GError *error = NULL;
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
+  GError *error;
 
+  error = NULL;
   if (!g_async_initable_init_finish (G_ASYNC_INITABLE (source_object),
                                      res,
                                      &error))
     {
       g_assert (error != NULL);
-      g_task_return_error (task, error);
+      g_simple_async_result_take_error (simple, error);
       g_object_unref (source_object);
     }
   else
     {
-      g_task_return_pointer (task, source_object, g_object_unref);
+      g_simple_async_result_set_op_res_gpointer (simple,
+                                                 source_object,
+                                                 g_object_unref);
     }
-  g_object_unref (task);
+  g_simple_async_result_complete_in_idle (simple);
+  g_object_unref (simple);
 }
 
 /**
@@ -7308,17 +7115,23 @@ g_bus_get (GBusType             bus_type,
            gpointer             user_data)
 {
   GDBusConnection *connection;
-  GTask *task;
-  GError *error = NULL;
+  GSimpleAsyncResult *simple;
+  GError *error;
 
-  task = g_task_new (NULL, cancellable, callback, user_data);
+  simple = g_simple_async_result_new (NULL,
+                                      callback,
+                                      user_data,
+                                      g_bus_get);
+  g_simple_async_result_set_check_cancellable (simple, cancellable);
 
+  error = NULL;
   connection = get_uninitialized_connection (bus_type, cancellable, &error);
   if (connection == NULL)
     {
       g_assert (error != NULL);
-      g_task_return_error (task, error);
-      g_object_unref (task);
+      g_simple_async_result_take_error (simple, error);
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
     }
   else
     {
@@ -7326,7 +7139,7 @@ g_bus_get (GBusType             bus_type,
                                    G_PRIORITY_DEFAULT,
                                    cancellable,
                                    bus_get_async_initable_cb,
-                                   task);
+                                   simple);
     }
 }
 
@@ -7356,10 +7169,25 @@ GDBusConnection *
 g_bus_get_finish (GAsyncResult  *res,
                   GError       **error)
 {
-  g_return_val_if_fail (g_task_is_valid (res, NULL), NULL);
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+  GObject *object;
+  GDBusConnection *ret;
+
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-  return g_task_propagate_pointer (G_TASK (res), error);
+  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_bus_get);
+
+  ret = NULL;
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    goto out;
+
+  object = g_simple_async_result_get_op_res_gpointer (simple);
+  g_assert (object != NULL);
+  ret = g_object_ref (G_DBUS_CONNECTION (object));
+
+ out:
+  return ret;
 }
 
 /* ---------------------------------------------------------------------------------------------------- */

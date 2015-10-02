@@ -177,24 +177,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-   <ClCompile Include="..\..\..\gobject\gatomicarray.c" />
-   <ClCompile Include="..\..\..\gobject\gbinding.c" />
-   <ClCompile Include="..\..\..\gobject\gboxed.c" />
-   <ClCompile Include="..\..\..\gobject\gclosure.c" />
-   <ClCompile Include="..\..\..\gobject\genums.c" />
-   <ClCompile Include="..\..\..\gobject\gmarshal.c" />
-   <ClCompile Include="..\..\..\gobject\gobject.c" />
-   <ClCompile Include="..\..\..\gobject\gparam.c" />
-   <ClCompile Include="..\..\..\gobject\gparamspecs.c" />
-   <ClCompile Include="..\..\..\gobject\gsignal.c" />
-   <ClCompile Include="..\..\..\gobject\gsourceclosure.c" />
-   <ClCompile Include="..\..\..\gobject\gtype.c" />
-   <ClCompile Include="..\..\..\gobject\gtypemodule.c" />
-   <ClCompile Include="..\..\..\gobject\gtypeplugin.c" />
-   <ClCompile Include="..\..\..\gobject\gvalue.c" />
-   <ClCompile Include="..\..\..\gobject\gvaluearray.c" />
-   <ClCompile Include="..\..\..\gobject\gvaluetransform.c" />
-   <ClCompile Include="..\..\..\gobject\gvaluetypes.c" />
+    <ClCompile Include="..\..\..\gobject\gatomicarray.c" />
+    <ClCompile Include="..\..\..\gobject\gbinding.c" />
+    <ClCompile Include="..\..\..\gobject\gboxed.c" />
+    <ClCompile Include="..\..\..\gobject\gclosure.c" />
+    <ClCompile Include="..\..\..\gobject\genums.c" />
+    <ClCompile Include="..\..\..\gobject\gmarshal.c" />
+    <ClCompile Include="..\..\..\gobject\gobject.c" />
+    <ClCompile Include="..\..\..\gobject\gparam.c" />
+    <ClCompile Include="..\..\..\gobject\gparamspecs.c" />
+    <ClCompile Include="..\..\..\gobject\gsignal.c" />
+    <ClCompile Include="..\..\..\gobject\gsourceclosure.c" />
+    <ClCompile Include="..\..\..\gobject\gtype.c" />
+    <ClCompile Include="..\..\..\gobject\gtypemodule.c" />
+    <ClCompile Include="..\..\..\gobject\gtypeplugin.c" />
+    <ClCompile Include="..\..\..\gobject\gvalue.c" />
+    <ClCompile Include="..\..\..\gobject\gvaluearray.c" />
+    <ClCompile Include="..\..\..\gobject\gvaluetransform.c" />
+    <ClCompile Include="..\..\..\gobject\gvaluetypes.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\gobject\glib-mkenums.in">

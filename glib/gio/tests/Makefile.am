@@ -57,14 +57,12 @@ test_programs = \
 	sleepy-stream				\
 	socket					\
 	socket-listener				\
-	socket-service				\
 	srvtarget				\
 	task					\
 	tls-interaction				\
 	vfs					\
 	volumemonitor				\
 	glistmodel				\
-	testfilemonitor				\
 	$(NULL)
 
 uninstalled_test_programs = \
@@ -132,7 +130,6 @@ schema_tests = \
 	default-in-aliases.gschema.xml			\
 	default-not-in-choices.gschema.xml		\
 	default-out-of-range.gschema.xml		\
-	description-xmllang.gschema.xml			\
 	empty-key.gschema.xml				\
 	enum-with-aliases.gschema.xml			\
 	enum-with-bad-default.gschema.xml		\
@@ -183,8 +180,6 @@ schema_tests = \
 	range-parse-error.gschema.xml			\
 	range-wrong-type.gschema.xml			\
 	range.gschema.xml				\
-	summary-xmllang.gschema.xml			\
-	summary-xmllang-and-attrs.gschema.xml		\
 	wrong-category.gschema.xml			\
 	$(NULL)
 
@@ -246,7 +241,6 @@ test_programs += \
 	contenttype				\
 	file					\
 	gdbus-peer-object-manager		\
-	gdbus-unix-addresses			\
 	live-g-file				\
 	socket-address				\
 	stream-rw_all				\
@@ -256,7 +250,6 @@ test_programs += \
 
 test_extra_programs += \
 	basic-application			\
-	dbus-launch				\
 	$(NULL)
 
 # Uninstalled because of the check-for-executable logic in DesktopAppInfo unable to find the installed executable
@@ -503,10 +496,8 @@ test_programs += \
 endif
 
 # -----------------------------------------------------------------------------
-#  The resources test is a bit more complicated, and we cannot build it when
-#  cross-compiling GIO because it requires running a binary...
+#  The resources test is a bit more complicated...
 
-if !CROSS_COMPILING
 test_programs += resources
 resources_SOURCES = resources.c
 nodist_resources_SOURCES = test_resources.c test_resources2.c test_resources2.h
@@ -528,7 +519,11 @@ if !ENABLE_INSTALLED_TESTS
 libresourceplugin_la_LDFLAGS += -rpath /
 endif
 
-glib_compile_resources=$(top_builddir)/gio/glib-compile-resources
+if CROSS_COMPILING
+  glib_compile_resources=$(GLIB_COMPILE_RESOURCES)
+else
+  glib_compile_resources=$(top_builddir)/gio/glib-compile-resources
+endif
 
 resources.o: test_resources2.h
 test_resources.c: test2.gresource.xml Makefile $(shell $(glib_compile_resources) --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/test2.gresource.xml)
@@ -544,8 +539,8 @@ test.gresource: test.gresource.xml Makefile $(shell $(glib_compile_resources) --
 	$(AM_V_GEN) $(glib_compile_resources) --target=$@ --sourcedir=$(srcdir) $<
 
 EXTRA_DIST += test.gresource.xml test1.txt test2.gresource.xml test2.txt test3.gresource.xml test3.txt test4.gresource.xml
+
 CLEANFILES += test_resources.c test_resources2.[ch] plugin_resources.c test.gresource
-endif # !CROSS_COMPILING
 
 BUILT_SOURCES += giotypefuncs.c
 

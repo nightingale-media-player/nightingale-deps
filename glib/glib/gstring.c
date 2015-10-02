@@ -195,7 +195,7 @@ g_string_new_len (const gchar *init,
 
 /**
  * g_string_free:
- * @string: (transfer full): a #GString
+ * @string: a #GString
  * @free_segment: if %TRUE, the actual character data is freed as well
  *
  * Frees the memory allocated for the #GString.
@@ -445,7 +445,7 @@ g_string_insert_len (GString     *string,
    * since ">=" and "<=" are only valid when val really is a substring.
    * In practice, it will work on modern archs.
    */
-  if (G_UNLIKELY (val >= string->str && val <= string->str + string->len))
+  if (val >= string->str && val <= string->str + string->len)
     {
       gsize offset = val - string->str;
       gsize precount = 0;
@@ -593,6 +593,9 @@ GString *
 g_string_append (GString     *string,
                  const gchar *val)
 {
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (val != NULL, string);
+
   return g_string_insert_len (string, -1, val, -1);
 }
 
@@ -617,6 +620,9 @@ g_string_append_len (GString     *string,
                      const gchar *val,
                      gssize       len)
 {
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (len == 0 || val != NULL, string);
+
   return g_string_insert_len (string, -1, val, len);
 }
 
@@ -673,6 +679,9 @@ GString *
 g_string_prepend (GString     *string,
                   const gchar *val)
 {
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (val != NULL, string);
+
   return g_string_insert_len (string, 0, val, -1);
 }
 
@@ -697,6 +706,9 @@ g_string_prepend_len (GString     *string,
                       const gchar *val,
                       gssize       len)
 {
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (val != NULL, string);
+
   return g_string_insert_len (string, 0, val, len);
 }
 
@@ -754,6 +766,12 @@ g_string_insert (GString     *string,
                  gssize       pos,
                  const gchar *val)
 {
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (val != NULL, string);
+
+  if (pos >= 0)
+    g_return_val_if_fail (pos <= string->len, string);
+
   return g_string_insert_len (string, pos, val, -1);
 }
 

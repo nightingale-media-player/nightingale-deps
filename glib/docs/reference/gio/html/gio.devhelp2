@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<book xmlns="http://www.devhelp.net/book" title="GIO Reference Manual" link="index.html" author="" name="gio" version="2" language="c" online="https://developer.gnome.org/gio/unstable/">
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GIO Reference Manual" link="index.html" author="" name="gio" version="2" language="c">
   <chapters>
     <sub name="GIO Overview" link="pt01.html">
       <sub name="Introduction" link="ch01.html"/>
@@ -182,9 +183,6 @@
         <sub name="GListModel" link="GListModel.html"/>
         <sub name="GListStore" link="GListStore.html"/>
       </sub>
-      <sub name="Win32 registry support" link="registry.html">
-        <sub name="GWin32RegistryKey" link="gio-GWin32RegistryKey.html"/>
-      </sub>
       <sub name="Application support" link="application.html">
         <sub name="GApplication" link="GApplication.html"/>
         <sub name="GApplicationCommandLine" link="GApplicationCommandLine.html"/>
@@ -224,29 +222,29 @@
     </sub>
     <sub name="Migrating to GIO" link="migrating.html">
       <sub name="Migrating to GIO" link="migrating.html">
-        <sub name="Migrating from POSIX to GIO" link="ch32.html"/>
+        <sub name="Migrating from POSIX to GIO" link="ch31.html"/>
       </sub>
-      <sub name="Migrating from GnomeVFS to GIO" link="ch33.html">
-        <sub name="Trash handling" link="ch33.html#id-1.5.3.3"/>
-        <sub name="Operations on multiple files" link="ch33s02.html"/>
-        <sub name="Mime monitoring" link="ch33s03.html"/>
+      <sub name="Migrating from GnomeVFS to GIO" link="ch32.html">
+        <sub name="Trash handling" link="ch32.html#id-1.5.3.3"/>
+        <sub name="Operations on multiple files" link="ch32s02.html"/>
+        <sub name="Mime monitoring" link="ch32s03.html"/>
       </sub>
-      <sub name="Migrating from GConf to GSettings" link="ch34.html">
-        <sub name="Before you start" link="ch34.html#id-1.5.4.2"/>
-        <sub name="Conceptual differences" link="ch34s02.html"/>
-        <sub name="GConfClient (and GConfBridge) API conversion" link="ch34s03.html"/>
-        <sub name="Change notification" link="ch34s04.html"/>
-        <sub name="Change sets" link="ch34s05.html"/>
-        <sub name="Schema conversion" link="ch34s06.html"/>
-        <sub name="Data conversion" link="ch34s07.html"/>
+      <sub name="Migrating from GConf to GSettings" link="ch33.html">
+        <sub name="Before you start" link="ch33.html#id-1.5.4.2"/>
+        <sub name="Conceptual differences" link="ch33s02.html"/>
+        <sub name="GConfClient (and GConfBridge) API conversion" link="ch33s03.html"/>
+        <sub name="Change notification" link="ch33s04.html"/>
+        <sub name="Change sets" link="ch33s05.html"/>
+        <sub name="Schema conversion" link="ch33s06.html"/>
+        <sub name="Data conversion" link="ch33s07.html"/>
       </sub>
-      <sub name="Migrating to GDBus" link="ch35.html">
-        <sub name="Conceptual differences" link="ch35.html#id-1.5.5.2"/>
-        <sub name="API comparison" link="ch35s02.html"/>
-        <sub name="Owning bus names" link="ch35s03.html"/>
-        <sub name="Creating proxies for well-known names" link="ch35s04.html"/>
-        <sub name="Generating code and docs" link="ch35s05.html">
-          <sub name="Using gdbus-codegen" link="ch35s05.html#gdbus-example-gdbus-codegen"/>
+      <sub name="Migrating to GDBus" link="ch34.html">
+        <sub name="Conceptual differences" link="ch34.html#id-1.5.5.2"/>
+        <sub name="API comparison" link="ch34s02.html"/>
+        <sub name="Owning bus names" link="ch34s03.html"/>
+        <sub name="Creating proxies for well-known names" link="ch34s04.html"/>
+        <sub name="Generating code and docs" link="ch34s05.html">
+          <sub name="Using gdbus-codegen" link="ch34s05.html#gdbus-example-gdbus-codegen"/>
           <sub name="org.gtk.GDBus.Example.ObjectManager.Animal" link="gdbus-org.gtk.GDBus.Example.ObjectManager.Animal.html"/>
           <sub name="org.gtk.GDBus.Example.ObjectManager.Cat" link="gdbus-org.gtk.GDBus.Example.ObjectManager.Cat.html"/>
           <sub name="ExampleAnimal" link="ExampleAnimal.html"/>
@@ -273,7 +271,6 @@
     <sub name="Index of new symbols in 2.40" link="api-index-2-40.html"/>
     <sub name="Index of new symbols in 2.42" link="api-index-2-42.html"/>
     <sub name="Index of new symbols in 2.44" link="api-index-2-44.html"/>
-    <sub name="Index of new symbols in 2.46" link="api-index-2-46.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
   <functions>
@@ -503,7 +500,6 @@
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-IS-BACKUP:CAPS"/>
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-IS-SYMLINK:CAPS"/>
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-IS-VIRTUAL:CAPS"/>
-    <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_IS_VOLATILE" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-IS-VOLATILE:CAPS" since="2.46"/>
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_NAME" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-NAME:CAPS"/>
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-DISPLAY-NAME:CAPS"/>
     <keyword type="macro" name="G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME" link="GFileInfo.html#G-FILE-ATTRIBUTE-STANDARD-EDIT-NAME:CAPS"/>
@@ -632,6 +628,7 @@
     <keyword type="enum" name="enum GFileMonitorEvent" link="GFileMonitor.html#GFileMonitorEvent"/>
     <keyword type="struct" name="GFileMonitor" link="GFileMonitor.html#GFileMonitor-struct"/>
     <keyword type="property" name="The “cancelled” property" link="GFileMonitor.html#GFileMonitor--cancelled"/>
+    <keyword type="property" name="The “context” property" link="GFileMonitor.html#GFileMonitor--context"/>
     <keyword type="property" name="The “rate-limit” property" link="GFileMonitor.html#GFileMonitor--rate-limit"/>
     <keyword type="signal" name="The “changed” signal" link="GFileMonitor.html#GFileMonitor-changed"/>
     <keyword type="function" name="g_filename_completer_new ()" link="GFilenameCompleter.html#g-filename-completer-new"/>
@@ -705,31 +702,31 @@
     <keyword type="function" name="g_io_scheduler_job_send_to_mainloop_async ()" link="gio-GIOScheduler.html#g-io-scheduler-job-send-to-mainloop-async" deprecated="Use g_main_context_invoke()."/>
     <keyword type="struct" name="GIOSchedulerJob" link="gio-GIOScheduler.html#GIOSchedulerJob"/>
     <keyword type="function" name="GSimpleAsyncThreadFunc ()" link="GSimpleAsyncResult.html#GSimpleAsyncThreadFunc"/>
-    <keyword type="function" name="g_simple_async_result_new ()" link="GSimpleAsyncResult.html#g-simple-async-result-new" deprecated="2.46: Use g_task_new() instead."/>
-    <keyword type="function" name="g_simple_async_result_new_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-error" deprecated="2.46: Use g_task_new() and g_task_return_new_error() instead."/>
-    <keyword type="function" name="g_simple_async_result_new_from_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-from-error" deprecated="2.46: Use g_task_new() and g_task_return_error() instead."/>
-    <keyword type="function" name="g_simple_async_result_new_take_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-take-error" deprecated="2.46: Use g_task_new() and g_task_return_error() instead." since="2.28"/>
-    <keyword type="function" name="g_simple_async_result_set_check_cancellable ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-check-cancellable" deprecated="2.46: Use #GTask instead." since="2.32"/>
-    <keyword type="function" name="g_simple_async_result_set_op_res_gpointer ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gpointer" deprecated="2.46: Use #GTask and g_task_return_pointer() instead."/>
-    <keyword type="function" name="g_simple_async_result_get_op_res_gpointer ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gpointer" deprecated="2.46: Use #GTask and g_task_propagate_pointer() instead."/>
-    <keyword type="function" name="g_simple_async_result_set_op_res_gssize ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gssize" deprecated="2.46: Use #GTask and g_task_return_int() instead."/>
-    <keyword type="function" name="g_simple_async_result_get_op_res_gssize ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gssize" deprecated="2.46: Use #GTask and g_task_propagate_int() instead."/>
-    <keyword type="function" name="g_simple_async_result_set_op_res_gboolean ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gboolean" deprecated="2.46: Use #GTask and g_task_return_boolean() instead."/>
-    <keyword type="function" name="g_simple_async_result_get_op_res_gboolean ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gboolean" deprecated="2.46: Use #GTask and g_task_propagate_boolean() instead."/>
-    <keyword type="function" name="g_simple_async_result_get_source_tag ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-source-tag" deprecated="2.46. Use #GTask and g_task_get_source_tag() instead."/>
-    <keyword type="function" name="g_simple_async_result_is_valid ()" link="GSimpleAsyncResult.html#g-simple-async-result-is-valid" deprecated="2.46: Use #GTask and g_task_is_valid() instead." since="2.20"/>
-    <keyword type="function" name="g_simple_async_result_set_handle_cancellation ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-handle-cancellation" deprecated="2.46"/>
-    <keyword type="function" name="g_simple_async_result_complete ()" link="GSimpleAsyncResult.html#g-simple-async-result-complete" deprecated="2.46: Use #GTask instead."/>
-    <keyword type="function" name="g_simple_async_result_complete_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-result-complete-in-idle" deprecated="2.46: Use #GTask instead."/>
-    <keyword type="function" name="g_simple_async_result_run_in_thread ()" link="GSimpleAsyncResult.html#g-simple-async-result-run-in-thread" deprecated="2.46: Use #GTask and g_task_run_in_thread() instead."/>
-    <keyword type="function" name="g_simple_async_result_set_from_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-from-error" deprecated="2.46: Use #GTask and g_task_return_error() instead."/>
-    <keyword type="function" name="g_simple_async_result_take_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-take-error" deprecated="2.46: Use #GTask and g_task_return_error() instead." since="2.28"/>
-    <keyword type="function" name="g_simple_async_result_propagate_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-propagate-error" deprecated="2.46: Use #GTask instead."/>
-    <keyword type="function" name="g_simple_async_result_set_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-error" deprecated="2.46: Use #GTask and g_task_return_new_error() instead."/>
-    <keyword type="function" name="g_simple_async_result_set_error_va ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-error-va" deprecated="2.46: Use #GTask and g_task_return_error() instead."/>
-    <keyword type="function" name="g_simple_async_report_error_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-error-in-idle" deprecated="2.46: Use g_task_report_error()."/>
-    <keyword type="function" name="g_simple_async_report_gerror_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-gerror-in-idle" deprecated="2.46: Use g_task_report_error()."/>
-    <keyword type="function" name="g_simple_async_report_take_gerror_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-take-gerror-in-idle" deprecated="2.46: Use g_task_report_error()." since="2.28"/>
+    <keyword type="function" name="g_simple_async_result_new ()" link="GSimpleAsyncResult.html#g-simple-async-result-new"/>
+    <keyword type="function" name="g_simple_async_result_new_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-error"/>
+    <keyword type="function" name="g_simple_async_result_new_from_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-from-error"/>
+    <keyword type="function" name="g_simple_async_result_new_take_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-new-take-error" since="2.28"/>
+    <keyword type="function" name="g_simple_async_result_set_check_cancellable ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-check-cancellable" since="2.32"/>
+    <keyword type="function" name="g_simple_async_result_set_op_res_gpointer ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gpointer"/>
+    <keyword type="function" name="g_simple_async_result_get_op_res_gpointer ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gpointer"/>
+    <keyword type="function" name="g_simple_async_result_set_op_res_gssize ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gssize"/>
+    <keyword type="function" name="g_simple_async_result_get_op_res_gssize ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gssize"/>
+    <keyword type="function" name="g_simple_async_result_set_op_res_gboolean ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-op-res-gboolean"/>
+    <keyword type="function" name="g_simple_async_result_get_op_res_gboolean ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-op-res-gboolean"/>
+    <keyword type="function" name="g_simple_async_result_get_source_tag ()" link="GSimpleAsyncResult.html#g-simple-async-result-get-source-tag"/>
+    <keyword type="function" name="g_simple_async_result_is_valid ()" link="GSimpleAsyncResult.html#g-simple-async-result-is-valid" since="2.20"/>
+    <keyword type="function" name="g_simple_async_result_set_handle_cancellation ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-handle-cancellation"/>
+    <keyword type="function" name="g_simple_async_result_complete ()" link="GSimpleAsyncResult.html#g-simple-async-result-complete"/>
+    <keyword type="function" name="g_simple_async_result_complete_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-result-complete-in-idle"/>
+    <keyword type="function" name="g_simple_async_result_run_in_thread ()" link="GSimpleAsyncResult.html#g-simple-async-result-run-in-thread"/>
+    <keyword type="function" name="g_simple_async_result_set_from_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-from-error"/>
+    <keyword type="function" name="g_simple_async_result_take_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-take-error" since="2.28"/>
+    <keyword type="function" name="g_simple_async_result_propagate_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-propagate-error"/>
+    <keyword type="function" name="g_simple_async_result_set_error ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-error"/>
+    <keyword type="function" name="g_simple_async_result_set_error_va ()" link="GSimpleAsyncResult.html#g-simple-async-result-set-error-va"/>
+    <keyword type="function" name="g_simple_async_report_error_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-error-in-idle"/>
+    <keyword type="function" name="g_simple_async_report_gerror_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-gerror-in-idle"/>
+    <keyword type="function" name="g_simple_async_report_take_gerror_in_idle ()" link="GSimpleAsyncResult.html#g-simple-async-report-take-gerror-in-idle" since="2.28"/>
     <keyword type="struct" name="GSimpleAsyncResult" link="GSimpleAsyncResult.html#GSimpleAsyncResult-struct"/>
     <keyword type="function" name="g_converter_convert ()" link="GConverter.html#g-converter-convert" since="2.24"/>
     <keyword type="function" name="g_converter_reset ()" link="GConverter.html#g-converter-reset" since="2.24"/>
@@ -1650,15 +1647,12 @@
     <keyword type="function" name="g_socket_listener_close ()" link="GSocketListener.html#g-socket-listener-close" since="2.22"/>
     <keyword type="function" name="g_socket_listener_set_backlog ()" link="GSocketListener.html#g-socket-listener-set-backlog" since="2.22"/>
     <keyword type="struct" name="GSocketListener" link="GSocketListener.html#GSocketListener-struct"/>
-    <keyword type="enum" name="enum GSocketListenerEvent" link="GSocketListener.html#GSocketListenerEvent" since="2.46"/>
     <keyword type="property" name="The “listen-backlog” property" link="GSocketListener.html#GSocketListener--listen-backlog"/>
-    <keyword type="signal" name="The “event” signal" link="GSocketListener.html#GSocketListener-event"/>
     <keyword type="function" name="g_socket_service_new ()" link="GSocketService.html#g-socket-service-new" since="2.22"/>
     <keyword type="function" name="g_socket_service_start ()" link="GSocketService.html#g-socket-service-start" since="2.22"/>
     <keyword type="function" name="g_socket_service_stop ()" link="GSocketService.html#g-socket-service-stop" since="2.22"/>
     <keyword type="function" name="g_socket_service_is_active ()" link="GSocketService.html#g-socket-service-is-active" since="2.22"/>
     <keyword type="struct" name="GSocketService" link="GSocketService.html#GSocketService-struct"/>
-    <keyword type="property" name="The “active” property" link="GSocketService.html#GSocketService--active"/>
     <keyword type="signal" name="The “incoming” signal" link="GSocketService.html#GSocketService-incoming"/>
     <keyword type="function" name="g_threaded_socket_service_new ()" link="GThreadedSocketService.html#g-threaded-socket-service-new" since="2.22"/>
     <keyword type="struct" name="GThreadedSocketService" link="GThreadedSocketService.html#GThreadedSocketService-struct"/>
@@ -1666,7 +1660,6 @@
     <keyword type="signal" name="The “run” signal" link="GThreadedSocketService.html#GThreadedSocketService-run"/>
     <keyword type="function" name="g_network_monitor_get_default ()" link="GNetworkMonitor.html#g-network-monitor-get-default" since="2.32"/>
     <keyword type="function" name="g_network_monitor_get_network_available ()" link="GNetworkMonitor.html#g-network-monitor-get-network-available" since="2.32"/>
-    <keyword type="function" name="g_network_monitor_get_network_metered ()" link="GNetworkMonitor.html#g-network-monitor-get-network-metered" since="2.46"/>
     <keyword type="function" name="g_network_monitor_can_reach ()" link="GNetworkMonitor.html#g-network-monitor-can-reach" since="2.32"/>
     <keyword type="function" name="g_network_monitor_can_reach_async ()" link="GNetworkMonitor.html#g-network-monitor-can-reach-async"/>
     <keyword type="function" name="g_network_monitor_can_reach_finish ()" link="GNetworkMonitor.html#g-network-monitor-can-reach-finish"/>
@@ -1677,7 +1670,6 @@
     <keyword type="enum" name="enum GNetworkConnectivity" link="GNetworkMonitor.html#GNetworkConnectivity" since="2.44"/>
     <keyword type="property" name="The “connectivity” property" link="GNetworkMonitor.html#GNetworkMonitor--connectivity"/>
     <keyword type="property" name="The “network-available” property" link="GNetworkMonitor.html#GNetworkMonitor--network-available"/>
-    <keyword type="property" name="The “network-metered” property" link="GNetworkMonitor.html#GNetworkMonitor--network-metered"/>
     <keyword type="signal" name="The “network-changed” signal" link="GNetworkMonitor.html#GNetworkMonitor-network-changed"/>
     <keyword type="macro" name="G_TLS_ERROR" link="gio-TLS-Overview.html#G-TLS-ERROR:CAPS"/>
     <keyword type="enum" name="enum GTlsError" link="gio-TLS-Overview.html#GTlsError" since="2.28"/>
@@ -1734,7 +1726,6 @@
     <keyword type="function" name="g_tls_client_connection_set_use_ssl3 ()" link="GTlsClientConnection.html#g-tls-client-connection-set-use-ssl3" since="2.28"/>
     <keyword type="function" name="g_tls_client_connection_get_use_ssl3 ()" link="GTlsClientConnection.html#g-tls-client-connection-get-use-ssl3" since="2.28"/>
     <keyword type="function" name="g_tls_client_connection_get_accepted_cas ()" link="GTlsClientConnection.html#g-tls-client-connection-get-accepted-cas" since="2.28"/>
-    <keyword type="function" name="g_tls_client_connection_copy_session_state ()" link="GTlsClientConnection.html#g-tls-client-connection-copy-session-state" since="2.46"/>
     <keyword type="struct" name="GTlsClientConnection" link="GTlsClientConnection.html#GTlsClientConnection-struct"/>
     <keyword type="struct" name="struct GTlsClientConnectionInterface" link="GTlsClientConnection.html#GTlsClientConnectionInterface" since="2.26"/>
     <keyword type="property" name="The “accepted-cas” property" link="GTlsClientConnection.html#GTlsClientConnection--accepted-cas"/>
@@ -1769,7 +1760,6 @@
     <keyword type="function" name="g_tls_database_lookup_certificate_for_handle_async ()" link="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle-async" since="2.30"/>
     <keyword type="function" name="g_tls_database_lookup_certificate_for_handle_finish ()" link="GTlsDatabase.html#g-tls-database-lookup-certificate-for-handle-finish" since="2.30"/>
     <keyword type="struct" name="GTlsDatabase" link="GTlsDatabase.html#GTlsDatabase-struct"/>
-    <keyword type="struct" name="struct GTlsDatabaseClass" link="GTlsDatabase.html#GTlsDatabaseClass" since="2.30"/>
     <keyword type="enum" name="enum GTlsDatabaseVerifyFlags" link="GTlsDatabase.html#GTlsDatabaseVerifyFlags" since="2.30"/>
     <keyword type="macro" name="G_TLS_DATABASE_PURPOSE_AUTHENTICATE_SERVER" link="GTlsDatabase.html#G-TLS-DATABASE-PURPOSE-AUTHENTICATE-SERVER:CAPS"/>
     <keyword type="macro" name="G_TLS_DATABASE_PURPOSE_AUTHENTICATE_CLIENT" link="GTlsDatabase.html#G-TLS-DATABASE-PURPOSE-AUTHENTICATE-CLIENT:CAPS"/>
@@ -1789,7 +1779,6 @@
     <keyword type="struct" name="GTlsInteraction" link="GTlsInteraction.html#GTlsInteraction-struct"/>
     <keyword type="enum" name="enum GTlsInteractionResult" link="GTlsInteraction.html#GTlsInteractionResult" since="2.30"/>
     <keyword type="enum" name="enum GTlsCertificateRequestFlags" link="GTlsInteraction.html#GTlsCertificateRequestFlags" since="2.40"/>
-    <keyword type="struct" name="struct GTlsInteractionClass" link="GTlsInteraction.html#GTlsInteractionClass" since="2.30"/>
     <keyword type="function" name="g_tls_password_new ()" link="GTlsPassword.html#g-tls-password-new"/>
     <keyword type="function" name="g_tls_password_get_value ()" link="GTlsPassword.html#g-tls-password-get-value" since="2.30"/>
     <keyword type="function" name="g_tls_password_set_value ()" link="GTlsPassword.html#g-tls-password-set-value" since="2.30"/>
@@ -2055,7 +2044,6 @@
     <keyword type="function" name="GDBusInterfaceSetPropertyFunc ()" link="GDBusConnection.html#GDBusInterfaceSetPropertyFunc" since="2.26"/>
     <keyword type="function" name="g_dbus_connection_register_object ()" link="GDBusConnection.html#g-dbus-connection-register-object" since="2.26"/>
     <keyword type="function" name="g_dbus_connection_unregister_object ()" link="GDBusConnection.html#g-dbus-connection-unregister-object" since="2.26"/>
-    <keyword type="function" name="g_dbus_connection_register_object_with_closures ()" link="GDBusConnection.html#g-dbus-connection-register-object-with-closures" since="2.46"/>
     <keyword type="function" name="GDBusSubtreeEnumerateFunc ()" link="GDBusConnection.html#GDBusSubtreeEnumerateFunc" since="2.26"/>
     <keyword type="function" name="GDBusSubtreeIntrospectFunc ()" link="GDBusConnection.html#GDBusSubtreeIntrospectFunc" since="2.26"/>
     <keyword type="function" name="GDBusSubtreeDispatchFunc ()" link="GDBusConnection.html#GDBusSubtreeDispatchFunc" since="2.26"/>
@@ -2290,7 +2278,7 @@
     <keyword type="function" name="g_settings_get_default_value ()" link="GSettings.html#g-settings-get-default-value" since="2.40"/>
     <keyword type="function" name="g_settings_list_schemas ()" link="GSettings.html#g-settings-list-schemas" deprecated="" since="2.26"/>
     <keyword type="function" name="g_settings_list_relocatable_schemas ()" link="GSettings.html#g-settings-list-relocatable-schemas" deprecated="2.40: Use g_settings_schema_source_list_schemas() instead" since="2.28"/>
-    <keyword type="function" name="g_settings_list_keys ()" link="GSettings.html#g-settings-list-keys" deprecated=""/>
+    <keyword type="function" name="g_settings_list_keys ()" link="GSettings.html#g-settings-list-keys"/>
     <keyword type="function" name="g_settings_list_children ()" link="GSettings.html#g-settings-list-children"/>
     <keyword type="function" name="g_settings_get_range ()" link="GSettings.html#g-settings-get-range" deprecated="2.40:Use g_settings_schema_key_get_range() instead." since="2.28"/>
     <keyword type="function" name="g_settings_range_check ()" link="GSettings.html#g-settings-range-check" deprecated="2.40:Use g_settings_schema_key_range_check() instead." since="2.28"/>
@@ -2363,7 +2351,6 @@
     <keyword type="function" name="g_settings_schema_key_ref ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-key-ref" since="2.40"/>
     <keyword type="function" name="g_settings_schema_key_unref ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-key-unref" since="2.40"/>
     <keyword type="function" name="g_settings_schema_list_children ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-list-children" since="2.44"/>
-    <keyword type="function" name="g_settings_schema_list_keys ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-list-keys" since="2.46"/>
     <keyword type="function" name="g_settings_schema_key_get_value_type ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-key-get-value-type" since="2.40"/>
     <keyword type="function" name="g_settings_schema_key_get_default_value ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-key-get-default-value" since="2.40"/>
     <keyword type="function" name="g_settings_schema_key_get_range ()" link="gio-GSettingsSchema-GSettingsSchemaSource.html#g-settings-schema-key-get-range" since="2.40"/>
@@ -2428,47 +2415,8 @@
     <keyword type="function" name="g_list_store_remove ()" link="GListStore.html#g-list-store-remove" since="2.44"/>
     <keyword type="function" name="g_list_store_remove_all ()" link="GListStore.html#g-list-store-remove-all" since="2.44"/>
     <keyword type="function" name="g_list_store_splice ()" link="GListStore.html#g-list-store-splice" since="2.44"/>
-    <keyword type="function" name="g_list_store_sort ()" link="GListStore.html#g-list-store-sort" since="2.46"/>
     <keyword type="struct" name="GListStore" link="GListStore.html#GListStore-struct"/>
     <keyword type="property" name="The “item-type” property" link="GListStore.html#GListStore--item-type"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_copy ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-copy" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_free ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-free" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_assign ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-assign" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_copy ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-copy" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_free ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-free" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_assign ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-assign" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_new ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-new"/>
-    <keyword type="function" name="g_win32_registry_key_new_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-new-w"/>
-    <keyword type="function" name="g_win32_registry_key_get_child ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-child"/>
-    <keyword type="function" name="g_win32_registry_key_get_child_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-child-w"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_init ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-init" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_clear ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-clear" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_n_subkeys ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-n-subkeys" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_next ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-next" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_get_name ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-get-name" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_subkey_iter_get_name_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-subkey-iter-get-name-w" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_init ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-init" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_clear ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-clear" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_n_values ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-n-values" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_next ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-next" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_get_value_type ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-get-value-type" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_get_name ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-get-name" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_get_name_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-get-name-w" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_get_data ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-get-data" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_value_iter_get_data_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-value-iter-get-data-w" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_get_value ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-value" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_get_value_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-value-w" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_get_path ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-path" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_get_path_w ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-get-path-w" since="2.46"/>
-    <keyword type="function" name="GWin32RegistryKeyWatchCallbackFunc ()" link="gio-GWin32RegistryKey.html#GWin32RegistryKeyWatchCallbackFunc" since="2.42"/>
-    <keyword type="function" name="g_win32_registry_key_watch ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-watch" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_has_changed ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-has-changed" since="2.46"/>
-    <keyword type="function" name="g_win32_registry_key_erase_change_indicator ()" link="gio-GWin32RegistryKey.html#g-win32-registry-key-erase-change-indicator" since="2.46"/>
-    <keyword type="struct" name="struct GWin32RegistrySubkeyIter" link="gio-GWin32RegistryKey.html#GWin32RegistrySubkeyIter"/>
-    <keyword type="struct" name="struct GWin32RegistryValueIter" link="gio-GWin32RegistryKey.html#GWin32RegistryValueIter"/>
-    <keyword type="struct" name="struct GWin32RegistryKey" link="gio-GWin32RegistryKey.html#GWin32RegistryKey"/>
-    <keyword type="enum" name="enum GWin32RegistryValueType" link="gio-GWin32RegistryKey.html#GWin32RegistryValueType"/>
-    <keyword type="enum" name="enum GWin32RegistryKeyWatcherFlags" link="gio-GWin32RegistryKey.html#GWin32RegistryKeyWatcherFlags"/>
     <keyword type="function" name="g_application_id_is_valid ()" link="GApplication.html#g-application-id-is-valid"/>
     <keyword type="function" name="g_application_new ()" link="GApplication.html#g-application-new"/>
     <keyword type="function" name="g_application_get_application_id ()" link="GApplication.html#g-application-get-application-id" since="2.28"/>
@@ -2606,7 +2554,6 @@
     <keyword type="function" name="g_property_action_new ()" link="GPropertyAction.html#g-property-action-new" since="2.38"/>
     <keyword type="struct" name="GPropertyAction" link="GPropertyAction.html#GPropertyAction-struct"/>
     <keyword type="property" name="The “enabled” property" link="GPropertyAction.html#GPropertyAction--enabled"/>
-    <keyword type="property" name="The “invert-boolean” property" link="GPropertyAction.html#GPropertyAction--invert-boolean"/>
     <keyword type="property" name="The “name” property" link="GPropertyAction.html#GPropertyAction--name"/>
     <keyword type="property" name="The “object” property" link="GPropertyAction.html#GPropertyAction--object"/>
     <keyword type="property" name="The “parameter-type” property" link="GPropertyAction.html#GPropertyAction--parameter-type"/>
@@ -2737,6 +2684,12 @@
     <keyword type="function" name="g_io_extension_ref_class ()" link="gio-Extension-Points.html#g-io-extension-ref-class"/>
     <keyword type="struct" name="GIOExtension" link="gio-Extension-Points.html#GIOExtension"/>
     <keyword type="struct" name="GIOExtensionPoint" link="gio-Extension-Points.html#GIOExtensionPoint"/>
+    <keyword type="" name="Client-side usage" link="gdbus-codegen.html#id-1.4.25.7.10.10"/>
+    <keyword type="" name="Server-side usage" link="gdbus-codegen.html#id-1.4.25.7.10.11"/>
+    <keyword type="" name="Global commands" link="gapplication-tool.html#id-1.4.25.9.6.2"/>
+    <keyword type="" name="From the commandline" link="gapplication-tool.html#id-1.4.25.9.7.2"/>
+    <keyword type="" name="&#10;        From the Exec lines of a .desktop file&#10;      " link="gapplication-tool.html#id-1.4.25.9.7.3"/>
+    <keyword type="" name="From a script" link="gapplication-tool.html#id-1.4.25.9.7.4"/>
     <keyword type="function" name="g_test_dbus_new ()" link="GTestDBus.html#g-test-dbus-new"/>
     <keyword type="function" name="g_test_dbus_get_flags ()" link="GTestDBus.html#g-test-dbus-get-flags"/>
     <keyword type="function" name="g_test_dbus_get_bus_address ()" link="GTestDBus.html#g-test-dbus-get-bus-address"/>
@@ -2843,7 +2796,6 @@
     <keyword type="constant" name="G_FILE_MONITOR_WATCH_MOUNTS" link="GFile.html#G-FILE-MONITOR-WATCH-MOUNTS:CAPS"/>
     <keyword type="constant" name="G_FILE_MONITOR_SEND_MOVED" link="GFile.html#G-FILE-MONITOR-SEND-MOVED:CAPS"/>
     <keyword type="constant" name="G_FILE_MONITOR_WATCH_HARD_LINKS" link="GFile.html#G-FILE-MONITOR-WATCH-HARD-LINKS:CAPS"/>
-    <keyword type="constant" name="G_FILE_MONITOR_WATCH_MOVES" link="GFile.html#G-FILE-MONITOR-WATCH-MOVES:CAPS"/>
     <keyword type="constant" name="G_FILE_MEASURE_NONE" link="GFile.html#G-FILE-MEASURE-NONE:CAPS"/>
     <keyword type="constant" name="G_FILE_MEASURE_REPORT_ANY_ERROR" link="GFile.html#G-FILE-MEASURE-REPORT-ANY-ERROR:CAPS"/>
     <keyword type="constant" name="G_FILE_MEASURE_APPARENT_SIZE" link="GFile.html#G-FILE-MEASURE-APPARENT-SIZE:CAPS"/>
@@ -2940,9 +2892,6 @@
     <keyword type="constant" name="G_FILE_MONITOR_EVENT_PRE_UNMOUNT" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-PRE-UNMOUNT:CAPS"/>
     <keyword type="constant" name="G_FILE_MONITOR_EVENT_UNMOUNTED" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-UNMOUNTED:CAPS"/>
     <keyword type="constant" name="G_FILE_MONITOR_EVENT_MOVED" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-MOVED:CAPS"/>
-    <keyword type="constant" name="G_FILE_MONITOR_EVENT_RENAMED" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-RENAMED:CAPS"/>
-    <keyword type="constant" name="G_FILE_MONITOR_EVENT_MOVED_IN" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-MOVED-IN:CAPS"/>
-    <keyword type="constant" name="G_FILE_MONITOR_EVENT_MOVED_OUT" link="GFileMonitor.html#G-FILE-MONITOR-EVENT-MOVED-OUT:CAPS"/>
     <keyword type="constant" name="G_CONVERTER_ERROR" link="GConverter.html#G-CONVERTER-ERROR:CAPS"/>
     <keyword type="constant" name="G_CONVERTER_CONVERTED" link="GConverter.html#G-CONVERTER-CONVERTED:CAPS"/>
     <keyword type="constant" name="G_CONVERTER_FINISHED" link="GConverter.html#G-CONVERTER-FINISHED:CAPS"/>
@@ -3030,10 +2979,6 @@
     <keyword type="constant" name="G_SOCKET_CLIENT_TLS_HANDSHAKING" link="GSocketClient.html#G-SOCKET-CLIENT-TLS-HANDSHAKING:CAPS"/>
     <keyword type="constant" name="G_SOCKET_CLIENT_TLS_HANDSHAKED" link="GSocketClient.html#G-SOCKET-CLIENT-TLS-HANDSHAKED:CAPS"/>
     <keyword type="constant" name="G_SOCKET_CLIENT_COMPLETE" link="GSocketClient.html#G-SOCKET-CLIENT-COMPLETE:CAPS"/>
-    <keyword type="constant" name="G_SOCKET_LISTENER_BINDING" link="GSocketListener.html#G-SOCKET-LISTENER-BINDING:CAPS"/>
-    <keyword type="constant" name="G_SOCKET_LISTENER_BOUND" link="GSocketListener.html#G-SOCKET-LISTENER-BOUND:CAPS"/>
-    <keyword type="constant" name="G_SOCKET_LISTENER_LISTENING" link="GSocketListener.html#G-SOCKET-LISTENER-LISTENING:CAPS"/>
-    <keyword type="constant" name="G_SOCKET_LISTENER_LISTENED" link="GSocketListener.html#G-SOCKET-LISTENER-LISTENED:CAPS"/>
     <keyword type="constant" name="G_NETWORK_CONNECTIVITY_LOCAL" link="GNetworkMonitor.html#G-NETWORK-CONNECTIVITY-LOCAL:CAPS"/>
     <keyword type="constant" name="G_NETWORK_CONNECTIVITY_LIMITED" link="GNetworkMonitor.html#G-NETWORK-CONNECTIVITY-LIMITED:CAPS"/>
     <keyword type="constant" name="G_NETWORK_CONNECTIVITY_PORTAL" link="GNetworkMonitor.html#G-NETWORK-CONNECTIVITY-PORTAL:CAPS"/>
@@ -3134,7 +3079,6 @@
     <keyword type="constant" name="G_DBUS_MESSAGE_FLAGS_NONE" link="GDBusMessage.html#G-DBUS-MESSAGE-FLAGS-NONE:CAPS"/>
     <keyword type="constant" name="G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED" link="GDBusMessage.html#G-DBUS-MESSAGE-FLAGS-NO-REPLY-EXPECTED:CAPS"/>
     <keyword type="constant" name="G_DBUS_MESSAGE_FLAGS_NO_AUTO_START" link="GDBusMessage.html#G-DBUS-MESSAGE-FLAGS-NO-AUTO-START:CAPS"/>
-    <keyword type="constant" name="G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION" link="GDBusMessage.html#G-DBUS-MESSAGE-FLAGS-ALLOW-INTERACTIVE-AUTHORIZATION:CAPS"/>
     <keyword type="constant" name="G_DBUS_MESSAGE_HEADER_FIELD_INVALID" link="GDBusMessage.html#G-DBUS-MESSAGE-HEADER-FIELD-INVALID:CAPS"/>
     <keyword type="constant" name="G_DBUS_MESSAGE_HEADER_FIELD_PATH" link="GDBusMessage.html#G-DBUS-MESSAGE-HEADER-FIELD-PATH:CAPS"/>
     <keyword type="constant" name="G_DBUS_MESSAGE_HEADER_FIELD_INTERFACE" link="GDBusMessage.html#G-DBUS-MESSAGE-HEADER-FIELD-INTERFACE:CAPS"/>
@@ -3161,7 +3105,6 @@
     <keyword type="constant" name="G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING" link="GDBusConnection.html#G-DBUS-CAPABILITY-FLAGS-UNIX-FD-PASSING:CAPS"/>
     <keyword type="constant" name="G_DBUS_CALL_FLAGS_NONE" link="GDBusConnection.html#G-DBUS-CALL-FLAGS-NONE:CAPS"/>
     <keyword type="constant" name="G_DBUS_CALL_FLAGS_NO_AUTO_START" link="GDBusConnection.html#G-DBUS-CALL-FLAGS-NO-AUTO-START:CAPS"/>
-    <keyword type="constant" name="G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION" link="GDBusConnection.html#G-DBUS-CALL-FLAGS-ALLOW-INTERACTIVE-AUTHORIZATION:CAPS"/>
     <keyword type="constant" name="G_DBUS_SIGNAL_FLAGS_NONE" link="GDBusConnection.html#G-DBUS-SIGNAL-FLAGS-NONE:CAPS"/>
     <keyword type="constant" name="G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE" link="GDBusConnection.html#G-DBUS-SIGNAL-FLAGS-NO-MATCH-RULE:CAPS"/>
     <keyword type="constant" name="G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_NAMESPACE" link="GDBusConnection.html#G-DBUS-SIGNAL-FLAGS-MATCH-ARG0-NAMESPACE:CAPS"/>
@@ -3199,22 +3142,6 @@
     <keyword type="constant" name="G_RESOURCE_LOOKUP_FLAGS_NONE" link="GResource.html#G-RESOURCE-LOOKUP-FLAGS-NONE:CAPS"/>
     <keyword type="constant" name="G_RESOURCE_ERROR_NOT_FOUND" link="GResource.html#G-RESOURCE-ERROR-NOT-FOUND:CAPS"/>
     <keyword type="constant" name="G_RESOURCE_ERROR_INTERNAL" link="GResource.html#G-RESOURCE-ERROR-INTERNAL:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_NONE" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-NONE:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_BINARY" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-BINARY:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT32LE" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT32LE:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT32BE" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT32BE:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT32" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT32:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT32" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT32:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_EXPAND_STR" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-EXPAND-STR:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_LINK" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-LINK:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_MULTI_STR" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-MULTI-STR:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT64LE" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT64LE:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_UINT64" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-UINT64:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_VALUE_STR" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-VALUE-STR:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_WATCH_NAME" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-WATCH-NAME:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_WATCH_ATTRIBUTES" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-WATCH-ATTRIBUTES:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_WATCH_VALUES" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-WATCH-VALUES:CAPS"/>
-    <keyword type="constant" name="G_WIN32_REGISTRY_WATCH_SECURITY" link="gio-GWin32RegistryKey.html#G-WIN32-REGISTRY-WATCH-SECURITY:CAPS"/>
     <keyword type="constant" name="G_APPLICATION_FLAGS_NONE" link="GApplication.html#G-APPLICATION-FLAGS-NONE:CAPS"/>
     <keyword type="constant" name="G_APPLICATION_IS_SERVICE" link="GApplication.html#G-APPLICATION-IS-SERVICE:CAPS"/>
     <keyword type="constant" name="G_APPLICATION_IS_LAUNCHER" link="GApplication.html#G-APPLICATION-IS-LAUNCHER:CAPS"/>
@@ -3229,481 +3156,5 @@
     <keyword type="constant" name="G_IO_MODULE_SCOPE_NONE" link="GIOModule.html#G-IO-MODULE-SCOPE-NONE:CAPS"/>
     <keyword type="constant" name="G_IO_MODULE_SCOPE_BLOCK_DUPLICATES" link="GIOModule.html#G-IO-MODULE-SCOPE-BLOCK-DUPLICATES:CAPS"/>
     <keyword type="constant" name="G_TEST_DBUS_NONE" link="GTestDBus.html#G-TEST-DBUS-NONE:CAPS"/>
-    <keyword type="member" name="GFileIface.g-iface" link="GFile.html#GFileIface.g-iface"/>
-    <keyword type="member" name="GFileIface.dup" link="GFile.html#GFileIface.dup"/>
-    <keyword type="member" name="GFileIface.hash" link="GFile.html#GFileIface.hash"/>
-    <keyword type="member" name="GFileIface.equal" link="GFile.html#GFileIface.equal"/>
-    <keyword type="member" name="GFileIface.is-native" link="GFile.html#GFileIface.is-native"/>
-    <keyword type="member" name="GFileIface.has-uri-scheme" link="GFile.html#GFileIface.has-uri-scheme"/>
-    <keyword type="member" name="GFileIface.get-uri-scheme" link="GFile.html#GFileIface.get-uri-scheme"/>
-    <keyword type="member" name="GFileIface.get-basename" link="GFile.html#GFileIface.get-basename"/>
-    <keyword type="member" name="GFileIface.get-path" link="GFile.html#GFileIface.get-path"/>
-    <keyword type="member" name="GFileIface.get-uri" link="GFile.html#GFileIface.get-uri"/>
-    <keyword type="member" name="GFileIface.get-parse-name" link="GFile.html#GFileIface.get-parse-name"/>
-    <keyword type="member" name="GFileIface.get-parent" link="GFile.html#GFileIface.get-parent"/>
-    <keyword type="member" name="GFileIface.prefix-matches" link="GFile.html#GFileIface.prefix-matches"/>
-    <keyword type="member" name="GFileIface.get-relative-path" link="GFile.html#GFileIface.get-relative-path"/>
-    <keyword type="member" name="GFileIface.resolve-relative-path" link="GFile.html#GFileIface.resolve-relative-path"/>
-    <keyword type="member" name="GFileIface.get-child-for-display-name" link="GFile.html#GFileIface.get-child-for-display-name"/>
-    <keyword type="member" name="GFileIface.enumerate-children" link="GFile.html#GFileIface.enumerate-children"/>
-    <keyword type="member" name="GFileIface.enumerate-children-async" link="GFile.html#GFileIface.enumerate-children-async"/>
-    <keyword type="member" name="GFileIface.enumerate-children-finish" link="GFile.html#GFileIface.enumerate-children-finish"/>
-    <keyword type="member" name="GFileIface.query-info" link="GFile.html#GFileIface.query-info"/>
-    <keyword type="member" name="GFileIface.query-info-async" link="GFile.html#GFileIface.query-info-async"/>
-    <keyword type="member" name="GFileIface.query-info-finish" link="GFile.html#GFileIface.query-info-finish"/>
-    <keyword type="member" name="GFileIface.query-filesystem-info" link="GFile.html#GFileIface.query-filesystem-info"/>
-    <keyword type="member" name="GFileIface.query-filesystem-info-async" link="GFile.html#GFileIface.query-filesystem-info-async"/>
-    <keyword type="member" name="GFileIface.query-filesystem-info-finish" link="GFile.html#GFileIface.query-filesystem-info-finish"/>
-    <keyword type="member" name="GFileIface.find-enclosing-mount" link="GFile.html#GFileIface.find-enclosing-mount"/>
-    <keyword type="member" name="GFileIface.find-enclosing-mount-async" link="GFile.html#GFileIface.find-enclosing-mount-async"/>
-    <keyword type="member" name="GFileIface.find-enclosing-mount-finish" link="GFile.html#GFileIface.find-enclosing-mount-finish"/>
-    <keyword type="member" name="GFileIface.set-display-name" link="GFile.html#GFileIface.set-display-name"/>
-    <keyword type="member" name="GFileIface.set-display-name-async" link="GFile.html#GFileIface.set-display-name-async"/>
-    <keyword type="member" name="GFileIface.set-display-name-finish" link="GFile.html#GFileIface.set-display-name-finish"/>
-    <keyword type="member" name="GFileIface.query-settable-attributes" link="GFile.html#GFileIface.query-settable-attributes"/>
-    <keyword type="member" name="GFileIface.-query-settable-attributes-async" link="GFile.html#GFileIface.-query-settable-attributes-async"/>
-    <keyword type="member" name="GFileIface.-query-settable-attributes-finish" link="GFile.html#GFileIface.-query-settable-attributes-finish"/>
-    <keyword type="member" name="GFileIface.query-writable-namespaces" link="GFile.html#GFileIface.query-writable-namespaces"/>
-    <keyword type="member" name="GFileIface.-query-writable-namespaces-async" link="GFile.html#GFileIface.-query-writable-namespaces-async"/>
-    <keyword type="member" name="GFileIface.-query-writable-namespaces-finish" link="GFile.html#GFileIface.-query-writable-namespaces-finish"/>
-    <keyword type="member" name="GFileIface.set-attribute" link="GFile.html#GFileIface.set-attribute"/>
-    <keyword type="member" name="GFileIface.set-attributes-from-info" link="GFile.html#GFileIface.set-attributes-from-info"/>
-    <keyword type="member" name="GFileIface.set-attributes-async" link="GFile.html#GFileIface.set-attributes-async"/>
-    <keyword type="member" name="GFileIface.set-attributes-finish" link="GFile.html#GFileIface.set-attributes-finish"/>
-    <keyword type="member" name="GFileIface.read-fn" link="GFile.html#GFileIface.read-fn"/>
-    <keyword type="member" name="GFileIface.read-async" link="GFile.html#GFileIface.read-async"/>
-    <keyword type="member" name="GFileIface.read-finish" link="GFile.html#GFileIface.read-finish"/>
-    <keyword type="member" name="GFileIface.append-to" link="GFile.html#GFileIface.append-to"/>
-    <keyword type="member" name="GFileIface.append-to-async" link="GFile.html#GFileIface.append-to-async"/>
-    <keyword type="member" name="GFileIface.append-to-finish" link="GFile.html#GFileIface.append-to-finish"/>
-    <keyword type="member" name="GFileIface.create" link="GFile.html#GFileIface.create"/>
-    <keyword type="member" name="GFileIface.create-async" link="GFile.html#GFileIface.create-async"/>
-    <keyword type="member" name="GFileIface.create-finish" link="GFile.html#GFileIface.create-finish"/>
-    <keyword type="member" name="GFileIface.replace" link="GFile.html#GFileIface.replace"/>
-    <keyword type="member" name="GFileIface.replace-async" link="GFile.html#GFileIface.replace-async"/>
-    <keyword type="member" name="GFileIface.replace-finish" link="GFile.html#GFileIface.replace-finish"/>
-    <keyword type="member" name="GFileIface.delete-file" link="GFile.html#GFileIface.delete-file"/>
-    <keyword type="member" name="GFileIface.delete-file-async" link="GFile.html#GFileIface.delete-file-async"/>
-    <keyword type="member" name="GFileIface.delete-file-finish" link="GFile.html#GFileIface.delete-file-finish"/>
-    <keyword type="member" name="GFileIface.trash" link="GFile.html#GFileIface.trash"/>
-    <keyword type="member" name="GFileIface.trash-async" link="GFile.html#GFileIface.trash-async"/>
-    <keyword type="member" name="GFileIface.trash-finish" link="GFile.html#GFileIface.trash-finish"/>
-    <keyword type="member" name="GFileIface.make-directory" link="GFile.html#GFileIface.make-directory"/>
-    <keyword type="member" name="GFileIface.make-directory-async" link="GFile.html#GFileIface.make-directory-async"/>
-    <keyword type="member" name="GFileIface.make-directory-finish" link="GFile.html#GFileIface.make-directory-finish"/>
-    <keyword type="member" name="GFileIface.make-symbolic-link" link="GFile.html#GFileIface.make-symbolic-link"/>
-    <keyword type="member" name="GFileIface.-make-symbolic-link-async" link="GFile.html#GFileIface.-make-symbolic-link-async"/>
-    <keyword type="member" name="GFileIface.-make-symbolic-link-finish" link="GFile.html#GFileIface.-make-symbolic-link-finish"/>
-    <keyword type="member" name="GFileIface.copy" link="GFile.html#GFileIface.copy"/>
-    <keyword type="member" name="GFileIface.copy-async" link="GFile.html#GFileIface.copy-async"/>
-    <keyword type="member" name="GFileIface.copy-finish" link="GFile.html#GFileIface.copy-finish"/>
-    <keyword type="member" name="GFileIface.move" link="GFile.html#GFileIface.move"/>
-    <keyword type="member" name="GFileIface.-move-async" link="GFile.html#GFileIface.-move-async"/>
-    <keyword type="member" name="GFileIface.-move-finish" link="GFile.html#GFileIface.-move-finish"/>
-    <keyword type="member" name="GFileIface.mount-mountable" link="GFile.html#GFileIface.mount-mountable"/>
-    <keyword type="member" name="GFileIface.mount-mountable-finish" link="GFile.html#GFileIface.mount-mountable-finish"/>
-    <keyword type="member" name="GFileIface.unmount-mountable" link="GFile.html#GFileIface.unmount-mountable"/>
-    <keyword type="member" name="GFileIface.unmount-mountable-finish" link="GFile.html#GFileIface.unmount-mountable-finish"/>
-    <keyword type="member" name="GFileIface.eject-mountable" link="GFile.html#GFileIface.eject-mountable"/>
-    <keyword type="member" name="GFileIface.eject-mountable-finish" link="GFile.html#GFileIface.eject-mountable-finish"/>
-    <keyword type="member" name="GFileIface.mount-enclosing-volume" link="GFile.html#GFileIface.mount-enclosing-volume"/>
-    <keyword type="member" name="GFileIface.mount-enclosing-volume-finish" link="GFile.html#GFileIface.mount-enclosing-volume-finish"/>
-    <keyword type="member" name="GFileIface.monitor-dir" link="GFile.html#GFileIface.monitor-dir"/>
-    <keyword type="member" name="GFileIface.monitor-file" link="GFile.html#GFileIface.monitor-file"/>
-    <keyword type="member" name="GFileIface.open-readwrite" link="GFile.html#GFileIface.open-readwrite"/>
-    <keyword type="member" name="GFileIface.open-readwrite-async" link="GFile.html#GFileIface.open-readwrite-async"/>
-    <keyword type="member" name="GFileIface.open-readwrite-finish" link="GFile.html#GFileIface.open-readwrite-finish"/>
-    <keyword type="member" name="GFileIface.create-readwrite" link="GFile.html#GFileIface.create-readwrite"/>
-    <keyword type="member" name="GFileIface.create-readwrite-async" link="GFile.html#GFileIface.create-readwrite-async"/>
-    <keyword type="member" name="GFileIface.create-readwrite-finish" link="GFile.html#GFileIface.create-readwrite-finish"/>
-    <keyword type="member" name="GFileIface.replace-readwrite" link="GFile.html#GFileIface.replace-readwrite"/>
-    <keyword type="member" name="GFileIface.replace-readwrite-async" link="GFile.html#GFileIface.replace-readwrite-async"/>
-    <keyword type="member" name="GFileIface.replace-readwrite-finish" link="GFile.html#GFileIface.replace-readwrite-finish"/>
-    <keyword type="member" name="GFileIface.start-mountable" link="GFile.html#GFileIface.start-mountable"/>
-    <keyword type="member" name="GFileIface.start-mountable-finish" link="GFile.html#GFileIface.start-mountable-finish"/>
-    <keyword type="member" name="GFileIface.stop-mountable" link="GFile.html#GFileIface.stop-mountable"/>
-    <keyword type="member" name="GFileIface.stop-mountable-finish" link="GFile.html#GFileIface.stop-mountable-finish"/>
-    <keyword type="member" name="GFileIface.supports-thread-contexts" link="GFile.html#GFileIface.supports-thread-contexts"/>
-    <keyword type="member" name="GFileIface.unmount-mountable-with-operation" link="GFile.html#GFileIface.unmount-mountable-with-operation"/>
-    <keyword type="member" name="GFileIface.unmount-mountable-with-operation-finish" link="GFile.html#GFileIface.unmount-mountable-with-operation-finish"/>
-    <keyword type="member" name="GFileIface.eject-mountable-with-operation" link="GFile.html#GFileIface.eject-mountable-with-operation"/>
-    <keyword type="member" name="GFileIface.eject-mountable-with-operation-finish" link="GFile.html#GFileIface.eject-mountable-with-operation-finish"/>
-    <keyword type="member" name="GFileIface.poll-mountable" link="GFile.html#GFileIface.poll-mountable"/>
-    <keyword type="member" name="GFileIface.poll-mountable-finish" link="GFile.html#GFileIface.poll-mountable-finish"/>
-    <keyword type="member" name="GFileIface.measure-disk-usage" link="GFile.html#GFileIface.measure-disk-usage"/>
-    <keyword type="member" name="GFileIface.measure-disk-usage-async" link="GFile.html#GFileIface.measure-disk-usage-async"/>
-    <keyword type="member" name="GFileIface.measure-disk-usage-finish" link="GFile.html#GFileIface.measure-disk-usage-finish"/>
-    <keyword type="member" name="GFileAttributeInfo.name" link="gio-GFileAttribute.html#GFileAttributeInfo.name"/>
-    <keyword type="member" name="GFileAttributeInfo.type" link="gio-GFileAttribute.html#GFileAttributeInfo.type"/>
-    <keyword type="member" name="GFileAttributeInfo.flags" link="gio-GFileAttribute.html#GFileAttributeInfo.flags"/>
-    <keyword type="member" name="GFileAttributeInfoList-struct.infos" link="gio-GFileAttribute.html#GFileAttributeInfoList-struct.infos"/>
-    <keyword type="member" name="GFileAttributeInfoList-struct.n-infos" link="gio-GFileAttribute.html#GFileAttributeInfoList-struct.n-infos"/>
-    <keyword type="member" name="GAsyncResultIface.g-iface" link="GAsyncResult.html#GAsyncResultIface.g-iface"/>
-    <keyword type="member" name="GAsyncResultIface.get-user-data" link="GAsyncResult.html#GAsyncResultIface.get-user-data"/>
-    <keyword type="member" name="GAsyncResultIface.get-source-object" link="GAsyncResult.html#GAsyncResultIface.get-source-object"/>
-    <keyword type="member" name="GAsyncResultIface.is-tagged" link="GAsyncResult.html#GAsyncResultIface.is-tagged"/>
-    <keyword type="member" name="GConverterIface.g-iface" link="GConverter.html#GConverterIface.g-iface"/>
-    <keyword type="member" name="GConverterIface.convert" link="GConverter.html#GConverterIface.convert"/>
-    <keyword type="member" name="GConverterIface.reset" link="GConverter.html#GConverterIface.reset"/>
-    <keyword type="member" name="GSeekableIface.g-iface" link="GSeekable.html#GSeekableIface.g-iface"/>
-    <keyword type="member" name="GSeekableIface.tell" link="GSeekable.html#GSeekableIface.tell"/>
-    <keyword type="member" name="GSeekableIface.can-seek" link="GSeekable.html#GSeekableIface.can-seek"/>
-    <keyword type="member" name="GSeekableIface.seek" link="GSeekable.html#GSeekableIface.seek"/>
-    <keyword type="member" name="GSeekableIface.can-truncate" link="GSeekable.html#GSeekableIface.can-truncate"/>
-    <keyword type="member" name="GSeekableIface.truncate-fn" link="GSeekable.html#GSeekableIface.truncate-fn"/>
-    <keyword type="member" name="GFileDescriptorBasedIface.g-iface" link="GFileDescriptorBased.html#GFileDescriptorBasedIface.g-iface"/>
-    <keyword type="member" name="GFileDescriptorBasedIface.get-fd" link="GFileDescriptorBased.html#GFileDescriptorBasedIface.get-fd"/>
-    <keyword type="member" name="GPollableInputStreamInterface.g-iface" link="GPollableInputStream.html#GPollableInputStreamInterface.g-iface"/>
-    <keyword type="member" name="GPollableInputStreamInterface.can-poll" link="GPollableInputStream.html#GPollableInputStreamInterface.can-poll"/>
-    <keyword type="member" name="GPollableInputStreamInterface.is-readable" link="GPollableInputStream.html#GPollableInputStreamInterface.is-readable"/>
-    <keyword type="member" name="GPollableInputStreamInterface.create-source" link="GPollableInputStream.html#GPollableInputStreamInterface.create-source"/>
-    <keyword type="member" name="GPollableInputStreamInterface.read-nonblocking" link="GPollableInputStream.html#GPollableInputStreamInterface.read-nonblocking"/>
-    <keyword type="member" name="GPollableOutputStreamInterface.g-iface" link="GPollableOutputStream.html#GPollableOutputStreamInterface.g-iface"/>
-    <keyword type="member" name="GPollableOutputStreamInterface.can-poll" link="GPollableOutputStream.html#GPollableOutputStreamInterface.can-poll"/>
-    <keyword type="member" name="GPollableOutputStreamInterface.is-writable" link="GPollableOutputStream.html#GPollableOutputStreamInterface.is-writable"/>
-    <keyword type="member" name="GPollableOutputStreamInterface.create-source" link="GPollableOutputStream.html#GPollableOutputStreamInterface.create-source"/>
-    <keyword type="member" name="GPollableOutputStreamInterface.write-nonblocking" link="GPollableOutputStream.html#GPollableOutputStreamInterface.write-nonblocking"/>
-    <keyword type="member" name="GAppInfoIface.g-iface" link="GAppInfo.html#GAppInfoIface.g-iface"/>
-    <keyword type="member" name="GAppInfoIface.dup" link="GAppInfo.html#GAppInfoIface.dup"/>
-    <keyword type="member" name="GAppInfoIface.equal" link="GAppInfo.html#GAppInfoIface.equal"/>
-    <keyword type="member" name="GAppInfoIface.get-id" link="GAppInfo.html#GAppInfoIface.get-id"/>
-    <keyword type="member" name="GAppInfoIface.get-name" link="GAppInfo.html#GAppInfoIface.get-name"/>
-    <keyword type="member" name="GAppInfoIface.get-description" link="GAppInfo.html#GAppInfoIface.get-description"/>
-    <keyword type="member" name="GAppInfoIface.get-executable" link="GAppInfo.html#GAppInfoIface.get-executable"/>
-    <keyword type="member" name="GAppInfoIface.get-icon" link="GAppInfo.html#GAppInfoIface.get-icon"/>
-    <keyword type="member" name="GAppInfoIface.launch" link="GAppInfo.html#GAppInfoIface.launch"/>
-    <keyword type="member" name="GAppInfoIface.supports-uris" link="GAppInfo.html#GAppInfoIface.supports-uris"/>
-    <keyword type="member" name="GAppInfoIface.supports-files" link="GAppInfo.html#GAppInfoIface.supports-files"/>
-    <keyword type="member" name="GAppInfoIface.launch-uris" link="GAppInfo.html#GAppInfoIface.launch-uris"/>
-    <keyword type="member" name="GAppInfoIface.should-show" link="GAppInfo.html#GAppInfoIface.should-show"/>
-    <keyword type="member" name="GAppInfoIface.set-as-default-for-type" link="GAppInfo.html#GAppInfoIface.set-as-default-for-type"/>
-    <keyword type="member" name="GAppInfoIface.set-as-default-for-extension" link="GAppInfo.html#GAppInfoIface.set-as-default-for-extension"/>
-    <keyword type="member" name="GAppInfoIface.add-supports-type" link="GAppInfo.html#GAppInfoIface.add-supports-type"/>
-    <keyword type="member" name="GAppInfoIface.can-remove-supports-type" link="GAppInfo.html#GAppInfoIface.can-remove-supports-type"/>
-    <keyword type="member" name="GAppInfoIface.remove-supports-type" link="GAppInfo.html#GAppInfoIface.remove-supports-type"/>
-    <keyword type="member" name="GAppInfoIface.can-delete" link="GAppInfo.html#GAppInfoIface.can-delete"/>
-    <keyword type="member" name="GAppInfoIface.do-delete" link="GAppInfo.html#GAppInfoIface.do-delete"/>
-    <keyword type="member" name="GAppInfoIface.get-commandline" link="GAppInfo.html#GAppInfoIface.get-commandline"/>
-    <keyword type="member" name="GAppInfoIface.get-display-name" link="GAppInfo.html#GAppInfoIface.get-display-name"/>
-    <keyword type="member" name="GAppInfoIface.set-as-last-used-for-type" link="GAppInfo.html#GAppInfoIface.set-as-last-used-for-type"/>
-    <keyword type="member" name="GAppInfoIface.get-supported-types" link="GAppInfo.html#GAppInfoIface.get-supported-types"/>
-    <keyword type="member" name="GDesktopAppInfoLookupIface.g-iface" link="gio-Desktop-file-based-GAppInfo.html#GDesktopAppInfoLookupIface.g-iface"/>
-    <keyword type="member" name="GDesktopAppInfoLookupIface.get-default-for-uri-scheme" link="gio-Desktop-file-based-GAppInfo.html#GDesktopAppInfoLookupIface.get-default-for-uri-scheme"/>
-    <keyword type="member" name="GVolumeIface.g-iface" link="GVolume.html#GVolumeIface.g-iface"/>
-    <keyword type="member" name="GVolumeIface.changed" link="GVolume.html#GVolumeIface.changed"/>
-    <keyword type="member" name="GVolumeIface.removed" link="GVolume.html#GVolumeIface.removed"/>
-    <keyword type="member" name="GVolumeIface.get-name" link="GVolume.html#GVolumeIface.get-name"/>
-    <keyword type="member" name="GVolumeIface.get-icon" link="GVolume.html#GVolumeIface.get-icon"/>
-    <keyword type="member" name="GVolumeIface.get-uuid" link="GVolume.html#GVolumeIface.get-uuid"/>
-    <keyword type="member" name="GVolumeIface.get-drive" link="GVolume.html#GVolumeIface.get-drive"/>
-    <keyword type="member" name="GVolumeIface.get-mount" link="GVolume.html#GVolumeIface.get-mount"/>
-    <keyword type="member" name="GVolumeIface.can-mount" link="GVolume.html#GVolumeIface.can-mount"/>
-    <keyword type="member" name="GVolumeIface.can-eject" link="GVolume.html#GVolumeIface.can-eject"/>
-    <keyword type="member" name="GVolumeIface.mount-fn" link="GVolume.html#GVolumeIface.mount-fn"/>
-    <keyword type="member" name="GVolumeIface.mount-finish" link="GVolume.html#GVolumeIface.mount-finish"/>
-    <keyword type="member" name="GVolumeIface.eject" link="GVolume.html#GVolumeIface.eject"/>
-    <keyword type="member" name="GVolumeIface.eject-finish" link="GVolume.html#GVolumeIface.eject-finish"/>
-    <keyword type="member" name="GVolumeIface.get-identifier" link="GVolume.html#GVolumeIface.get-identifier"/>
-    <keyword type="member" name="GVolumeIface.enumerate-identifiers" link="GVolume.html#GVolumeIface.enumerate-identifiers"/>
-    <keyword type="member" name="GVolumeIface.should-automount" link="GVolume.html#GVolumeIface.should-automount"/>
-    <keyword type="member" name="GVolumeIface.get-activation-root" link="GVolume.html#GVolumeIface.get-activation-root"/>
-    <keyword type="member" name="GVolumeIface.eject-with-operation" link="GVolume.html#GVolumeIface.eject-with-operation"/>
-    <keyword type="member" name="GVolumeIface.eject-with-operation-finish" link="GVolume.html#GVolumeIface.eject-with-operation-finish"/>
-    <keyword type="member" name="GVolumeIface.get-sort-key" link="GVolume.html#GVolumeIface.get-sort-key"/>
-    <keyword type="member" name="GVolumeIface.get-symbolic-icon" link="GVolume.html#GVolumeIface.get-symbolic-icon"/>
-    <keyword type="member" name="GMountIface.g-iface" link="GMount.html#GMountIface.g-iface"/>
-    <keyword type="member" name="GMountIface.changed" link="GMount.html#GMountIface.changed"/>
-    <keyword type="member" name="GMountIface.unmounted" link="GMount.html#GMountIface.unmounted"/>
-    <keyword type="member" name="GMountIface.get-root" link="GMount.html#GMountIface.get-root"/>
-    <keyword type="member" name="GMountIface.get-name" link="GMount.html#GMountIface.get-name"/>
-    <keyword type="member" name="GMountIface.get-icon" link="GMount.html#GMountIface.get-icon"/>
-    <keyword type="member" name="GMountIface.get-uuid" link="GMount.html#GMountIface.get-uuid"/>
-    <keyword type="member" name="GMountIface.get-volume" link="GMount.html#GMountIface.get-volume"/>
-    <keyword type="member" name="GMountIface.get-drive" link="GMount.html#GMountIface.get-drive"/>
-    <keyword type="member" name="GMountIface.can-unmount" link="GMount.html#GMountIface.can-unmount"/>
-    <keyword type="member" name="GMountIface.can-eject" link="GMount.html#GMountIface.can-eject"/>
-    <keyword type="member" name="GMountIface.unmount" link="GMount.html#GMountIface.unmount"/>
-    <keyword type="member" name="GMountIface.unmount-finish" link="GMount.html#GMountIface.unmount-finish"/>
-    <keyword type="member" name="GMountIface.eject" link="GMount.html#GMountIface.eject"/>
-    <keyword type="member" name="GMountIface.eject-finish" link="GMount.html#GMountIface.eject-finish"/>
-    <keyword type="member" name="GMountIface.remount" link="GMount.html#GMountIface.remount"/>
-    <keyword type="member" name="GMountIface.remount-finish" link="GMount.html#GMountIface.remount-finish"/>
-    <keyword type="member" name="GMountIface.guess-content-type" link="GMount.html#GMountIface.guess-content-type"/>
-    <keyword type="member" name="GMountIface.guess-content-type-finish" link="GMount.html#GMountIface.guess-content-type-finish"/>
-    <keyword type="member" name="GMountIface.guess-content-type-sync" link="GMount.html#GMountIface.guess-content-type-sync"/>
-    <keyword type="member" name="GMountIface.pre-unmount" link="GMount.html#GMountIface.pre-unmount"/>
-    <keyword type="member" name="GMountIface.unmount-with-operation" link="GMount.html#GMountIface.unmount-with-operation"/>
-    <keyword type="member" name="GMountIface.unmount-with-operation-finish" link="GMount.html#GMountIface.unmount-with-operation-finish"/>
-    <keyword type="member" name="GMountIface.eject-with-operation" link="GMount.html#GMountIface.eject-with-operation"/>
-    <keyword type="member" name="GMountIface.eject-with-operation-finish" link="GMount.html#GMountIface.eject-with-operation-finish"/>
-    <keyword type="member" name="GMountIface.get-default-location" link="GMount.html#GMountIface.get-default-location"/>
-    <keyword type="member" name="GMountIface.get-sort-key" link="GMount.html#GMountIface.get-sort-key"/>
-    <keyword type="member" name="GMountIface.get-symbolic-icon" link="GMount.html#GMountIface.get-symbolic-icon"/>
-    <keyword type="member" name="GDriveIface.g-iface" link="GDrive.html#GDriveIface.g-iface"/>
-    <keyword type="member" name="GDriveIface.changed" link="GDrive.html#GDriveIface.changed"/>
-    <keyword type="member" name="GDriveIface.disconnected" link="GDrive.html#GDriveIface.disconnected"/>
-    <keyword type="member" name="GDriveIface.eject-button" link="GDrive.html#GDriveIface.eject-button"/>
-    <keyword type="member" name="GDriveIface.get-name" link="GDrive.html#GDriveIface.get-name"/>
-    <keyword type="member" name="GDriveIface.get-icon" link="GDrive.html#GDriveIface.get-icon"/>
-    <keyword type="member" name="GDriveIface.has-volumes" link="GDrive.html#GDriveIface.has-volumes"/>
-    <keyword type="member" name="GDriveIface.get-volumes" link="GDrive.html#GDriveIface.get-volumes"/>
-    <keyword type="member" name="GDriveIface.is-media-removable" link="GDrive.html#GDriveIface.is-media-removable"/>
-    <keyword type="member" name="GDriveIface.has-media" link="GDrive.html#GDriveIface.has-media"/>
-    <keyword type="member" name="GDriveIface.is-media-check-automatic" link="GDrive.html#GDriveIface.is-media-check-automatic"/>
-    <keyword type="member" name="GDriveIface.can-eject" link="GDrive.html#GDriveIface.can-eject"/>
-    <keyword type="member" name="GDriveIface.can-poll-for-media" link="GDrive.html#GDriveIface.can-poll-for-media"/>
-    <keyword type="member" name="GDriveIface.eject" link="GDrive.html#GDriveIface.eject"/>
-    <keyword type="member" name="GDriveIface.eject-finish" link="GDrive.html#GDriveIface.eject-finish"/>
-    <keyword type="member" name="GDriveIface.poll-for-media" link="GDrive.html#GDriveIface.poll-for-media"/>
-    <keyword type="member" name="GDriveIface.poll-for-media-finish" link="GDrive.html#GDriveIface.poll-for-media-finish"/>
-    <keyword type="member" name="GDriveIface.get-identifier" link="GDrive.html#GDriveIface.get-identifier"/>
-    <keyword type="member" name="GDriveIface.enumerate-identifiers" link="GDrive.html#GDriveIface.enumerate-identifiers"/>
-    <keyword type="member" name="GDriveIface.get-start-stop-type" link="GDrive.html#GDriveIface.get-start-stop-type"/>
-    <keyword type="member" name="GDriveIface.can-start" link="GDrive.html#GDriveIface.can-start"/>
-    <keyword type="member" name="GDriveIface.can-start-degraded" link="GDrive.html#GDriveIface.can-start-degraded"/>
-    <keyword type="member" name="GDriveIface.start" link="GDrive.html#GDriveIface.start"/>
-    <keyword type="member" name="GDriveIface.start-finish" link="GDrive.html#GDriveIface.start-finish"/>
-    <keyword type="member" name="GDriveIface.can-stop" link="GDrive.html#GDriveIface.can-stop"/>
-    <keyword type="member" name="GDriveIface.stop" link="GDrive.html#GDriveIface.stop"/>
-    <keyword type="member" name="GDriveIface.stop-finish" link="GDrive.html#GDriveIface.stop-finish"/>
-    <keyword type="member" name="GDriveIface.stop-button" link="GDrive.html#GDriveIface.stop-button"/>
-    <keyword type="member" name="GDriveIface.eject-with-operation" link="GDrive.html#GDriveIface.eject-with-operation"/>
-    <keyword type="member" name="GDriveIface.eject-with-operation-finish" link="GDrive.html#GDriveIface.eject-with-operation-finish"/>
-    <keyword type="member" name="GDriveIface.get-sort-key" link="GDrive.html#GDriveIface.get-sort-key"/>
-    <keyword type="member" name="GDriveIface.get-symbolic-icon" link="GDrive.html#GDriveIface.get-symbolic-icon"/>
-    <keyword type="member" name="GIconIface.g-iface" link="GIcon.html#GIconIface.g-iface"/>
-    <keyword type="member" name="GIconIface.hash" link="GIcon.html#GIconIface.hash"/>
-    <keyword type="member" name="GIconIface.equal" link="GIcon.html#GIconIface.equal"/>
-    <keyword type="member" name="GIconIface.to-tokens" link="GIcon.html#GIconIface.to-tokens"/>
-    <keyword type="member" name="GIconIface.from-tokens" link="GIcon.html#GIconIface.from-tokens"/>
-    <keyword type="member" name="GIconIface.serialize" link="GIcon.html#GIconIface.serialize"/>
-    <keyword type="member" name="GLoadableIconIface.g-iface" link="GLoadableIcon.html#GLoadableIconIface.g-iface"/>
-    <keyword type="member" name="GLoadableIconIface.load" link="GLoadableIcon.html#GLoadableIconIface.load"/>
-    <keyword type="member" name="GLoadableIconIface.load-async" link="GLoadableIcon.html#GLoadableIconIface.load-async"/>
-    <keyword type="member" name="GLoadableIconIface.load-finish" link="GLoadableIcon.html#GLoadableIconIface.load-finish"/>
-    <keyword type="member" name="GInitableIface.g-iface" link="GInitable.html#GInitableIface.g-iface"/>
-    <keyword type="member" name="GInitableIface.init" link="GInitable.html#GInitableIface.init"/>
-    <keyword type="member" name="GAsyncInitableIface.g-iface" link="GAsyncInitable.html#GAsyncInitableIface.g-iface"/>
-    <keyword type="member" name="GAsyncInitableIface.init-async" link="GAsyncInitable.html#GAsyncInitableIface.init-async"/>
-    <keyword type="member" name="GAsyncInitableIface.init-finish" link="GAsyncInitable.html#GAsyncInitableIface.init-finish"/>
-    <keyword type="member" name="GInputVector.buffer" link="GSocket.html#GInputVector.buffer"/>
-    <keyword type="member" name="GInputVector.size" link="GSocket.html#GInputVector.size"/>
-    <keyword type="member" name="GOutputVector.buffer" link="GSocket.html#GOutputVector.buffer"/>
-    <keyword type="member" name="GOutputVector.size" link="GSocket.html#GOutputVector.size"/>
-    <keyword type="member" name="GOutputMessage.address" link="GSocket.html#GOutputMessage.address"/>
-    <keyword type="member" name="GOutputMessage.vectors" link="GSocket.html#GOutputMessage.vectors"/>
-    <keyword type="member" name="GOutputMessage.num-vectors" link="GSocket.html#GOutputMessage.num-vectors"/>
-    <keyword type="member" name="GOutputMessage.bytes-sent" link="GSocket.html#GOutputMessage.bytes-sent"/>
-    <keyword type="member" name="GOutputMessage.control-messages" link="GSocket.html#GOutputMessage.control-messages"/>
-    <keyword type="member" name="GOutputMessage.num-control-messages" link="GSocket.html#GOutputMessage.num-control-messages"/>
-    <keyword type="member" name="GProxyInterface.g-iface" link="GProxy.html#GProxyInterface.g-iface"/>
-    <keyword type="member" name="GProxyInterface.connect" link="GProxy.html#GProxyInterface.connect"/>
-    <keyword type="member" name="GProxyInterface.connect-async" link="GProxy.html#GProxyInterface.connect-async"/>
-    <keyword type="member" name="GProxyInterface.connect-finish" link="GProxy.html#GProxyInterface.connect-finish"/>
-    <keyword type="member" name="GProxyInterface.supports-hostname" link="GProxy.html#GProxyInterface.supports-hostname"/>
-    <keyword type="member" name="GNetworkMonitorInterface.g-iface" link="GNetworkMonitor.html#GNetworkMonitorInterface.g-iface"/>
-    <keyword type="member" name="GNetworkMonitorInterface.network-changed" link="GNetworkMonitor.html#GNetworkMonitorInterface.network-changed"/>
-    <keyword type="member" name="GNetworkMonitorInterface.can-reach" link="GNetworkMonitor.html#GNetworkMonitorInterface.can-reach"/>
-    <keyword type="member" name="GNetworkMonitorInterface.can-reach-async" link="GNetworkMonitor.html#GNetworkMonitorInterface.can-reach-async"/>
-    <keyword type="member" name="GNetworkMonitorInterface.can-reach-finish" link="GNetworkMonitor.html#GNetworkMonitorInterface.can-reach-finish"/>
-    <keyword type="member" name="GTlsClientConnectionInterface.g-iface" link="GTlsClientConnection.html#GTlsClientConnectionInterface.g-iface"/>
-    <keyword type="member" name="GTlsClientConnectionInterface.copy-session-state" link="GTlsClientConnection.html#GTlsClientConnectionInterface.copy-session-state"/>
-    <keyword type="member" name="GTlsServerConnectionInterface.g-iface" link="GTlsServerConnection.html#GTlsServerConnectionInterface.g-iface"/>
-    <keyword type="member" name="GTlsBackendInterface.g-iface" link="GTlsBackend.html#GTlsBackendInterface.g-iface"/>
-    <keyword type="member" name="GTlsBackendInterface.supports-tls" link="GTlsBackend.html#GTlsBackendInterface.supports-tls"/>
-    <keyword type="member" name="GTlsBackendInterface.get-certificate-type" link="GTlsBackend.html#GTlsBackendInterface.get-certificate-type"/>
-    <keyword type="member" name="GTlsBackendInterface.get-client-connection-type" link="GTlsBackend.html#GTlsBackendInterface.get-client-connection-type"/>
-    <keyword type="member" name="GTlsBackendInterface.get-server-connection-type" link="GTlsBackend.html#GTlsBackendInterface.get-server-connection-type"/>
-    <keyword type="member" name="GTlsBackendInterface.get-file-database-type" link="GTlsBackend.html#GTlsBackendInterface.get-file-database-type"/>
-    <keyword type="member" name="GTlsBackendInterface.get-default-database" link="GTlsBackend.html#GTlsBackendInterface.get-default-database"/>
-    <keyword type="member" name="GTlsDatabaseClass.parent-class" link="GTlsDatabase.html#GTlsDatabaseClass.parent-class"/>
-    <keyword type="member" name="GTlsDatabaseClass.verify-chain" link="GTlsDatabase.html#GTlsDatabaseClass.verify-chain"/>
-    <keyword type="member" name="GTlsDatabaseClass.verify-chain-async" link="GTlsDatabase.html#GTlsDatabaseClass.verify-chain-async"/>
-    <keyword type="member" name="GTlsDatabaseClass.verify-chain-finish" link="GTlsDatabase.html#GTlsDatabaseClass.verify-chain-finish"/>
-    <keyword type="member" name="GTlsDatabaseClass.create-certificate-handle" link="GTlsDatabase.html#GTlsDatabaseClass.create-certificate-handle"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-for-handle" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-for-handle"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-for-handle-async" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-for-handle-async"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-for-handle-finish" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-for-handle-finish"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-issuer" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-issuer"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-issuer-async" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-issuer-async"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificate-issuer-finish" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificate-issuer-finish"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificates-issued-by" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificates-issued-by"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificates-issued-by-async" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificates-issued-by-async"/>
-    <keyword type="member" name="GTlsDatabaseClass.lookup-certificates-issued-by-finish" link="GTlsDatabase.html#GTlsDatabaseClass.lookup-certificates-issued-by-finish"/>
-    <keyword type="member" name="GTlsFileDatabaseInterface.g-iface" link="GTlsFileDatabase.html#GTlsFileDatabaseInterface.g-iface"/>
-    <keyword type="member" name="GTlsInteractionClass.ask-password" link="GTlsInteraction.html#GTlsInteractionClass.ask-password"/>
-    <keyword type="member" name="GTlsInteractionClass.ask-password-async" link="GTlsInteraction.html#GTlsInteractionClass.ask-password-async"/>
-    <keyword type="member" name="GTlsInteractionClass.ask-password-finish" link="GTlsInteraction.html#GTlsInteractionClass.ask-password-finish"/>
-    <keyword type="member" name="GTlsInteractionClass.request-certificate" link="GTlsInteraction.html#GTlsInteractionClass.request-certificate"/>
-    <keyword type="member" name="GTlsInteractionClass.request-certificate-async" link="GTlsInteraction.html#GTlsInteractionClass.request-certificate-async"/>
-    <keyword type="member" name="GTlsInteractionClass.request-certificate-finish" link="GTlsInteraction.html#GTlsInteractionClass.request-certificate-finish"/>
-    <keyword type="member" name="GTlsPasswordClass.parent-class" link="GTlsPassword.html#GTlsPasswordClass.parent-class"/>
-    <keyword type="member" name="GTlsPasswordClass.get-value" link="GTlsPassword.html#GTlsPasswordClass.get-value"/>
-    <keyword type="member" name="GTlsPasswordClass.set-value" link="GTlsPassword.html#GTlsPasswordClass.set-value"/>
-    <keyword type="member" name="GTlsPasswordClass.get-default-warning" link="GTlsPassword.html#GTlsPasswordClass.get-default-warning"/>
-    <keyword type="member" name="GProxyResolverInterface.g-iface" link="GProxyResolver.html#GProxyResolverInterface.g-iface"/>
-    <keyword type="member" name="GProxyResolverInterface.is-supported" link="GProxyResolver.html#GProxyResolverInterface.is-supported"/>
-    <keyword type="member" name="GProxyResolverInterface.lookup" link="GProxyResolver.html#GProxyResolverInterface.lookup"/>
-    <keyword type="member" name="GProxyResolverInterface.lookup-async" link="GProxyResolver.html#GProxyResolverInterface.lookup-async"/>
-    <keyword type="member" name="GProxyResolverInterface.lookup-finish" link="GProxyResolver.html#GProxyResolverInterface.lookup-finish"/>
-    <keyword type="member" name="GSocketConnectableIface.g-iface" link="GSocketConnectable.html#GSocketConnectableIface.g-iface"/>
-    <keyword type="member" name="GSocketConnectableIface.enumerate" link="GSocketConnectable.html#GSocketConnectableIface.enumerate"/>
-    <keyword type="member" name="GSocketConnectableIface.proxy-enumerate" link="GSocketConnectable.html#GSocketConnectableIface.proxy-enumerate"/>
-    <keyword type="member" name="GDBusAnnotationInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusAnnotationInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusAnnotationInfo-struct.key" link="gio-D-Bus-Introspection-Data.html#GDBusAnnotationInfo-struct.key"/>
-    <keyword type="member" name="GDBusAnnotationInfo-struct.value" link="gio-D-Bus-Introspection-Data.html#GDBusAnnotationInfo-struct.value"/>
-    <keyword type="member" name="GDBusAnnotationInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusAnnotationInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusArgInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusArgInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusArgInfo-struct.name" link="gio-D-Bus-Introspection-Data.html#GDBusArgInfo-struct.name"/>
-    <keyword type="member" name="GDBusArgInfo-struct.signature" link="gio-D-Bus-Introspection-Data.html#GDBusArgInfo-struct.signature"/>
-    <keyword type="member" name="GDBusArgInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusArgInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusMethodInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusMethodInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusMethodInfo-struct.name" link="gio-D-Bus-Introspection-Data.html#GDBusMethodInfo-struct.name"/>
-    <keyword type="member" name="GDBusMethodInfo-struct.in-args" link="gio-D-Bus-Introspection-Data.html#GDBusMethodInfo-struct.in-args"/>
-    <keyword type="member" name="GDBusMethodInfo-struct.out-args" link="gio-D-Bus-Introspection-Data.html#GDBusMethodInfo-struct.out-args"/>
-    <keyword type="member" name="GDBusMethodInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusMethodInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusSignalInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusSignalInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusSignalInfo-struct.name" link="gio-D-Bus-Introspection-Data.html#GDBusSignalInfo-struct.name"/>
-    <keyword type="member" name="GDBusSignalInfo-struct.args" link="gio-D-Bus-Introspection-Data.html#GDBusSignalInfo-struct.args"/>
-    <keyword type="member" name="GDBusSignalInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusSignalInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusPropertyInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusPropertyInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusPropertyInfo-struct.name" link="gio-D-Bus-Introspection-Data.html#GDBusPropertyInfo-struct.name"/>
-    <keyword type="member" name="GDBusPropertyInfo-struct.signature" link="gio-D-Bus-Introspection-Data.html#GDBusPropertyInfo-struct.signature"/>
-    <keyword type="member" name="GDBusPropertyInfo-struct.flags" link="gio-D-Bus-Introspection-Data.html#GDBusPropertyInfo-struct.flags"/>
-    <keyword type="member" name="GDBusPropertyInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusPropertyInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.name" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.name"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.methods" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.methods"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.signals" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.signals"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.properties" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.properties"/>
-    <keyword type="member" name="GDBusInterfaceInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusInterfaceInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusNodeInfo-struct.ref-count" link="gio-D-Bus-Introspection-Data.html#GDBusNodeInfo-struct.ref-count"/>
-    <keyword type="member" name="GDBusNodeInfo-struct.path" link="gio-D-Bus-Introspection-Data.html#GDBusNodeInfo-struct.path"/>
-    <keyword type="member" name="GDBusNodeInfo-struct.interfaces" link="gio-D-Bus-Introspection-Data.html#GDBusNodeInfo-struct.interfaces"/>
-    <keyword type="member" name="GDBusNodeInfo-struct.nodes" link="gio-D-Bus-Introspection-Data.html#GDBusNodeInfo-struct.nodes"/>
-    <keyword type="member" name="GDBusNodeInfo-struct.annotations" link="gio-D-Bus-Introspection-Data.html#GDBusNodeInfo-struct.annotations"/>
-    <keyword type="member" name="GDBusErrorEntry.error-code" link="gio-GDBusError.html#GDBusErrorEntry.error-code"/>
-    <keyword type="member" name="GDBusErrorEntry.dbus-error-name" link="gio-GDBusError.html#GDBusErrorEntry.dbus-error-name"/>
-    <keyword type="member" name="GDBusInterfaceVTable.method-call" link="GDBusConnection.html#GDBusInterfaceVTable.method-call"/>
-    <keyword type="member" name="GDBusInterfaceVTable.get-property" link="GDBusConnection.html#GDBusInterfaceVTable.get-property"/>
-    <keyword type="member" name="GDBusInterfaceVTable.set-property" link="GDBusConnection.html#GDBusInterfaceVTable.set-property"/>
-    <keyword type="member" name="GDBusSubtreeVTable.enumerate" link="GDBusConnection.html#GDBusSubtreeVTable.enumerate"/>
-    <keyword type="member" name="GDBusSubtreeVTable.introspect" link="GDBusConnection.html#GDBusSubtreeVTable.introspect"/>
-    <keyword type="member" name="GDBusSubtreeVTable.dispatch" link="GDBusConnection.html#GDBusSubtreeVTable.dispatch"/>
-    <keyword type="member" name="GDBusInterfaceIface.parent-iface" link="GDBusInterface.html#GDBusInterfaceIface.parent-iface"/>
-    <keyword type="member" name="GDBusInterfaceIface.get-info" link="GDBusInterface.html#GDBusInterfaceIface.get-info"/>
-    <keyword type="member" name="GDBusInterfaceIface.get-object" link="GDBusInterface.html#GDBusInterfaceIface.get-object"/>
-    <keyword type="member" name="GDBusInterfaceIface.set-object" link="GDBusInterface.html#GDBusInterfaceIface.set-object"/>
-    <keyword type="member" name="GDBusInterfaceIface.dup-object" link="GDBusInterface.html#GDBusInterfaceIface.dup-object"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.parent-class" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.parent-class"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.get-info" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.get-info"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.get-vtable" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.get-vtable"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.get-properties" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.get-properties"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.flush" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.flush"/>
-    <keyword type="member" name="GDBusInterfaceSkeletonClass.g-authorize-method" link="GDBusInterfaceSkeleton.html#GDBusInterfaceSkeletonClass.g-authorize-method"/>
-    <keyword type="member" name="GDBusProxyClass.g-properties-changed" link="GDBusProxy.html#GDBusProxyClass.g-properties-changed"/>
-    <keyword type="member" name="GDBusProxyClass.g-signal" link="GDBusProxy.html#GDBusProxyClass.g-signal"/>
-    <keyword type="member" name="GDBusObjectIface.parent-iface" link="GDBusObject.html#GDBusObjectIface.parent-iface"/>
-    <keyword type="member" name="GDBusObjectIface.get-object-path" link="GDBusObject.html#GDBusObjectIface.get-object-path"/>
-    <keyword type="member" name="GDBusObjectIface.get-interfaces" link="GDBusObject.html#GDBusObjectIface.get-interfaces"/>
-    <keyword type="member" name="GDBusObjectIface.get-interface" link="GDBusObject.html#GDBusObjectIface.get-interface"/>
-    <keyword type="member" name="GDBusObjectIface.interface-added" link="GDBusObject.html#GDBusObjectIface.interface-added"/>
-    <keyword type="member" name="GDBusObjectIface.interface-removed" link="GDBusObject.html#GDBusObjectIface.interface-removed"/>
-    <keyword type="member" name="GDBusObjectSkeletonClass.parent-class" link="GDBusObjectSkeleton.html#GDBusObjectSkeletonClass.parent-class"/>
-    <keyword type="member" name="GDBusObjectSkeletonClass.authorize-method" link="GDBusObjectSkeleton.html#GDBusObjectSkeletonClass.authorize-method"/>
-    <keyword type="member" name="GDBusObjectProxyClass.parent-class" link="GDBusObjectProxy.html#GDBusObjectProxyClass.parent-class"/>
-    <keyword type="member" name="GDBusObjectManagerIface.parent-iface" link="GDBusObjectManager.html#GDBusObjectManagerIface.parent-iface"/>
-    <keyword type="member" name="GDBusObjectManagerIface.get-object-path" link="GDBusObjectManager.html#GDBusObjectManagerIface.get-object-path"/>
-    <keyword type="member" name="GDBusObjectManagerIface.get-objects" link="GDBusObjectManager.html#GDBusObjectManagerIface.get-objects"/>
-    <keyword type="member" name="GDBusObjectManagerIface.get-object" link="GDBusObjectManager.html#GDBusObjectManagerIface.get-object"/>
-    <keyword type="member" name="GDBusObjectManagerIface.get-interface" link="GDBusObjectManager.html#GDBusObjectManagerIface.get-interface"/>
-    <keyword type="member" name="GDBusObjectManagerIface.object-added" link="GDBusObjectManager.html#GDBusObjectManagerIface.object-added"/>
-    <keyword type="member" name="GDBusObjectManagerIface.object-removed" link="GDBusObjectManager.html#GDBusObjectManagerIface.object-removed"/>
-    <keyword type="member" name="GDBusObjectManagerIface.interface-added" link="GDBusObjectManager.html#GDBusObjectManagerIface.interface-added"/>
-    <keyword type="member" name="GDBusObjectManagerIface.interface-removed" link="GDBusObjectManager.html#GDBusObjectManagerIface.interface-removed"/>
-    <keyword type="member" name="GDBusObjectManagerServerClass.parent-class" link="GDBusObjectManagerServer.html#GDBusObjectManagerServerClass.parent-class"/>
-    <keyword type="member" name="GDBusObjectManagerClientClass.parent-class" link="GDBusObjectManagerClient.html#GDBusObjectManagerClientClass.parent-class"/>
-    <keyword type="member" name="GDBusObjectManagerClientClass.interface-proxy-signal" link="GDBusObjectManagerClient.html#GDBusObjectManagerClientClass.interface-proxy-signal"/>
-    <keyword type="member" name="GDBusObjectManagerClientClass.interface-proxy-properties-changed" link="GDBusObjectManagerClient.html#GDBusObjectManagerClientClass.interface-proxy-properties-changed"/>
-    <keyword type="member" name="GSettingsBackendClass.parent-class" link="GSettingsBackend.html#GSettingsBackendClass.parent-class"/>
-    <keyword type="member" name="GSettingsBackendClass.read" link="GSettingsBackend.html#GSettingsBackendClass.read"/>
-    <keyword type="member" name="GSettingsBackendClass.get-writable" link="GSettingsBackend.html#GSettingsBackendClass.get-writable"/>
-    <keyword type="member" name="GSettingsBackendClass.write" link="GSettingsBackend.html#GSettingsBackendClass.write"/>
-    <keyword type="member" name="GSettingsBackendClass.write-tree" link="GSettingsBackend.html#GSettingsBackendClass.write-tree"/>
-    <keyword type="member" name="GSettingsBackendClass.reset" link="GSettingsBackend.html#GSettingsBackendClass.reset"/>
-    <keyword type="member" name="GSettingsBackendClass.subscribe" link="GSettingsBackend.html#GSettingsBackendClass.subscribe"/>
-    <keyword type="member" name="GSettingsBackendClass.unsubscribe" link="GSettingsBackend.html#GSettingsBackendClass.unsubscribe"/>
-    <keyword type="member" name="GSettingsBackendClass.sync" link="GSettingsBackend.html#GSettingsBackendClass.sync"/>
-    <keyword type="member" name="GSettingsBackendClass.get-permission" link="GSettingsBackend.html#GSettingsBackendClass.get-permission"/>
-    <keyword type="member" name="GSettingsBackendClass.read-user-value" link="GSettingsBackend.html#GSettingsBackendClass.read-user-value"/>
-    <keyword type="member" name="GListModelInterface.g-iface" link="GListModel.html#GListModelInterface.g-iface"/>
-    <keyword type="member" name="GListModelInterface.get-item-type" link="GListModel.html#GListModelInterface.get-item-type"/>
-    <keyword type="member" name="GListModelInterface.get-n-items" link="GListModel.html#GListModelInterface.get-n-items"/>
-    <keyword type="member" name="GListModelInterface.get-item" link="GListModel.html#GListModelInterface.get-item"/>
-    <keyword type="member" name="GApplicationClass.startup" link="GApplication.html#GApplicationClass.startup"/>
-    <keyword type="member" name="GApplicationClass.activate" link="GApplication.html#GApplicationClass.activate"/>
-    <keyword type="member" name="GApplicationClass.open" link="GApplication.html#GApplicationClass.open"/>
-    <keyword type="member" name="GApplicationClass.command-line" link="GApplication.html#GApplicationClass.command-line"/>
-    <keyword type="member" name="GApplicationClass.local-command-line" link="GApplication.html#GApplicationClass.local-command-line"/>
-    <keyword type="member" name="GApplicationClass.before-emit" link="GApplication.html#GApplicationClass.before-emit"/>
-    <keyword type="member" name="GApplicationClass.after-emit" link="GApplication.html#GApplicationClass.after-emit"/>
-    <keyword type="member" name="GApplicationClass.add-platform-data" link="GApplication.html#GApplicationClass.add-platform-data"/>
-    <keyword type="member" name="GApplicationClass.quit-mainloop" link="GApplication.html#GApplicationClass.quit-mainloop"/>
-    <keyword type="member" name="GApplicationClass.run-mainloop" link="GApplication.html#GApplicationClass.run-mainloop"/>
-    <keyword type="member" name="GApplicationClass.shutdown" link="GApplication.html#GApplicationClass.shutdown"/>
-    <keyword type="member" name="GApplicationClass.dbus-register" link="GApplication.html#GApplicationClass.dbus-register"/>
-    <keyword type="member" name="GApplicationClass.dbus-unregister" link="GApplication.html#GApplicationClass.dbus-unregister"/>
-    <keyword type="member" name="GApplicationClass.handle-local-options" link="GApplication.html#GApplicationClass.handle-local-options"/>
-    <keyword type="member" name="GActionGroupInterface.g-iface" link="GActionGroup.html#GActionGroupInterface.g-iface"/>
-    <keyword type="member" name="GActionGroupInterface.has-action" link="GActionGroup.html#GActionGroupInterface.has-action"/>
-    <keyword type="member" name="GActionGroupInterface.list-actions" link="GActionGroup.html#GActionGroupInterface.list-actions"/>
-    <keyword type="member" name="GActionGroupInterface.get-action-enabled" link="GActionGroup.html#GActionGroupInterface.get-action-enabled"/>
-    <keyword type="member" name="GActionGroupInterface.get-action-parameter-type" link="GActionGroup.html#GActionGroupInterface.get-action-parameter-type"/>
-    <keyword type="member" name="GActionGroupInterface.get-action-state-type" link="GActionGroup.html#GActionGroupInterface.get-action-state-type"/>
-    <keyword type="member" name="GActionGroupInterface.get-action-state-hint" link="GActionGroup.html#GActionGroupInterface.get-action-state-hint"/>
-    <keyword type="member" name="GActionGroupInterface.get-action-state" link="GActionGroup.html#GActionGroupInterface.get-action-state"/>
-    <keyword type="member" name="GActionGroupInterface.change-action-state" link="GActionGroup.html#GActionGroupInterface.change-action-state"/>
-    <keyword type="member" name="GActionGroupInterface.activate-action" link="GActionGroup.html#GActionGroupInterface.activate-action"/>
-    <keyword type="member" name="GActionGroupInterface.action-added" link="GActionGroup.html#GActionGroupInterface.action-added"/>
-    <keyword type="member" name="GActionGroupInterface.action-removed" link="GActionGroup.html#GActionGroupInterface.action-removed"/>
-    <keyword type="member" name="GActionGroupInterface.action-enabled-changed" link="GActionGroup.html#GActionGroupInterface.action-enabled-changed"/>
-    <keyword type="member" name="GActionGroupInterface.action-state-changed" link="GActionGroup.html#GActionGroupInterface.action-state-changed"/>
-    <keyword type="member" name="GActionGroupInterface.query-action" link="GActionGroup.html#GActionGroupInterface.query-action"/>
-    <keyword type="member" name="GActionMapInterface.g-iface" link="GActionMap.html#GActionMapInterface.g-iface"/>
-    <keyword type="member" name="GActionMapInterface.lookup-action" link="GActionMap.html#GActionMapInterface.lookup-action"/>
-    <keyword type="member" name="GActionMapInterface.add-action" link="GActionMap.html#GActionMapInterface.add-action"/>
-    <keyword type="member" name="GActionMapInterface.remove-action" link="GActionMap.html#GActionMapInterface.remove-action"/>
-    <keyword type="member" name="GActionEntry.name" link="GActionMap.html#GActionEntry.name"/>
-    <keyword type="member" name="GActionEntry.activate" link="GActionMap.html#GActionEntry.activate"/>
-    <keyword type="member" name="GActionEntry.parameter-type" link="GActionMap.html#GActionEntry.parameter-type"/>
-    <keyword type="member" name="GActionEntry.state" link="GActionMap.html#GActionEntry.state"/>
-    <keyword type="member" name="GActionEntry.change-state" link="GActionMap.html#GActionEntry.change-state"/>
-    <keyword type="member" name="GActionInterface.g-iface" link="GAction.html#GActionInterface.g-iface"/>
-    <keyword type="member" name="GActionInterface.get-name" link="GAction.html#GActionInterface.get-name"/>
-    <keyword type="member" name="GActionInterface.get-parameter-type" link="GAction.html#GActionInterface.get-parameter-type"/>
-    <keyword type="member" name="GActionInterface.get-state-type" link="GAction.html#GActionInterface.get-state-type"/>
-    <keyword type="member" name="GActionInterface.get-state-hint" link="GAction.html#GActionInterface.get-state-hint"/>
-    <keyword type="member" name="GActionInterface.get-enabled" link="GAction.html#GActionInterface.get-enabled"/>
-    <keyword type="member" name="GActionInterface.get-state" link="GAction.html#GActionInterface.get-state"/>
-    <keyword type="member" name="GActionInterface.change-state" link="GAction.html#GActionInterface.change-state"/>
-    <keyword type="member" name="GActionInterface.activate" link="GAction.html#GActionInterface.activate"/>
-    <keyword type="member" name="GRemoteActionGroupInterface.g-iface" link="GRemoteActionGroup.html#GRemoteActionGroupInterface.g-iface"/>
-    <keyword type="member" name="GRemoteActionGroupInterface.activate-action-full" link="GRemoteActionGroup.html#GRemoteActionGroupInterface.activate-action-full"/>
-    <keyword type="member" name="GRemoteActionGroupInterface.change-action-state-full" link="GRemoteActionGroup.html#GRemoteActionGroupInterface.change-action-state-full"/>
-    <keyword type="member" name="ExampleAnimalIface.parent-iface" link="ExampleAnimal.html#ExampleAnimalIface.parent-iface"/>
-    <keyword type="member" name="ExampleAnimalIface.handle-poke" link="ExampleAnimal.html#ExampleAnimalIface.handle-poke"/>
-    <keyword type="member" name="ExampleAnimalIface.get-foo" link="ExampleAnimal.html#ExampleAnimalIface.get-foo"/>
-    <keyword type="member" name="ExampleAnimalIface.get-mood" link="ExampleAnimal.html#ExampleAnimalIface.get-mood"/>
-    <keyword type="member" name="ExampleAnimalIface.jumped" link="ExampleAnimal.html#ExampleAnimalIface.jumped"/>
-    <keyword type="member" name="ExampleAnimalIface.get-bar" link="ExampleAnimal.html#ExampleAnimalIface.get-bar"/>
-    <keyword type="member" name="ExampleAnimalProxyClass.parent-class" link="ExampleAnimal.html#ExampleAnimalProxyClass.parent-class"/>
-    <keyword type="member" name="ExampleAnimalSkeletonClass.parent-class" link="ExampleAnimal.html#ExampleAnimalSkeletonClass.parent-class"/>
-    <keyword type="member" name="ExampleCatIface.parent-iface" link="ExampleCat.html#ExampleCatIface.parent-iface"/>
-    <keyword type="member" name="ExampleCatProxyClass.parent-class" link="ExampleCat.html#ExampleCatProxyClass.parent-class"/>
-    <keyword type="member" name="ExampleCatSkeletonClass.parent-class" link="ExampleCat.html#ExampleCatSkeletonClass.parent-class"/>
-    <keyword type="member" name="ExampleObjectIface.parent-iface" link="ExampleObject.html#ExampleObjectIface.parent-iface"/>
-    <keyword type="member" name="ExampleObjectProxyClass.parent-class" link="ExampleObject.html#ExampleObjectProxyClass.parent-class"/>
-    <keyword type="member" name="ExampleObjectSkeletonClass.parent-class" link="ExampleObject.html#ExampleObjectSkeletonClass.parent-class"/>
-    <keyword type="member" name="ExampleObjectManagerClientClass.parent-class" link="ExampleObjectManagerClient.html#ExampleObjectManagerClientClass.parent-class"/>
   </functions>
 </book>

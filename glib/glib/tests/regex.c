@@ -25,12 +25,6 @@
 #include <locale.h>
 #include "glib.h"
 
-#ifdef USE_SYSTEM_PCRE
-#include <pcre.h>
-#else
-#include "glib/pcre/pcre.h"
-#endif
-
 /* U+20AC EURO SIGN (symbol, currency) */
 #define EURO "\xe2\x82\xac"
 /* U+00E0 LATIN SMALL LETTER A WITH GRAVE (letter, lowercase) */
@@ -200,32 +194,7 @@ test_match (gconstpointer d)
   match = g_regex_match_full (regex, data->string, data->string_len,
                               data->start_position, data->match_opts2, NULL, NULL);
 
-  if (data->expected)
-    {
-      if (!match)
-        g_error ("Regex '%s' (with compile options %u and "
-            "match options %u) should have matched '%.*s' "
-            "(of length %d, at position %d, with match options %u) but did not",
-            data->pattern, data->compile_opts, data->match_opts,
-            data->string_len == -1 ? (int) strlen (data->string) :
-              (int) data->string_len,
-            data->string, (int) data->string_len,
-            data->start_position, data->match_opts2);
-
-      g_assert_cmpint (match, ==, TRUE);
-    }
-  else
-    {
-      if (match)
-        g_error ("Regex '%s' (with compile options %u and "
-            "match options %u) should not have matched '%.*s' "
-            "(of length %d, at position %d, with match options %u) but did",
-            data->pattern, data->compile_opts, data->match_opts,
-            data->string_len == -1 ? (int) strlen (data->string) :
-              (int) data->string_len,
-            data->string, (int) data->string_len,
-            data->start_position, data->match_opts2);
-    }
+  g_assert_cmpint (match, ==, data->expected);
 
   if (data->string_len == -1 && data->start_position == 0)
     {
@@ -1051,13 +1020,10 @@ test_expand (gconstpointer d)
   GRegex *regex = NULL;
   GMatchInfo *match_info = NULL;
   gchar *res;
-  GError *error = NULL;
 
   if (data->pattern)
     {
-      regex = g_regex_new (data->pattern, data->raw ? G_REGEX_RAW : 0, 0,
-          &error);
-      g_assert_no_error (error);
+      regex = g_regex_new (data->pattern, data->raw ? G_REGEX_RAW : 0, 0, NULL);
       g_regex_match (regex, data->string, 0, &match_info);
     }
 
@@ -1313,38 +1279,7 @@ test_match_all (gconstpointer d)
     g_assert (match_ok);
 
   match_count = g_match_info_get_match_count (match_info);
-
-  if (match_count != g_slist_length (data->expected))
-    {
-      g_message ("regex: %s", data->pattern);
-      g_message ("string: %s", data->string);
-      g_message ("matched strings:");
-
-      for (i = 0; i < match_count; i++)
-        {
-          gint start, end;
-          gchar *matched_string;
-
-          matched_string = g_match_info_fetch (match_info, i);
-          g_match_info_fetch_pos (match_info, i, &start, &end);
-          g_message ("%d. %d-%d '%s'", i, start, end, matched_string);
-          g_free (matched_string);
-        }
-
-      g_message ("expected strings:");
-      i = 0;
-
-      for (l_exp = data->expected; l_exp != NULL; l_exp = l_exp->next)
-        {
-          Match *exp = l_exp->data;
-
-          g_message ("%d. %d-%d '%s'", i, exp->start, exp->end, exp->string);
-          i++;
-        }
-
-      g_error ("match_count not as expected: %d != %d",
-          match_count, g_slist_length (data->expected));
-    }
+  g_assert_cmpint (match_count, ==, g_slist_length (data->expected));
 
   l_exp = data->expected;
   for (i = 0; i < match_count; i++)
@@ -2379,16 +2314,16 @@ main (int argc, char *argv[])
   TEST_MATCH("a", 0, 0, "ba", 1, 0, 0, FALSE);
   TEST_MATCH("a", 0, 0, "bab", -1, 0, 0, TRUE);
   TEST_MATCH("a", 0, 0, "b", -1, 0, 0, FALSE);
-  TEST_MATCH("a", 0, G_REGEX_MATCH_ANCHORED, "a", -1, 0, 0, TRUE);
-  TEST_MATCH("a", 0, G_REGEX_MATCH_ANCHORED, "ab", -1, 1, 0, FALSE);
-  TEST_MATCH("a", 0, G_REGEX_MATCH_ANCHORED, "ba", 1, 0, 0, FALSE);
-  TEST_MATCH("a", 0, G_REGEX_MATCH_ANCHORED, "bab", -1, 0, 0, FALSE);
-  TEST_MATCH("a", 0, G_REGEX_MATCH_ANCHORED, "b", -1, 0, 0, FALSE);
-  TEST_MATCH("a", 0, 0, "a", -1, 0, G_REGEX_MATCH_ANCHORED, TRUE);
-  TEST_MATCH("a", 0, 0, "ab", -1, 1, G_REGEX_MATCH_ANCHORED, FALSE);
-  TEST_MATCH("a", 0, 0, "ba", 1, 0, G_REGEX_MATCH_ANCHORED, FALSE);
-  TEST_MATCH("a", 0, 0, "bab", -1, 0, G_REGEX_MATCH_ANCHORED, FALSE);
-  TEST_MATCH("a", 0, 0, "b", -1, 0, G_REGEX_MATCH_ANCHORED, FALSE);
+  TEST_MATCH("a", 0, G_REGEX_ANCHORED, "a", -1, 0, 0, TRUE);
+  TEST_MATCH("a", 0, G_REGEX_ANCHORED, "ab", -1, 1, 0, FALSE);
+  TEST_MATCH("a", 0, G_REGEX_ANCHORED, "ba", 1, 0, 0, FALSE);
+  TEST_MATCH("a", 0, G_REGEX_ANCHORED, "bab", -1, 0, 0, FALSE);
+  TEST_MATCH("a", 0, G_REGEX_ANCHORED, "b", -1, 0, 0, FALSE);
+  TEST_MATCH("a", 0, 0, "a", -1, 0, G_REGEX_ANCHORED, TRUE);
+  TEST_MATCH("a", 0, 0, "ab", -1, 1, G_REGEX_ANCHORED, FALSE);
+  TEST_MATCH("a", 0, 0, "ba", 1, 0, G_REGEX_ANCHORED, FALSE);
+  TEST_MATCH("a", 0, 0, "bab", -1, 0, G_REGEX_ANCHORED, FALSE);
+  TEST_MATCH("a", 0, 0, "b", -1, 0, G_REGEX_ANCHORED, FALSE);
   TEST_MATCH("a|b", 0, 0, "a", -1, 0, 0, TRUE);
   TEST_MATCH("\\d", 0, 0, EURO, -1, 0, 0, FALSE);
   TEST_MATCH("^.$", 0, 0, EURO, -1, 0, 0, TRUE);
@@ -2452,12 +2387,8 @@ main (int argc, char *argv[])
   /* Test that othercasing in our pcre/glib integration is bug-for-bug compatible
    * with pcre's internal tables. Bug #678273 */
   TEST_MATCH("[Ǆ]", G_REGEX_CASELESS, 0, "Ǆ", -1, 0, 0, TRUE);
+  TEST_MATCH("[Ǆ]", G_REGEX_CASELESS, 0, "ǅ", -1, 0, 0, FALSE);
   TEST_MATCH("[Ǆ]", G_REGEX_CASELESS, 0, "ǆ", -1, 0, 0, TRUE);
-#if PCRE_MAJOR > 8 || (PCRE_MAJOR == 8 && PCRE_MINOR >= 32)
-  /* This would incorrectly fail to match in pcre < 8.32, so only assert
-   * this for known-good pcre. */
-  TEST_MATCH("[Ǆ]", G_REGEX_CASELESS, 0, "ǅ", -1, 0, 0, TRUE);
-#endif
 
   /* TEST_MATCH_NEXT#(pattern, string, string_len, start_position, ...) */
   TEST_MATCH_NEXT0("a", "x", -1, 0);
@@ -2638,11 +2569,8 @@ main (int argc, char *argv[])
   TEST_EXPAND("a", "a", "\\0130", FALSE, "X");
   TEST_EXPAND("a", "a", "\\\\\\0", FALSE, "\\a");
   TEST_EXPAND("a(?P<G>.)c", "xabcy", "X\\g<G>X", FALSE, "XbX");
-#ifndef USE_SYSTEM_PCRE
-  /* PCRE >= 8.34 no longer allows this usage. */
   TEST_EXPAND("(.)(?P<1>.)", "ab", "\\1", FALSE, "a");
   TEST_EXPAND("(.)(?P<1>.)", "ab", "\\g<1>", FALSE, "a");
-#endif
   TEST_EXPAND(".", EURO, "\\0", FALSE, EURO);
   TEST_EXPAND("(.)", EURO, "\\1", FALSE, EURO);
   TEST_EXPAND("(?P<G>.)", EURO, "\\g<G>", FALSE, EURO);

@@ -8,7 +8,7 @@
 <link rel="up" href="glib-core.html" title="GLib Core Application Support">
 <link rel="prev" href="glib-The-Main-Event-Loop.html" title="The Main Event Loop">
 <link rel="next" href="glib-Thread-Pools.html" title="Thread Pools">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -608,18 +608,6 @@ threads. The two notable exceptions from this rule are <a class="link" href="gli
 and <a class="link" href="glib-Asynchronous-Queues.html#GAsyncQueue" title="GAsyncQueue"><span class="type">GAsyncQueue</span></a>, which are thread-safe and need no further
 application-level locking to be accessed from multiple threads.
 Most refcounting functions such as <a href="https://developer.gnome.org/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-ref"><code class="function">g_object_ref()</code></a> are also thread-safe.</p>
-<p>A common use for <a href="glib-Threads.html#GThread"><span class="type">GThreads</span></a> is to move a long-running blocking operation out
-of the main thread and into a worker thread. For GLib functions, such as
-single GIO operations, this is not necessary, and complicates the code.
-Instead, the <code class="literal">…<code class="function">_async()</code></code> version of the function should be used from the main
-thread, eliminating the need for locking and synchronisation between multiple
-threads. If an operation does need to be moved to a worker thread, consider
-using <a href="https://developer.gnome.org/gio/unstable/GTask.html#g-task-run-in-thread"><code class="function">g_task_run_in_thread()</code></a>, or a <a class="link" href="glib-Thread-Pools.html#GThreadPool" title="struct GThreadPool"><span class="type">GThreadPool</span></a>. <a class="link" href="glib-Thread-Pools.html#GThreadPool" title="struct GThreadPool"><span class="type">GThreadPool</span></a> is often a
-better choice than <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a>, as it handles thread reuse and task queueing;
-<a href="https://developer.gnome.org/gio/unstable/GTask.html#GTask-struct"><span class="type">GTask</span></a> uses this internally.</p>
-<p>However, if multiple blocking operations need to be performed in sequence,
-and it is not possible to use <a href="https://developer.gnome.org/gio/unstable/GTask.html#GTask-struct"><span class="type">GTask</span></a> for them, moving them to a worker thread
-can clarify the code.</p>
 </div>
 <div class="refsect1">
 <a name="glib-Threads.functions_details"></a><h2>Functions</h2>
@@ -648,6 +636,7 @@ or <a class="link" href="glib-Threads.html#g-thread-try-new" title="g_thread_try
 <div class="refsect3">
 <a name="id-1.4.3.7.2.6"></a><h4>Returns</h4>
 <p> the return value of the thread</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -672,13 +661,10 @@ Some systems restrict the length of <em class="parameter"><code>name</code></em>
  to 16 bytes.</p>
 <p>If the thread can not be created the program aborts. See
 <a class="link" href="glib-Threads.html#g-thread-try-new" title="g_thread_try_new ()"><code class="function">g_thread_try_new()</code></a> if you want to attempt to deal with failures.</p>
-<p>If you are using threads to offload (potentially many) short-lived tasks,
-<a class="link" href="glib-Thread-Pools.html#GThreadPool" title="struct GThreadPool"><span class="type">GThreadPool</span></a> may be more appropriate than manually spawning and tracking
-multiple <a href="glib-Threads.html#GThread"><span class="type">GThreads</span></a>.</p>
 <p>To free the struct returned by this function, use <a class="link" href="glib-Threads.html#g-thread-unref" title="g_thread_unref ()"><code class="function">g_thread_unref()</code></a>.
 Note that <a class="link" href="glib-Threads.html#g-thread-join" title="g_thread_join ()"><code class="function">g_thread_join()</code></a> implicitly unrefs the <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a> as well.</p>
 <div class="refsect3">
-<a name="id-1.4.3.7.3.9"></a><h4>Parameters</h4>
+<a name="id-1.4.3.7.3.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -705,10 +691,11 @@ Note that <a class="link" href="glib-Threads.html#g-thread-join" title="g_thread
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.3.7.3.10"></a><h4>Returns</h4>
+<a name="id-1.4.3.7.3.9"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -758,8 +745,9 @@ it allows for the possibility of failure.</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.4.7"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if an error occurred</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -787,8 +775,9 @@ g_thread_ref (<em class="parameter"><code><a class="link" href="glib-Threads.htm
 <a name="id-1.4.3.7.5.6"></a><h4>Returns</h4>
 <p> a new reference to <em class="parameter"><code>thread</code></em>
 </p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -816,7 +805,7 @@ if you don't need it anymore.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -860,6 +849,7 @@ want to keep the GThread alive beyond the <a class="link" href="glib-Threads.htm
 <div class="refsect3">
 <a name="id-1.4.3.7.7.9"></a><h4>Returns</h4>
 <p> the return value of the thread</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -922,6 +912,7 @@ as <a class="link" href="glib-Threads.html#g-thread-join" title="g_thread_join 
 <div class="refsect3">
 <a name="id-1.4.3.7.10.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Threads.html#GThread" title="GThread"><span class="type">GThread</span></a> representing the current thread</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -981,7 +972,7 @@ to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1075,6 +1066,7 @@ already been locked by the same thread results in undefined behaviour
 <a name="id-1.4.3.7.14.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>mutex</code></em>
 could be locked</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1192,8 +1184,9 @@ will only work with those compilers:</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.16.9"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Threads.html#GMutexLocker" title="GMutexLocker"><span class="type">GMutexLocker</span></a></p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-44.html#api-index-2.44">2.44</a></p>
+<p class="since">Since 2.44</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1217,7 +1210,7 @@ g_mutex_locker_free (<em class="parameter"><code><a class="link" href="glib-Thre
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-44.html#api-index-2.44">2.44</a></p>
+<p class="since">Since 2.44</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1381,6 +1374,7 @@ module.</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.22.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, if the lock could be locked.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1464,7 +1458,7 @@ is no longer needed, use <a class="link" href="glib-Threads.html#g-rec-mutex-cle
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1525,7 +1519,7 @@ as many times as it has been locked.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1557,8 +1551,9 @@ it locks <em class="parameter"><code>rec_mutex</code></em>
 <a name="id-1.4.3.7.27.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>rec_mutex</code></em>
 could be locked</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1588,7 +1583,7 @@ locked by the current thread leads to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1647,7 +1642,7 @@ to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1702,7 +1697,7 @@ until all other threads have dropped their locks on <em class="parameter"><code>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1734,8 +1729,9 @@ Otherwise it locks <em class="parameter"><code>rw_lock</code></em>
 <a name="id-1.4.3.7.32.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>rw_lock</code></em>
 could be locked</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1761,7 +1757,7 @@ by the current thread leads to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1790,7 +1786,7 @@ hold read locks on the same lock simultaneously.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1820,8 +1816,9 @@ returns <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE
 <a name="id-1.4.3.7.35.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>rw_lock</code></em>
 could be locked</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1847,7 +1844,7 @@ by the current thread leads to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1877,7 +1874,7 @@ to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1904,7 +1901,7 @@ blocking leads to undefined behaviour.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2006,6 +2003,7 @@ and <a class="link" href="glib-Date-and-Time-Functions.html#g-time-val-add" titl
 <a name="id-1.4.3.7.40.10"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>cond</code></em>
 was signalled, or <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> on timeout</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2124,8 +2122,9 @@ time of more than 5 seconds).</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.41.12"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on a signal, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> on a timeout</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2280,7 +2279,7 @@ examples below.</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2310,6 +2309,7 @@ created, for example).</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.45.7"></a><h4>Returns</h4>
 <p> the thread-local value</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2384,7 +2384,7 @@ the previous value was non-<a class="link" href="glib-Standard-Macros.html#NULL:
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2463,7 +2463,7 @@ its associated <a class="link" href="glib-Threads.html#GOnce" title="struct GOnc
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2530,8 +2530,9 @@ like this:</p>
 <a name="id-1.4.3.7.49.8"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the initialization section should be entered,
 <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> and blocks otherwise</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2567,7 +2568,7 @@ initialization variable.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2613,7 +2614,7 @@ reliably.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2661,8 +2662,9 @@ reliably.</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.52.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the lock was acquired</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2702,7 +2704,7 @@ reliably.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-24.html#api-index-2.24">2.24</a></p>
+<p class="since">Since 2.24</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2736,7 +2738,7 @@ the pointer.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2773,8 +2775,9 @@ the pointer.</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.55.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the lock was acquired</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2808,7 +2811,7 @@ the pointer.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-30.html#api-index-2.30">2.30</a></p>
+<p class="since">Since 2.30</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2822,8 +2825,9 @@ similar cases.</p>
 <div class="refsect3">
 <a name="id-1.4.3.7.57.5"></a><h4>Returns</h4>
 <p> Number of schedulable threads, always greater than 0</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 </div>
 <div class="refsect1">
@@ -2966,7 +2970,7 @@ then it must be explicitly initialised using <a class="link" href="glib-Threads.
 <pre class="programlisting">typedef void GMutexLocker;
 </pre>
 <p>Opaque type. See <a class="link" href="glib-Threads.html#g-mutex-locker-new" title="g_mutex_locker_new ()"><code class="function">g_mutex_locker_new()</code></a> for details.</p>
-<p class="since">Since: <a class="link" href="api-index-2-44.html#api-index-2.44">2.44</a></p>
+<p class="since">Since 2.44</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2984,7 +2988,7 @@ without initialisation.  Otherwise, you should call
 <a class="link" href="glib-Threads.html#g-rec-mutex-init" title="g_rec_mutex_init ()"><code class="function">g_rec_mutex_init()</code></a> on it and <a class="link" href="glib-Threads.html#g-rec-mutex-clear" title="g_rec_mutex_clear ()"><code class="function">g_rec_mutex_clear()</code></a> when done.</p>
 <p>A GRecMutex should only be accessed with the
 g_rec_mutex_ functions.</p>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3088,7 +3092,7 @@ functions is fully multi-thread safe now.</p>
 without initialisation.  Otherwise, you should call
 <a class="link" href="glib-Threads.html#g-rw-lock-init" title="g_rw_lock_init ()"><code class="function">g_rw_lock_init()</code></a> on it and <a class="link" href="glib-Threads.html#g-rw-lock-clear" title="g_rw_lock_clear ()"><code class="function">g_rw_lock_clear()</code></a> when done.</p>
 <p>A GRWLock should only be accessed with the g_rw_lock_ functions.</p>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3247,7 +3251,7 @@ is <a class="link" href="glib-Threads.html#G-ONCE-STATUS-READY:CAPS"><code class
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3287,7 +3291,7 @@ controlled by a <a class="link" href="glib-Threads.html#GOnce" title="struct GOn
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3307,7 +3311,7 @@ controlled by a <a class="link" href="glib-Threads.html#GOnce" title="struct GOn
 </div>
 
 <p></p>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 </div>
 <div class="refsect1">
@@ -3316,6 +3320,7 @@ controlled by a <a class="link" href="glib-Threads.html#GOnce" title="struct GOn
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

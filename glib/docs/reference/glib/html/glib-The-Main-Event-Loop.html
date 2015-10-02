@@ -8,7 +8,7 @@
 <link rel="up" href="glib-core.html" title="GLib Core Application Support">
 <link rel="prev" href="glib-core.html" title="GLib Core Application Support">
 <link rel="next" href="glib-Threads.html" title="Threads">
-<meta name="generator" content="GTK-Doc V1.24.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.21.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -895,8 +895,8 @@ This is often used in GTK+ applications when showing modal dialog
 boxes. Note that event sources are associated with a particular
 <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>, and will be checked and dispatched for all main
 loops associated with that GMainContext.</p>
-<p>GTK+ contains wrappers of some of these functions, e.g. <a href="http://developer.gnome.org/gtk3/gtk3-General.html#gtk-main"><code class="function">gtk_main()</code></a>,
-<a href="http://developer.gnome.org/gtk3/gtk3-General.html#gtk-main-quit"><code class="function">gtk_main_quit()</code></a> and <a href="http://developer.gnome.org/gtk3/gtk3-General.html#gtk-events-pending"><code class="function">gtk_events_pending()</code></a>.</p>
+<p>GTK+ contains wrappers of some of these functions, e.g. <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-main"><code class="function">gtk_main()</code></a>,
+<a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-main-quit"><code class="function">gtk_main_quit()</code></a> and <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-events-pending"><code class="function">gtk_events_pending()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.2.6.9"></a><h4>Creating new source types</h4>
 <p>One of the unusual features of the <a class="link" href="glib-The-Main-Event-Loop.html#GMainLoop" title="GMainLoop"><span class="type">GMainLoop</span></a> functionality
@@ -937,32 +937,6 @@ of a state diagram, as shown in this image.</p>
 using the mainloop must either <code class="function">exec()</code> or <code class="function">exit()</code> from the child
 without returning to the mainloop.</p>
 </div>
-<div class="refsect3">
-<a name="mainloop-memory-management"></a><h4>Memory management of sources</h4>
-<p>There are two options for memory management of the user data passed to a
-<a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a> to be passed to its callback on invocation. This data is provided
-in calls to <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add" title="g_timeout_add ()"><code class="function">g_timeout_add()</code></a>, <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add-full" title="g_timeout_add_full ()"><code class="function">g_timeout_add_full()</code></a>, <a class="link" href="glib-The-Main-Event-Loop.html#g-idle-add" title="g_idle_add ()"><code class="function">g_idle_add()</code></a>, etc. and
-more generally, using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-set-callback" title="g_source_set_callback ()"><code class="function">g_source_set_callback()</code></a>. This data is typically an
-object which ‘owns’ the timeout or idle callback, such as a widget or a
-network protocol implementation. In many cases, it is an error for the
-callback to be invoked after this owning object has been destroyed, as that
-results in use of freed memory.</p>
-<p>The first, and preferred, option is to store the source ID returned by
-functions such as <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add" title="g_timeout_add ()"><code class="function">g_timeout_add()</code></a> or <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a>, and explicitly
-remove that source from the main context using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title="g_source_remove ()"><code class="function">g_source_remove()</code></a> when the
-owning object is finalized. This ensures that the callback can only be
-invoked while the object is still alive.</p>
-<p>The second option is to hold a strong reference to the object in the
-callback, and to release it in the callback’s <a class="link" href="glib-Datasets.html#GDestroyNotify" title="GDestroyNotify ()"><span class="type">GDestroyNotify</span></a>. This ensures
-that the object is kept alive until after the source is finalized, which is
-guaranteed to be after it is invoked for the final time. The <a class="link" href="glib-Datasets.html#GDestroyNotify" title="GDestroyNotify ()"><span class="type">GDestroyNotify</span></a>
-is another callback passed to the ‘full’ variants of <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a> functions (for
-example, <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add-full" title="g_timeout_add_full ()"><code class="function">g_timeout_add_full()</code></a>). It is called when the source is finalized,
-and is designed for releasing references like this.</p>
-<p>One important caveat of this second approach is that it will keep the object
-alive indefinitely if the main loop is stopped before the <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a> is
-invoked, which may be undesirable.</p>
-</div>
 </div>
 <div class="refsect1">
 <a name="glib-The-Main-Event-Loop.functions_details"></a><h2>Functions</h2>
@@ -999,6 +973,7 @@ is not very important since calling <a class="link" href="glib-The-Main-Event-Lo
 <div class="refsect3">
 <a name="id-1.4.2.7.2.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-The-Main-Event-Loop.html#GMainLoop" title="GMainLoop"><span class="type">GMainLoop</span></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1026,6 +1001,7 @@ g_main_loop_ref (<em class="parameter"><code><a class="link" href="glib-The-Main
 <a name="id-1.4.2.7.3.6"></a><h4>Returns</h4>
 <p> <em class="parameter"><code>loop</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1125,6 +1101,7 @@ g_main_loop_is_running (<em class="parameter"><code><a class="link" href="glib-T
 <div class="refsect3">
 <a name="id-1.4.2.7.7.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the mainloop is currently being run.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1185,6 +1162,7 @@ to <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code
 <div class="refsect3">
 <a name="id-1.4.2.7.9.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-The-Main-Event-Loop.html#GMainLoop" title="GMainLoop"><span class="type">GMainLoop</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1290,6 +1268,7 @@ If <a class="link" href="glib-The-Main-Event-Loop.html#g-main-run" title="g_main
 <div class="refsect3">
 <a name="id-1.4.2.7.13.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the main loop is running</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1301,6 +1280,7 @@ g_main_context_new (<em class="parameter"><code><span class="type">void</span></
 <div class="refsect3">
 <a name="id-1.4.2.7.14.5"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1328,6 +1308,7 @@ g_main_context_ref (<em class="parameter"><code><a class="link" href="glib-The-M
 <a name="id-1.4.2.7.15.6"></a><h4>Returns</h4>
 <p> the <em class="parameter"><code>context</code></em>
 that was passed in (since 2.6)</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1413,6 +1394,7 @@ be interrupted for other reasons than an event source becoming ready.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.18.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if events were dispatched.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1445,6 +1427,7 @@ source is ready to be processed.</p></td>
 <div class="refsect3">
 <a name="id-1.4.2.7.19.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if more events are pending.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1471,6 +1454,7 @@ g_main_context_pending (<em class="parameter"><code><a class="link" href="glib-T
 <div class="refsect3">
 <a name="id-1.4.2.7.20.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if events are pending.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1484,6 +1468,7 @@ g_main_context_pending (<em class="parameter"><code><a class="link" href="glib-T
 <a name="id-1.4.2.7.21.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if any events are pending.</p>
 <p>Deprected: 2.2: Use <a class="link" href="glib-The-Main-Event-Loop.html#g-main-context-pending" title="g_main_context_pending ()"><code class="function">g_main_context_pending()</code></a> instead.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1719,6 +1704,7 @@ can call <a class="link" href="glib-The-Main-Event-Loop.html#g-main-context-prep
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the operation succeeded, and
 this thread is now the owner of <em class="parameter"><code>context</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1775,8 +1761,9 @@ blocking to get ownership of <em class="parameter"><code>context</code></em>
 <a name="id-1.4.2.7.28.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if current thread is owner of <em class="parameter"><code>context</code></em>
 .</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-10.html#api-index-2.10">2.10</a></p>
+<p class="since">Since 2.10</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1825,6 +1812,7 @@ try again (once) to become the owner.</p>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the operation succeeded, and
 this thread is now the owner of <em class="parameter"><code>context</code></em>
 .</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1864,6 +1852,7 @@ source already ready.</p></td>
 <a name="id-1.4.2.7.30.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if some source is ready to be dispatched
 prior to polling.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1924,6 +1913,7 @@ store <a class="link" href="glib-The-Main-Event-Loop.html#GPollFD" title="struct
 or, if more than <em class="parameter"><code>n_fds</code></em>
 records need to be stored, the number
 of records that need to be stored.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -1973,6 +1963,7 @@ the last call to <a class="link" href="glib-The-Main-Event-Loop.html#g-main-cont
 <div class="refsect3">
 <a name="id-1.4.2.7.32.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if some sources are ready to be dispatched.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2058,6 +2049,7 @@ g_main_context_get_poll_func (<em class="parameter"><code><a class="link" href="
 <div class="refsect3">
 <a name="id-1.4.2.7.35.6"></a><h4>Returns</h4>
 <p> the poll function</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2102,6 +2094,7 @@ A negative value indicates an infinite timeout.</p></td>
 <a name="id-1.4.2.7.36.6"></a><h4>Returns</h4>
 <p> the number of <a class="link" href="glib-The-Main-Event-Loop.html#GPollFD" title="struct GPollFD"><span class="type">GPollFD</span></a> elements which have events or errors
 reported, or -1 if an error occurred.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2342,7 +2335,7 @@ these checks all over your code, since there are doubtless many,
 many things that the user could do. Instead, you can use the
 following techniques:</p>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><p>Use <a href="http://developer.gnome.org/gtk3/GtkWidget.html#gtk-widget-set-sensitive"><code class="function">gtk_widget_set_sensitive()</code></a> or modal dialogs to prevent
+<li class="listitem"><p>Use <a href="http://developer.gnome.org/gtk2/GtkWidget.html#gtk-widget-set-sensitive"><code class="function">gtk_widget_set_sensitive()</code></a> or modal dialogs to prevent
 the user from interacting with elements while the main
 loop is recursing.</p></li>
 <li class="listitem"><p>Avoid main loop recursion in situations where you can't handle
@@ -2353,6 +2346,7 @@ there is more work to do.</p></li>
 <div class="refsect3">
 <a name="id-1.4.2.7.39.13"></a><h4>Returns</h4>
 <p> The main loop recursion level in the current thread</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2366,7 +2360,7 @@ g_main_current_source (<em class="parameter"><code><span class="type">void</span
 <p> The currently firing source or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-12.html#api-index-2.12">2.12</a></p>
+<p class="since">Since 2.12</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2456,7 +2450,7 @@ loop (and may prevent this call from returning).</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2519,7 +2513,7 @@ is no longer in use, or <a class="link" href="glib-Standard-Macros.html#NULL:CAP
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2542,7 +2536,7 @@ always return <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the thread-default context is the global default context. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2561,7 +2555,7 @@ is the global default context, this will return that <a class="link" href="glib-
 with <a class="link" href="glib-The-Main-Event-Loop.html#g-main-context-unref" title="g_main_context_unref ()"><code class="function">g_main_context_unref()</code></a> when you are done with it. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2610,7 +2604,7 @@ see <a href="https://developer.gnome.org/gio/unstable/GFile.html#g-file-supports
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2635,7 +2629,7 @@ it was on the top of the stack).</p>
 </tr></tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-22.html#api-index-2.22">2.22</a></p>
+<p class="since">Since 2.22</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2666,6 +2660,7 @@ time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monoton
 <div class="refsect3">
 <a name="id-1.4.2.7.48.8"></a><h4>Returns</h4>
 <p> the newly-created timeout source</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2699,8 +2694,9 @@ See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monotonic-time
 <div class="refsect3">
 <a name="id-1.4.2.7.49.9"></a><h4>Returns</h4>
 <p> the newly-created timeout source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2720,9 +2716,6 @@ event sources. Thus they should not be relied on for precise timing.
 After each call to the timeout function, the time of the next
 timeout is recalculated based on the current time and the given interval
 (it does not try to 'catch up' time lost in delays).</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>If you want to have a timer in the "seconds" range and do not care
 about the exact time of the first call of the timer, use the
 <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add-seconds" title="g_timeout_add_seconds ()"><code class="function">g_timeout_add_seconds()</code></a> function; this function allows for more
@@ -2735,7 +2728,7 @@ use a custom main context.</p>
 <p>The interval given is in terms of monotonic time, not wall clock
 time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monotonic-time" title="g_get_monotonic_time ()"><code class="function">g_get_monotonic_time()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.2.7.50.10"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.50.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2764,8 +2757,9 @@ time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monoton
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.50.11"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.50.10"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2790,9 +2784,6 @@ event sources. Thus they should not be relied on for precise timing.
 After each call to the timeout function, the time of the next
 timeout is recalculated based on the current time and the given interval
 (it does not try to 'catch up' time lost in delays).</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>This internally creates a main loop source using <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-source-new" title="g_timeout_source_new ()"><code class="function">g_timeout_source_new()</code></a>
 and attaches it to the global <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a> using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a>, so
 the callback will be invoked in whichever thread is running that main
@@ -2800,9 +2791,8 @@ context. You can do these steps manually if you need greater control or to
 use a custom main context.</p>
 <p>The interval given in terms of monotonic time, not wall clock time.
 See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monotonic-time" title="g_get_monotonic_time ()"><code class="function">g_get_monotonic_time()</code></a>.</p>
-<p><span class="annotation">[<acronym title="Rename the original symbol's name to SYMBOL."><span class="acronym">rename-to</span></acronym> g_timeout_add]</span></p>
 <div class="refsect3">
-<a name="id-1.4.2.7.51.10"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.51.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2842,8 +2832,9 @@ the range between <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.51.11"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.51.9"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -2864,13 +2855,10 @@ greater control. Also see <a class="link" href="glib-The-Main-Event-Loop.html#g-
 <p>Note that the first call of the timer may not be precise for timeouts
 of one second. If you need finer precision and have such a timeout,
 you may want to use <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add" title="g_timeout_add ()"><code class="function">g_timeout_add()</code></a> instead.</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>The interval given is in terms of monotonic time, not wall clock
 time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monotonic-time" title="g_get_monotonic_time ()"><code class="function">g_get_monotonic_time()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.2.7.52.9"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.52.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2898,10 +2886,11 @@ time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monoton
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.52.10"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.52.9"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -2930,9 +2919,6 @@ event sources. Thus they should not be relied on for precise timing.
 After each call to the timeout function, the time of the next
 timeout is recalculated based on the current time and the given <em class="parameter"><code>interval</code></em>
 </p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>If you want timing more precise than whole seconds, use <a class="link" href="glib-The-Main-Event-Loop.html#g-timeout-add" title="g_timeout_add ()"><code class="function">g_timeout_add()</code></a>
 instead.</p>
 <p>The grouping of timers to fire at the same time results in a more power
@@ -2945,9 +2931,8 @@ using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title
 greater control.</p>
 <p>The interval given is in terms of monotonic time, not wall clock
 time.  See <a class="link" href="glib-Date-and-Time-Functions.html#g-get-monotonic-time" title="g_get_monotonic_time ()"><code class="function">g_get_monotonic_time()</code></a>.</p>
-<p><span class="annotation">[<acronym title="Rename the original symbol's name to SYMBOL."><span class="acronym">rename-to</span></acronym> g_timeout_add_seconds]</span></p>
 <div class="refsect3">
-<a name="id-1.4.2.7.53.13"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.53.11"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2986,10 +2971,11 @@ the range between <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.53.14"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.53.12"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-14.html#api-index-2.14">2.14</a></p>
+<p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3005,6 +2991,7 @@ have a default priority of <a class="link" href="glib-The-Main-Event-Loop.html#G
 <div class="refsect3">
 <a name="id-1.4.2.7.54.6"></a><h4>Returns</h4>
 <p> the newly-created idle source</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3018,16 +3005,13 @@ events pending to the default main loop. The function is given the
 default idle priority, <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY-DEFAULT-IDLE:CAPS" title="G_PRIORITY_DEFAULT_IDLE"><span class="type">G_PRIORITY_DEFAULT_IDLE</span></a>.  If the function
 returns <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> it is automatically removed from the list of event
 sources and will not be called again.</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>This internally creates a main loop source using <a class="link" href="glib-The-Main-Event-Loop.html#g-idle-source-new" title="g_idle_source_new ()"><code class="function">g_idle_source_new()</code></a>
 and attaches it to the global <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a> using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a>, so
 the callback will be invoked in whichever thread is running that main
 context. You can do these steps manually if you need greater control or to
 use a custom main context.</p>
 <div class="refsect3">
-<a name="id-1.4.2.7.55.7"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.55.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3050,8 +3034,9 @@ use a custom main context.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.55.8"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.55.7"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3065,17 +3050,13 @@ g_idle_add_full (<em class="parameter"><code><a class="link" href="glib-Basic-Ty
 <p>Adds a function to be called whenever there are no higher priority
 events pending.  If the function returns <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> it is automatically
 removed from the list of event sources and will not be called again.</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle the return value and memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>This internally creates a main loop source using <a class="link" href="glib-The-Main-Event-Loop.html#g-idle-source-new" title="g_idle_source_new ()"><code class="function">g_idle_source_new()</code></a>
 and attaches it to the global <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a> using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a>, so
 the callback will be invoked in whichever thread is running that main
 context. You can do these steps manually if you need greater control or to
 use a custom main context.</p>
-<p><span class="annotation">[<acronym title="Rename the original symbol's name to SYMBOL."><span class="acronym">rename-to</span></acronym> g_idle_add]</span></p>
 <div class="refsect3">
-<a name="id-1.4.2.7.56.8"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.56.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3109,8 +3090,9 @@ range between <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY-DEF
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.56.9"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.56.7"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3137,6 +3119,7 @@ g_idle_remove_by_data (<em class="parameter"><code><a class="link" href="glib-Ba
 <div class="refsect3">
 <a name="id-1.4.2.7.57.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if an idle source was found and removed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3222,8 +3205,9 @@ Windows a handle for a process (which doesn't have to be a child).</p></td>
 <div class="refsect3">
 <a name="id-1.4.2.7.59.11"></a><h4>Returns</h4>
 <p> the newly-created child watch source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3282,8 +3266,9 @@ a child).</p></td>
 <div class="refsect3">
 <a name="id-1.4.2.7.60.10"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3315,9 +3300,8 @@ in the callback function for the source.</p>
 <a class="link" href="glib-The-Main-Event-Loop.html#g-child-watch-source-new" title="g_child_watch_source_new ()"><code class="function">g_child_watch_source_new()</code></a> and attaches it to the main loop context 
 using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a>. You can do these steps manually if you 
 need greater control.</p>
-<p><span class="annotation">[<acronym title="Rename the original symbol's name to SYMBOL."><span class="acronym">rename-to</span></acronym> g_child_watch_add]</span></p>
 <div class="refsect3">
-<a name="id-1.4.2.7.61.11"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.61.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3357,10 +3341,11 @@ Windows a handle for a process (which doesn't have to be a child).</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.7.61.12"></a><h4>Returns</h4>
+<a name="id-1.4.2.7.61.11"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-4.html#api-index-2.4">2.4</a></p>
+<p class="since">Since 2.4</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3421,8 +3406,9 @@ Windows, the easiest solution is to construct all of your
 whose <code class="literal">revents</code> fields
 were filled in, or 0 if the operation timed out, or -1 on error or
 if the call was interrupted.</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-20.html#api-index-2.20">2.20</a></p>
+<p class="since">Since 2.20</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3471,6 +3457,7 @@ the sources behavior.</p></td>
 <div class="refsect3">
 <a name="id-1.4.2.7.64.7"></a><h4>Returns</h4>
 <p> the newly-created <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a>.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3498,6 +3485,7 @@ g_source_ref (<em class="parameter"><code><a class="link" href="glib-The-Main-Ev
 <a name="id-1.4.2.7.65.6"></a><h4>Returns</h4>
 <p> <em class="parameter"><code>source</code></em>
 </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3554,7 +3542,7 @@ default implementations) of an unattached source.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-12.html#api-index-2.12">2.12</a></p>
+<p class="since">Since 2.12</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3591,6 +3579,7 @@ that context. Remove it by calling <a class="link" href="glib-The-Main-Event-Loo
 <a name="id-1.4.2.7.68.6"></a><h4>Returns</h4>
 <p> the ID (greater than 0) for the source within the
 <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>. </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3666,10 +3655,10 @@ before the dispatch of your idle handler.</p>
 <span class="cbracket">{</span>
 <span class="normal">  </span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> data</span><span class="symbol">;</span>
 <span class="normal">   </span>
-<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk3/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
 <span class="normal">  </span><span class="comment">// do stuff with self</span>
 <span class="normal">  self</span><span class="symbol">-&gt;</span><span class="normal">idle_id </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk3/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
 <span class="normal">   </span>
 <span class="normal">  </span><span class="keyword">return</span><span class="normal"> <a href="glib-The-Main-Event-Loop.html#G-SOURCE-REMOVE:CAPS">G_SOURCE_REMOVE</a></span><span class="symbol">;</span>
 <span class="cbracket">}</span>
@@ -3724,12 +3713,12 @@ has already been destroy within the callback.</p>
 <span class="cbracket">{</span>
 <span class="normal">  </span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> data</span><span class="symbol">;</span>
 <span class="normal">  </span>
-<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk3/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
 <span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-source-is-destroyed">g_source_is_destroyed</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-current-source">g_main_current_source</a></span><span class="normal"> </span><span class="symbol">()))</span>
 <span class="normal">    </span><span class="cbracket">{</span>
 <span class="normal">      </span><span class="comment">// do stuff with self</span>
 <span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk3/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
 <span class="normal">  </span>
 <span class="normal">  </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">;</span>
 <span class="cbracket">}</span></pre></td>
@@ -3757,8 +3746,9 @@ has already been destroy within the callback.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.70.12"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the source has been destroyed</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-12.html#api-index-2.12">2.12</a></p>
+<p class="since">Since 2.12</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3820,6 +3810,7 @@ g_source_get_priority (<em class="parameter"><code><a class="link" href="glib-Th
 <div class="refsect3">
 <a name="id-1.4.2.7.72.6"></a><h4>Returns</h4>
 <p> the priority of the source</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3881,6 +3872,7 @@ see <a class="link" href="glib-The-Main-Event-Loop.html#g-source-set-can-recurse
 <div class="refsect3">
 <a name="id-1.4.2.7.74.6"></a><h4>Returns</h4>
 <p> whether recursion is allowed.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3910,6 +3902,7 @@ mapping from ID to source is done by <a class="link" href="glib-The-Main-Event-L
 <div class="refsect3">
 <a name="id-1.4.2.7.75.6"></a><h4>Returns</h4>
 <p> the ID (greater than 0) for the source</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -3937,8 +3930,9 @@ name may be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NU
 <div class="refsect3">
 <a name="id-1.4.2.7.76.6"></a><h4>Returns</h4>
 <p> the name of the source</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-26.html#api-index-2.26">2.26</a></p>
+<p class="since">Since 2.26</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3981,7 +3975,7 @@ may be attempting to use it.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-26.html#api-index-2.26">2.26</a></p>
+<p class="since">Since 2.26</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4024,7 +4018,7 @@ wrong source.</p>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-26.html#api-index-2.26">2.26</a></p>
+<p class="since">Since 2.26</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4077,13 +4071,10 @@ should not count on <em class="parameter"><code>func</code></em>
  being called with <em class="parameter"><code>data</code></em>
  as its first
 parameter.</p>
-<p>See <a class="link" href="glib-The-Main-Event-Loop.html#mainloop-memory-management" title="Memory management of sources">memory management of sources</a> for details
-on how to handle memory management of <em class="parameter"><code>data</code></em>
-.</p>
 <p>Typically, you won't use this function. Instead use functions specific
 to the type of source you are using.</p>
 <div class="refsect3">
-<a name="id-1.4.2.7.80.8"></a><h4>Parameters</h4>
+<a name="id-1.4.2.7.80.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -4143,6 +4134,7 @@ created with one of the above functions</p></td>
 <a name="id-1.4.2.7.81.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the source should be removed. <a class="link" href="glib-The-Main-Event-Loop.html#G-SOURCE-CONTINUE:CAPS" title="G_SOURCE_CONTINUE"><span class="type">G_SOURCE_CONTINUE</span></a> and
 <a class="link" href="glib-The-Main-Event-Loop.html#G-SOURCE-REMOVE:CAPS" title="G_SOURCE_REMOVE"><span class="type">G_SOURCE_REMOVE</span></a> are more memorable names for the return value.</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -4236,7 +4228,7 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4266,6 +4258,7 @@ indication that the source will fire immediately.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.84.7"></a><h4>Returns</h4>
 <p> the monotonic ready time, -1 for "never"</p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -4316,8 +4309,9 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 <div class="refsect3">
 <a name="id-1.4.2.7.85.10"></a><h4>Returns</h4>
 <p> an opaque tag</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4354,7 +4348,7 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4399,7 +4393,7 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4442,8 +4436,9 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 <div class="refsect3">
 <a name="id-1.4.2.7.88.9"></a><h4>Returns</h4>
 <p> the conditions reported on the fd</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-36.html#api-index-2.36">2.36</a></p>
+<p class="since">Since 2.36</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4575,7 +4570,7 @@ should "poll"</p></td>
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4611,7 +4606,7 @@ Do not call this API on a <a class="link" href="glib-The-Main-Event-Loop.html#GS
 </tbody>
 </table></div>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4642,8 +4637,9 @@ other reasonable alternative otherwise.  See <a class="link" href="glib-Date-and
 <div class="refsect3">
 <a name="id-1.4.2.7.93.7"></a><h4>Returns</h4>
 <p> the monotonic time in microseconds</p>
+<p></p>
 </div>
-<p class="since">Since: <a class="link" href="api-index-2-28.html#api-index-2.28">2.28</a></p>
+<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4721,6 +4717,7 @@ wrong source.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.95.10"></a><h4>Returns</h4>
 <p> For historical reasons, this function always returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a></p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -4758,6 +4755,7 @@ passed to <a class="link" href="glib-The-Main-Event-Loop.html#g-source-new" titl
 <div class="refsect3">
 <a name="id-1.4.2.7.96.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a source was found and removed. </p>
+<p></p>
 </div>
 </div>
 <hr>
@@ -4786,6 +4784,7 @@ data, only one will be destroyed.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.97.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a source was found and removed. </p>
+<p></p>
 </div>
 </div>
 </div>
@@ -4850,7 +4849,7 @@ pending redraws, so that widgets are not redrawn twice unnecessarily.)</p>
 </pre>
 <p>Use this macro as the return value of a <a class="link" href="glib-The-Main-Event-Loop.html#GSourceFunc" title="GSourceFunc ()"><span class="type">GSourceFunc</span></a> to leave
 the <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a> in the main loop.</p>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4859,7 +4858,7 @@ the <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct G
 </pre>
 <p>Use this macro as the return value of a <a class="link" href="glib-The-Main-Event-Loop.html#GSourceFunc" title="GSourceFunc ()"><span class="type">GSourceFunc</span></a> to remove
 the <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a> from the main loop.</p>
-<p class="since">Since: <a class="link" href="api-index-2-32.html#api-index-2.32">2.32</a></p>
+<p class="since">Since 2.32</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -5023,10 +5022,7 @@ using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-set-callback"
 function should call the
 callback function with <em class="parameter"><code>user_data</code></em>
 and whatever additional parameters
-are needed for this type of event source. The return value of the
-<em class="parameter"><code>dispatch</code></em>
-function should be <a class="link" href="glib-The-Main-Event-Loop.html#G-SOURCE-REMOVE:CAPS" title="G_SOURCE_REMOVE"><span class="type">G_SOURCE_REMOVE</span></a> if the source should be
-removed or <a class="link" href="glib-The-Main-Event-Loop.html#G-SOURCE-CONTINUE:CAPS" title="G_SOURCE_CONTINUE"><span class="type">G_SOURCE_CONTINUE</span></a> to keep it.</p></td>
+are needed for this type of event source.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 <tr>
@@ -5084,6 +5080,7 @@ callback object.</p></td>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.24.1</div>
+<hr>
+          Generated by GTK-Doc V1.21.1</div>
 </body>
 </html>

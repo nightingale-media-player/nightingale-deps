@@ -618,6 +618,7 @@ unescape_gstring_inplace (GMarkupParseContext  *context,
                           GError              **error)
 {
   char mask, *to;
+  int line_num = 1;
   const char *from;
   gboolean normalize_attribute;
 
@@ -641,6 +642,8 @@ unescape_gstring_inplace (GMarkupParseContext  *context,
       *to = *from;
 
       mask |= *to;
+      if (*to == '\n')
+        line_num++;
       if (normalize_attribute && (*to == '\t' || *to == '\n'))
         *to = ' ';
       if (*to == '\r')
@@ -654,7 +657,7 @@ unescape_gstring_inplace (GMarkupParseContext  *context,
           from++;
           if (*from == '#')
             {
-              gint base = 10;
+              gboolean is_hex = FALSE;
               gulong l;
               gchar *end = NULL;
 
@@ -662,12 +665,16 @@ unescape_gstring_inplace (GMarkupParseContext  *context,
 
               if (*from == 'x')
                 {
-                  base = 16;
+                  is_hex = TRUE;
                   from++;
                 }
 
+              /* digit is between start and p */
               errno = 0;
-              l = strtoul (from, &end, base);
+              if (is_hex)
+                l = strtoul (from, &end, 16);
+              else
+                l = strtoul (from, &end, 10);
 
               if (end == from || errno != 0)
                 {
