@@ -27,13 +27,16 @@ case $OSTYPE in
 		fi
 
 		echo -e "Building sqlite...\n"
+        cd sqlite
+        autoreconf --force --install
+        cd ..
 		make -C sqlite -f Makefile.songbird
 		strip --strip-all "linux-$(uname -m)/sqlite/release/bin/sqlite3"
 		strip --strip-debug "linux-$(uname -m)/sqlite/release/lib/libsqlite3.a"
 		
-		#echo -e "Building taglib...\n"
-		#make -C taglib -f Makefile.songbird
-		#strip --strip-debug "linux-$(uname -m)/taglib/release/lib/libtag.a"
+		echo -e "Building taglib...\n"
+		make -C taglib -f Makefile.songbird
+		strip --strip-debug "linux-$(uname -m)/taglib/release/lib/libtag.a"
 
 		echo -e "Building xulrunner 1.9.2...\n"
 		make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
@@ -89,6 +92,9 @@ case $OSTYPE in
         make CC=gcc CXX=g++ -C libvorbis -f Makefile.songbird
         
         echo -e "Building sqlite..."
+        cd sqlite
+        autoreconf --force --install
+        cd ..
         make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
         
         echo -e "Building taglib..."        
