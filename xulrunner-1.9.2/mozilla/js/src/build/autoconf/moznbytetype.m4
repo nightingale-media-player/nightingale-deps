@@ -122,7 +122,7 @@ AC_CACHE_CHECK([for the alignment of $2], moz_cv_align_of_$1, [
                    ],
                    [
                      int a[offsetof(struct aligner, a) == $align ? 1 : -1];
-                     return;
+                     return 0;
                    ],
                    [moz_cv_align_of_$1=$align; break], [])
   done

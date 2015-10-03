@@ -268,8 +268,8 @@ ifneq (,$(CONFIGURE_TARGET))
 endif
 
 ifneq (,$(filter linux-i686 macosx-i686,$(SB_TARGET_ARCH)))
-   SB_CFLAGS += -g -gstabs+
-   SB_CXXFLAGS += -g -gstabs+
+   SB_CFLAGS += -gstabs+
+   SB_CXXFLAGS += -gstabs+
 endif
 
 ifeq (debug,$(SB_BUILD_TYPE))

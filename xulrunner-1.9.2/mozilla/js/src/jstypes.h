@@ -56,6 +56,26 @@
 
 #include <stddef.h>
 #include "js-config.h"
+#ifndef JS_BYTES_PER_WORD
+#define JS_BYTES_PER_WORD __SIZEOF_POINTER__
+#endif
+#ifndef JS_BITS_PER_WORD_LOG2
+#if JS_BYTES_PER_WORD == 8
+#define JS_BITS_PER_WORD_LOG2 6
+#elif JS_BYTES_PER_WORD == 4
+#define JS_BITS_PER_WORD_LOG2 5
+#else
+#error Unhandled JS_BYTES_PER_WORD
+#endif 
+#endif
+
+#ifndef JS_ALIGN_OF_POINTER
+#define JS_ALIGN_OF_POINTER 4L
+#endif
+
+#ifndef JS_BYTES_PER_DOUBLE
+#define JS_BYTES_PER_DOUBLE 8L
+#endif 
 
 /***********************************************************************
 ** MACROS:      JS_EXTERN_API

@@ -772,7 +772,6 @@ if test -n "$_WIN32_MSVC"; then
     esac
 fi
 
-fi # COMPILE_ENVIRONMENT
 
 AC_SUBST(MIDL_FLAGS)
 AC_SUBST(_MSC_VER)
@@ -6654,20 +6653,6 @@ MOZ_DEBUG_ENABLE_DEFS="$MOZ_DEBUG_ENABLE_DEFS -DTRACING"
 
 MOZ_DEBUG_DISABLE_DEFS="-DNDEBUG -DTRIMMED"
 
-if test -n "$MOZ_DEBUG"; then
-    AC_MSG_CHECKING([for valid debug flags])
-    _SAVE_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS $MOZ_DEBUG_FLAGS"
-    AC_TRY_COMPILE([#include <stdio.h>], 
-        [printf("Hello World\n");],
-        _results=yes,
-        _results=no)
-    AC_MSG_RESULT([$_results])
-    if test "$_results" = "no"; then
-        AC_MSG_ERROR([These compiler flags are invalid: $MOZ_DEBUG_FLAGS])
-    fi
-    CFLAGS=$_SAVE_CFLAGS
-fi
 
 dnl ========================================================
 dnl enable mobile optimizations
@@ -6702,21 +6687,7 @@ else
     MOZ_OPTIMIZE=
 fi ], MOZ_OPTIMIZE=1)
 
-if test "$COMPILE_ENVIRONMENT"; then
-if test -n "$MOZ_OPTIMIZE"; then
-    AC_MSG_CHECKING([for valid optimization flags])
-    _SAVE_CFLAGS=$CFLAGS
-    CFLAGS="$CFLAGS $MOZ_OPTIMIZE_FLAGS"
-    AC_TRY_COMPILE([#include <stdio.h>], 
-        [printf("Hello World\n");],
-        _results=yes,
-        _results=no)
-    AC_MSG_RESULT([$_results])
-    if test "$_results" = "no"; then
-        AC_MSG_ERROR([These compiler flags are invalid: $MOZ_OPTIMIZE_FLAGS])
-    fi
-    CFLAGS=$_SAVE_CFLAGS
-fi
+
 fi # COMPILE_ENVIRONMENT
 
 AC_SUBST(MOZ_OPTIMIZE)
@@ -7161,7 +7132,7 @@ if test -n "$ENABLE_EAZEL_PROFILER"; then
     AC_DEFINE(ENABLE_EAZEL_PROFILER)
     USE_ELF_DYNSTR_GC=
     MOZ_COMPONENTS_VERSION_SCRIPT_LDFLAGS=
-    EAZEL_PROFILER_CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES  -D__NO_MATH_INLINES"
+    EAZEL_PROFILER_CFLAGS="-O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES  -D__NO_MATH_INLINES"
     EAZEL_PROFILER_LIBS="-lprofiler -lpthread"
 fi
 
