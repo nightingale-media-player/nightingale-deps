@@ -60,7 +60,6 @@ AC_CACHE_CHECK([for a $2-byte type], moz_cv_n_byte_type_$1, [
     AC_TRY_COMPILE([],
                    [
                      int a[sizeof ($type) == $2 ? 1 : -1];
-                     return;
                    ],
                    [moz_cv_n_byte_type_$1=$type; break], [])
   done
@@ -91,7 +90,6 @@ AC_CACHE_CHECK([for the size of $2], moz_cv_size_of_$1, [
     AC_TRY_COMPILE([],
                    [
                      int a[sizeof ($2) == $size ? 1 : -1];
-                     return;
                    ],
                    [moz_cv_size_of_$1=$size; break], [])
   done
