@@ -492,7 +492,7 @@ static NSWindow* GetCocoaWindowForXULWindow(nsISupports *aXULWindow)
   NSMenu *menu = [[[NSApp mainMenu] itemAtIndex:0] submenu];
   [menu setAutoenablesItems:!inIsModal];
   [[menu itemWithTag:ABOUT_MENUITEM_ID] setEnabled:!inIsModal];
-  [[menu itemWithTag:PREFERENCES_MENUTITEM_ID] setEnabled:!inIsModal];
+  [[menu itemWithTag:2] setEnabled:!inIsModal];
   [[menu itemWithTag:QUIT_MENUITEM_ID] setEnabled:!inIsModal];
 }
 
