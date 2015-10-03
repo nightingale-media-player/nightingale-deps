@@ -682,6 +682,12 @@ XCODE_PRODUCT_DIR = build/$(BUILDSTYLE)
 else
 XCODE_PRODUCT_DIR = build
 endif # HAS_XCODE_2_1=1
+# Tell the Darwin linker how to find shared libraries that are not yet installed.
+ifneq (,$(findstring -lplds4,$(EXTRA_DSO_LDOPTS)))
+EXTRA_DSO_LDOPTS += $(foreach library, $(patsubst -l%, $(LIB_PREFIX)%$(DLL_SUFFIX), $(filter -l%, $(NSPR_LIBS))), -dylib_file @executable_path/$(library):$(DIST)/bin/$(library))
+endif
+EXTRA_DSO_LDOPTS += -dylib_file @executable_path/libxul.dylib:$(DIST)/bin/libxul.dylib
+EXTRA_DSO_LDOPTS += -dylib_file @executable_path/libmozjs.dylib:$(DIST)/bin/libmozjs.dylib
 endif # OS_ARCH=Darwin
 
 
