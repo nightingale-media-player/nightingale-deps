@@ -842,13 +842,8 @@ dnl ========================================================
 
 case "$target_os" in
 darwin*)
-    dnl Current known valid versions for GCC_VERSION are 2.95.2 3.1 3.3 4.0.
-    dnl 4.0 identifies itself as 4.0.x, so strip the decidecimal for
-    dnl the environment and includedir purposes (when using an SDK, below),
-    dnl but remember the full version number for the libdir (SDK).
-    changequote(,)
     GCC_VERSION_FULL=`echo $CXX_VERSION | $PERL -pe 's/^.*gcc version ([^ ]*).*/$1/'`
-    GCC_VERSION=`echo $GCC_VERSION_FULL | $PERL -pe '(split(/\./))[0]>=4&&s/(^\d*\.\d*).*/$1/;'`
+    GCC_VERSION=4.2
     changequote([,])
     if test "$GCC_VERSION_FULL" = "4.0.0" ; then
         dnl Bug 280479, but this keeps popping up in bug 292530 too because

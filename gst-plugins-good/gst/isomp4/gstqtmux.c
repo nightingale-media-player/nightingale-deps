@@ -212,6 +212,18 @@ GST_DEBUG_CATEGORY_STATIC (gst_qt_mux_debug);
  *   an invalid state.
  */
 
+static size_t strnlen(const char *s, size_t maxlen)
+{
+	size_t len;
+
+	for (len = 0; len < maxlen; len++, s++) {
+		if (!*s)
+			break;
+	}
+	return (len);
+}
+
+
 #ifndef GST_REMOVE_DEPRECATED
 enum
 {

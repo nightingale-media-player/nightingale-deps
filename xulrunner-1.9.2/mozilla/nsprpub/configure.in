@@ -1201,7 +1201,7 @@ tools are selected during the Xcode/Developer Tools installation.])
             changequote(,)
             CC_VERSION=`$CC -v 2>&1 | grep 'gcc version'`
             GCC_VERSION_FULL=`echo $CC_VERSION | $PERL -pe 's/^.*gcc version ([^ ]*).*/$1/'`
-            GCC_VERSION=`echo $GCC_VERSION_FULL | $PERL -pe '(split(/\./))[0]>=4&&s/(^\d*\.\d*).*/$1/;'`
+            GCC_VERSION=4.2
             changequote([,])
             GCC_VERSION_MAJOR=`echo $GCC_VERSION_FULL | $PERL -pe 's/(^\d*).*/$1/;'`
             if test "$GCC_VERSION_MAJOR" -lt "4" ; then

@@ -35,7 +35,6 @@ G_DEFINE_TYPE (GstCoreAudio, gst_core_audio, G_TYPE_OBJECT);
 #include "gstosxcoreaudiohal.c"
 #endif
 
-
 static void
 gst_core_audio_class_init (GstCoreAudioClass * klass)
 {
@@ -416,7 +415,7 @@ gst_core_audio_asbd_to_caps (AudioStreamBasicDescription * asbd,
     goto error;
   }
 
-  if (asbd->mFormatFlags & kLinearPCMFormatFlagsSampleFractionMask) {
+  if (asbd->mFormatFlags & (0x3F << 7)) {
     GST_WARNING ("Fixed point audio is unsupported");
     goto error;
   }
