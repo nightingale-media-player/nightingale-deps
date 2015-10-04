@@ -97,14 +97,14 @@ case $OSTYPE in
 #        echo -e "Building taglib..."        
 #        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
 
-        echo -e "Building xulrunner and crossing our fingers..."
-        make CC=gcc CXX=g++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+#        echo -e "Building xulrunner and crossing our fingers..."
+#        make CC=gcc CXX=g++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
         
         echo -e "Building gstreamer bits..."
         make CC=gcc CXX=g++ -C gstreamer -f Makefile.songbird
         
         echo -e "Building gst plugins...here's hoping these all build!"
-        make CC=gcc CXX=g++ -C gst-plugins-base -f Makefile.songbird
+#        make CC=gcc CXX=g++ -C gst-plugins-base -f Makefile.songbird
         make CC=gcc CXX=g++ -C gst-plugins-good -f Makefile.songbird
         make CC=gcc CXX=g++ -C gst-plugins-bad -f Makefile.songbird
         make CC=gcc CXX=g++ -C gst-plugins-ugly -f Makefile.songbird

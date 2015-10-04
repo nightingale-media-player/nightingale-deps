@@ -36,6 +36,7 @@ SB_VENDOR_TARGET_VERSION = 1.6.0
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
+	--disable-goom \
         --disable-shave \
         --disable-dependency-tracking \
         --disable-examples \
@@ -45,6 +46,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --enable-flac=yes \
         --disable-goom2k1 \
         --disable-annodex --disable-cairo --disable-esd --disable-gdk_pixbuf \
+	--disable-video \
         --disable-oss --disable-libpng --disable-gst_v4l2 \
         --disable-x \
         --disable-monoscope \

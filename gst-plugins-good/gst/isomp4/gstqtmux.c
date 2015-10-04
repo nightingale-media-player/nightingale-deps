@@ -113,6 +113,8 @@
 #include "config.h"
 #endif
 
+#include <string.h>
+
 #include <glib/gstdio.h>
 
 #include <gst/gst.h>

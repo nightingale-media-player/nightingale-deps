@@ -37,7 +37,6 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <sys/ioctl.h>
-#include <net/if.h>
 #include <netinet/in.h>
 #include <string.h>
 
@@ -60,6 +59,8 @@
 
 #include <gst/gst.h>
 #include <gst/net/gstptp_private.h>
+
+#include <net/if.h>
 
 #define PTP_MULTICAST_GROUP "224.0.1.129"
 #define PTP_EVENT_PORT   319
