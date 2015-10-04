@@ -62,7 +62,7 @@ USE_CPLUS=
 USE_IPV6=
 USE_MDUPDATE=
 _MACOSX_DEPLOYMENT_TARGET=
-_OPTIMIZE_FLAGS=-O
+_OPTIMIZE_FLAGS=-O2
 _DEBUG_FLAGS=-g
 MOZ_DEBUG=1
 MOZ_OPTIMIZE=
@@ -1514,9 +1514,9 @@ tools are selected during the Xcode/Developer Tools installation.])
 	    fi
 	    CFLAGS="$CFLAGS -fullwarn -xansi"
 	    if test "$USE_N32"; then
-	        _OPTIMIZE_FLAGS="-O -OPT:Olimit=4000"
+	        _OPTIMIZE_FLAGS="-O2 -OPT:Olimit=4000"
 	    else
-	        _OPTIMIZE_FLAGS="-O -Olimit 4000"
+	        _OPTIMIZE_FLAGS="-O2 -Olimit 4000"
 	    fi
 	    if test "$USE_MDUPDATE"; then
                 CFLAGS="$CFLAGS -MDupdate \$(DEPENDENCIES)"

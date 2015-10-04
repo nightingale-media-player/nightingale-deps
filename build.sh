@@ -51,6 +51,7 @@ case $OSTYPE in
 		export CPPFLAGS="$arch_flags"
 		export LDFLAGS="$arch_flags"
 		export OBJCFLAGS="$arch_flags"
+		export GCC_VERSION=4.2
 		
 		if [ ! -d "macosx-i686" ]; then
 			mkdir -p "macosx-i686/mozilla-1.9.2/release/scripts"
