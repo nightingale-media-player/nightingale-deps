@@ -64,8 +64,8 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-sndfile --disable-soundtouch --disable-swfdec \
         --disable-theoradec --disable-timidity --disable-wildmidi \
         --disable-wininet  --disable-x264 --disable-xvid \
-        --disable-dccp --disable-legacyresample --disable-frei0r
-
+        --disable-dccp --disable-legacyresample --disable-frei0r \
+	--enable-cocoa=no
 ifeq (Darwin,$(SB_VENDOR_ARCH))
     SB_VENDOR_TARGET_CONFIGURE_OPTS += --disable-yadif \
                                        --disable-apple_media

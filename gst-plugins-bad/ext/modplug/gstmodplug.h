@@ -22,6 +22,7 @@
 #define __GST_MODPLUG_H__
 
 #include <gst/gst.h>
+#include <libmodplug/sndfile.h>
 
 G_BEGIN_DECLS
         
