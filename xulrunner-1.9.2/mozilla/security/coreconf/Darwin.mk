@@ -109,7 +109,7 @@ OS_CFLAGS	= $(DSO_CFLAGS) $(OS_REL_CFLAGS) -fno-common -pipe -DDARWIN -DHAVE_STR
 
 ifdef BUILD_OPT
 ifeq (11,$(ALLOW_OPT_CODE_SIZE)$(OPT_CODE_SIZE))
-	OPTIMIZER       = -Oz
+	OPTIMIZER       = -O2
 else
 	OPTIMIZER	= -O2
 endif
