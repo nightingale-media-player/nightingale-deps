@@ -363,7 +363,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
         done
 endif
 	$(MKDIR) $(SB_VENDOR_BREAKPAD_SYMBOL_PATH)
-	$(PYTHON) $(MOZSDK_SCRIPTS_DIR)/symbolstore.py \
+	$(PYTHON) $(SB_VENDOR_BUILD_ROOT)/$(SB_VENDOR_XR_TARGET)/mozilla/toolkit/crashreporter/tools/symbolstore.py \
 	   $(DUMP_SYMS_ARGS) \
 	   -s $(SB_CONFIGURE_PREFIX) \
 	   $(DUMP_SYMS) \
