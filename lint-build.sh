@@ -22,15 +22,14 @@ case $OSTYPE in
     linux*)
         if [ "$LINT_BUILD" -eq "1" ] ; then
             # hardening flags
-            export CFLAGS="-fstack-protector --param=ssp-buffer-size=4"
-            export CXXFLAGS="-D_FORTIFY_SOURCE=2"
+            export CFLAGS="-fstack-protector --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
+            export CXXFLAGS="-fstack-protector --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
             export LDFLAGS="-Wl,-z,now -Wl,-z,relro"
         fi
 
         export SB_CFLAGS=$CFLAGS
         export SB_CCFLAGS=$CFLAGS
         export SB_CXXFLAGS=$CXXFLAGS
-        export SB_CPPFLAGS=$CXXFLAGS
 
         export SB_LDFLAGS=$LDFLAGS
 
