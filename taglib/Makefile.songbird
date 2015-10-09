@@ -39,13 +39,12 @@ include $(CURDIR)/../songbird-vendor-defs.mk
 
 # Set compiler flags.
 ifeq (Linux,$(SB_VENDOR_ARCH))
+    CMAKE_C_FLAGS := -O2 -fPIC -DPIC
+    CMAKE_CXX_FLAGS := -O2 -fPIC -DPIC
   ifeq (1, $(LINT_BUILD))
-    CMAKE_C_FLAGS := -fPIC -fstack-protector
-    CMAKE_CXX_FLAGS := -fPIC -fstack-protector
+    CMAKE_C_FLAGS += -fstack-protector
+    CMAKE_CXX_FLAGS += -fstack-protector
     CMAKE_LD_FLAGS := -Wl,-z,relro
-  else
-    CMAKE_C_FLAGS := -fPIC -fno-stack-protector
-    CMAKE_CXX_FLAGS := -fPIC -fno-stack-protector
   endif
 endif
 
@@ -79,8 +78,6 @@ else
       else
          CMAKE_C_FLAGS_DEBUG += -g -gstabs+
          CMAKE_CXX_FLAGS_DEBUG += -g -gstabs+
-         CMAKE_C_FLAGS_RELEASE += -gstabs+
-         CMAKE_CXX_FLAGS_RELEASE += -gstabs+
       endif
    endif
 endif
