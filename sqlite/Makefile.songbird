@@ -68,10 +68,12 @@ SB_VENDOR_TARGET_DYLIB_FIXUPS := $(NULL)
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 
+ACLOCAL  := aclocal
 AUTOMAKE := automake
 
 module_setup_build: FORCE
 	@echo module_setup_build: Running $(AUTOCONF) to generate configure
+	$(ACLOCAL)
 	$(AUTOCONF)
 	$(AUTOMAKE)
 	$(MV) configure Makefile.in $(SB_VENDOR_BUILD_DIR)
