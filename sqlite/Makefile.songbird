@@ -76,5 +76,5 @@ module_setup_build: FORCE
 	$(ACLOCAL)
 	$(AUTOCONF)
 	$(AUTOMAKE)
-	$(MV) configure Makefile.in $(SB_VENDOR_BUILD_DIR)
+	$(MV) aclocal.m4 configure Makefile.in $(SB_VENDOR_BUILD_DIR)
 	rm -rf autom4te.cache
