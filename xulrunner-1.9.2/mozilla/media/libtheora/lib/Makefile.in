@@ -47,6 +47,8 @@ FORCE_STATIC_LIB= 1
 # The encoder is currently not included.
 DEFINES += -DTHEORA_DISABLE_ENCODE
 
+CFLAGS += -fno-aggressive-loop-optimizations
+
 ifeq ($(findstring 86,$(OS_TEST)), 86)
 ifneq ($(OS_ARCH),SunOS)
 ifneq ($(OS_ARCH)$(OS_TEST),WINNTx86_64)
