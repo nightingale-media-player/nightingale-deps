@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -I$(top_srcdir)/include 
+AM_CPPFLAGS = -I$(top_srcdir)/include 
 
 noinst_PROGRAMS = dump_video dump_psnr $(BUILDABLE_EXAMPLES)
 

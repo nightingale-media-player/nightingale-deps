@@ -11,7 +11,8 @@ AC_CANONICAL_TARGET
 
 AM_CONFIG_HEADER([config.h])
 AC_CONFIG_SRCDIR([lib/fdct.c])
-AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
 dnl Library versioning
@@ -168,7 +169,7 @@ else
         case $host in 
         *)
                 DEBUG="-g -Wall -Wno-parentheses -DDEBUG -D__NO_MATH_INLINES"
-                CFLAGS="-Wall -Wno-parentheses -O3 -fforce-addr -fomit-frame-pointer -finline-functions -funroll-loops"
+                CFLAGS="-Wall -Wno-parentheses -O3 -fforce-addr -fomit-frame-pointer -finline-functions -funroll-loops -fno-aggressive-loop-optimizations"
                 PROFILE="-Wall -Wno-parentheses -pg -g -O3 -fno-inline-functions -DDEBUG";;
         esac
 fi
